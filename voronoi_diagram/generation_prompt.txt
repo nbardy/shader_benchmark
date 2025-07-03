@@ -1,0 +1,24 @@
+**Objective**
+Produce a planar Voronoi diagram of 30 seeds with distinct coloured cells, adhering to the mathematical and visual rules below.
+
+**Seed generation**
+
+* Domain: closed unit square $[0,1]^{2}$.
+* Seeds $\{s_i\}_{i=1}^{30}$ are generated with jittered Poisson‑disk sampling: minimum Euclidean separation ≥ 0.07.
+* Use *fixed* RNG seed 2025 to ensure reproducibility.
+
+**Voronoi construction**
+
+* Cell $V_i=\{\mathbf x:‖\mathbf x-s_i‖\le‖\mathbf x-s_j‖\;\forall j\}$.
+* Clip cells to the unit square; render edges as straight line segments.
+* Optional: compute by Fortune sweep or Delaunay dual—algorithm is not graded, result is.
+
+**Styling**
+
+* Assign each cell a unique colour picked by evenly sampling the *Tableau‑20* palette, cyclically if needed.
+* Cells: solid fill; edges: 2‑px black stroke.
+* Draw seeds as 6‑px black circles.
+* Margin outside square: pure white. No text.
+
+**Output**
+1600 × 1600 px PNG, linear RGB, no transparency.

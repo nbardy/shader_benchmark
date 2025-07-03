@@ -1,0 +1,9 @@
+**Objective**
+Draw the regular pentagram inscribed in a circle of radius 1, centred on canvas.
+
+**Construction**
+* Connect vertices in order 1‑3‑5‑2‑4‑1.
+* Fill #ffcc33; 3‑px black outline.
+* Canvas 1600 × 1600 px, white background.
+
+**Deliverable** – PNG.

@@ -1,0 +1,34 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Prime Crystal Lattice.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected visual cues**
+
+* Regular cubic lattice structure disrupted by clearly visible defect patterns
+* Defect cores show vacancy patterns with radius proportional to √p
+* Strain fields create visible atom displacements in surrounding regions
+* Twin prime pairs form connected defect channels
+* Color temperature gradient: small primes (blue) → large primes (white-hot)
+* Mersenne primes show distinctive spiral dislocation patterns
+* Volumetric glow effects around defect cores
+* Metallic/crystalline material appearance with proper lighting
+
+**Scoring rubric**
+
+| Aspect                        | Pts | Explicit checks                                                              |
+| ----------------------------- | --- | ---------------------------------------------------------------------------- |
+| **Lattice structure**         | 0‑2 | Regular cubic arrangement except at defects; atoms properly sized/spaced     |
+| **Defect patterns**           | 0‑2 | Vacancy regions scale with √p; strain fields visible as atom displacements   |
+| **Prime features**            | 0‑2 | Twin primes connected; Mersenne primes show spiral patterns                  |
+| **Color/temperature mapping** | 0‑2 | Consistent gradient from blue to white based on prime magnitude              |
+| **Material rendering**        | 0‑2 | Metallic appearance, volumetric glow, proper lighting/shadows                |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: …
+```

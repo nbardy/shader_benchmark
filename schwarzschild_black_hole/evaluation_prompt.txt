@@ -1,0 +1,15 @@
+**Rubric**
+
+| Aspect               | Pts | Requirements                                                                     |
+| -------------------- | --- | -------------------------------------------------------------------------------- |
+| **Shadow radius**    | 0‑3 | Circular silhouette radius ≈ $2.6M$ as seen at $r=10M$.                          |
+| **Photon ring**      | 0‑2 | Bright amber ring present, thin, centred on shadow.                              |
+| **Lensing accuracy** | 0‑3 | Starfield warped smoothly; multiple images near ring; fore‑/background symmetry. |
+| **Image quality**    | 0‑2 | Correct resolution, no artefacts, stars mildly blurred, navy void.               |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

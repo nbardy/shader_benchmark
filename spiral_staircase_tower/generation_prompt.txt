@@ -1,0 +1,11 @@
+**Objective**
+Create a tower with twin helical staircases wrapped around a central column.
+
+**Construction**
+**Central column** radius 0.4, height 8.
+**Twin helices (stairs)** – two staircases 180° apart: step depth 0.3, rise 0.2, width 1.2. Pitch 1 turn per 1.6 height (5 turns). 160 steps each. Railings optional.
+
+**Styling**
+Camera (6,4,6). 2600×2600 PNG.
+
+**Deliverable** PNG.

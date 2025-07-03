@@ -1,0 +1,45 @@
+Evaluate the submission for the Weierstrass "Monster" Function visualization.
+
+Key evaluation criteria:
+1. Mathematical accuracy of the Hölder exponent (fractal roughness)
+2. Presence of correct spectral peaks in FFT analysis
+3. Visual quality and adherence to specified styling
+4. Proper scale and centering of the function
+
+The visualization should clearly demonstrate the non-differentiable nature of the Weierstrass function through its jagged, self-similar structure at all scales. The orange curve should appear continuously rough without any smooth sections, reflecting the mathematical property that this function is continuous everywhere but differentiable nowhere.
+
+Score based on the detailed rubric provided, focusing on both mathematical correctness and visual presentation quality.
+
+---
+
+Mathematical ground-truth:
+- Hölder / fractal roughness exponent α_theory = -ln(a)/ln(b) = -ln(0.5)/ln(3) ≈ 0.630930.
+- A log-log fit of increments |W(x+δ)-W(x)| vs. δ should converge to this slope for δ in the meso-range 2^-6...2^-2.
+- Power spectrum contains spikes at spatial frequencies f_n = b^n Hz (up to 3^50) mod π.
+
+Grader workflow:
+1. Image ingestion – convert PNG to linear-RGB 32-bit float; Canny-edge detect to isolate the orange stroke (threshold on hue ≈ 30°, saturation > 0.9).
+2. Vector reconstruction – sample centre-line every 2 px horizontally → ~1200 points; interpolate back to 8192-point series using monotone cubic spline.
+3. Holder-exponent test (4 pts)
+   a. Evaluate structure function S(δ) for δ = [1,2,4,8,16,32] pixels.
+   b. Perform linear least-squares fit in log-space; record slope α̂.
+   c. Award:
+      - 4 pts if |α̂ − 0.631| ≤ 0.03
+      - 3 pts if ≤ 0.05
+      - 2 pts if ≤ 0.08
+      - 1 pt if ≤ 0.12
+      - 0 otherwise.
+4. FFT spectral-spike test (3 pts)
+   - Zero-pad the reconstructed series to 16,384 samples; FFT.
+   - Identify first 10 theoretical peak frequencies f_n=3^n.
+   - A peak qualifies if its amplitude ≥ 20 dB above local median.
+   - Score = (#peaks found)/10 × 3 (round half up).
+5. Scale & centring (1 pt)
+   - Compute y-range used by stroke; should occupy 80 ± 10% of canvas height.
+6. Graphical hygiene (2 pts)
+   - Stroke width median = 3 ± 0.3 px (+1 pt).
+   - Axes line grey (RGB ≈ 144) & 1 ± 0.2 px (+1 pt).
+
+Output format:
+Score: S/10
+Rationale: <brief narrative (≤120 words) summarising which tests passed/failed>

@@ -1,0 +1,10 @@
+**Objective**
+Generate a symmetric 2D fractal tree through recursive branching.
+
+**Construction**
+Start trunk from (0,0) to (0,1). Each segment length scaled 0.7, split into two at ±45° from parent. Recurse 7 levels.
+
+**Styling**
+Stroke 2 px #006600. Canvas 1600 × 1800 px white.
+
+**Deliverable** – PNG.

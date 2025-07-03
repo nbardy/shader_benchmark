@@ -1,0 +1,19 @@
+Create a single-file HTML shader that illustrates the Chinese Remainder Theorem through an interactive visualization. The visualization should:
+
+1. Demonstrate the system of congruences:
+   - x ≡ 2 (mod 3)
+   - x ≡ 3 (mod 5)
+   - x ≡ 2 (mod 7)
+2. Create three circular number lines (modular arithmetic wheels) for mod 3, 5, and 7
+3. Animate a synchronized counter that highlights valid solutions
+4. Show numbers 0-105 being tested, highlighting those that satisfy each congruence
+5. When a number satisfies all three congruences (x = 23, 83), create a visual celebration:
+   - Pulse all three wheels
+   - Display the solution prominently
+   - Show the verification: 23 mod 3 = 2, 23 mod 5 = 3, 23 mod 7 = 2
+6. Canvas size should be 2400×1600 pixels
+7. Use distinct colors for each modular system
+8. Include the theorem statement and solution method
+9. Add smooth transitions and clear visual feedback
+
+The implementation should be a complete, self-contained HTML file with embedded WebGL shader code. The visualization should make the abstract concept of the Chinese Remainder Theorem concrete and understandable.

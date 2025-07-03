@@ -1,0 +1,52 @@
+**Objective**
+Render a single, high‑resolution image of the order‑8 *Mandelbulb* fractal using ray‑marching with a distance estimator. No reference image is provided—follow the mathematical and stylistic requirements below.
+
+**Fractal definition**
+
+1. **Iteration**   For a point **p** ∈ ℝ³ let
+
+   $
+     \mathbf z_{0}=\mathbf p,\qquad  
+     \mathbf z_{k+1}=F(\mathbf z_{k})+ \mathbf p,
+   $
+
+   where
+   – write $\mathbf z_{k}$ in spherical co‑ordinates $(r,\theta,\phi)$ (with $r=‖\mathbf z_{k}‖$);
+   – apply the "power‑8 bulb" map
+
+   $
+     F(r,\theta,\phi)= r^{8}\bigl(\sin(8\theta)\cos(8\phi),\;\sin(8\theta)\sin(8\phi),\;\cos(8\theta)\bigr).
+   $
+2. **Escape test**   Stop after $N_{\max}=18$ iterations or when $‖\mathbf z_{k}‖>4$.
+
+**Distance estimator**
+Use the analytic estimator
+
+$
+  d(\mathbf p)= \frac{‖\mathbf z_{n}‖\;\ln‖\mathbf z_{n}‖}{\bigl|\partial_r‖\mathbf z_{n}‖\bigr|},
+$
+
+accumulated alongside the iteration in standard fashion (analytic derivative chain‑rule). Terminate the ray when the accumulated distance to the surface falls below 0.001 of the scene radius or the ray exits a 5‑unit bounding sphere.
+
+**Camera & lighting**
+
+* Camera origin $(3,\,3,\,2)$ looking at the origin; right‑handed coordinate frame; 45° vertical FOV.
+* One white point light at $(4,\,4,\,4)$; Phong shading with ambient = 0.1, diffuse = 0.7, specular = 0.2, shininess = 32.
+
+**Colouring**
+Map the *smooth escape value*
+
+$
+  \nu = n + 1 - \frac{\ln\ln‖\mathbf z_{n}‖}{\ln 8}
+$
+
+to HSV hue = $\nu/18$, saturation = 1, value = 1, then convert to sRGB. Inside points (non‑escaped) are coloured #101010.
+
+**Rendering requirements**
+
+* Resolution ≥ 2000 × 2000 px, 4× SSAA.
+* Gamma‑correct output (γ = 2.2), saved as 16‑bit PNG.
+* White background for rays that miss the fractal. No text or overlays.
+
+**Deliverable**
+A single PNG file that meets all constraints.

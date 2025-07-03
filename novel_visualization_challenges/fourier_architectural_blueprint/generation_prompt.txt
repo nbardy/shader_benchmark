@@ -1,0 +1,28 @@
+**Objective**
+Transform **2D Fourier transforms** into **3D architectural blueprints**, where frequency components become structural elements of an impossible building.
+
+**Mathematical recipe**
+
+1. Input signal: f(x) = Σ(sin(2πnx)/n) for n=1 to 20 (sawtooth approximation)
+2. Compute discrete Fourier transform F(k) for k = -50 to 50
+3. For each frequency component k with amplitude |F(k)| > 0.01:
+   - Create a "floor" at height z = k + 50
+   - Floor plan: circular platform with radius = 10|F(k)|
+   - Support columns: 2π|k| columns arranged in circle, height = |F(k)|²
+   - Phase arg(F(k)) determines rotational offset of column pattern
+4. Connect floors with helical ramps, pitch determined by phase gradient
+5. Add "frequency bridges" between floors with harmonically related k values
+
+**Styling**
+
+* Blueprint aesthetic: white lines on deep blue background
+* Line weights: structural elements 2px, details 1px, dimensions 0.5px
+* Isometric projection (30° rotation around Y, 35.264° tilt)
+* Annotate key frequencies with their musical note equivalents
+* Ghosted/dashed lines for hidden edges
+* Add architectural annotations: "Fundamental Floor", "Harmonic Bridge #3"
+* Subtle grid paper texture in background
+* Technical drawing shadows (45° hatching)
+* Resolution 2400 × 2400 px, high contrast
+
+**Deliverable** Single PNG showing Fourier transform as architectural blueprint

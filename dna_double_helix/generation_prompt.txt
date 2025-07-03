@@ -1,0 +1,21 @@
+**Objective**
+Render two anti‑parallel helices (radius 1, pitch 3.4 Å per turn) with phase offset π (half‑turn).
+
+**Geometry**
+
+$
+\text{Helix}_1(t)=(\cos t,\; \sin t,\; 0.54\,t),\quad  
+\text{Helix}_2(t)=(\cos(t+\pi),\; \sin(t+\pi),\; 0.54\,t)
+$
+
+for $t∈[0,12π]$ (≈ 6 full base‑pair turns).
+Ladder "rungs": cylinders radius 0.05 connecting helices every Δt = π (10 base pairs per turn).
+
+**Styling**
+
+* Strands: tube radius 0.12, colours #2e8bff & #ff5a5a.
+* Rungs: #dddddd cylinders.
+* Camera (5,0,2), look at centre, FOV 35°, black background with faint star‑field (for depth cue).
+* 2400 × 1800 px PNG, 4× SSAA.
+
+**Deliverable** PNG.

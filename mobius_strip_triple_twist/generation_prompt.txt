@@ -1,0 +1,8 @@
+**Objective**
+Create a Möbius strip with 3 half-twists (540° total rotation) and color visualization.
+
+**Construction**
+Same rectangle as Problem 201 but **twist** angle $3π$:
+Replace param by $\tfrac{3u}{2}$ in cos/sin terms. Colour ramp along midline hue 0→360° once per full loop to show triple twist. 2600×1800 PNG.
+
+**Deliverable** PNG.

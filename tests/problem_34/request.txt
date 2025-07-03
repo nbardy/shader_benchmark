@@ -1,0 +1,3 @@
+Create a stella octangula (compound of two interpenetrating tetrahedra) with edge length 2.0. Material: transparent crystal (IOR 1.5) with slight blue tint, 80% transparency. Include internal reflections and refractions. Lighting: dramatic spot from above. Background: black. Camera: angled to show interpenetration clearly.
+
+Outputs a single image.

@@ -1,0 +1,60 @@
+**Objective**
+Generate a shader that renders a high-quality 3D Menger cube fractal with at least 4 iterations of subdivision. The fractal should be rendered with proper depth, lighting, and material properties to clearly show the recursive cubic structure.
+
+**Mathematical Specification**
+
+1. **Menger Cube Definition**
+   
+   The Menger cube is constructed by starting with a solid cube and recursively removing smaller cubes:
+   
+   * Start with a unit cube centered at origin
+   * Divide each face into a 3×3 grid (9 squares per face)
+   * Remove the center square from each face and the cube that passes through all centers
+   * This removes 7 cubes total from the original, leaving 20 smaller cubes
+   * Recursively apply this process to each remaining cube
+
+2. **Geometric Construction**
+   
+   For iteration n, the Menger cube can be defined mathematically as:
+   * Divide the unit cube [-1,1]³ into 3ⁿ × 3ⁿ × 3ⁿ subcubes
+   * A subcube at position (i,j,k) is kept if and only if:
+     - At most 2 of the coordinates i, j, k have (coordinate mod 3) = 1
+   * This ensures the cross-shaped holes are maintained at every scale
+
+3. **Rendering Requirements**
+   
+   * **Minimum Iterations**: 4 complete iterations of the fractal construction
+   * **Resolution**: Image should be at least 1600×1600 pixels
+   * **Viewing Angle**: Position camera to show the 3D structure clearly (avoid orthogonal views)
+   * **Rotation**: Apply a slight rotation to all three axes to reveal the fractal structure
+
+4. **Material and Lighting**
+   
+   * **Base Material**: Use a metallic or crystalline appearance
+   * **Color Scheme**: Gradient coloring based on iteration level or depth
+     - Level 0 (largest cubes): Deep blue (#1a237e)
+     - Level 1: Blue (#283593)  
+     - Level 2: Light blue (#3949ab)
+     - Level 3: Cyan (#26c6da)
+     - Level 4+: White (#ffffff)
+   * **Lighting**: Three-point lighting setup with:
+     - Key light from upper-left-front
+     - Fill light from lower-right
+     - Rim light from behind for edge definition
+   * **Shadows**: Soft shadows enabled to enhance depth perception
+
+5. **Technical Implementation**
+   
+   * Use ray marching or ray tracing for accurate distance field rendering
+   * Implement proper anti-aliasing to avoid jagged edges
+   * Ensure no z-fighting between adjacent cube faces
+   * Optimize rendering to handle the geometric complexity efficiently
+
+6. **Background and Composition**
+   
+   * **Background**: Dark gradient from #0d1117 (top) to #21262d (bottom)
+   * **Camera Position**: Positioned to create dynamic perspective showing multiple faces
+   * **Post-processing**: Subtle bloom effect on bright edges to enhance the crystalline appearance
+
+**Deliverable**
+A single high-resolution PNG image (≥1600×1600) showing the complete Menger cube fractal with clear visibility of the recursive structure, proper lighting, and the specified color scheme.

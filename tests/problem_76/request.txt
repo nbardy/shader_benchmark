@@ -1,0 +1,12 @@
+Create a single-file HTML shader that renders Fermat's Parabolic Spiral. The visualization should:
+
+1. Use the parametric equations for Fermat's parabolic spiral where r² = a²θ
+2. Set a = 0.5 and θ ranging from 0 to 8π
+3. Render the spiral with a smooth, rainbow gradient stroke that transitions through the spectrum
+4. Canvas size should be 2400×2400 pixels
+5. Center the spiral in the canvas
+6. Use a dark background to make the rainbow colors pop
+7. Ensure smooth anti-aliased rendering of the curve
+8. The line width should be appropriate for the canvas size (not too thin, not too thick)
+
+The implementation should be a complete, self-contained HTML file with embedded WebGL shader code. The spiral should be mathematically accurate and visually appealing with the rainbow gradient smoothly transitioning along the curve length.

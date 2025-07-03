@@ -1,0 +1,52 @@
+Evaluate this shader-generated image based on the 4D Hyper Menger Cube intersection with 3-sphere visualization requirements.
+
+**Scoring Criteria (1-10 scale):**
+
+1. **4D Fractal Accuracy**: Does the image show evidence of a proper 4D Menger cube construction projected to 3D? Are characteristic fractal cross-sections visible at multiple scales and orientations?
+
+2. **Spherical Constraint**: Is the geometry properly constrained to the 3-sphere surface? Are there clear spherical boundaries with no spurious geometry extending beyond the unit sphere?
+
+3. **Projection Quality**: Does the stereographic projection from 4D to 3D appear mathematically correct? Are projection effects (like compression near singularities) handled properly?
+
+4. **Color and Material**: Is the w-coordinate color mapping implemented correctly (yellow at north pole, orange at equator, purple at south pole)? Is the semi-transparent material (α≈0.8) properly rendered to show internal structure?
+
+5. **Geometric Complexity**: Are at least 3 iterations of the 4D Menger construction visible? Does the intersection show the expected complex, self-similar structure at multiple scales?
+
+6. **Technical Execution**: Is the image high-resolution (≥1600x1600)? Are multiple light sources creating proper illumination? Is the deep space background gradient implemented correctly?
+
+Examine the mathematical accuracy of the 4D construction, the proper implementation of the spherical constraint, and the quality of the stereographic projection. Provide detailed feedback on the geometric complexity and visual quality, then conclude with your numerical score.
+
+---
+
+**Inputs**
+
+1. *Spec* – the exact text of Prompt #3 (generation prompt).
+2. *Candidate image* – the renderer's output produced from that spec.
+
+**Task**
+Provide a *reasoned* score **S** on the integer scale 1 – 10 that measures how well the candidate image fulfils the spec. Use the rubric below (maximum in parentheses, total = 10). Include a short justification (≤ 150 words).
+
+**Rubric**
+
+| Aspect                               | Points | Guide                                                                                                            |
+| ------------------------------------ | ------ | ---------------------------------------------------------------------------------------------------------------- |
+| **4D Fractal Structure**            | 0 – 3  | Evidence of 4D Menger cube construction? Proper fractal patterns visible in cross-sections? At least 3 iterations shown? |
+| **Spherical Intersection**          | 0 – 2  | Clear evidence of 3-sphere constraint? Proper spherical boundary? No spurious geometry outside sphere?          |
+| **Stereographic Projection**        | 0 – 2  | Correct 4D to 3D projection behavior? Proper handling of projection singularities? Topologically consistent?    |
+| **Color and Transparency**          | 0 – 2  | W-coordinate color mapping (yellow→orange→purple)? Proper semi-transparent material (α≈0.8)? Smooth gradients? |
+| **Technical Quality**               | 0 – 1  | High resolution? Multiple light sources evident? Deep space background? No rendering artifacts?                 |
+
+**Output format**
+
+```text
+Score: S/10
+Rationale: <concise explanation>
+```
+
+**Scoring conventions**
+
+* A mathematically accurate 4D intersection with proper projection earns *10*.
+* Missing or incorrect 4D fractal structure caps the score at *≤ 5*.
+* Incorrect spherical constraint or projection errors cap the score at *≤ 6*.
+* Wrong color mapping or material properties subtract 1 – 2 points.
+* Poor technical execution (low resolution, bad lighting) subtracts 1 point.

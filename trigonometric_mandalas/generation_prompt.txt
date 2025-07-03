@@ -1,0 +1,15 @@
+**Objective** – Create a "harmonic mandala" defined by radial modulation
+
+$
+  r(θ)=1+0.15\sin(6θ)+0.10\sin(12θ)+0.06\sin(18θ),\qquad θ∈[0,2π].
+$
+
+**Rendering directives**
+
+* Plot polar curve with 10 000 samples; convert to Cartesian.
+* Fill interior with gradient: centre #001133 → edge #55ffee (radial linear gamma 2.2).
+* Outline 3‑px #ffffff.
+* Add semi‑transparent (α 0.3) duplicate of the curve scaled 0.7×, filled #ff66cc.
+* Canvas 1800 × 1800 px black.
+
+**Deliverable** – PNG.

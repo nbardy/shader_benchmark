@@ -1,0 +1,31 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Problem 012.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected appearance**
+
+* Two half‑spiral "ramps" rising ±√r as one travels once around the origin.
+* From positive‑real axis, sheets separate; along negative‑real axis they meet seamlessly (branch cut).
+* Upper sheet tinted full‑bright rainbow; lower sheet identical hues but dimmer (opacity cue).
+* At the origin both sheets pinch to a single point (cone tip).
+* Edge outlines visible; no triangles missing or flipped.
+
+**Scoring**
+
+| Aspect                   | Pts | Checks                                                           |
+| ------------------------ | --- | ---------------------------------------------------------------- |
+| **Topological joins**    | 0‑3 | Sheets continuous everywhere except intentional cut; no gaps.    |
+| **Branch cut alignment** | 0‑2 | Only along negative x‑axis; nowhere else.                        |
+| **Hue correctness**      | 0‑2 | Hue varies monotonically with arg(z); 360° yields full cycle.    |
+| **Opacity contrast**     | 0‑1 | Lower‑sheet brightness 25 – 80 % of upper.                       |
+| **Mesh integrity**       | 0‑2 | No face inversions; RMS normal variation ≤ 5° across neighbours. |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

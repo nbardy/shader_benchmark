@@ -1,0 +1,23 @@
+Evaluate the submission for the Eight-Pointed Star visualization.
+
+Key evaluation criteria:
+1. Correct octagram {8/3} construction with 8 outer vertices
+2. Proper angular spacing (45° between consecutive vertices)
+3. Accurate inner radius calculation (≈ 0.4142)
+4. Visual quality with royal purple fill and black outline
+
+The eight-pointed star (octagram) is a classic geometric construction where every third vertex is connected, creating a star with 8 points and internal self-intersections. This particular form {8/3} creates a balanced, symmetric pattern commonly seen in Islamic art and other decorative contexts.
+
+Score based on geometric accuracy and visual presentation quality.
+
+---
+
+Checks:
+1. Vertex coordinates (4 pts) – extract 8 outer vertices; radial distances all within 1%. Angular separation 45° ± 0.2°
+2. Self-intersection correctness (2 pts) – edges intersect only at polygon interior crossing points. Count crossings must be 8
+3. Inner radius (2 pts) – shortest distance from centre to edge = 0.4142 ± 2%
+4. Stroke / fill (2 pts) – outline 3 ± 0.3 px; fill RGB within ΔE < 4 of #5A00FF
+
+Output format:
+Score: S/10
+Rationale: <brief narrative (≤120 words) summarising which tests passed/failed>

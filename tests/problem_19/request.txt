@@ -1,0 +1,20 @@
+Create a crystalline Sierpinski tetrahedron that looks as if it were carved from icy quartz. Recursion depth must be high enough that the viewer sees the self-similar voids repeat at least four scales.
+
+Mathematics:
+- Start with a regular tetrahedron of edge length 2, centred at origin, one face parallel to the ground (z = -0.408)
+- Recursive rule (depth d): subdivide parent into four child tetrahedra of half edge-length, one at each vertex
+- Use depth 4 → total tetrahedra count 1 + 4 + 4² + 4³ + 4⁴ = 341
+
+Mesh assembly:
+- Generate explicit triangle mesh for each child; de-duplicate coincident faces to keep only the outer hull
+- Assign depth-mapped glass-blue tint:
+  - depth 0 → #cce6ff, ... depth 4 → #0040ff
+- Vertex normals averaged for smooth refraction look
+
+Lighting & camera:
+- HDRI sky light (even cloudy mid-tone) plus white key at (6,4,9)
+- Camera position (4,4,3), focal length 50 mm, FOV ≈ 39°
+- Transparent ground shadow catcher
+
+Output: PNG-32 (RGBA), 2600 × 2000 px
+Deliverable: Outputs a single image.

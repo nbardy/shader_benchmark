@@ -1,0 +1,38 @@
+The image should display a vertically oriented capsule shape - a cylinder with perfectly hemispherical caps on both ends. The porcelain white material should have a semi-glossy finish with subtle blue undertones visible in the shadows or reflected areas. The three-point lighting setup should create clear definition with rim lighting highlighting the edges against the dark background.
+
+---
+
+1. **Dimensional Accuracy**
+   - Cylindrical body clearly 3.0 units tall
+   - Consistent radius of 0.8 throughout cylinder
+   - Hemispherical caps perfectly match cylinder radius
+   - Total height equals cylinder height plus two radii (4.6 total)
+   - Vertical orientation maintained
+
+2. **Surface Continuity**
+   - Seamless transition from cylinder to hemispheres
+   - No visible seam or discontinuity at junction
+   - Smooth, continuous surface throughout
+   - Consistent curvature in hemispherical caps
+   - No polygonal artifacts or faceting
+
+3. **Material Properties**
+   - Porcelain white base color
+   - Semi-glossy finish (between matte and glossy)
+   - Subtle blue undertones in shadows/indirect light
+   - Slight specular highlights appropriate for porcelain
+   - No metallic or plastic appearance
+
+4. **Lighting Quality**
+   - Three-point lighting clearly defined
+   - Rim light creates edge definition
+   - Key and fill lights provide form modeling
+   - Dark gradient background for contrast
+   - Low angle emphasizes vertical height
+
+5. **Visual Quality**
+   - Clean, professional rendering
+   - No noise or artifacts
+   - Proper anti-aliasing on all edges
+   - Shadows enhance three-dimensional form
+   - Overall elegant, sculptural appearance

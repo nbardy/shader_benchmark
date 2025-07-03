@@ -1,0 +1,30 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Problem 203.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Key tests**
+
+* **Knottedness** Alexander polynomial = $t^{2}-t+1$ (pre‑computed). Numerically compute Gauss linking integral; value ≈ 3.0 confirms trefoil.
+* **Three‑fold symmetry** Curve invariant under 120° rotation about (0,0,0) z‑axis within RMS 1 %.
+* No self‑intersection of tube surfaces.
+* Hue pattern alternates red/blue three times around loop.
+
+**Scoring**
+
+| Aspect                | Pts | Checks                                        |
+| --------------------- | --- | --------------------------------------------- |
+| Knottedness          | 0‑4 | Gauss linking integral ≈ 3.0 ± 5%.           |
+| Three-fold symmetry  | 0‑2 | 120° rotational invariance RMS < 1%.         |
+| Non-intersection     | 0‑1 | Tube surfaces don't self-intersect.          |
+| Torsion coloring     | 0‑1 | Red/blue alternation three times.            |
+| Render quality       | 0‑2 | Resolution, lighting, background correct.     |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

@@ -1,0 +1,14 @@
+Produce a radar-petal polar chart of the trefoil's Alexander polynomial Δ(t) = t² - t + 1, evaluated on the unit circle t = e^(iθ). The magnitude curve should form a symmetric six-petal flower that glows like neon tubing against a midnight background.
+
+Mathematics:
+- Evaluate r(θ) = |Δ(e^(iθ))| = √((1-cos θ)² + sin² θ). Closed-form simplifies to 2sin(θ/2).
+- Because r(θ+π) = r(θ), six peaks occur at θ = 0, ±2π/3, ±4π/3, π.
+
+Plot specs:
+- Domain θ ∈ [0,2π] sampled 12,000 points
+- Radial scale: max radius = 1.414 units maps to 90% of 1800 × 1800 canvas
+- Curve stroke: hot-pink (#FF0088) 6 px; outer glow (duplicate stroke blurred σ = 3 px, opacity 20%)
+- Background nearly-black navy (#040418)
+- Polar grid (thin dashed #555555) with five concentric circles and 30° spokes
+
+Deliverable: Outputs a single image.

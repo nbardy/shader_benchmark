@@ -1,0 +1,16 @@
+Create a single-file HTML shader that demonstrates Euler's Polyhedron Formula (V - E + F = 2) through an animated cube unfolding. The visualization should:
+
+1. Start with a 3D wireframe cube that rotates slowly
+2. Animate the cube unfolding into a flat net pattern over 5 seconds
+3. Clearly annotate and count:
+   - Vertices (V = 8) with small colored dots
+   - Edges (E = 12) with distinct colored lines
+   - Faces (F = 6) with semi-transparent colored fills
+4. Display the formula V - E + F = 2 with live updating numbers during the animation
+5. Show the calculation: 8 - 12 + 6 = 2
+6. Canvas size should be 2600×1600 pixels
+7. Use a clean, educational style with clear labels
+8. Include smooth transitions and easing for the unfolding animation
+9. After unfolding, pause for 2 seconds, then reverse the animation to fold back into a cube
+
+The implementation should be a complete, self-contained HTML file with embedded WebGL shader code. The visualization should be both mathematically instructive and visually engaging.

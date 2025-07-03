@@ -1,0 +1,27 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Problem 205.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected features**
+
+* Helical pitch = quarter‑turn over height 2 ⇒ helix length 2.467 ‑ check RMS.
+* Wire overlay shows 12 helices (edges). No face quads visible (wire only).
+
+**Scoring**
+
+| Aspect            | Pts | Checks                                         |
+| ----------------- | --- | ---------------------------------------------- |
+| Geometry          | 0‑4 | Cube structure preserved, proper helical form. |
+| Helix length      | 0‑2 | RMS length 2.467 ± 3%.                        |
+| Twist angle       | 0‑1 | 90° total twist verified.                      |
+| Wire clarity      | 0‑3 | 12 helical edges visible, no face fill.       |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

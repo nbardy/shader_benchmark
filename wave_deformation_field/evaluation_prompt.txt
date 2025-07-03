@@ -1,0 +1,33 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Wave Deformation Field.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected visual cues**
+
+* Complex interference pattern from 3 wave sources.
+* Circular wave fronts emanating from each source point.
+* Constructive/destructive interference creating peaks and troughs.
+* Smooth height-based color gradient (blue to white).
+* Iridescent surface reflections varying with view angle.
+* Proper amplitude decay with distance (1/r falloff).
+* Water-like appearance with realistic shading.
+
+**Scoring rubric**
+
+| Aspect                    | Pts | Explicit checks                                                             |
+| ------------------------- | --- | --------------------------------------------------------------------------- |
+| **Wave superposition**    | 0‑3 | Verify Σh_i formula at 20 points; error < 3%.                             |
+| **Interference pattern**  | 0‑2 | Clear constructive/destructive regions; proper spacing.                     |
+| **Amplitude decay**       | 0‑2 | Measure 1/r falloff from each source; R² > 0.95.                          |
+| **Color mapping**         | 0‑2 | Smooth gradient; height correlation verified.                               |
+| **Surface quality**       | 0‑1 | Smooth normals; iridescent effect visible.                                 |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: …
+```

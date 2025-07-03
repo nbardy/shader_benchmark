@@ -1,0 +1,19 @@
+**Objective**
+Render the two‑sheet Riemann surface of $w=\sqrt{z}$ above the complex plane, using height = $\Re w$ and colour = $\operatorname{arg}w$.
+
+**Construction**
+
+* Domain: $z=re^{i\phi}$ with $r\in[0,4],\;\phi\in(-\pi,\pi]$.
+* Two sheets: choose signs $+\sqrt{r}$ and $-\sqrt{r}$.
+* Introduce **branch cut** along negative real axis: join sheets there.
+* Triangulate with polar grid 800 × 800, map to $(x,y,\Re w)$.
+
+**Styling**
+
+* Colour via HSV: hue = $\phi/2\pi$ (wrap‑around), sat = 1, val = 1; upper sheet full opacity, lower sheet 70 % opacity.
+* Edge outlines 1‑px black; hide underside faces.
+* Camera at $(7,0,5)$ looking at origin; 30° FOV, perspective.
+* Lighting: ambient 0.2 + white directional (−0.3,−0.4,−1).
+* 2200 × 1600 px PNG, white background.
+
+**Deliverable** One PNG.

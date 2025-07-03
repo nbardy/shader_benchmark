@@ -1,0 +1,31 @@
+**Objective**
+Simulate Chladni patterns on a vibrating square plate, showing nodal lines where sand accumulates and the standing wave amplitude distribution.
+
+**Physics Model**
+
+$
+u(x,y,t) = A \sin\left(\frac{n\pi x}{L}\right) \sin\left(\frac{m\pi y}{L}\right) \cos(\omega t)
+$
+
+where $n=4, m=3$ (mode numbers), $L=2.0$ (plate size), $\omega = 2\pi f$ with $f = 440$ Hz.
+
+**Visualization**
+
+* Domain: $[-1, 1] \times [-1, 1]$ (centered square plate)
+* Compute amplitude at $t = 0$ (maximum displacement)
+* Color mapping:
+  - Nodal lines (|u| < 0.01): Sandy beige #D4A574
+  - Positive displacement: Blue gradient #0066CC to #00CCFF
+  - Negative displacement: Red gradient #CC0000 to #FF6666
+* Add particle simulation: 5000 sand grains migrating toward nodes
+* Particle color: #8B6F47 (dark sand)
+
+**Rendering**
+
+* Resolution: 2048 × 2048 px
+* Show plate boundary as thin black frame (5px)
+* Background: #F5F5DC (beige, like experimental setup)
+* Apply subtle 3D height mapping based on amplitude
+* Add soft shadows for depth perception
+
+**Deliverable** PNG showing clear Chladni pattern with (4,3) mode, visible nodal lines with sand accumulation.

@@ -1,0 +1,38 @@
+The image should show a stella octangula - two tetrahedra interpenetrating to form an eight-pointed star polyhedron. The transparent crystal material should create complex internal reflections and refractions, with the blue tint subtly visible. The dramatic lighting from above should create striking highlights and shadows that emphasize the geometric complexity.
+
+---
+
+1. **Geometric Correctness**
+   - Two perfect tetrahedra clearly visible
+   - Tetrahedra rotated 180° relative to each other
+   - Eight triangular star points protruding
+   - Correct edge length proportions maintained
+   - Central octahedral void properly formed
+
+2. **Intersection Pattern**
+   - Tetrahedra interpenetrate at correct depth
+   - Each tetrahedron's vertices emerge from opposite's faces
+   - Six square cross-sections visible at intersections
+   - Symmetrical arrangement from all viewing angles
+   - No gaps or overlaps at intersection lines
+
+3. **Crystal Material**
+   - High transparency (80%) allowing see-through
+   - Correct refraction with IOR 1.5
+   - Multiple internal reflections visible
+   - Subtle blue tint throughout volume
+   - Realistic crystal-like appearance
+
+4. **Optical Effects**
+   - Light bending at surface boundaries
+   - Internal reflections between faces
+   - Caustics or light concentration effects
+   - Proper Fresnel reflections at grazing angles
+   - Complex light paths through intersections
+
+5. **Visual Rendering**
+   - Black background for maximum contrast
+   - Dramatic spot lighting creates strong highlights
+   - Sharp, well-defined edges despite transparency
+   - Camera angle shows interpenetration clearly
+   - Professional quality with no artifacts

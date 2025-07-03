@@ -1,0 +1,25 @@
+**Objective**
+Visualize **prime numbers as crystallographic defects** in a 3D cubic lattice, where each prime creates a unique disruption pattern in an otherwise perfect crystal structure.
+
+**Mathematical recipe**
+
+1. Create a 50×50×50 cubic lattice of atoms at integer coordinates.
+2. For each prime p < 125000:
+   - Place a "defect core" at position (p mod 50, (p//50) mod 50, p//2500)
+   - Create vacancy patterns: remove atoms at positions where |pos - core| < √p/10
+   - Generate strain field: displace nearby atoms by vector v = (pos - core) × sin(√p)/|pos - core|²
+3. Twin primes create connected defect channels with enhanced strain fields.
+4. Mersenne primes (2ⁿ-1) generate spiral dislocation patterns with helical symmetry.
+
+**Styling**
+
+* Atoms as metallic spheres (radius 0.15 units), silver base color
+* Defect regions: color temperature gradient from blue (small primes) to white-hot (large primes)
+* Strain visualization: atoms colored by displacement magnitude (green=low, red=high)
+* Volumetric glow around defect cores with intensity ∝ 1/√p
+* Enable subsurface scattering for crystalline appearance
+* Camera at (80, 60, 40), looking at (25, 25, 25); FOV 35°
+* Dark background with rim lighting from three sources
+* Resolution 2400 × 2400 px, 16× SSAA for clean edges
+
+**Deliverable** Single PNG showing prime distribution as crystal lattice defects

@@ -1,0 +1,21 @@
+**Objective**
+Render a Klein bottle using the classical parametrization to visualize this non-orientable surface.
+
+**Parametric equations**
+Use classical parametrisation (radius 2):
+
+$
+\begin{aligned}
+x &=\bigl(R+\cos u/2\sin v - \sin u/2\sin 2v\bigr)\cos u,\\
+y &=\bigl(R+\cos u/2\sin v - \sin u/2\sin 2v\bigr)\sin u,\\
+z &=\sin u/2\sin v + \cos u/2\sin 2v,
+\end{aligned}
+$
+
+with $u∈[0,2π],\;v∈[0,2π],\;R=2$. Grid 600×120.
+
+**Styling**
+
+Back‑face culling **disabled** (visualise 1‑sidedness). Colour by Gaussian curvature (blue → 0, red → +). Phong light (4,5,8). Camera (6,3,1). BG #eefeff. 2600×1600 PNG.
+
+**Deliverable** PNG.

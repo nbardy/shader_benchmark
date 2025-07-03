@@ -1,0 +1,26 @@
+**Objective**
+Demonstrate **cylindrical bend deformation** by transforming a rectangular grid into a smoothly curved cylindrical surface, like bending a sheet of paper.
+
+**Mathematical recipe**
+
+1. Start with flat rectangular grid (4×2 units) in XY plane, 40×20 segments.
+2. Apply cylindrical bend transformation with radius R = 1.5:
+   - Bend angle θ = x / R (x-position determines angle).
+   - New position: x' = R·sin(θ), y' = y, z' = R·(1 - cos(θ)).
+   - Preserve y-coordinates (bend axis).
+3. Add thickness (0.05 units) to create solid bent plate.
+4. Maintain grid line structure for visual clarity.
+5. Apply smooth shading with preserved surface normals.
+
+**Styling**
+
+* Material: Brushed metal with anisotropic highlights along bend direction.
+* Color: Gradient from cool steel blue (inner curve) to warm bronze (outer curve).
+* Grid lines: Subtle embossed effect, darker than base material.
+* Three-point lighting emphasizing curvature.
+* Soft shadows and ambient occlusion.
+* Camera at (2.5, 2, 3), looking at origin; FOV 40°.
+* Medium grey background (0.3, 0.3, 0.35).
+* Resolution 2048 × 2048 px, 4× SSAA.
+
+**Deliverable** Single PNG showing the bent rectangular grid with clear cylindrical curvature.

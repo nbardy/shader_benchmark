@@ -1,0 +1,33 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Cylindrical Bend Deformation.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected visual cues**
+
+* Rectangular grid smoothly bent into cylindrical arc shape.
+* Consistent radius of curvature R = 1.5 throughout.
+* Grid lines remain orthogonal after deformation.
+* Visible thickness creating solid bent plate appearance.
+* Anisotropic metal highlights following bend direction.
+* Color gradient from blue (inner) to bronze (outer) surface.
+* Embossed grid lines with proper shading.
+
+**Scoring rubric**
+
+| Aspect                     | Pts | Explicit checks                                                            |
+| -------------------------- | --- | -------------------------------------------------------------------------- |
+| **Bend accuracy**          | 0‑3 | Sample 30 points; verify cylindrical radius 1.5 ± 0.02.                   |
+| **Grid preservation**      | 0‑2 | Lines remain straight in bend direction; orthogonality maintained.         |
+| **Material rendering**     | 0‑2 | Anisotropic highlights visible; proper metallic appearance.                |
+| **Color gradient**         | 0‑2 | Smooth blue→bronze transition; correlates with curvature.                  |
+| **Geometric completeness** | 0‑1 | Uniform thickness; clean edges; no artifacts.                              |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: …
+```

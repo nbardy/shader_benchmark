@@ -1,0 +1,26 @@
+**Objective**
+Create a single high‑resolution image that shows the *regular hyperbolic triangle tessellation* $\{3,8\}$ (eight equilateral triangles meet at every vertex) in the *Poincaré disk model*.  No reference image is provided; rely exclusively on the specification below.
+
+**Mathematical specification**
+
+1. **Model** Represent the hyperbolic plane as the open unit disk
+
+   $
+     \mathbb D=\{(x,y)\in\mathbb R^{2}\mid x^{2}+y^{2}<1\},
+   $
+
+   endowed with the Poincaré metric.  Geodesics are Euclidean straight lines through the origin or circle arcs orthogonal to the unit circle $\partial\mathbb D$.
+2. **Tessellation** Use the regular tiling with Schläfli symbol $\{3,8\}$: each face is a geodesic triangle; exactly eight triangles meet at every vertex.  Begin with one triangle whose vertices lie on rays separated by angle $45^{\circ}$ and whose hyperbolic edge lengths are all equal; repeat by reflections in its edges until the disk is filled.
+3. **Checkerboard colouring**
+
+   * Assign *black* to the central seed triangle.
+   * Colour the tessellation by parity of edge distance: adjacent triangles must have opposite colours, yielding a black‑white checkerboard.
+4. **Rendering requirements**
+
+   * Resolution ≥ 1600 × 1600 px, antialiased.
+   * Draw the Euclidean boundary circle of $\mathbb D$ with a 4‑px solid black stroke; nothing is drawn outside the circle (pure white).
+   * Faces are filled *flat* (no gradients) in pure black or pure white; edges are 1‑px black lines.
+   * No labels, no title, no additional decoration.
+
+**Deliverable**
+A single PNG image that meets all geometric and stylistic constraints.

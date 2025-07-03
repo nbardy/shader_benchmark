@@ -1,0 +1,31 @@
+**Inputs**
+
+1. *Spec* – the exact text of the torus visualization prompt
+2. *Candidate image* – the shader output produced from that spec
+
+**Task**
+Evaluate the candidate image's implementation of the mathematical torus with advanced rendering features. Provide a score **S** on the scale 1-10 using the rubric below. Include a focused justification (≤ 150 words).
+
+**Rubric**
+
+| Aspect | Points | Guide |
+|--------|--------|--------|
+| **Mathematical Form** | 0-3 | Correct torus shape with R=2.0, r=0.7? Smooth surface with proper parametric construction? Oscillating minor radius visible? |
+| **Color and Curvature** | 0-2 | HSV coloring based on (u,v) parameters? Gaussian curvature visualization with red/blue tints? |
+| **Surface Details** | 0-2 | Parametric grid lines visible and properly spaced? Glossy ceramic material appearance? |
+| **Animation Quality** | 0-1 | Dual rotation (y-axis and major axis) implemented? Smooth minor radius oscillation? |
+| **Rendering Excellence** | 0-2 | Three-point lighting setup? Ambient occlusion? DOF blur? 1600×1600 with antialiasing? |
+
+**Output Format**
+
+```text
+Score: S/10
+Rationale: <targeted explanation of scoring>
+```
+
+**Scoring Guidelines**
+- Perfect execution scores 10
+- Incorrect torus proportions or missing oscillation caps at ≤ 5
+- Missing curvature visualization reduces by 1-2 points
+- Absent grid lines or poor material reduces by 1-2 points
+- Technical deficiencies (resolution, aliasing) reduce by 1 point

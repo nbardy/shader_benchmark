@@ -1,0 +1,33 @@
+**Objective**
+Render **complex analysis** concepts as **illuminated stained glass windows**, where analytic functions create light patterns and singularities form glass structures.
+
+**Mathematical recipe**
+
+1. Base function: f(z) = (z² - 1)/(z² + 1) with branch cuts
+2. Domain coloring enhanced for stained glass:
+   - Magnitude |f(z)| determines glass opacity (dark → transparent)
+   - Argument arg(f(z)) sets hue via continuous color wheel
+   - Add lead came at |f(z)| = 2ⁿ contours (n integer)
+3. Singularities become ornate rose windows:
+   - Simple poles: radial symmetry with n petals for order n
+   - Essential singularities: fractal Celtic knot patterns
+   - Branch points: spiral glass arrangements
+4. Conformal mapping properties:
+   - Right angles preserved in lead came intersections
+   - Circles → circles visible in glass piece boundaries
+5. Residue theorem: light intensity at poles proportional to residue
+
+**Styling**
+
+* Gothic cathedral window framework (pointed arch)
+* Realistic glass materials: varying thickness creates color depth
+* Lead came with aged patina and structural bolts
+* Sunlight from behind: caustics project function onto floor
+* Glass imperfections: bubbles, waves near singularities
+* Dust motes visible in light beams
+* Stone window frame with carved mathematical symbols
+* View from inside cathedral, darkened interior
+* Camera at (0, 0, -10), looking straight at window; FOV 40°
+* Resolution 2400 × 2400 px, ray-traced lighting
+
+**Deliverable** Single PNG showing complex function as stained glass masterpiece

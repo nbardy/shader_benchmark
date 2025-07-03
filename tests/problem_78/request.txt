@@ -1,0 +1,21 @@
+Create a single-file HTML shader that visualizes Gauss's Complex Plane with the 5th roots of unity. The visualization should:
+
+1. Draw a complex plane with clearly labeled real and imaginary axes
+2. Display the unit circle prominently
+3. Plot the 5 fifth roots of unity as colored points:
+   - z₀ = 1
+   - z₁ = e^(2πi/5)
+   - z₂ = e^(4πi/5)
+   - z₃ = e^(6πi/5)
+   - z₄ = e^(8πi/5)
+4. Connect the roots with lines to form a regular pentagon
+5. Color each root with a distinct color from a harmonious palette
+6. Add subtle animations:
+   - Roots should pulse gently in size
+   - Pentagon edges should have a subtle glow effect
+7. Canvas size should be 1800×1800 pixels
+8. Include grid lines for the complex plane
+9. Label each root with its mathematical expression
+10. Add a title "5th Roots of Unity in the Complex Plane"
+
+The implementation should be a complete, self-contained HTML file with embedded WebGL shader code. The visualization should clearly demonstrate the symmetry and beauty of roots of unity in the complex plane.

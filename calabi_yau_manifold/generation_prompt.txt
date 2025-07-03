@@ -1,0 +1,22 @@
+**Objective**
+Display the real 3‑D isosurface
+
+$
+  \Re\!\Bigl(\sum_{i=0}^{4}z_i^{5}-5\psi\prod_{i=0}^{4}z_i\Bigr)=0
+$
+
+under the constraint $\sum_{i=0}^{4}|z_i|^{2}=1$ (the quintic CY), intersected with the hyperplane $z_{3}=z_{4}=0$, for $\psi=0.4$. Map $(z_{0},z_{1},z_{2})$ to $\mathbb R^{3}$ via stereographic projection.
+
+**Numerics**
+
+* Sample 400³ grid on cube $[-1.5,1.5]^{3}$.
+* Use marching cubes at isovalue 0 with linear interpolation.
+
+**Styling**
+
+* Colour by vertex normal: n·(0.3,0.7,0.6) mapped to viridis palette.
+* Add subsurface‐scattering fake: ambient 0.3 + diffuse 0.5 + specular 0.2 (shininess 128).
+* Camera (4,4,4) → origin, FOV 35°.  Background #001018.
+* 2600 × 2600 px PNG, 4× SSAA.
+
+**Deliverable** PNG.

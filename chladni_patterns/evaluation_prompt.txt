@@ -1,0 +1,31 @@
+Evaluate the Chladni pattern simulation for physical accuracy and visual representation.
+
+**Physical Accuracy (40%)**
+- Correct standing wave pattern for (4,3) mode
+- Proper nodal line positions (4 vertical, 3 horizontal divisions)
+- Accurate amplitude distribution following sine functions
+- Realistic boundary conditions at plate edges
+
+**Sand Simulation (25%)**
+- Particles accumulate at nodal lines
+- Natural-looking particle distribution
+- Appropriate particle density along nodes
+- No particles floating in high-amplitude regions
+
+**Visual Quality (25%)**
+- Clear distinction between nodes and antinodes
+- Smooth color gradients for amplitude
+- Effective 3D height mapping
+- Professional presentation with proper boundaries
+
+**Technical Merit (10%)**
+- Efficient wave equation implementation
+- Proper coordinate mapping
+- Clean particle physics simulation
+
+**Deductions**
+- Incorrect mode pattern (-20 points)
+- Sand particles in wrong locations (-15 points)
+- Poor color choices obscuring pattern (-10 points)
+- Missing or incorrect boundary conditions (-10 points)
+- Aliasing or rendering artifacts (-5 points)

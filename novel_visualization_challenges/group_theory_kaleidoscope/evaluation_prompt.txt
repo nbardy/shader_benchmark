@@ -1,0 +1,36 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Group Theory Kaleidoscope.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected visual cues**
+
+* 12-fold rotational symmetry with dodecagonal kaleidoscope structure
+* Interlocking spiral base pattern with violet-to-gold gradient
+* Visible transformation in progress (pattern mid-morph)
+* Metallic mirror boundaries creating realistic reflections
+* Particle trails indicating transformation paths
+* Cayley graph overlay: 12 nodes in dodecagon arrangement
+* Glass tube edges connecting nodes, with internal illumination
+* Color coding for different group operations
+* Depth of field creating focus hierarchy
+* Professional lighting and material rendering
+
+**Scoring rubric**
+
+| Aspect                      | Pts | Explicit checks                                                          |
+| --------------------------- | --- | ------------------------------------------------------------------------ |
+| **Symmetry accuracy**       | 0‑3 | Perfect 12-fold symmetry; rotations and reflections correctly applied    |
+| **Transformation capture**  | 0‑2 | Mid-transformation state visible; particle trails show motion            |
+| **Cayley graph**            | 0‑2 | All 12 nodes present; edges correctly connect group elements             |
+| **Visual aesthetics**       | 0‑2 | Metallic mirrors, glass tubes, proper gradients and lighting             |
+| **Mathematical clarity**    | 0‑1 | Group structure clearly communicated through visual design               |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: …
+```

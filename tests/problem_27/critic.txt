@@ -1,0 +1,25 @@
+Evaluate the submission for the Regular Octahedron visualization.
+
+Key evaluation criteria:
+1. Correct construction with 8 equilateral triangular faces
+2. Equal edge lengths throughout
+3. Proper dihedral angles between faces
+4. Quality rendering with appropriate material and lighting
+
+The regular octahedron is one of the five Platonic solids, dual to the cube. Its eight triangular faces meet at six vertices, creating a diamond-like shape that appears in many crystalline structures.
+
+Score based on geometric precision and visual presentation.
+
+---
+
+Tests:
+- 12 edges equal ±1% (4 pts)
+  - 12 equal edges: all edges must have equal length
+- Face count 8; each equilateral (3 pts)
+  - 8 equilateral triangular faces
+- Dihedral angle ≈ 109.47° measured 3 faces (3 pts)
+  - Dihedral angle: arccos(-1/3) ≈ 109.47°
+
+Output format:
+Score: S/10
+Rationale: <brief narrative (≤120 words) summarising which tests passed/failed>

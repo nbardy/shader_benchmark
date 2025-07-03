@@ -1,0 +1,36 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Probability Weather Patterns.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected visual cues**
+
+* Normal distributions visible as circular pressure systems with spiral patterns
+* Exponential distribution rain with sudden intensity changes
+* Cauchy distribution extreme events: tornadoes/lightning at tail positions
+* Beta distribution cloud formations with varied density
+* Volumetric clouds with realistic light scattering
+* Wind flow lines colored by velocity gradient
+* Weather fronts where distributions meet
+* Ground terrain with weather shadows
+* Atmospheric haze and perspective
+* Crepuscular rays through clouds
+
+**Scoring rubric**
+
+| Aspect                      | Pts | Explicit checks                                                          |
+| --------------------------- | --- | ------------------------------------------------------------------------ |
+| **Distribution mapping**    | 0‑3 | Each distribution type has distinct weather signature                     |
+| **Atmospheric realism**     | 0‑2 | Volumetric clouds, proper light scattering, realistic haze               |
+| **Extreme events**          | 0‑2 | Cauchy tails generate tornadoes/lightning at appropriate positions       |
+| **Visual integration**      | 0‑2 | Weather systems interact naturally; fronts and jet streams visible       |
+| **Rendering quality**       | 0‑1 | HDR lighting, crepuscular rays, motion blur on clouds                    |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: …
+```

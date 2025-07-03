@@ -1,0 +1,25 @@
+**Objective**
+Visualize a **3D Möbius transformation** applied to a cubic lattice, showing the conformal warping of space through complex inversion and rotation.
+
+**Mathematical recipe**
+
+1. Create 3D cubic lattice (7×7×7 grid points, spacing 0.5).
+2. Embed in complex projective space: (x,y,z) → w = x + iy, v = z.
+3. Apply Möbius transformation: f(w,v) = ((aw+b)/(cw+d), v/|cw+d|²)
+   - Use a=1+i, b=0.5, c=0.5i, d=1 for interesting distortion.
+4. Extract real 3D coordinates: (Re(w'), Im(w'), Re(v')).
+5. Connect transformed points maintaining lattice topology.
+6. Render both original (faded) and transformed lattice.
+
+**Styling**
+
+* Original lattice: thin grey lines (radius 0.01), alpha 0.3.
+* Transformed lattice: glowing tubes, radius varies with |cw+d|⁻¹.
+* Color by transformation magnitude: blue (small) to red (large distortion).
+* Add focal sphere at transformation singularity.
+* Dark background with subtle grid plane at z=0.
+* Volumetric glow for transformed elements.
+* Camera at (4, 3, 3.5), looking at origin; FOV 42°.
+* Resolution 2048 × 2048 px, 4× SSAA.
+
+**Deliverable** Single PNG showing the Möbius transformation's conformal warping effect.

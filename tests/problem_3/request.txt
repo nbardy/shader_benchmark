@@ -1,0 +1,68 @@
+**Objective**
+Generate a shader that renders the intersection of a 4D Hyper Menger Cube with the unit 3-sphere, projected into 3D space. This visualization should demonstrate both the 4D fractal geometry and the spherical intersection, creating a unique cross-section view of the 4D fractal structure.
+
+**Mathematical Specification**
+
+1. **4D Hyper Menger Cube Construction**
+   
+   The 4D Menger cube (Menger tesseract) is constructed by extending the 3D Menger cube construction to 4 dimensions:
+   
+   * Start with a unit tesseract (4D hypercube) in [-1,1]⁴
+   * At each iteration, divide each face into a 3×3 grid
+   * Remove the center of each 3D face and the 4D "cross" passing through all centers
+   * For a point (x,y,z,w), apply the Menger construction rules to all 4 coordinates
+   * A point is kept if at most 2 of its coordinates have (coordinate mod 3ⁿ) = 1 at scale n
+
+2. **3-Sphere Intersection**
+   
+   The unit 3-sphere in 4D is defined as:
+   $$S^3 = \{(x,y,z,w) \in \mathbb{R}^4 : x^2 + y^2 + z^2 + w^2 = 1\}$$
+   
+   The intersection is:
+   $$I = \{p \in S^3 : p \text{ belongs to the 4D Menger cube}\}$$
+
+3. **Stereographic Projection to 3D**
+   
+   Project the intersection from 4D to 3D using stereographic projection from the point (0,0,0,1):
+   $$\pi(x,y,z,w) = \frac{1}{1-w}(x,y,z) \text{ for } w \neq 1$$
+   
+   Handle the singularity at w=1 by using a small offset or alternative projection method.
+
+4. **Geometric Properties**
+   
+   * **Iterations**: Implement at least 3 complete iterations of the 4D Menger construction
+   * **Cross-sections**: The result should show characteristic Menger cube cross-sections at different "depths" (w-values)
+   * **Connectivity**: Maintain the connected fractal structure throughout the intersection
+
+5. **Rendering Specifications**
+   
+   * **Resolution**: Minimum 1600×1600 pixels with anti-aliasing
+   * **Perspective**: Use a 3D camera positioned to reveal the complex structure
+   * **Rotation**: Apply gentle rotation to show multiple aspects of the intersection
+   
+   **Material and Coloring**:
+   * Color based on the w-coordinate before projection:
+     - w ≈ 1.0 (north pole): Bright yellow (#ffeb3b)
+     - w ≈ 0.0 (equator): Deep orange (#ff5722)  
+     - w ≈ -1.0 (south pole): Dark purple (#4a148c)
+   * Use smooth interpolation between these colors
+   * Apply a glossy, semi-transparent material (α = 0.8) to show internal structure
+
+6. **Lighting and Environment**
+   
+   * **Lighting**: Multiple light sources to illuminate the complex geometry:
+     - Primary light from upper-right
+     - Secondary light from lower-left
+     - Ambient lighting to prevent deep shadows
+   * **Background**: Deep space gradient from dark blue (#0d47a1) to black (#000000)
+   * **Effects**: Subtle subsurface scattering to enhance the semi-transparent appearance
+
+7. **Mathematical Accuracy Requirements**
+   
+   * Ensure proper 4D distance calculations for the Menger construction
+   * Correctly implement the sphere constraint x²+y²+z²+w²=1
+   * Accurate stereographic projection maintaining topological properties
+   * No geometric artifacts from improper 4D to 3D conversion
+
+**Deliverable**
+A single high-resolution PNG image showing the 3D projection of the 4D Menger cube intersected with the 3-sphere, with proper coloring, transparency, and lighting to reveal the intricate fractal cross-sectional structure.

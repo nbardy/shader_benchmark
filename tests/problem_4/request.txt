@@ -1,0 +1,91 @@
+**Objective**
+Create a photorealistic ray-traced shader that renders a clear glass spherical shell containing a glowing red solid sphere inside. This classic ray tracing demonstration should showcase advanced optical effects including refraction, reflection, caustics, and volumetric lighting.
+
+**Geometric Specification**
+
+1. **Outer Glass Shell**
+   
+   * **Geometry**: Hollow sphere with outer radius R₁ = 1.0 and inner radius R₂ = 0.85
+   * **Center**: Origin (0, 0, 0)
+   * **Wall thickness**: 0.15 units
+   * **Surface quality**: Perfectly smooth with no imperfections
+
+2. **Inner Solid Sphere**
+   
+   * **Geometry**: Solid sphere with radius r = 0.6
+   * **Center**: Origin (0, 0, 0) - concentric with the glass shell
+   * **Material**: Emissive red material with internal glow
+   * **Clearance**: 0.25 units between inner sphere surface and glass shell inner surface
+
+**Material Properties**
+
+1. **Glass Shell Material**
+   
+   * **Refractive Index**: n = 1.52 (crown glass)
+   * **Transparency**: 95% transmission, 5% absorption
+   * **Color**: Clear with very slight blue tint (#fafcff)
+   * **Surface properties**: 
+     - Fresnel reflections at both inner and outer surfaces
+     - No internal scattering (perfectly clear)
+     - Smooth surface (mirror-like when viewed at grazing angles)
+
+2. **Inner Sphere Material**
+   
+   * **Base Color**: Deep red (#cc0000)
+   * **Emission**: Bright red glow (#ff3333) with intensity 2.0
+   * **Surface**: Slightly rough (roughness = 0.1) to show surface detail
+   * **Subsurface scattering**: Subtle red subsurface glow to enhance volume appearance
+
+**Lighting and Environment**
+
+1. **Primary Lighting**
+   
+   * **Key Light**: Strong directional light from upper-left (45° elevation, 315° azimuth)
+   * **Intensity**: 3.0 units, color temperature 5500K (daylight)
+   * **Shadows**: Sharp shadows enabled to show glass refraction effects
+
+2. **Environment**
+   
+   * **Background**: Neutral gradient from light gray (#e0e0e0) at horizon to white (#ffffff) at zenith
+   * **Ground Plane**: Subtle reflective surface (10% reflectivity) positioned below the spheres
+   * **Ambient Light**: Low-level ambient illumination (0.1 intensity) to prevent pure black shadows
+
+**Ray Tracing Requirements**
+
+1. **Optical Accuracy**
+   
+   * **Refraction**: Proper Snell's law implementation at glass interfaces
+   * **Multiple refractions**: Handle ray paths through both glass surfaces
+   * **Total internal reflection**: Correct behavior at critical angles
+   * **Fresnel effects**: Accurate reflection/transmission ratios based on viewing angle
+
+2. **Advanced Effects**
+   
+   * **Caustics**: Light focusing effects from glass refraction (especially from inner sphere glow)
+   * **Multiple reflections**: Handle inter-reflections between glass surfaces
+   * **Chromatic dispersion**: Subtle spectral separation in glass refraction
+   * **Volumetric lighting**: Visible light rays/beams where appropriate
+
+3. **Technical Parameters**
+   
+   * **Ray depth**: Minimum 8 bounces to capture multiple glass interactions
+   * **Samples**: High sampling rate for smooth glass surfaces and soft shadows
+   * **Resolution**: 1600×1600 pixels minimum with anti-aliasing
+
+**Camera and Composition**
+
+* **Position**: Camera positioned at (2, 1, 2) looking toward origin
+* **Field of view**: 45° to provide natural perspective
+* **Focus**: Sharp focus on the spheres with slight depth of field on background
+* **Exposure**: Balanced to show both glass details and inner sphere glow without clipping
+
+**Quality Standards**
+
+* **Glass clarity**: No noise or artifacts in transparent surfaces
+* **Reflection accuracy**: Sharp, undistorted reflections of environment and inner sphere
+* **Glow rendering**: Smooth, realistic volumetric glow from inner sphere
+* **Caustic detail**: Visible light concentration patterns on ground plane and nearby surfaces
+* **Color accuracy**: Faithful reproduction of materials without oversaturation
+
+**Deliverable**
+A single high-resolution PNG image demonstrating advanced ray tracing techniques with photorealistic glass rendering, accurate optical physics, and beautiful caustic light effects.

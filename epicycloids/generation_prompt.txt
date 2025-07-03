@@ -1,0 +1,18 @@
+**Objective** – Draw the epicycloid traced by a point on a circle of radius $r=1$ rolling externally around a fixed circle of radius $R=4$.
+
+**Parametric form**
+
+$
+  x(θ)= (R+r)\cos θ - r\cos\!\bigl(\tfrac{R+r}{r}θ\bigr),\quad  
+  y(θ)= (R+r)\sin θ - r\sin\!\bigl(\tfrac{R+r}{r}θ\bigr),
+$
+
+with θ ∈ [0,2πr/gcd(R,r)] ⇒ here θ ∈ [0,2π] (because R/r = 4 is integer).
+
+**Styling**
+
+* Stroke 5 px #00bbff; 2000 × 1600 px canvas.
+* Show small red dot for each of the **4 cusps** (radius 8 px).
+* Add faint grey dashed circle of radius R centred at origin as reference.
+
+**Deliverable** – PNG.

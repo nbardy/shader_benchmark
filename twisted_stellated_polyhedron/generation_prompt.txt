@@ -1,0 +1,10 @@
+**Objective**
+Create a stellated dodecahedron with twisted spikes to simulate drill-flute geometry.
+
+**Construction**
+Start with dodecahedron (edge 1). Attach spike (pyramid) on each face: height 0.6. Rotate each spike about its face normal by ψ=20° (like drill flutes).
+
+**Styling**
+Material chrome. 2500×2000 PNG, BG #e0e0ff.
+
+**Deliverable** PNG.

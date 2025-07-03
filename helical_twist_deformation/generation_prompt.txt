@@ -1,0 +1,25 @@
+**Objective**
+Render a cube undergoing **helical twist deformation** where the amount of rotation varies linearly along the vertical axis, creating a DNA-like twisted structure.
+
+**Mathematical recipe**
+
+1. Start with a unit cube centered at origin with vertices at (±1, ±1, ±1).
+2. Apply helical twist transformation:
+   - For point (x, y, z), twist angle θ = k·z where k = 2π (full rotation over height).
+   - Rotated position: x' = x·cos(θ) - y·sin(θ), y' = x·sin(θ) + y·cos(θ), z' = z.
+3. Use signed distance field for the twisted cube:
+   - Transform ray point inversely through the twist before evaluating cube SDF.
+   - Cube SDF: max(|x|, |y|, |z|) - 1.0.
+4. Add edge beveling (radius 0.05) for visual clarity.
+
+**Styling**
+
+* Material: Metallic surface with Fresnel reflections.
+* Color gradient based on height: deep blue (bottom) to golden yellow (top).
+* Three-point lighting: key light from (2, 3, 1), fill from (-1, 1, 2), rim from (0, -2, -1).
+* Soft shadows using 32 shadow rays per point.
+* Camera at (3, 2, 4), looking at origin; FOV 35°.
+* Dark grey background (0.1, 0.1, 0.12).
+* Resolution 2048 × 2048 px, 4× SSAA.
+
+**Deliverable** Single PNG showing the twisted cube with clear helical deformation.

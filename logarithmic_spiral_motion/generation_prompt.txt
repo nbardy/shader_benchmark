@@ -1,0 +1,28 @@
+**Objective**
+Create a visualization of **logarithmic spiral motion** in 3D space, showing particles following exponential spiral trajectories with simultaneous rotation and scaling.
+
+**Mathematical recipe**
+
+1. Generate 8 particle streams, each starting at different angles.
+2. Logarithmic spiral in cylindrical coordinates:
+   - r(t) = r₀ · exp(k·t), where k = 0.15 (growth rate).
+   - θ(t) = θ₀ + ω·t, where ω = π/2 (angular velocity).
+   - z(t) = h₀ + v·t, where v = 0.3 (vertical velocity).
+   - t ∈ [0, 20] for full spiral development.
+3. Each stream consists of 100 particles with time offset.
+4. Particle size scales with exp(-k·t/2) (shrinks as it spirals out).
+5. Add motion blur trails showing trajectory history.
+
+**Styling**
+
+* Particles: Glowing spheres with HDR emission.
+* Color by spiral arm: Full HSV spectrum distributed evenly.
+* Intensity fades exponentially with distance from center.
+* Motion trails: 20% opacity, length proportional to velocity.
+* Central attractor: Bright white emissive sphere (radius 0.1).
+* Dark background with radial gradient.
+* Bloom and glow post-processing.
+* Camera at (3, 4, 2), looking at origin; FOV 50°.
+* Resolution 2048 × 2048 px, 4× SSAA.
+
+**Deliverable** Single PNG capturing the dynamic logarithmic spiral motion pattern.

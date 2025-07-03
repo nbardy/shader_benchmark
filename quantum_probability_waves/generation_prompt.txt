@@ -1,0 +1,22 @@
+**Objective**
+Visualise the probability density of a 2‑D infinite square‑well eigenstate superposition.
+
+**Quantum system**
+
+* Potential $V(x,y)=0$ for $x,y\in[0,L]$ and $+\infty$ elsewhere; take $L=1$.
+* Eigenfunctions: $\psi_{n,m}(x,y)=2\sin(n\pi x/L)\sin(m\pi y/L)$.
+* Superposed state
+
+  $
+    \Psi(x,y)=\tfrac{1}{\sqrt3}\bigl[\psi_{1,1}+e^{i\pi/3}\psi_{2,3}+e^{-i\pi/4}\psi_{3,2}\bigr].
+  $
+* Probability density $P=|\Psi|^{2}$.
+
+**Rendering**
+
+* Sample $1024\times1024$ grid on domain; compute $P$.
+* Colour with perceptually uniform "magma" palette (black→bright yellow).
+* Display isolines for $P=0.2,0.4,0.6$ as 1‑px white curves.
+* 1600 × 1600 px PNG, 60‑px pure‑black frame around plot. No axes, no text.
+
+**Deliverable**  One PNG.

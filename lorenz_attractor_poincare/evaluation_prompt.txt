@@ -1,0 +1,30 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Problem 015.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Correct features**
+
+* 3‑D "butterfly" with two major lobes; lobe centres roughly at (−8, 8) and (8, 8) in x‑y.
+* Hue transitions smoothly along the spiral turns, never jumping.
+* **Poincaré points** form a fractal double‑spiral on the plane, densest near radius ≈ 8 from origin; no points outside radius 15.
+* Plane exactly at z = 27; curve penetrates it many times (> 800).
+
+**Scoring**
+
+| Aspect                | Pts | Explicit checks                                           |
+| --------------------- | --- | --------------------------------------------------------- |
+| **Trajectory shape**  | 0‑3 | Two lobes, correct centroid positions, max radius ≈ 25.   |
+| **Hue continuity**    | 0‑1 | Δhue between successive segments < 10 °.                  |
+| **Section density**   | 0‑2 | ≥ 800 intersection points; none beyond radius 15.         |
+| **Plane alignment**   | 0‑2 | All section points satisfy |z−27| < 0.05. |
+| **Rendering quality** | 0‑2 | Resolution met, no aliasing, plane translucent grey only. |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

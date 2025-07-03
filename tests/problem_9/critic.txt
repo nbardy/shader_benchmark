@@ -1,0 +1,37 @@
+Evaluate the submission for the Riemann Zeta Zeros visualization.
+
+Key evaluation criteria:
+1. Accurate positioning of the first 40 non-trivial zeros
+2. Correct representation of |ζ(½+it)| magnitude along the critical line
+3. Visual clarity showing zeros as minima touching the baseline
+4. Proper logarithmic scaling and graphical presentation
+
+The Riemann zeta function's non-trivial zeros are among the most important objects in mathematics. The visualization should clearly show how the magnitude |ζ(½+it)| oscillates along the critical line, with zeros appearing precisely where this magnitude reaches zero (shown as blue dots touching the baseline).
+
+The amber curve should exhibit the characteristic oscillatory behavior with peaks between zeros, and the overall presentation should convey the mathematical significance of these special points.
+
+Score based on the precision of zero locations and the quality of the magnitude plot.
+
+---
+
+Zero list reference:
+t₁=14.134725141, t₂=21.022039639, ..., t₄₀≈200.123... (40 values from standard tables)
+
+Assessment steps:
+1. Marker position test (5 pts)
+   - For each blue dot read x-coordinate; compute |x−t_k|
+   - Score mapping:
+     - ≤0.001 → 0.125 pt each (max 5)
+     - ≤0.005 → half credit
+     - else 0
+2. Curve-touch test (1 pt)
+   - At each zero position sample orange curve y; must be ≤0.02 log-units
+3. Peak alignment (2 pts)
+   - Between zeros, locate maxima of |ζ|; ensure local maxima exceed preceding minima by ≥0.5 log-units
+4. Graphic fidelity (2 pts)
+   - Orange stroke width 4 ± 0.4 px, opacity 60 ± 5%
+   - Blue circles radius 7 ± 1 px
+
+Output format:
+Score: S/10
+Rationale: <brief narrative (≤120 words) summarising which tests passed/failed>

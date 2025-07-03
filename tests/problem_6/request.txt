@@ -1,0 +1,21 @@
+Present a glowing annular "heat-disk" that lets the viewer viscerally experience how Ramanujan's third-order mock-theta function f(q) blossoms near the unit circle and attenuates radially. The final image should resemble a celestial nebula with fiery inner corona fading to dusk blues.
+
+Mathematics:
+- Define f(q) = 1 + Σ(n=1 to 50) q^(n²) / [(1+q)²(1+q²)²...(1+q^n)²]
+- Complex argument parameterisation: q(t,θ) = e^(-t) * e^(iθ), t ∈ [0,2], θ ∈ [0,2π]
+- Pre-compute magnitude |f(q)| on a polar grid 2048 × 2048 (radial samples 1024, angular 1024)
+
+Colour transfer function:
+- Use "magma" perceptual palette (Matplotlib implementation) mapped linearly:
+  - |f| = 1 → palette index 0.15 (deep purple)
+  - |f| = 2.3 → palette index 0.85 (white-yellow)
+  - Clamp outside range
+- Overlay faint concentric gold rings at t = 0.5, 1.0, 1.5 (guides to show decay)
+
+Display geometry:
+- Canvas 2048 × 2048 px, black outside annulus
+- Polar origin at centre; outer radius corresponds to t=2.0
+- Radial ticks labelled with τ font (optional: small sans-serif)
+
+File: PNG-24
+Deliverable: Outputs a single image.

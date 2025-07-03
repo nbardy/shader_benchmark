@@ -1,0 +1,29 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Problem 211.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected features**
+
+* Integrated strip normal rotation 540° ± 3°.
+* Mid‑line hue cycles thrice before closure (detected peaks).
+* One‑sided test as earlier still passes.
+
+**Scoring**
+
+| Aspect        | Pts | Checks                                    |
+| ------------- | --- | ----------------------------------------- |
+| Twist angle   | 0‑4 | 540° total rotation ± 3°.                |
+| Hue cycles    | 0‑2 | Three complete hue cycles before closure. |
+| One-sided     | 0‑1 | Single-sided topology maintained.        |
+| Mesh quality  | 0‑1 | Face normals coherent, no artifacts.     |
+| Render        | 0‑2 | Resolution, colors, clarity correct.     |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

@@ -1,0 +1,10 @@
+**Objective**
+Create three concentric rings representing a gyroscopic system with orthogonal rotation axes.
+
+**Construction**
+Three concentric rings radii 1, 1.5, 2. Each rotated 30° about mutually orthogonal x, y, z axes respectively. Show instantaneous orientation.
+
+**Styling**
+Colour rings #f66, #6f6, #66f. Camera (4,3,3). 2200×1600 PNG.
+
+**Deliverable** PNG.

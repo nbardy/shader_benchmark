@@ -1,0 +1,19 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for the Icosahedron Wireframe.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected features**
+30 edges, 12 vertices; all edges equal on projection within 3 %. Hidden edges dashed.
+
+**Scoring**
+0‑4 topology, 0‑2 equal edge length, 0‑2 hidden‑edge style, 0‑2 clarity.
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

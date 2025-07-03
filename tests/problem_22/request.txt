@@ -1,0 +1,67 @@
+**Objective**
+Create a shader visualization of the Chinese Remainder Theorem as presented in Sunzi Suanjing (3rd-5th century CE), showing the ancient Chinese "Ta-yen" method for solving systems of modular equations, with visual connections to its modern applications in cryptography.
+
+**Historical Context**
+The Chinese Remainder Theorem appears in Sunzi Suanjing (Master Sun's Mathematical Manual) with the famous problem: "Find a number that leaves remainder 2 when divided by 3, remainder 3 when divided by 5, and remainder 2 when divided by 7." This method, refined over centuries by Chinese mathematicians, predates similar Western discoveries by over 1000 years.
+
+**Mathematical Specification**
+
+1. **The Classic Problem Visualization**
+   Solve: x ≡ 2 (mod 3), x ≡ 3 (mod 5), x ≡ 2 (mod 7)
+   - Display three rotating circles representing moduli 3, 5, 7
+   - Mark positions 0,1,2 on the mod 3 circle
+   - Mark positions 0,1,2,3,4 on the mod 5 circle  
+   - Mark positions 0,1,2,3,4,5,6 on the mod 7 circle
+   - Highlight the required remainders in red
+
+2. **Ancient Chinese Solution Method**
+   Animate the "Da-yan" (Great Extension) algorithm:
+   - Find M = 3×5×7 = 105
+   - Calculate M₁ = 35, M₂ = 21, M₃ = 15
+   - Show inverse finding: 35×2 ≡ 1 (mod 3), etc.
+   - Build solution: x = 2×35×2 + 3×21×2 + 2×15×1
+   - Reveal answer: x ≡ 23 (mod 105)
+
+3. **Visual Number Line**
+   - Display numbers 0-105 as a spiral
+   - Color code by remainders:
+     * Red tint for x ≡ 2 (mod 3)
+     * Blue tint for x ≡ 3 (mod 5)
+     * Green tint for x ≡ 2 (mod 7)
+   - Show convergence at x = 23 (all colors combine)
+
+4. **Traditional Chinese Styling**
+   - Background: Rice paper texture (#FFF8DC)
+   - Ink brush stroke effects for circles
+   - Chinese numerals (一二三四五六七) alongside Arabic
+   - Traditional seal stamp with "孫子算經" (Sunzi Suanjing)
+   - Decorative cloud patterns in margins
+
+5. **Modern Connection Visualization**
+   Show RSA encryption parallel:
+   - Mini-visualization of how CRT speeds up RSA decryption
+   - Split large modulus into coprime factors
+   - Parallel computation visualization
+   - Time comparison: direct vs CRT method
+
+6. **Historical Annotations**
+   - Portrait of ancient Chinese mathematician
+   - Timeline: Sunzi (300s) → Qin Jiushao (1247) → Gauss (1801)
+   - Original problem text in classical Chinese
+   - Translation: "What number has these remainders?"
+
+**Rendering Requirements**
+- Smooth rotation of modular circles
+- Particle effects showing number flow
+- Calligraphy-style number rendering
+- Subtle animation of solution building
+- Resolution: 1600×1600 pixels
+
+**Educational Goals**
+- Honor ancient Chinese mathematical achievements
+- Show elegance of modular arithmetic visualization
+- Connect ancient wisdom to modern cryptography
+- Demonstrate cultural continuity in mathematics
+
+**Deliverable**
+A shader that brings the Chinese Remainder Theorem to life through beautiful visualization, showing how ancient Chinese mathematicians solved complex modular systems centuries before the rest of the world, rendered in traditional Chinese artistic style while demonstrating modern relevance.

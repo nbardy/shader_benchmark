@@ -1,0 +1,45 @@
+The image should display a perfect truncated icosahedron (soccer ball geometry) with the classic black pentagon and white hexagon pattern. The shape should appear three-dimensional with proper shading and highlights on the slightly glossy surface. The subtle leather texture should be visible upon closer inspection, and the outdoor lighting should create natural-looking shadows.
+
+---
+
+1. **Geometric Accuracy**
+   - Exactly 12 pentagonal faces (all black)
+   - Exactly 20 hexagonal faces (all white)
+   - All edges equal length
+   - 60 vertices correctly positioned
+   - Perfect spherical overall shape
+
+2. **Face Arrangement**
+   - No two pentagons share an edge
+   - Each pentagon surrounded by 5 hexagons
+   - Each hexagon touches 3 pentagons and 3 hexagons
+   - Correct alternating pattern maintained
+   - Symmetrical distribution around sphere
+
+3. **Edge Uniformity**
+   - All edges exactly same length
+   - Clean, sharp edges between faces
+   - No gaps between adjacent faces
+   - Consistent edge thickness if shown
+   - Proper vertex connections (3 edges per vertex)
+
+4. **Material Properties**
+   - Slightly glossy finish (not matte, not mirror)
+   - Subtle leather texture visible
+   - Appropriate specular highlights
+   - Black pentagons fully black
+   - White hexagons bright white
+
+5. **Color and Rendering**
+   - Sharp contrast between black and white
+   - No color bleeding between faces
+   - Outdoor daylight creates natural shadows
+   - Grass green gradient background
+   - 3/4 view shows both face types clearly
+
+6. **Visual Quality**
+   - Professional sports ball appearance
+   - Clean anti-aliasing on all edges
+   - Realistic material response to light
+   - No geometric errors or distortions
+   - Overall convincing soccer ball representation

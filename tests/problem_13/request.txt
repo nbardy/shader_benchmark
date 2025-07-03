@@ -1,0 +1,14 @@
+Depict the 2-D integer lattice as a perfect crystal where sites with prime-number x-coordinates act as edge dislocations, creating a vivid strain-field hologram. The final heat-map should resemble a materials-science micrograph with glowing stress bands emanating from each prime column.
+
+Construction steps:
+1. Lattice domain: Points (x,y) with x,y∈{−100,...,100}
+2. Vacancy mask: Mark lattice sites where x is prime and y=0 as vacancies (remove them). There are 25 primes ≤100.
+3. Discrete displacement field: Define displacement u(x,y) solving discrete Laplace equation Δu = 0 with boundary u=0 and vacancy nodes forced u=−1. Use Gauss-Seidel until max change <10^-6.
+4. Strain magnitude: ε=|∇u| computed via central differences
+5. Render:
+   - Normalise ε so 99th percentile maps to value 1
+   - Colour map "inferno"; show ε=0 as deep violet
+   - Vacancies drawn solid black disks radius 4 px
+   - Pixel size 4 px → resulting bitmap 1600×1600. Add 100 px white frame.
+
+Deliverable: Outputs a single image.

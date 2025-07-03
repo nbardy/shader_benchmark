@@ -1,0 +1,31 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Problem 116.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected attributes**
+
+* Each crest‑to‑crest wavelength = 2π ≈ 6.283 units in x.  Measure first four: error < 1 %.
+* Crest height = 2, trough depth = −2.
+* Tangent at crest horizontal; cusps at troughs (mirror) exactly vertical tangent.
+* Positive & negative waves vertically symmetric.
+* Baseline straight; all strokes anti‑aliased, correct colours.
+
+**Scoring**
+
+| Aspect                 | Pts | Explicit checks                                      |
+| ---------------------- | --- | ---------------------------------------------------- |
+| **Periodicity**        | 0‑3 | Wavelength constant within 1 %.                      |
+| **Amplitude**          | 0‑2 | Peak/trough magnitude 2 ± 0.05.                      |
+| **Symmetry**           | 0‑2 | y→−y mirror error < 0.5 %.                           |
+| **Tangent conditions** | 0‑1 | Crest slope < 0.02; cusp slope undefined (vertical). |
+| **Rendering quality**  | 0‑2 | Colours exact; baseline present; no aliasing.        |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

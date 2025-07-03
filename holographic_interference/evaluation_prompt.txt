@@ -1,0 +1,37 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Problem 062.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**What the correct pattern looks like**
+
+* Straight vertical fringes (parallel to the y‑axis) spanning the full domain; edges terminate cleanly at the black border.
+* For each channel, bright–bright spacing
+
+  $
+    \Lambda_c=\frac{\lambda_c}{2\sin10^{\circ}}
+  $
+
+  so the 10 λ$_G$‑wide domain contains **exactly 3 bright peaks and 3 dark gaps** for green, 2.3 periods for red, 2.1 for blue (fractional peaks visible at edges).
+* Superposition yields repeating rainbow sequence **cyan → green → yellow → red → magenta → blue**, cycling left‑to‑right.
+* Fringe contrast 100 %: pure black minima, pure colour maxima.
+* No moiré, no curvature (<0.1 px deviation from straightness).
+
+**Scoring**
+
+| Aspect                  | Pts | Explicit checks                                              |
+| ----------------------- | --- | ------------------------------------------------------------ |
+| **Orientation**         | 0‑2 | Centerlines deviate <1° from vertical.                       |
+| **Period accuracy**     | 0‑3 | Peak‑to‑peak distance within ±3 %. Measure on green channel. |
+| **Colour ordering**     | 0‑2 | Rainbow order exactly as listed, monotone between peaks.     |
+| **Contrast / clipping** | 0‑2 | Min intensity < 5 %, max > 95 % in every channel.            |
+| **Clean frame**         | 0‑1 | Domain edge sharp; exterior #000000.                         |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

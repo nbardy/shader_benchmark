@@ -1,0 +1,19 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for the Sierpinski Triangle.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Checks**
+Total small triangles = $3^{6}=729$; black outline matches level‑0. Gaps exactly equilateral.
+
+**Scoring**
+0‑4 recursion depth, 0‑2 count, 0‑2 alignment, 0‑2 stroke quality.
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

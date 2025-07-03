@@ -1,0 +1,35 @@
+**Objective**
+Transform **probability distributions** into **dynamic weather systems**, where statistical properties manifest as atmospheric phenomena.
+
+**Mathematical recipe**
+
+1. Normal distribution N(μ,σ²): stable high-pressure systems
+   - Mean μ determines center location
+   - Variance σ² creates pressure gradient (storm size)
+   - Multiple normals create weather fronts
+2. Exponential distribution: rain intensity patterns
+   - λ parameter controls precipitation rate
+   - Memoryless property creates sudden downpours
+3. Cauchy distribution: extreme weather events
+   - Heavy tails generate tornadoes at outliers
+   - Undefined variance causes chaotic wind patterns
+4. Beta distribution: cloud coverage
+   - α,β parameters shape cloud density gradients
+   - Bimodal beta creates cumulonimbus formations
+5. Multivariate correlations: jet streams connecting systems
+
+**Styling**
+
+* Volumetric cloud rendering with multiple scattering
+* Pressure systems as swirling atmospheric spirals
+* Rain rendered as refractive droplet sheets
+* Lightning bolts at Cauchy tail events (>3σ)
+* Wind flow lines colored by velocity (blue=calm, red=hurricane)
+* Ground view: rolling hills with weather shadows
+* Time-lapse feel: blurred cloud movement trails
+* Atmospheric perspective with realistic haze
+* Crepuscular rays through cloud breaks
+* Camera at (0, 5, -100), tilted up 10°; FOV 70°
+* Resolution 2400 × 2400 px, HDR lighting
+
+**Deliverable** Single PNG showing probability distributions as weather map

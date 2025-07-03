@@ -1,0 +1,9 @@
+**Objective**
+Generate the Sierpinski triangle fractal through recursive subdivision.
+
+**Construction**
+* Start with upright equilateral triangle side = 1.
+* Remove central inverted triangle recursively 6 levels.
+* Stroke 1 px black; fills white. 2400 × 2080 px PNG.
+
+**Deliverable** – PNG.

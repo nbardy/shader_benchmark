@@ -1,0 +1,27 @@
+**Objective**
+Visualize **conformal spiral mapping** transforming a rectangular grid into an Archimedean spiral while preserving local angles and revealing the beauty of conformal geometry.
+
+**Mathematical recipe**
+
+1. Start with rectangular grid in complex plane: -2 ≤ Re(z) ≤ 2, -2 ≤ Im(z) ≤ 2.
+2. Apply conformal spiral map: w = exp(αz) where α = 0.2 + 0.3i.
+   - This combines scaling (e^(0.2Re(z))) with rotation (0.3Im(z)).
+3. The transformation maps:
+   - Vertical lines → logarithmic spirals.
+   - Horizontal lines → radial rays from origin.
+4. Grid: 41×41 lines (spacing 0.1).
+5. Embed result in 3D with height based on |w|:
+   - h(w) = 0.5·log(1 + |w|) for smooth elevation.
+
+**Styling**
+
+* Grid lines: Thin tubes (radius 0.008) with glass-like material.
+* Color scheme: Vertical lines in blue-cyan gradient, horizontal in red-orange.
+* Height-based fog: Denser at higher elevations.
+* Central singularity marked with glowing white sphere.
+* Caustic lighting effects from refractive grid.
+* Dark background with subtle radial gradient.
+* Camera at (3, 3, 4), looking down at spiral; FOV 45°.
+* Resolution 2048 × 2048 px, 4× SSAA.
+
+**Deliverable** Single PNG showing the conformal transformation creating a beautiful spiral grid pattern.

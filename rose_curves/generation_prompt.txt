@@ -1,0 +1,10 @@
+**Objective** – Plot the polar curve $r = \cos(k\theta)$ for **k = 7** on θ ∈ [0,2π].
+
+**Rendering rules**
+
+* Use 8000 uniformly spaced θ‑samples; connect with Catmull–Rom spline for smoothness.
+* Stroke width 6 px, colour #ff55aa, opacity 0.9.
+* Place on 1800 × 1800 px white canvas; origin centred; radial scale so outer petal tip touches 90 % of canvas radius.
+* Add thin (#444444, 1 px) polar grid: circles at radii 0.25, 0.5, 0.75, 1.0 and radial spokes every 15°.
+
+**Deliverable** – PNG.

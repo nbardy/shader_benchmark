@@ -1,0 +1,22 @@
+**Objective**
+Render the RGB interference pattern produced when two coherent plane waves of equal intensity intersect in free space at a $20^{\circ}$ angle.
+
+**Physical model**
+
+* ***Wave 1:*** $\mathbf k_{1}=(0,\,0,\,2\pi/\lambda)$.
+* ***Wave 2:*** $\mathbf k_{2}=(\sin10^{\circ},\,0,\,\cos10^{\circ})\,2\pi/\lambda$.
+* Wavelengths: $\lambda_{R}=650\,\text{nm},\;\lambda_{G}=510\,\text{nm},\;\lambda_{B}=460\,\text{nm}$.
+* Electric field at screen point $\mathbf r=(x,y,0)$: $E(\mathbf r)=\sum_{c\in\{R,G,B\}}\bigl[\exp(i\mathbf k_{1}\!\cdot\!\mathbf r)+\exp(i\mathbf k_{2}\!\cdot\!\mathbf r)\bigr]_c$.
+* Intensity $I_c(\mathbf r)=|E_c|^{2}$.
+
+**Image plane**
+
+* Domain $x,y\in[-5\lambda_G,+5\lambda_G]$.
+* Sample $4096\times4096$ grid; periodic boundary conditions not required.
+
+**Rendering**
+
+* Normalise each channel so its maximum intensity maps to value 1, then convert to sRGB.
+* Output 3000 × 3000 px 16‑bit PNG. Black background outside domain. No labels.
+
+**Deliverable**  One PNG file.

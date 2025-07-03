@@ -1,0 +1,27 @@
+Create a wide panoramic "mathematical seismograph" that vividly conveys how the Weierstrass function oscillates at every spatial scale. The viewer should feel the relentless, jagged "crackle" of a curve that is continuous everywhere yet differentiable nowhere.
+
+Exact analytic definition:
+W(x) = Σ(n=0 to 50) a^n * cos(b^n * π * x), with a = 1/2, b = 3.
+
+- 51 terms guarantee visual convergence while still showing high-frequency grit.
+- 50th term wavelength ≈ π / 3^50 ~ 10^-24 – far below pixel scale, ensuring apparent fractality even at max zoom.
+
+Sampling & anti-alias:
+- Domain x ∈ [-2, 2].
+- Uniform sample 8,192 points (2^13) – a power of two convenient for FFT post-checks.
+- Resample to screen with Catmull-Rom spline so stroke remains smooth between vertices.
+
+Visual styling:
+- Canvas 2400 px wide × 1200 px high (2-to-1 cinema aspect).
+- Background pure white (#FFFFFF).
+- Curve stroke bright mandarin-orange (#FF6600) width = 3 px; round end-caps, round joins (avoid mitre spikes).
+- Axes:
+  - Grey (#909090) horizontal line at y = 0; thin 1 px.
+  - Tick marks every 0.5 units on x-axis; omit labels (visual cleanliness).
+- Subtle drop-shadow under the orange stroke (1 px, 20% opacity, 90° offset) gives depth but must never blur the high-frequency corners.
+
+File & colour space:
+- PNG-24, sRGB, gamma 2.2.
+- Compression level "fast" is fine – no perceptible artefacts on a pure vector plot.
+
+Deliverable: Outputs a single image.

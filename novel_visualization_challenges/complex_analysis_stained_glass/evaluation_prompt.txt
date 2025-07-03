@@ -1,0 +1,36 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Complex Analysis Stained Glass.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected visual cues**
+
+* Gothic pointed arch window frame in stone
+* Domain coloring: continuous hue based on argument, opacity from magnitude
+* Lead came separating glass at |f(z)| = 2ⁿ contour lines
+* Singularities as decorative rose windows with appropriate symmetry
+* Branch cuts visible as special glass arrangements
+* Realistic glass materials with varying thickness and color depth
+* Caustic light patterns projected onto floor
+* Glass imperfections (bubbles, waves) near singular points
+* Dust motes in light beams for atmosphere
+* Dark cathedral interior with window as primary light source
+
+**Scoring rubric**
+
+| Aspect                     | Pts | Explicit checks                                                            |
+| -------------------------- | --- | -------------------------------------------------------------------------- |
+| **Mathematical accuracy**  | 0‑3 | Domain coloring correct; singularities properly represented; branch cuts   |
+| **Glass craftsmanship**    | 0‑2 | Lead came at contours; realistic glass materials; structural details       |
+| **Light behavior**         | 0‑2 | Caustics present; residue-based intensity; proper transparency             |
+| **Architectural setting**  | 0‑2 | Gothic frame; stone textures; cathedral atmosphere                         |
+| **Artistic integration**   | 0‑1 | Mathematical and aesthetic elements blend seamlessly                       |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: …
+```

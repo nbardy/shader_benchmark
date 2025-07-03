@@ -1,0 +1,8 @@
+Axis-aligned cube, side = 2, centred at origin.
+
+Rendering:
+- Wireframe style: edges 3 px midnight-blue (#003366); transparent faces α = 0.1 sky-blue
+- Hidden edges dashed
+- Orthographic camera (iso view 35° rot). Canvas 1800×1800
+
+Deliverable: Outputs a single image.

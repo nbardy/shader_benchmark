@@ -1,0 +1,22 @@
+**Goal**
+Model a Möbius strip obtained by taking a rectangle $u∈[0,2π],\;v∈[-0.2,0.2]$ and applying a single half‑twist (180°) before gluing the ends.
+
+**Parametric surface**
+
+$
+\begin{aligned}
+x &=\Bigl(1+\tfrac{v}{2}\cos\tfrac{u}{2}\Bigr)\cos u,\\
+y &=\Bigl(1+\tfrac{v}{2}\cos\tfrac{u}{2}\Bigr)\sin u,\\
+z &=\frac{v}{2}\sin\tfrac{u}{2}.
+\end{aligned}
+$
+
+Sample grid 800 × 80 on $(u,v)$.
+
+**Rendering**
+
+* Front‑face colour #66ccff, back‑face colour #ff6699 (double‑sided material to emphasise single‑sidedness).
+* Blinn–Phong (amb 0.1, diff 0.7, spec 0.2, shin 64). Light (4,3,4).
+* Camera (4,3,2), FOV 40°, white background. 2200 × 1600 px PNG.
+
+**Deliverable** PNG.

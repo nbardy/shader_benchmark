@@ -1,0 +1,32 @@
+**Objective**
+Visualize **topological invariants** as **woven fabric textures**, where mathematical properties manifest as thread patterns, weave structures, and material behaviors.
+
+**Mathematical recipe**
+
+1. Base surface: Klein bottle parameterization in 4D
+2. Fundamental group π₁ determines weave pattern:
+   - Generators become primary thread directions
+   - Relations create over/under crossing rules
+3. Homology groups as thread colors:
+   - H₀: connectivity threads (white)
+   - H₁: loop threads (spectrum colors by generator)
+   - H₂: surface threads (metallic gold)
+4. Euler characteristic χ affects fabric density: thread count = 100/|χ-2|
+5. Orientability determines thread twist:
+   - Orientable: consistent S-twist
+   - Non-orientable: alternating S/Z twist creating Möbius bands
+
+**Styling**
+
+* Photorealistic fabric rendering with individual thread fibers visible
+* Subsurface scattering for translucent silk-like appearance
+* Thread thickness varies with homology dimension (H₀ thin, H₂ thick)
+* Iridescent sheen on non-orientable regions
+* Fabric draped over invisible Klein bottle form
+* Macro photography aesthetic: extreme close-up with shallow depth
+* Key light from upper left, fill light from below
+* Visible fabric imperfections where topology forces thread stress
+* Camera at (2, 1.5, -3), looking at origin; FOV 25° (telephoto)
+* Resolution 2400 × 2400 px, with fabric texture details
+
+**Deliverable** Single PNG showing topology as woven fabric structure

@@ -1,0 +1,45 @@
+Evaluate this shader visualization of the Chinese Remainder Theorem from Sunzi Suanjing.
+
+**Scoring Criteria (1-10 scale):**
+
+1. **Mathematical Accuracy**: Are the modular arithmetic circles correctly displayed? Does the Da-yan algorithm animation accurately show the solution process? Is the final answer x ≡ 23 (mod 105) properly derived? Is the RSA connection valid?
+
+2. **Historical Authenticity**: Does the visualization capture traditional Chinese mathematical manuscript style? Are Chinese numerals and classical text appropriately used? Is the rice paper texture and ink brush aesthetic convincing?
+
+3. **Algorithm Visualization**: Is the ancient Chinese solution method clearly animated? Are the steps (finding M, calculating inverses, building solution) easy to follow? Does the number spiral effectively show remainder patterns?
+
+4. **Cultural Representation**: Are traditional Chinese artistic elements (cloud patterns, seal stamps) well integrated? Does the visualization honor the mathematical heritage? Is the timeline showing priority of Chinese discovery clear?
+
+5. **Modern Relevance**: Is the connection to RSA cryptography effectively shown? Does the parallel computation visualization make sense? Is the practical importance of this ancient theorem apparent?
+
+Assess how well this shader brings ancient Chinese mathematical wisdom to life while demonstrating its continued relevance in modern cryptography.
+
+---
+
+You are evaluating a shader visualization of the Chinese Remainder Theorem from ancient China. Consider:
+
+MATHEMATICAL ACCURACY:
+- Correct modular arithmetic representation
+- Valid Da-yan algorithm steps
+- Accurate solution to the classic problem
+- Proper connection to modern applications
+
+CULTURAL AUTHENTICITY:
+- Traditional Chinese artistic elements
+- Appropriate use of Chinese numerals and text
+- Rice paper and ink brush aesthetics
+- Respectful representation of mathematical heritage
+
+PEDAGOGICAL EFFECTIVENESS:
+- Clear visualization of modular relationships
+- Step-by-step algorithm animation
+- Effective use of color coding for remainders
+- Intuitive number spiral representation
+
+HISTORICAL SIGNIFICANCE:
+- Proper attribution to Sunzi Suanjing
+- Clear timeline showing Chinese priority
+- Connection to later developments (Qin Jiushao, Gauss)
+- Modern relevance to cryptography
+
+Provide feedback on how well this shader honors ancient Chinese mathematical achievements while making the concepts accessible to modern learners.

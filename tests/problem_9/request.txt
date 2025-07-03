@@ -1,0 +1,15 @@
+Depict the elusive non-trivial zeros as shimmering sapphire-blue orbs piercing an amber waveform of |ζ(½+it)|. The viewer should instantly see that every zero corresponds to a local minimum touching the x-axis in the magnitude plot—an echo of the famous "critical-line" mystery.
+
+Data & sampling:
+- Retrieve first 40 ordinates t_k via high-precision library (MPFR, 100 bit)
+- Sample |ζ| on t-axis 0→50 with 10,001 points; use mpmath.zeta
+
+Plot design:
+- Canvas 2200×1600 px
+- Coordinate system – x = t (scaled full width minus 100 px margins), y = |ζ| (log scale log₁₀(|ζ|+1), plotting range 0→log₁₀(20))
+- Magnitude curve – 4 px stroke, amber (#FFB000), 60% opacity, slight Gaussian blur σ=0.8 px
+- Zero markers – solid circles radius 7 px, royal-blue (#004CFF), positioned at y=0 baseline
+- Horizontal baseline (grey 50% intensity)
+- Subtitle small font: "First forty non-trivial zeros of ζ(s) on Re(s)=½"
+
+Deliverable: Outputs a single image.

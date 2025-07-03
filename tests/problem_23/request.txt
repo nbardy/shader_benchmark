@@ -1,0 +1,12 @@
+Construct a regular octagram {8/3} inscribed in a circle of radius 1. Outer vertices angle step 45°; connect every third vertex to produce eight spikes.
+
+Derived inner radius:
+r_in = cos(3π/8)/cos(π/8) ≈ 0.4142
+
+Visual style:
+- Fill solid royal-purple (#5A00FF)
+- 3-px black outline with miter-limit 2
+- Canvas 1800 × 1800, white background, star centred, outer tip 90% of canvas radius
+- Drop-shadow (0,0,15 px, 25% opacity) for depth
+
+Deliverable: Outputs a single image.

@@ -1,0 +1,45 @@
+Evaluate this shader visualization of Al-Khwarizmi's geometric algebra method for solving quadratic equations.
+
+**Scoring Criteria (1-10 scale):**
+
+1. **Historical Accuracy**: Does the visualization correctly represent Al-Khwarizmi's geometric method? Is the construction sequence (square → rectangles → corner squares) properly animated? Does it reflect 9th century Islamic mathematical manuscripts?
+
+2. **Mathematical Correctness**: Is the equation x² + 10x = 39 correctly solved geometrically? Are the dimensions accurate (x×x square, x×2.5 rectangles, 2.5×2.5 corners)? Does the visual proof clearly show x = 3?
+
+3. **Islamic Aesthetic**: Are traditional Islamic design elements present (geometric patterns, color palette, calligraphy style)? Is the manuscript background appropriate? Do decorative borders enhance the mathematical content?
+
+4. **Educational Clarity**: Does the animation clearly show each step of "completing the square"? Are areas properly labeled with both symbolic and numeric values? Is the connection between geometry and algebra evident?
+
+5. **Visual Execution**: Is the animation smooth and well-timed? Are construction lines helpful? Is the final solution prominently displayed? Does the overall composition honor the Islamic mathematical tradition?
+
+Assess how effectively this shader brings Al-Khwarizmi's revolutionary algebraic methods to life through authentic historical visualization.
+
+---
+
+You are evaluating a shader visualization of Al-Khwarizmi's geometric algebra from 9th century Baghdad. Consider:
+
+HISTORICAL AUTHENTICITY:
+- Accurate representation of Islamic mathematical methods
+- Appropriate manuscript styling and color choices
+- Integration of Islamic geometric patterns
+- Respect for the historical context of the House of Wisdom
+
+MATHEMATICAL PEDAGOGY:
+- Clear demonstration of x² + 10x = 39 solution
+- Visual representation of "completing the square"
+- Proper geometric construction sequence
+- Connection between geometric and algebraic thinking
+
+CULTURAL REPRESENTATION:
+- Authentic Islamic artistic elements
+- Appropriate use of arabesque and geometric patterns
+- Color palette reflecting Islamic manuscripts
+- Balance between decoration and mathematical content
+
+EDUCATIONAL IMPACT:
+- Clear step-by-step animation
+- Effective labeling and annotation
+- Demonstration of how algebra emerged from geometry
+- Accessibility to modern learners
+
+Provide feedback on how well this shader honors Al-Khwarizmi's legacy and communicates the beauty of Islamic mathematical innovation.

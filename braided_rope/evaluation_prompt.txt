@@ -1,0 +1,28 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Problem 207.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected features**
+
+* Helices tangent pair‑wise along braid; centre‑to‑centre separation = 0.3√3.
+* Pitch uniform 1.8 ± 2 %.
+* Visual cross‑over order repeats ABCABC every 60° along z.
+
+**Scoring**
+
+| Aspect           | Pts | Checks                                         |
+| ---------------- | --- | ---------------------------------------------- |
+| Geometry         | 0‑4 | Helical arrangement, proper phase offsets.    |
+| Pitch            | 0‑2 | Uniform pitch 1.8 ± 2%.                       |
+| Colour sequence  | 0‑2 | ABCABC crossing pattern every 60°.            |
+| Render quality   | 0‑2 | Colors correct, no core visible, proper view. |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

@@ -1,0 +1,19 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for the 2D Fractal Tree.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected counts**
+Segments = $2^{7}-1=127$. Endpoint spread ≤ ±2 in x,y. Symmetry about y‑axis.
+
+**Scoring**
+0‑3 recursion depth, 0‑2 count, 0‑2 angles, 0‑1 symmetry, 0‑2 stroke.
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

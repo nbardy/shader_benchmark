@@ -1,0 +1,10 @@
+Regular tetrahedron edge = 2. Vertices: (1,1,1), (-1,-1,1), (-1,1,-1), (1,-1,-1) divided by √3 to keep circumsphere radius 1.
+
+Visuals:
+- Matte golden material (#ffcc55) with anisotropic highlights
+- Softbox light (-4,4,6)
+- Ground plane mirror 30% reflective
+- Camera (3,-4,2.5), FOV 35°
+
+File: 2200×1600
+Deliverable: Outputs a single image.

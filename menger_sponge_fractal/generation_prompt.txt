@@ -1,0 +1,32 @@
+**Objective**
+Ray‑march an order‑4 Menger sponge implicit surface and produce a lit 3‑D render.
+
+**Signed‑distance function (SDF)**
+Recursively apply
+
+```pseudo
+float menger(vec3 p){
+  p = abs(p);
+  for(i=0;i<4;i++){
+    if(p.x<p.y) swap(p.x,p.y);
+    if(p.x<p.z) swap(p.x,p.z);
+    p = p*3.0 - 2.0*floor(p*3.0);
+  }
+  return (length(p)-1.0)/pow(3.0,4);
+}
+```
+
+where the base cube spans $[-1,1]^3$.
+
+**Camera & lighting**
+
+* Eye (4,3,2), target (0,0,0), FOV = 40°.
+* White point light at (8,5,6); Phong shading (ambient 0.05, diffuse 0.75, specular 0.2, shininess 64).
+
+**Rendering**
+
+* March step = signed‑distance × 0.8, max 256 steps, hit ε = 0.0005.
+* Shadows via secondary march, soft shadow factor with 32 samples.
+* Background: #e0f5ff.  Resolution 2200 × 1500 px, 4× SSAA.
+
+**Deliverable**  24‑bit PNG.

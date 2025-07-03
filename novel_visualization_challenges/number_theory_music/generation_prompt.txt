@@ -1,0 +1,32 @@
+**Objective**
+Transform **number theory relationships** into a **3D musical score sculpture**, where mathematical properties become notes, rhythms, and harmonic structures.
+
+**Mathematical recipe**
+
+1. Prime factorization creates base rhythm: n = 2^a × 3^b × 5^c × ...
+   - Each prime p gets its own "instrument track" at height z = log(p)
+   - Exponent a determines note duration: quarter note × 2^a
+2. Modular arithmetic creates melodies:
+   - Notes from n mod 12 (chromatic scale)
+   - Octave from floor(log₂(n))
+3. Number sequences as musical phrases:
+   - Fibonacci: ascending spiral melody
+   - Collatz: chaotic percussion patterns
+   - Perfect numbers: sustained harmonic chords
+4. Euler's totient φ(n) determines volume/dynamics
+5. Greatest common divisors create harmonic intervals
+
+**Styling**
+
+* 3D staff lines as glass tubes, glowing with soft internal light
+* Notes as crystalline polyhedra: shape determined by prime factors
+* Color by harmonic function: tonic (blue), dominant (yellow), subdominant (green)
+* Fibonacci spiral as golden ribbon weaving through the score
+* Collatz sequences as lightning-like percussion strikes
+* Time flows left to right, pitch increases vertically
+* Particle effects show "sound waves" emanating from active notes
+* Dark concert hall ambiance with spotlights on key sections
+* Camera at (40, 20, -30), looking at center; FOV 50°
+* Resolution 2400 × 2400 px, with depth of field
+
+**Deliverable** Single PNG showing number theory as 3D musical sculpture

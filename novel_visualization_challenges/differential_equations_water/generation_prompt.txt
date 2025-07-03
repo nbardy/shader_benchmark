@@ -1,0 +1,32 @@
+**Objective**
+Render **differential equations** as **living water surfaces**, where solutions manifest as fluid dynamics and wave patterns.
+
+**Mathematical recipe**
+
+1. Base equation: ∂²u/∂t² = c²∇²u - γ∂u/∂t (damped wave equation)
+2. Initial conditions create "equation signature":
+   - Linear DE: straight wave fronts
+   - Nonlinear DE: soliton formations
+   - Chaotic DE: turbulent mixing zones
+3. Boundary conditions as shoreline geometries:
+   - Dirichlet: solid walls (perfect reflection)
+   - Neumann: gradual beaches (partial absorption)
+   - Periodic: infinite ocean illusion
+4. Multiple equations interact as different "water types":
+   - Heat equation: viscous, honey-like flow
+   - Schrödinger: quantum probability mist
+   - Navier-Stokes: realistic water turbulence
+
+**Styling**
+
+* Photorealistic water rendering with caustics and subsurface scattering
+* Height field directly from solution u(x,y,t) at t=2.5
+* Color by equation type: clear (wave), blue-green (heat), violet (quantum)
+* Foam where |∇u| > threshold, indicating solution discontinuities
+* Underwater view showing solution history as sediment layers
+* Golden hour lighting: sun at 15° elevation, warm orange glow
+* Atmospheric perspective with distant mist
+* Camera at (0, 30, -50), looking at origin; FOV 60°
+* Resolution 2400 × 2400 px, ray-traced reflections
+
+**Deliverable** Single PNG showing multiple differential equations as interacting water bodies

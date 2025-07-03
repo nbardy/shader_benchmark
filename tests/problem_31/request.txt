@@ -1,0 +1,59 @@
+**Objective**
+Create a mathematically precise visualization of a torus (donut shape) with parametric surface coloring and advanced rendering techniques.
+
+**Mathematical Specification**
+
+1. **Parametric Definition**
+   - Torus parameters:
+     * Major radius (R): 2.0 units
+     * Minor radius (r): 0.7 units
+   - Parametric equations (u, v ∈ [0, 2π]):
+     * x = (R + r cos(v)) cos(u)
+     * y = (R + r cos(v)) sin(u)
+     * z = r sin(v)
+
+2. **Surface Properties**
+   - Generate smooth normals from parametric derivatives
+   - Calculate Gaussian curvature K = cos(v) / (r(R + r cos(v)))
+   - Calculate mean curvature H = (R + 2r cos(v)) / (2r(R + r cos(v)))
+
+3. **Coloring Scheme**
+   - Base color mapping using parametric coordinates:
+     * Hue: H = u / (2π) × 360°
+     * Saturation: S = 0.5 + 0.5 × sin(v)
+     * Value: V = 0.7 + 0.3 × cos(v)
+   - Overlay Gaussian curvature visualization:
+     * Positive curvature regions: Subtle red tint
+     * Negative curvature regions: Subtle blue tint
+     * Zero curvature: Neutral
+
+4. **Material and Texture**
+   - Base material: Glossy ceramic
+     * Diffuse: 0.8
+     * Specular: 0.3
+     * Shininess: 64
+   - Surface texture: Subtle parametric grid lines
+     * Grid spacing: π/8 in both u and v directions
+     * Line color: 20% darker than surface color
+     * Line width: 0.5 pixels
+
+5. **Animation and Transformation**
+   - Primary rotation: Around y-axis at 0.1 rad/s
+   - Secondary rotation: Around its own major axis at 0.05 rad/s
+   - Gentle oscillation: Minor radius varies as r = 0.7 + 0.1 × sin(2πt/3)
+
+6. **Lighting and Environment**
+   - Three-point lighting:
+     * Key light: Position (3, 4, 2), warm white, intensity 0.7
+     * Fill light: Position (-2, 1, 3), cool white, intensity 0.4
+     * Back light: Position (0, -2, -4), white, intensity 0.3
+   - Ambient occlusion for enhanced depth
+   - Environment: Subtle gradient (dark blue top to light blue bottom)
+   
+7. **Output Specifications**
+   - Resolution: 1600 × 1600 pixels
+   - Antialiasing: 4× SSAA
+   - Depth of field: Slight blur at edges (focal distance: 5 units)
+   - Camera: Position (4, 3, 5), looking at origin, FOV 40°
+
+Deliverable: Outputs a single image.

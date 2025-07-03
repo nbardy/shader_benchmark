@@ -1,0 +1,17 @@
+**Objective**
+Create a mechanical gear assembly with proper kinematic relationships and angular velocity visualization.
+
+**Gears**
+
+* Gear A: 24 teeth, radius 2.
+* Gear B: 16 teeth, radius 1.4 (meshes with A).
+* Gear C: 12 teeth, radius 1.0 (meshes with B).
+
+Module = 0.26 rad per tooth (involute profiles optional). Place centres along x‑axis with proper centre distances. Initial angular positions so teeth engage.
+
+**Spin animation** not required; instead show instantaneous state with angular velocities vector glyphs: size ∝ ω (ω_A = 1, ω_B = −1.5, ω_C = 1.333).
+
+**Styling**
+Orthographic view, top‑down slight tilt 15°, grey metal. 2200×1600 PNG.
+
+**Deliverable** PNG.

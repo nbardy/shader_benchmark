@@ -1,0 +1,21 @@
+**Objective**
+Visualise the **entire Hopf fibration** by stereographically projecting *all* fibres of the map $p:S^{3}\to S^{2}$ into $\mathbb R^{3}$.
+
+**Mathematical recipe**
+
+1. Identify $S^{3}\subset\mathbb C^{2}$ and $S^{2}\subset\mathbb C\times\mathbb R$ as in
+   $p(z_{0},z_{1})=(2z_{0}\bar z_{1},|z_{0}|^{2}-|z_{1}|^{2})$.
+2. Parameterise the base by spherical latitude $\theta\in[-\frac{\pi}{2},\frac{\pi}{2}]$ and longitude $\varphi\in[0,2\pi)$.
+3. **Sample 90 parallels** (every 2° of latitude) × 360 meridian points each; for every base point, sample the full circular fibre (72 samples).
+4. Stereographically project from north pole $(0,0,0,1)$ to $\mathbb R^{3}$.
+
+**Styling**
+
+* Draw every fibre as a 3‑D tube (radius 1 % of circumscribed radius).
+* Hue = $\varphi/2\pi$, saturation = 1, value = 1.
+* Set transparency = 0.35 so deeper fibres are visible.
+* Place a grey translucent sphere of radius 0.6 in the lower‑right, with latitude/longitude lines every 30°, to hint at the base $S^{2}$.
+* Camera at $(3,2,1.5)$, looking at origin; FOV 45°.  White background.
+* Resolution 2400 × 2400 px, 8 × SSAA.
+
+**Deliverable** Single PNG.

@@ -1,0 +1,33 @@
+**Objective**
+Generate a phyllotactic spiral pattern showing the golden angle arrangement found in sunflowers and pinecones, with color-coded Fibonacci spiral arms.
+
+**Mathematical Foundation**
+
+$
+\begin{aligned}
+\theta_n &= n \times 137.5° \text{ (golden angle)}\\
+r_n &= c\sqrt{n} \text{ (Fermat's spiral)}\\
+x_n &= r_n \cos(\theta_n)\\
+y_n &= r_n \sin(\theta_n)
+\end{aligned}
+$
+
+where $n$ is the seed index, $c = 0.15$ is the scaling factor.
+
+**Implementation**
+
+* Generate 500 seeds using the above equations
+* Each seed rendered as a circle with radius $0.02 + 0.01\sqrt{n/500}$ (growth effect)
+* Color seeds by their spiral arm membership:
+  - Identify which Fibonacci spiral (8, 13, 21, 34, 55) the seed belongs to
+  - Use distinct colors: #FF6B6B, #4ECDC4, #45B7D1, #F7DC6F, #BB8FCE
+* Background: radial gradient from #2C3E50 (center) to #1A252F (edge)
+
+**Styling**
+
+* Canvas: 2048 × 2048 px
+* Anti-aliasing: 4× SSAA
+* Add subtle glow effect to seeds (soft Gaussian blur)
+* Center spiral at canvas center
+
+**Deliverable** PNG showing the complete phyllotactic pattern with clearly visible Fibonacci spirals.

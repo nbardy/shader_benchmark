@@ -1,0 +1,11 @@
+**Objective**
+Visualize a 4D hypercube (tesseract) through rotation and projection to 2D.
+
+**Construction**
+Generate tesseract vertices (±1,±1,±1,±1). Apply 4‑D rotation
+$R_{xy}(θ)\,R_{zw}(θ)$ with θ=45°. Orthographic project to 3‑D by dropping w then to 2‑D via perspective camera (3,2,2).
+
+**Styling**
+Draw edges 3 px #00aaff, hidden edges 1 px dashed grey. 2400×1800 PNG.
+
+**Deliverable** PNG.

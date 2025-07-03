@@ -1,0 +1,33 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Loxodromic Sphere Spirals.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected visual cues**
+
+* Exactly 12 spiral curves wrapping around sphere surface.
+* Each spiral maintains constant 35° angle with meridians.
+* Spirals converge at both poles after multiple turns.
+* Full spectrum color distribution based on starting longitude.
+* Emissive glow strongest at equator, fading toward poles.
+* Transparent sphere with visible grid lines underneath.
+* Bloom effect creating luminous appearance.
+
+**Scoring rubric**
+
+| Aspect                    | Pts | Explicit checks                                                             |
+| ------------------------- | --- | --------------------------------------------------------------------------- |
+| **Loxodrome geometry**    | 0‑3 | Measure angles with meridians at 20 points; all 35° ± 1°.                 |
+| **Spiral count/coverage** | 0‑2 | Exactly 12 spirals; even longitude distribution.                           |
+| **Color spectrum**        | 0‑2 | Full HSV range present; smooth transitions.                                |
+| **Glow variation**        | 0‑2 | Intensity peaks at equator; measurable latitude correlation.               |
+| **Sphere transparency**   | 0‑1 | Grid visible through sphere; proper glass material.                        |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: …
+```

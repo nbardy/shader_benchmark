@@ -1,0 +1,10 @@
+**Objective**
+Render a regular icosahedron in wireframe mode with proper edge and vertex visualization.
+
+**Construction**
+Build regular icosahedron edge 1. Perspective camera (3,2,2).
+
+**Styling**
+Render edges 2 px #0088ff, vertices small red points. 1800 × 1500 px white canvas.
+
+**Deliverable** – PNG.

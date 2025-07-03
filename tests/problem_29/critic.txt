@@ -1,0 +1,31 @@
+**Inputs**
+
+1. *Spec* – the exact text of the icosahedron generation prompt
+2. *Candidate image* – the shader output produced from that spec
+
+**Task**
+Evaluate how accurately the candidate image implements the specified regular icosahedron visualization. Provide a score **S** on the scale 1-10 using the rubric below. Include a brief justification (≤ 150 words).
+
+**Rubric**
+
+| Aspect | Points | Guide |
+|--------|--------|--------|
+| **Geometric Accuracy** | 0-3 | Correct icosahedral structure with 20 triangular faces, 12 vertices, 30 edges? Proper vertex placement on unit sphere? |
+| **Face Coloring** | 0-2 | Gradient coloring based on face normals as specified? Smooth HSV mapping with correct hue/saturation/value? |
+| **Edge and Vertex Rendering** | 0-2 | Dark grey edges visible and properly connected? White vertex spheres at all 12 positions? |
+| **Lighting and Shading** | 0-1 | Phong shading implemented with specified parameters? Light positioned correctly? |
+| **Technical Quality** | 0-2 | Proper resolution (1600×1600), antialiasing, background gradient, smooth rotation? |
+
+**Output Format**
+
+```text
+Score: S/10
+Rationale: <concise explanation of scoring>
+```
+
+**Scoring Guidelines**
+- Perfect implementation scores 10
+- Missing or incorrect vertex/face structure caps score at ≤ 4
+- Incorrect coloring scheme reduces score by 1-2 points
+- Missing edges or vertices reduces score by 1-2 points
+- Poor antialiasing or resolution issues reduce score by 1 point

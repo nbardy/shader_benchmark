@@ -1,0 +1,25 @@
+Evaluate the submission for the Perfect Tetrahedron visualization.
+
+Key evaluation criteria:
+1. Regular tetrahedron with all edges equal length
+2. Correct angular relationships between faces
+3. Proper circumsphere radius normalization
+4. Golden material rendering with appropriate lighting
+
+The regular tetrahedron is the simplest Platonic solid with four equilateral triangular faces. It represents perfect three-dimensional symmetry with the minimum number of faces possible for a polyhedron.
+
+Score based on geometric perfection and rendering quality.
+
+---
+
+Tests:
+- All 6 edges equal length within 2% (5 pts)
+  - Edge equality: all edges must be equal
+- Face normals angles 70.53° ± 1° between any pair (3 pts)
+  - Face normals angles: arccos(1/3) ≈ 70.53°
+- Circumscribed sphere radius 1 ± 2% (2 pts)
+  - Circumsphere radius: √(3/8) when edge length = 1
+
+Output format:
+Score: S/10
+Rationale: <brief narrative (≤120 words) summarising which tests passed/failed>

@@ -1,0 +1,20 @@
+**Objective** – Visualise the classical cycloid produced by a circle of radius $r=1$ rolling along the x‑axis, then tile it to form a wave pattern.
+
+**Curve**
+
+$
+  x(θ)= θ - \sin θ,\qquad y(θ)= 1 - \cos θ,\quad θ∈[0,2π].
+$
+
+**Wave tiling**
+
+* Repeat the cycloid for 6 consecutive periods (θ ∈ [0,12π]); join end‑to‑end.
+* Mirror the entire wave about the x‑axis to produce a "trochoid trough" pattern.
+
+**Styling**
+
+* Positive‑y wave: stroke #ffaa00, 5 px.  Negative‑y mirror: stroke #0066ff, 5 px.
+* Thin grey baseline at y=0, 1 px.
+* Canvas 2600 × 800 px, 100 px margin left/right. White background.
+
+**Deliverable** – PNG.

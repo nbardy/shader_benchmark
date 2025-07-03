@@ -1,0 +1,25 @@
+**Objective**
+Render **loxodromic spirals** on a sphere surface—curves that maintain constant angle with meridians, creating mesmerizing spiral patterns from pole to pole.
+
+**Mathematical recipe**
+
+1. Generate 12 loxodromic curves on unit sphere, each with different starting longitude.
+2. Loxodrome parameterization (angle α = 35° with meridians):
+   - θ(t) = 2·arctan(exp(t·cot(α))) - π/2 (latitude)
+   - φ(t) = φ₀ + t (longitude)
+   - t ∈ [-8, 8] to cover multiple spiral turns.
+3. Convert to Cartesian: x = cos(θ)cos(φ), y = cos(θ)sin(φ), z = sin(θ).
+4. Render each spiral as a tube (radius 0.02) with emissive material.
+5. Add transparent sphere (radius 0.98) with subtle grid lines.
+
+**Styling**
+
+* Spiral colors: HSV gradient based on longitude φ₀, full spectrum.
+* Emissive intensity varies with latitude: brightest at equator.
+* Sphere: glass-like material, IOR 1.1, transparency 0.85.
+* Dark background with subtle star field.
+* Bloom post-processing for glowing spirals.
+* Camera at (2.5, 1.5, 2), looking at origin; FOV 45°.
+* Resolution 2048 × 2048 px, 4× SSAA.
+
+**Deliverable** Single PNG showing luminous loxodromic spirals wrapping the sphere.

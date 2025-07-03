@@ -1,0 +1,30 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Problem 114.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected epicycloid properties**
+
+* Exactly 4 cusps at angles 0°, 90°, 180°, 270° with radius = 5 × r = 5.
+* Curve length 16π.
+* At each cusp, curvature radius = 0 (sharp point).
+* Dashed guide circle radius R = 4 visible, concentric with curve centroid.
+
+**Scoring**
+
+| Aspect                    | Pts | Checks                                       |
+| ------------------------- | --- | -------------------------------------------- |
+| **Cusp count / position** | 0‑3 | 4 red dots, positions within 1 % of theory.  |
+| **Curve edge**            | 0‑2 | Stroke smooth; no gaps.                      |
+| **Guide circle**          | 0‑1 | Grey dashed circle present, correct radius.  |
+| **Scale & centring**      | 0‑2 | Epicycloid centred; max radius 5 ± 2 %.      |
+| **Colour & legend**       | 0‑2 | Correct colours; only specified marks exist. |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

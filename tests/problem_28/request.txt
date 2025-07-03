@@ -1,0 +1,9 @@
+Regular dodecahedron circumscribed sphere radius = 1. Use golden ratio φ=(1+√5)/2.
+
+Material & lighting:
+- Bronze (#b57b33) metallic, roughness 0.25
+- HDR "studio soft" light, key from (4,4,6)
+- Camera (4,-3,2.5), FOV 30°
+
+File: 2600×2000
+Deliverable: Outputs a single image.

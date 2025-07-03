@@ -1,0 +1,7 @@
+Regular octahedron edge = 2. Position one vertex up (0,0,√2).
+
+Rendering:
+- Solid slate-gray faces (#666d78), glossy; edge bevel 0.05
+- Key light (5,3,6). White BG. 2000×1600
+
+Deliverable: Outputs a single image.

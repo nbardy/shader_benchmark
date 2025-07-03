@@ -1,0 +1,28 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Problem 210.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected features**
+
+* Edge length on cube frame equal within 3 %.
+* 32 visible edges, 24 dashed hidden.
+* Rotation preserves 4‑D distances – verify random edge lengths unchanged pre‑/post‑rotation.
+
+**Scoring**
+
+| Aspect             | Pts | Checks                                         |
+| ------------------ | --- | ---------------------------------------------- |
+| Edge equality      | 0‑3 | Visible edge lengths equal within 3%.         |
+| Visible/hidden     | 0‑2 | 32 visible, 24 hidden edges counted.          |
+| 4D length check    | 0‑3 | 4D distances preserved through rotation.      |
+| Clarity            | 0‑2 | Resolution, edge styles, colors correct.      |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

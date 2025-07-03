@@ -1,0 +1,33 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Möbius Transformation in 3D.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected visual cues**
+
+* Two lattice structures: original (grey, faded) and transformed (glowing, colored).
+* Conformal distortion preserving angles at lattice intersections.
+* Singularity region showing extreme warping/stretching.
+* Smooth color gradient indicating transformation magnitude.
+* Variable tube thickness based on transformation scaling.
+* Focal sphere marking singularity location.
+* Volumetric glow enhancing transformed structure visibility.
+
+**Scoring rubric**
+
+| Aspect                     | Pts | Explicit checks                                                            |
+| -------------------------- | --- | -------------------------------------------------------------------------- |
+| **Transformation accuracy** | 0‑3 | Verify Möbius formula at 20 points; error < 2%.                          |
+| **Conformal property**     | 0‑2 | Angles preserved at intersections; measure 10 random angles.               |
+| **Visual continuity**      | 0‑2 | Smooth warping; no discontinuities except at singularity.                 |
+| **Color/size mapping**     | 0‑2 | Colors and thickness correctly reflect |cw+d|⁻¹.                          |
+| **Rendering quality**      | 0‑1 | Both lattices visible; glow effect present.                               |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: …
+```

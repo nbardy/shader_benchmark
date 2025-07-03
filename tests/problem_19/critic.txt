@@ -1,0 +1,35 @@
+Evaluate the submission for the Sierpinski Pyramid (Tetrahedral Fractal) visualization.
+
+Key evaluation criteria:
+1. Correct recursive subdivision creating 341 tetrahedra at depth 4
+2. Proper edge length scaling (factor of 0.5 per level)
+3. Accurate face count after de-duplication (1024 exterior faces)
+4. Self-similar structure visible at multiple scales
+5. Glass-blue color gradient mapping to recursion depth
+
+The Sierpinski tetrahedron is a 3D fractal that extends the concept of the Sierpinski triangle into three dimensions. The visualization should clearly show the self-similar voids that appear at each level of recursion, creating a crystalline structure with intricate geometric patterns.
+
+Score based on mathematical accuracy of the fractal construction and visual quality of the icy quartz appearance.
+
+---
+
+Ground-truth numbers:
+- Child edge ratio = 0.5 each level
+- #Outer faces after culling = 4 × 4⁴ = 1024 (each smallest tetra supplies one face of each orientation)
+
+Evaluation protocol:
+1. Mesh extraction – if PNG only, use marching-tets; else load embedded geometry
+2. Edge-length scaling (4 pts)
+   - Cluster edges by k-means into 5 groups; verify means differ by factor 2±3%
+3. Face count (2 pts)
+   - Total exterior triangular faces must equal 1024 ± 20
+4. Self-similar void test (2 pts)
+   - Slice model at z = 0; resulting 2-D cross section should contain 16 voids (4²) — Hough-triangle detection
+5. Colour-depth correlation (2 pts)
+   - Sample 3000 vertices: depth vs HSV-value correlation r ≥ 0.95
+
+Scoring – 10 pts total.
+
+Output format:
+Score: S/10
+Rationale: <brief narrative (≤120 words) summarising which tests passed/failed>

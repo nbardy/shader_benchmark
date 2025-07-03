@@ -1,0 +1,5 @@
+/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_b2365332-3e36-4273-a6db-86d94ff5d9f6_results/target/debug/deps/shader_bench-42b44bf763f89bfe: src/main.rs
+
+/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_b2365332-3e36-4273-a6db-86d94ff5d9f6_results/target/debug/deps/shader_bench-42b44bf763f89bfe.d: src/main.rs
+
+src/main.rs:

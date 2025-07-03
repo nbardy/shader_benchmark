@@ -1,0 +1,15 @@
+[package]
+name        = "shader-bench"
+version     = "0.1.0"
+edition     = "2021"
+
+[dependencies]
+# Core GPU stack  
+wgpu        = "0.20"        # WebGPU native bindings
+pollster    = "0.3"         # block_on!
+bytemuck    = "1.0"         # cast_slice helper
+futures-intrusive = "0.5"   # async channels
+# Image dump helpers
+image       = { version = "0.25", default-features = false, features = ["png"] }
+# CLI parsing
+clap        = { version = "4.5", features = ["derive"] }

@@ -1,0 +1,11 @@
+Superpose two congruent regular tetrahedra so that their vertices lie on a common cube of side 2 centred at origin:
+- Tetra A vertices (1,1,1), (-1,-1,1), (-1,1,-1), (1,-1,-1)
+- Tetra B vertices (1,1,-1), (-1,-1,-1), (-1,1,1), (1,-1,1)
+Combined hull is a regular octahedron's stellation.
+
+Rendering:
+- Solid faces, semi-transparent glass (α 0.6) coloured cyan (#00ccee) for Tetra A, magenta (#cc00ee) for Tetra B
+- Edge stroke overlay 2 px black
+- Camera (4,3,3), FOV 30°, white BG. 2000 × 1600 PNG
+
+Deliverable: Outputs a single image.

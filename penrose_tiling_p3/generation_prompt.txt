@@ -1,0 +1,17 @@
+**Objective**
+Generate a finite patch of the rhombic Penrose tiling (P3) by **three deflation steps** starting from a single thick rhombus.
+
+**Algorithm**
+
+1. Thick rhombus edge length = 1, angle 72°.
+2. Apply the standard deflation rules (inflate by τ = (1+√5)/2, subdivide into thick + thin rhombi) three times.
+3. Retain tiles whose centroids lie within radius 8 of the origin.
+
+**Styling**
+
+* Thick rhombi: fill #ffcc66; thin rhombi: #66aaff.
+* Draw arrow matching rules: short red arrow centred on each edge, oriented inward for thick, outward for thin.
+* Edge stroke 1.5 px black.
+* Canvas 2500 × 2500 px, white background.
+
+**Deliverable** PNG.

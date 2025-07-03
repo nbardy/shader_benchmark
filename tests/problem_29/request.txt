@@ -1,0 +1,46 @@
+**Objective**
+Create a high-resolution visualization of a regular icosahedron, one of the five Platonic solids. The icosahedron should be rendered with precise geometric accuracy and aesthetic appeal.
+
+**Mathematical Specification**
+
+1. **Geometric Definition**
+   - A regular icosahedron has 20 equilateral triangular faces, 12 vertices, and 30 edges
+   - Vertex coordinates (assuming unit circumradius):
+     * (0, ±1, ±φ)/√(φ²+1) where φ = (1+√5)/2 (golden ratio)
+     * (±1, ±φ, 0)/√(φ²+1) 
+     * (±φ, 0, ±1)/√(φ²+1)
+   - All vertices lie on a unit sphere
+
+2. **Face Structure**
+   - 20 triangular faces, each an equilateral triangle
+   - Each vertex connects to exactly 5 edges
+   - Dihedral angle between adjacent faces: arccos(-√5/3) ≈ 138.19°
+
+3. **Rendering Requirements**
+   - Display as a solid object with visible face boundaries
+   - Orient with one vertex pointing upward along the +y axis
+   - Apply rotation: slow continuous rotation around the y-axis (1 revolution per 8 seconds)
+
+4. **Visual Style**
+   - Face coloring: Use a gradient based on face normal direction
+     * Hue = atan2(ny, nx) mapped to [0, 360°]
+     * Saturation = 0.7
+     * Value = 0.5 + 0.5 * nz (where n is the face normal)
+   - Edge rendering: Dark grey lines (RGB: 0.2, 0.2, 0.2) with width ≈ 2 pixels
+   - Vertices: Small spheres at each vertex (radius ≈ 0.02), colored white
+
+5. **Lighting and Shading**
+   - Use Phong shading with:
+     * Ambient: 0.3
+     * Diffuse: 0.6
+     * Specular: 0.1 (shininess: 32)
+   - Light source at position (2, 3, 2)
+   - Background: Gradient from light blue (top) to white (bottom)
+
+6. **Camera and Output**
+   - Perspective projection with 45° field of view
+   - Camera positioned at (0, 0, 4) looking at origin
+   - Output resolution: 1600 × 1600 pixels
+   - Enable 4× antialiasing
+
+Deliverable: Outputs a single image.

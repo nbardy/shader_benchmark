@@ -1,0 +1,15 @@
+**Objective**
+Render a trefoil knot with torsion-based coloring to visualize the mathematical knot structure.
+
+**Curve**
+
+$
+\mathbf r(t)=\bigl(\sin t+\!2\sin2t,\; \cos t-\!2\cos2t,\; -\sin3t\bigr),\quad t∈[0,2π].
+$
+
+**Styling**
+
+Tube radius 0.12. Colour by torsion: map torsion sign to hue (positive red, negative blue) via HSV.
+Camera (5,3,3), light (6,6,8), FOV 30°, white BG. 2500 × 2000 px PNG.
+
+**Deliverable** PNG.

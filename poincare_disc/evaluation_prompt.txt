@@ -1,0 +1,30 @@
+**Inputs**
+
+1. *Spec* – the full text of Prompt #1.
+2. *Candidate image* – the renderer's output.
+
+**Task**
+Output an integer score **S** (1 – 10) indicating how closely the candidate image satisfies the spec, and give a concise explanation (≤ 150 words).
+
+**Rubric**
+
+| Aspect                     | Points | Evaluation criteria                                                                                |
+| -------------------------- | ------ | -------------------------------------------------------------------------------------------------- |
+| **Tiling topology**        | 0 – 3  | All faces are triangles; exactly 8 meet at every vertex; pattern fills disk without gaps/overlaps. |
+| **Geodesic accuracy**      | 0 – 2  | Edges are straight through centre or arcs orthogonal to boundary circle.                           |
+| **Checkerboard colouring** | 0 – 2  | Alternating black/white with global two‑colouring; central face black.                             |
+| **Boundary & exterior**    | 0 – 1  | Unit circle present, stroke \~4 px, exterior pure white.                                           |
+| **Visual clarity**         | 0 – 2  | High resolution, sharp edges, no aliasing or artefacts, conforms to style (no text, no gradients). |
+
+**Output format**
+
+```text
+Score: S/10
+Rationale: <brief justification>
+```
+
+**Scoring notes**
+
+* Any violation of topology (wrong face shapes, wrong vertex valence) caps **Tiling topology** at 0.
+* Missing checkerboard alternation or wrong central colour deducts all **Checkerboard colouring** points.
+* Minor rendering flaws (thin lines, slight aliasing) subtract 1 pt from **Visual clarity**.

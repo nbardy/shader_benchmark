@@ -1,0 +1,36 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Differential Equations Water.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected visual cues**
+
+* Multiple distinct water regions representing different equations
+* Wave equation: clear water with regular wave patterns
+* Heat equation: viscous, honey-like appearance with smooth flow
+* Schrödinger equation: misty, probability-cloud appearance in violet
+* Realistic water rendering with caustics and proper reflections
+* Foam formation at high gradient regions (solution discontinuities)
+* Boundary conditions visible as different shoreline types
+* Golden hour lighting with warm atmospheric effects
+* Underwater view showing layered solution history
+* Proper depth and atmospheric perspective
+
+**Scoring rubric**
+
+| Aspect                     | Pts | Explicit checks                                                            |
+| -------------------------- | --- | -------------------------------------------------------------------------- |
+| **Equation variety**       | 0‑3 | At least 3 distinct equation types with appropriate visual signatures      |
+| **Water realism**          | 0‑2 | Caustics, reflections, subsurface scattering, proper transparency         |
+| **Mathematical accuracy**  | 0‑2 | Wave patterns match equation behavior; boundaries correctly implemented    |
+| **Atmospheric rendering**  | 0‑2 | Golden hour lighting, mist, proper perspective                             |
+| **Interaction details**    | 0‑1 | Foam at discontinuities; sediment layers visible underwater                |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: …
+```

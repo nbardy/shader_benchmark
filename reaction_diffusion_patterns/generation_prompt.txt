@@ -1,0 +1,27 @@
+**Objective**
+Simulate the Gray–Scott reaction–diffusion system on a square domain until visually stable patterns emerge; output a single coloured image of the $u$-field.
+
+**Model**
+
+$
+\begin{aligned}
+\partial_t u &= D_u\nabla^{2}u - uv^{2} + F(1-u),\\
+\partial_t v &= D_v\nabla^{2}v + uv^{2} - (F+k)v,
+\end{aligned}
+$
+
+with parameters $D_u=0.14,\;D_v=0.06,\;F=0.035,\;k=0.065$ (classic "zebra / spot" regime).
+
+**Numerics**
+
+* Grid $512\times512$, spacing $h=1$.
+* Time‑step $\Delta t=1.0$, explicit Euler, 20 000 steps.
+* Laplacian via 5‑point stencil, periodic boundaries.
+* Initial condition: $u\equiv1,\;v\equiv0$ plus a $20\times20$ square in centre where $u=0.5,\;v=0.25$ plus 2 % uniform noise.
+
+**Visualisation**
+
+* Map $u(x,y,T)$ to colour with "turbo" palette (0 → dark blue, 1 → yellow‑white).
+* 2048 × 2048 px PNG, no axes, pure white 40‑px margin.
+
+**Deliverable**  One PNG adhering to the above.

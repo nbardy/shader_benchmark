@@ -1,0 +1,21 @@
+**Objective**
+Simulate and visualise the 2‑D X‑ray diffraction pattern of a perfect *face‑centred cubic* (FCC) crystal viewed down the ⟨001⟩ zone axis.
+
+**Physical model**
+
+1. **Real‑space lattice** FCC with lattice constant $a=1$. Scatterers at fractional positions (0,0,0), (0,½,½), (½,0,½), (½,½,0).
+2. **Scattering amplitude** Kinematic approximation; each scatterer contributes unit complex amplitude.
+3. **Reciprocal lattice** Compute structure factors $F_{\mathbf G}$ for all integer Miller indices $(h,k,0)$ with $‖\mathbf G‖\le20\,(2\pi/a)$. Allowed reflections satisfy $h+k$ even. Intensity $I_{\mathbf G}=|F_{\mathbf G}|^{2}$.
+4. **Detector plane** Normal to beam; place origin at transmitted beam (which may be suppressed for clarity). Pixel coordinates $q_x,q_y\propto h,k$.
+
+**Rendering instructions**
+
+* Canvas 1800 × 1800 px, black background.
+* Draw each reflection as a filled disk. Disk centre at $(h,k)$ scaled so that the (20,0) spot sits 90 % of radius from centre.
+* Disk radius = $4+‖(h,k)‖/6$ px (larger spots at higher order).
+* Intensity → greyscale: $I=0$ → #000000, max intensity → #FFFFFF, linear mapping.
+* Suppress the (0,0) direct beam.
+* No axes, text or borders.
+
+**Deliverable**
+16‑bit PNG, gamma 2.2.

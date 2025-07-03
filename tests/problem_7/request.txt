@@ -1,0 +1,29 @@
+The Costa surface should appear like a delicate, three-winged glass sculpture suspended in mid-air. Viewers must immediately notice:
+1. The vertical catenoidal neck shooting up/down
+2. The two horizontal catenoidal ends
+3. The saddle-like junction that hints at the single toroidal handle (genus 1)
+
+Mathematical data:
+- Weierstrass representation: g(z) = z, dh = λ*dz/(z³-1), λ = 0.252 (period-closing)
+- Parameter domain: hexagonally-fundamental region expressed by polar grid in the z-plane with 450 (radial) × 300 (angular) samples. Use conjugate pairing to close periods and tile just once.
+- Coordinate integration via Kummer surface tracking; step size adaptive to local curvature. Terminate when |z| > 4 or |Re ∫| > 5.
+
+Mesh & normals:
+- Weld identical boundary vertices to enforce genus 1 and Euler characteristic -2
+- Compute mean curvature H at each vertex; store in vertex attribute
+
+Shading:
+- Base material – frosted glass (IOR 1.5, roughness 0.2)
+- Curvature tint – mix 80% material colour with lime-green (#55FF88) where |H|<5×10^-4
+- Lighting – three-point studio rig: key (4,4,6), fill (-6,-2,5) intensity 0.5, rim (0,0,8) intensity 0.7, all pure white
+
+Camera & framing:
+- Perspective; focal length 35 mm, sensor 36 mm (true-to-life field)
+- Position (6,4,3), look-at (0,0,0). Orbit lines of sight by 5° downwards so the vertical neck is not foreshortened.
+- Depth-of-field: focus distance 5 units, f/2 blur for background only
+
+Extras:
+- Add invisible ground-plane with shadow-catcher for soft shadow
+- Transparent background (#00000000) – allows later compositing
+- PNG-32 (RGBA), 2600 × 1600 px
+Deliverable: Outputs a single image.

@@ -1,0 +1,18 @@
+**Objective**
+Integrate the Lorenz system ($\sigma=10,\;\rho=28,\;\beta=8/3$) and visualise both the 3‑D trajectory and its Poincaré section at plane $z=\rho-1=27$.
+
+**Numerics**
+
+* Integrator: 4th‑order RK, $\Delta t=0.005$, total time 100 s.
+* Initial point (1,1,1).
+* Record intersections where trajectory crosses plane with $\dot z>0$; interpolate linearly for exact hit.
+
+**Rendering**
+
+* 3‑D curve: colour by time (HSV hue 0 → 360° over integration). Thickness 1 % of attractor diameter.
+* Poincaré points: 4‑px circles on the plane, coloured white.
+* Plane semi‑transparent (#444444, α 0.15).
+* Camera (40°,30°) spherical at radius 50; FOV 60°.  White background.
+* 2000 × 1600 px PNG, gamma 2.2.
+
+**Deliverable** PNG.

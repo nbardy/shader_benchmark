@@ -1,0 +1,26 @@
+**Objective**
+Visualize a **3D wave deformation field** applied to a planar mesh, creating complex interference patterns from multiple wave sources.
+
+**Mathematical recipe**
+
+1. Create high-resolution plane mesh (100×100 vertices, 5×5 units).
+2. Place 3 wave sources at: (-1.5, 0), (1.5, 0), (0, 1.5).
+3. Wave deformation for each source i:
+   - Height: h_i(x,y,t) = A_i · sin(k|r-r_i| - ωt + φ_i) / (1 + |r-r_i|)
+   - A_i = [0.4, 0.3, 0.5], k = 2π, ω = 0, φ_i = [0, π/3, 2π/3].
+4. Total deformation: z = Σh_i(x,y,0) (static snapshot).
+5. Apply smooth normal recalculation for proper shading.
+6. Add edge clamping to prevent boundary artifacts.
+
+**Styling**
+
+* Surface material: Iridescent shader based on view angle and height.
+* Color mapping: Deep blue (troughs) through cyan, green, yellow to white (peaks).
+* Rim lighting to emphasize wave crests.
+* Subtle displacement texture for water-like microdetail.
+* Fog effect increasing with distance.
+* Camera at (4, -3, 2.5), looking at origin; FOV 35°.
+* Dark blue-black gradient background.
+* Resolution 2048 × 2048 px, 4× SSAA.
+
+**Deliverable** Single PNG showing the complex wave interference pattern with realistic water-like appearance.

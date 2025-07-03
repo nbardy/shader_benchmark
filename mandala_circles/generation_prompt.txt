@@ -1,0 +1,22 @@
+**Objective** – Draw a "sacred‑geometry" mandala with exact **12‑fold radial symmetry** composed solely of mutually tangent circles.
+
+**Geometry**
+
+1. **Central circle** radius $R_{0}=0.30$; centre at origin.
+2. **First ring** – 12 identical circles of radius
+
+   $
+     R_{1}=R_{0}\bigl(\csc{\tfrac{\pi}{12}}-1\bigr)^{-1}\approx0.10476,
+   $
+
+   centred on a circle of radius $C_{1}=R_{0}+R_{1}$ at polar angles $\theta_{n}=n\cdot30^{\circ}$.
+   (Each outer circle is tangent to the central circle and to its two immediate neighbours.)
+3. **Bounding circle** of radius $1.00$ centred at origin, tangent to every first‑ring circle (the mandala fits exactly).
+
+**Styling**
+
+* Fill central circle #ffdd55; first‑ring circles alternate #66ccee / #ff7777 as $\theta_{n}$ increases; bounding circle transparent fill, 3‑px gold stroke.
+* All inner circles have 2‑px black stroke.
+* White background, 2000 × 2000 px PNG. No text.
+
+**Deliverable** – single PNG file.

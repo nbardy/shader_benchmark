@@ -1,0 +1,28 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Problem 208.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected features**
+
+* Spike base edges match face edges within 1 %.
+* Rotation angle measured on one spike 20° ± 2°, same for all.
+* Total face count 60.
+
+**Scoring**
+
+| Aspect           | Pts | Checks                                    |
+| ---------------- | --- | ----------------------------------------- |
+| Alignment        | 0‑3 | Spike bases match dodecahedron faces ± 1%. |
+| Twist uniformity | 0‑3 | All spikes rotated 20° ± 2°.             |
+| Face count       | 0‑2 | Total 60 faces (12 dodeca + 48 spike).   |
+| Render quality   | 0‑2 | Chrome material, resolution, background.  |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

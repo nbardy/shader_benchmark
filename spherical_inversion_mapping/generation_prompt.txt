@@ -1,0 +1,26 @@
+**Objective**
+Visualize **spherical inversion** transformation applied to a 3D grid structure, showing how space is turned inside-out through a reference sphere.
+
+**Mathematical recipe**
+
+1. Create a 3D grid of thin cylinders (11×11×11 grid, spacing 0.4 units).
+2. Apply spherical inversion with center at origin and radius R = 2.0:
+   - For point p with |p| > 0: p' = (R²/|p|²) · p.
+   - Points inside sphere move outside, points outside move inside.
+3. Render both original grid (semi-transparent) and inverted grid.
+4. Add reference inversion sphere (radius 2.0) as wireframe.
+5. Color code by distance from origin:
+   - Original grid: fade from white (center) to blue (edges).
+   - Inverted grid: fade from red (was center) to yellow (was edges).
+
+**Styling**
+
+* Grid cylinders: radius 0.015, semi-transparent (alpha 0.6).
+* Inversion sphere: wireframe only, white color, alpha 0.3.
+* Background: deep black with subtle blue gradient.
+* Ambient occlusion for depth perception.
+* Camera at (5, 4, 3), looking at origin; FOV 40°.
+* Add glow effect to inverted grid elements.
+* Resolution 2048 × 2048 px, 4× SSAA.
+
+**Deliverable** Single PNG showing the spatial inversion transformation clearly.

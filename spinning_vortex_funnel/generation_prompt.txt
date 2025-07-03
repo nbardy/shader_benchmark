@@ -1,0 +1,11 @@
+**Objective**
+Visualize fluid flow in a vortex funnel using scalar fields and streamlines.
+
+**Physics**
+Scalar field $ρ(r,z)=\exp[-(r/2)^{2}]\,\exp[-(z/6)^{2}]$. Flow lines tangential velocity $v_θ=4/r$.
+Plot 150 streamlines starting radii 0.5–3, z=0 to z=‑6. 
+
+**Styling**
+Funnel surface semi‑transparent blue. 2400×2000 PNG.
+
+**Deliverable** PNG.

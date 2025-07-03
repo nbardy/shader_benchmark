@@ -1,0 +1,54 @@
+**Objective**
+Produce a single high‑resolution image that visualises the pre‑images (fibres) of three prescribed closed curves on the 2‑sphere under the classical Hopf fibration $p:S^{3}\to S^{2}$.  No copy of the target picture is provided – rely exclusively on the mathematical specification below.
+
+**Mathematical specification**
+
+1. **Spaces and map**
+
+   * Identify $\mathbb R^{4}\cong\mathbb C^{2}$ by
+     $(x_{1},x_{2},x_{3},x_{4})\longleftrightarrow(z_{0},z_{1})=(x_{1}+i\,x_{2},\;x_{3}+i\,x_{4})$.
+   * The *total space* is the unit $3$-sphere
+
+     $$
+       S^{3}=\left\{(z_{0},z_{1})\in\mathbb C^{2}\;|\;|z_{0}|^{2}+|z_{1}|^{2}=1\right\}.
+     $$
+   * The *base space* is the unit $2$-sphere embedded in $\mathbb C\times\mathbb R\simeq\mathbb R^{3}$:
+
+     $$
+       S^{2}=\left\{(z,x)\;|\;z\in\mathbb C,\;x\in\mathbb R,\;|z|^{2}+x^{2}=1\right\}.
+     $$
+   * Hopf map
+
+     $$
+       p(z_{0},z_{1})=\bigl(2\,z_{0}\,\overline{z}_{1},\;|z_{0}|^{2}-|z_{1}|^{2}\bigr).
+     $$
+
+2. **Chosen base loops on $S^{2}$**
+   Work in spherical coordinates $(\theta,\varphi)$ with the usual identification
+   $ (x,y,z)=\bigl(\sin\theta\cos\varphi,\,\sin\theta\sin\varphi,\,\cos\theta\bigr)$.
+
+   * **Loop A (upper)** latitude  $+\;60^{\circ}$: $\theta=\dfrac{\pi}{3},\;\varphi\in[0,2\pi)$
+   * **Loop B (equatorial)** latitude $0^{\circ}$: $\theta=\dfrac{\pi}{2},\;\varphi\in[0,2\pi)$
+   * **Loop C (lower)** latitude $-60^{\circ}$: $\theta=\dfrac{2\pi}{3},\;\varphi\in[0,2\pi)$
+
+3. **Geometry to render**
+   For each base loop $\Gamma_{k}$ ($k\in\{A,B,C\}$) render the torus
+
+   $$
+      T_{k}=p^{-1}(\Gamma_{k})\subset S^{3}.
+   $$
+
+   Each point of $T_{k}$ is a *circle fibre*; the union of those fibres over the loop is a flat torus embedded in $S^{3}$.
+
+4. **Projection to $\mathbb R^{3}$**
+   Use stereographic projection $\sigma:S^{3}\setminus\{(0,0,0,1)\}\to\mathbb R^{3}$ from the north‑pole $(0,0,0,1)$.  Compose $T_{k}$ with $\sigma$ to obtain three linked tori in $\mathbb R^{3}$.
+
+5. **Rendering style**
+
+   * Draw every fibre as a smooth tube of constant radius (≈ 1 % of the circumscribed sphere diameter) and at least 500 points per fibre so that the surface looks continuous.
+   * Colour **continuously** with the HSV hue wheel according to the polar angle $\varphi$ on the base loop: $\text{Hue}= \varphi/(2\pi)$.  Apply identical colouring to fibre points originating from the same base point.
+   * Place a small translucent grey sphere at the lower‑right of the frame representing the base $S^{2}$; plot the three coloured base loops on it and include three thin axial rods (±x,±y,±z) for orientation.
+   * Use a white background, soft Phong shading, no outlines. Image should be at least 1600 × 1600 px, antialiased.
+
+**Deliverable**
+A single RGB image (PNG preferred) satisfying the above geometric and stylistic constraints. 

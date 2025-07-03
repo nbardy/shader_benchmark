@@ -1,0 +1,50 @@
+Evaluate this shader-generated image based on the Menger cube fractal visualization requirements.
+
+**Scoring Criteria (1-10 scale):**
+
+1. **Fractal Completeness**: Does the image show a proper Menger cube with at least 4 iterations of recursive subdivision? Are the characteristic cross-shaped holes visible at multiple scales?
+
+2. **Geometric Precision**: Is the fractal geometry mathematically correct? Are the cube proportions accurate and hole patterns properly aligned? Are edges clean without z-fighting artifacts?
+
+3. **Color Implementation**: Does the image use the specified color gradient (deep blue to white) based on iteration levels? Is the metallic/crystalline material appearance achieved?
+
+4. **Lighting Quality**: Is proper three-point lighting evident with key, fill, and rim lights? Do soft shadows enhance the 3D depth perception? Is contrast appropriate for showing detail?
+
+5. **Technical Excellence**: Is the image high-resolution (≥1600x1600) with proper anti-aliasing? Is the camera angle optimal for showing the 3D fractal structure? Is the dark gradient background implemented correctly?
+
+Examine the fractal structure carefully, checking for mathematical accuracy in the recursive pattern, proper hole placement, and overall visual quality. Provide detailed feedback on each criterion, then conclude with your numerical score.
+
+---
+
+**Inputs**
+
+1. *Spec* – the exact text of Prompt #2 (generation prompt).
+2. *Candidate image* – the renderer's output produced from that spec.
+
+**Task**
+Provide a *reasoned* score **S** on the integer scale 1 – 10 that measures how well the candidate image fulfils the spec. Use the rubric below (maximum in parentheses, total = 10). Include a short justification (≤ 150 words).
+
+**Rubric**
+
+| Aspect                               | Points | Guide                                                                                                            |
+| ------------------------------------ | ------ | ---------------------------------------------------------------------------------------------------------------- |
+| **Fractal Structure**                | 0 – 3  | Clear recursive cubic structure with proper hole patterns? At least 4 iterations visible? Correct Menger cube geometry? |
+| **Geometric Accuracy**              | 0 – 2  | Proper cube proportions and hole placement? No missing or incorrect subdivisions? Clean geometric edges?         |
+| **Color and Material**              | 0 – 2  | Correct color gradient from deep blue to white by iteration level? Metallic/crystalline appearance achieved?     |
+| **Lighting and Depth**              | 0 – 2  | Three-point lighting setup evident? Soft shadows enhance depth? Good contrast and dimensional clarity?           |
+| **Overall Visual Quality**          | 0 – 1  | High resolution (≥1600x1600)? Proper anti-aliasing? No rendering artifacts or z-fighting?                      |
+
+**Output format**
+
+```text
+Score: S/10
+Rationale: <concise explanation>
+```
+
+**Scoring conventions**
+
+* A perfect implementation with all 4+ iterations and correct geometry earns *10*.
+* Missing or incorrect fractal iterations cap the score at *≤ 6*.
+* Poor geometric accuracy (wrong hole patterns) caps the score at *≤ 5*.
+* Incorrect color scheme or poor lighting subtracts 1 – 2 points.
+* Low resolution or significant rendering artifacts subtract 1 point.

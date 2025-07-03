@@ -1,0 +1,13 @@
+**Objective**
+Create a cube with edges following true helical paths during a 90° twist transformation.
+
+**Geometry**
+Same as previous twisted cube but edges must trace true helices: parametric equation for vertical edge
+$x=1,\;z=1,\;y∈[-1,1]$ → after twist:
+$\theta(y)=\frac{\pi}{2}\frac{y+1}{2},\;  
+x'(y)=\cos\theta,\;z'(y)=\sin\theta.$
+
+**Styling**
+Render orange diffuse (#ffaa33) with black wire overlay (1 px). 2400×1600 PNG.
+
+**Deliverable** PNG.

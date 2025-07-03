@@ -1,0 +1,30 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Problem 202.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+**Expected numerics**
+
+* Helical pitch 3.4 Å ≈ 0.54 per radian: distance between successive turns along z = 3.4.
+* Phase offset of strands constant π ± 0.5°.
+* Exactly 60 rungs (6 turns × 10).
+* Cross‑section centres distance 2 (radius 1 + radius 1).
+
+**Scoring**
+
+| Aspect               | Pts | Tests                                             |
+| -------------------- | --- | ------------------------------------------------- |
+| Pitch accuracy       | 0‑3 | Mean pitch 3.4 ± 3 %.                             |
+| Phase offset         | 0‑2 | RMS angular diff π ± 0.5°.                        |
+| Rung count / spacing | 0‑2 | 60 rungs, z‑spacing 0.34 ± 5 %.                   |
+| Radius & separation  | 0‑1 | Helix radius 1 ± 2 %.                             |
+| Render quality       | 0‑2 | No intersections; anti‑aliasing; colours correct. |
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

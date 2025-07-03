@@ -1,0 +1,28 @@
+**Objective**
+Generate **fractal loxodromic patterns** by iterating complex Möbius transformations, creating self-similar spiral structures in 3D space.
+
+**Mathematical recipe**
+
+1. Define loxodromic Möbius transformation: f(z) = (az+b)/(cz+d)
+   - Use a = 1.2·exp(iπ/6), b = 0.1, c = 0.1i, d = 1.
+   - Fixed points: z₁, z₂ with |f'(z₁)| > 1 (repelling), |f'(z₂)| < 1 (attracting).
+2. Generate orbit for 200 initial points on circle |z| = 1.5:
+   - Iterate f(z) up to 50 times or until |z| > 10.
+   - Store full trajectory for each initial point.
+3. Embed in 3D using stereographic projection:
+   - (x,y,z) = (2Re(z)/(1+|z|²), 2Im(z)/(1+|z|²), (|z|²-1)/(|z|²+1)).
+4. Connect trajectory points to form spiral curves.
+5. Add recursion: Apply transformation to smaller circles.
+
+**Styling**
+
+* Trajectories as glowing tubes, radius decreases with iteration.
+* Color by iteration count: Deep purple (early) to bright orange (late).
+* Emission intensity increases near fixed points.
+* Subtle particle effects at trajectory endpoints.
+* Black background with blue fog for depth.
+* HDR bloom for luminous spirals.
+* Camera at (2, 1.5, 2.5), looking at origin; FOV 55°.
+* Resolution 2048 × 2048 px, 4× SSAA.
+
+**Deliverable** Single PNG showing fractal spiral patterns from loxodromic iteration.

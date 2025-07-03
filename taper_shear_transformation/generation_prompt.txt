@@ -1,0 +1,28 @@
+**Objective**
+Demonstrate combined **taper and shear transformations** on a cylindrical tower, creating a leaning, tapered structure like a stylized skyscraper.
+
+**Mathematical recipe**
+
+1. Start with cylinder: radius 0.8, height 4.0, centered at origin.
+2. Apply taper transformation (narrowing toward top):
+   - Scale factor: s(z) = 1.0 - 0.6·(z/4.0)² (quadratic taper).
+   - New radius: r'(z) = r · s(z).
+3. Apply shear transformation (leaning):
+   - Shear vector: (0.3, 0.1) per unit height.
+   - Displacement: x' = x + 0.3·z, y' = y + 0.1·z, z' = z.
+4. Add architectural details: 20 floor divisions with slight indentations.
+5. Include corner edge beveling for realism.
+
+**Styling**
+
+* Material: Glass and steel composite with reflective properties.
+* Vertical gradient: Dark blue glass (bottom) to silver metal (top).
+* Window grid texture with emissive office lights (random distribution).
+* Environment mapping for realistic reflections.
+* Ground plane with subtle reflection at z = 0.
+* Dramatic lighting: Sun from (5, 3, 8), ambient skylight.
+* Camera at (4, -3, 1.5), looking up at building; FOV 40°.
+* Sky gradient background (horizon to zenith).
+* Resolution 2048 × 2048 px, 4× SSAA.
+
+**Deliverable** Single PNG showing the tapered, sheared tower with architectural realism.

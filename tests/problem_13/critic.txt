@@ -1,0 +1,27 @@
+Evaluate the submission for the "Prime-Defect" Crystal Lattice visualization.
+
+Key evaluation criteria:
+1. Correct identification of 25 prime positions as vacancies
+2. Accurate strain field computation following discrete Laplace equation
+3. Proper decay of strain field away from defects
+4. Visual quality using inferno colormap
+
+This visualization combines number theory with materials science, showing how prime numbers can create "defects" in a crystal lattice. The strain field should show characteristic 1/r decay away from each prime-positioned vacancy, creating a complex interference pattern where multiple strain fields overlap.
+
+Score based on mathematical accuracy of prime positions, correct physics of the strain field, and visual presentation.
+
+---
+
+Reference – number of vacancy columns N_v=25.
+
+Grading steps:
+1. Vacancy detection (4 pts)
+   - Count distinct black disk centroids along y=0; must equal 25; x-positions match prime list within 1 px
+2. Strain-field validation (3 pts)
+   - Pick line y=±20; ε profile should decay as ∝1/|y|. Fit log-log slope −1 ± 0.1
+3. Colour-map integrity (1 pt) – pixel with max ε maps to inferno RGB ≈ (#fcffa4) ± ΔE 6
+4. Frame & resolution (2 pts) – white border uniform 100 ± 2 px; inner grid exactly 201×201 data points
+
+Output format:
+Score: S/10
+Rationale: <≤120 words>

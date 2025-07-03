@@ -1,0 +1,18 @@
+Imagine a thermogram on the Poincaré disk that visualises how heat pulses spread in negatively curved space. Colours must transition from white-hot at the centre to icy indigo at the frontier, emphasising the exponentially accelerated diffusion unique to hyperbolic geometry.
+
+Mathematics:
+- Heat kernel in 2-D hyperbolic space (curvature −1) for time t=0.2:
+  K(r,t) = (1/√(4πt)) * exp(-t) * exp(-r²/(4t))
+  where r is the hyperbolic distance from origin (on Poincaré disk r = 2 artanh ρ with ρ=|z|)
+- Compute K on 2048×2048 disk-centric grid
+
+Colour & geometry:
+- Map K linearly to "plasma" palette (Matplotlib); K_max≈1.2400 at centre
+- Cap outer 10 px ring to pure black to frame disk
+- Overlay geodesic circle of hyperbolic radius 1.5 (Euclidean radius ρ_c=tanh(1.5/2)=0.905); draw as 3 px gold (#ffcc33) dashed line (dash 12 px)
+
+Annotations:
+- Add a minuscule legend at bottom-left: colour bar 200 × 20 px, ticks at K=1.24, 0.5, 0.1
+
+File: PNG-24, sRGB, 2200 × 2200 px
+Deliverable: Outputs a single image.

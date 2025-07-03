@@ -1,0 +1,3 @@
+Create a truncated icosahedron (soccer ball shape) with 12 pentagonal faces (black) and 20 hexagonal faces (white). Edge length 1.0. Material: slightly glossy with subtle leather texture. Lighting: outdoor daylight. Background: grass green gradient. Camera: classic 3/4 view showing multiple face types.
+
+Outputs a single image.
