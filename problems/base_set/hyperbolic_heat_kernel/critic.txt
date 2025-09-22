@@ -1,0 +1,58 @@
+__MATHEMATICAL_ACCURACY__
+Heat Kernel Mathematical Properties:
+- Accurate heat kernel values with correct center maximum K = 1.24 ± 2%
+- Proper radial decay following hyperbolic geometry principles
+- Mathematical precision in heat diffusion calculations for hyperbolic space
+- Correct implementation of hyperbolic heat kernel formula
+- Exponentially accelerated diffusion behavior accurately demonstrated
+
+Isotherm Calculation Precision:
+- Level set K=0.2 corresponding to hyperbolic radius r ≈ 1.481 (ρ ≈ 0.901)
+- Accurate flood-fill analysis for color band mapping to 0.19–0.21 range
+- Median Euclidean radius ρ̂ conversion to hyperbolic r̂=2 artanh ρ̂
+- Mathematical accuracy |r̂ − 1.481| ≤ 0.03 for full precision requirements
+- Proper coordinate transformation between Euclidean and hyperbolic metrics
+
+Palette Monotonicity Mathematics:
+- Monotonic color progression verified along 256+ radial rays
+- Color index decreasing strictly outward in ≥95% of rays as required
+- Mathematical consistency in color mapping function throughout disk
+- Proper implementation of plasma palette color progression
+- Accurate color-to-value mapping maintaining mathematical relationships
+
+__VISUAL_IMPLEMENTATION__
+Color Mapping and Visual Quality:
+- Plasma palette transitioning from hot (white-yellow) center to cool (purple-black) edge
+- Professional color scheme enhancing hyperbolic diffusion pattern visibility
+- Clear visual representation of heat diffusion behavior in hyperbolic space
+- High-quality color gradient implementation supporting mathematical analysis
+- Appropriate contrast and clarity for scientific visualization purposes
+
+Geometric Overlay Elements:
+- Geodesic circle overlay with proper dashed pattern (10–14 px length)
+- Circle color accuracy with ΔE* < 6 from #ffcc33 specification
+- Hough-circle detection confirming geometric precision
+- Professional overlay integration enhancing mathematical understanding
+- Clear geometric reference elements supporting hyperbolic analysis
+
+Legend and Annotation Quality:
+- Color-bar rectangle legend properly positioned and rendered
+- Tick labels readable with OCR-verifiable numeric values
+- Professional legend design supporting scientific interpretation
+- Clear value-to-color correspondence enabling quantitative analysis
+- High-quality annotation meeting scientific visualization standards
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Heat Kernel Elements:
+- Complete hyperbolic heat kernel visualization with center maximum
+- All mathematical properties of hyperbolic diffusion accurately represented
+- Geodesic circle overlay and legend fully implemented as specified
+- Proper Poincaré disk representation maintaining geometric accuracy
+- Complete thermal diffusion pattern demonstration in hyperbolic space
+
+Technical Specification Compliance:
+- All mathematical constraints satisfied within specified tolerance ranges
+- Color mapping requirements met with proper monotonicity verification
+- Geometric overlay elements meeting exact specification requirements
+- Legend and annotation standards achieved for professional visualization
+- Complete adherence to hyperbolic heat kernel visualization requirements

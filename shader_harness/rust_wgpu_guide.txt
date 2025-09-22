@@ -1,0 +1,431 @@
+⚠️ CRITICAL: ALIGNMENT ERROR WILL CAUSE 100% FAILURE RATE
+========================================================
+
+❌ NEVER WRITE THIS (CAUSES "COPY_BYTES_PER_ROW_ALIGNMENT" ERROR):
+bytes_per_row: Some(4 * opts.size),
+
+✅ ALWAYS WRITE THIS INSTEAD:
+let bytes_per_row = {
+    let unpadded = 4 * opts.size;
+    let align = 256;
+    (unpadded + align - 1) / align * align
+};
+
+WGPU Runtime Code - Expected Output Format
+==========================================
+
+VERSION: WGPU 0.20.1 (Rust WebGPU Implementation)
+TARGET: Execute WGSL shaders and output PNG files
+EXPECTED OUTPUT: Complete Rust main.rs that compiles and runs successfully
+
+⚠️ YOUR TASK: Generate EXACTLY this Rust code format for WGPU 0.20 compatibility:
+
+IMPORTANT: WGPU runtime executes WGSL shaders. You must generate both:
+1. WGSL shader code (see wgsl_constraints_guide.txt)
+2. WGPU host code (this guide) that loads and executes the WGSL
+
+⚠️ CRITICAL: Generate complete, working main.rs file. No templates or comments only.
+
+REQUIRED DEPENDENCIES (Cargo.toml)
+=================================
+
+```toml
+[dependencies]
+wgpu        = "0.20"        # WebGPU native bindings
+pollster    = "0.3"         # block_on!
+bytemuck    = "1.0"         # cast_slice helper
+futures-intrusive = "0.5"   # async channels
+image       = { version = "0.25", default-features = false, features = ["png"] }
+clap        = { version = "4.5", features = ["derive"] }
+```
+
+WGPU 0.20 API REQUIREMENTS
+==========================
+
+CRITICAL: WGPU 0.20 requires specific struct fields that are often missing:
+
+✅ DeviceDescriptor Requirements:
+```rust
+let (device, queue) = pollster::block_on(adapter.request_device(
+    &wgpu::DeviceDescriptor {
+        required_features: wgpu::Features::TIMESTAMP_QUERY | wgpu::Features::TIMESTAMP_QUERY_INSIDE_ENCODERS,
+        required_limits: wgpu::Limits::default(),  // ⚠️ "required_limits" not "limits"
+        label: None,
+    },
+    None,
+)).expect("Device failed");
+```
+
+❌ WRONG FIELD NAMES:
+- `features:` → Use `required_features:`
+- `limits:` → Use `required_limits:`
+
+✅ Shader Loading from File (NOT include_str!):
+```rust
+let code = fs::read_to_string(&opts.shader)
+    .expect("failed to read shader file");
+let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+    label: Some("user_shader"),
+    source: wgpu::ShaderSource::Wgsl(Cow::Owned(code)),  // Use file contents
+});
+```
+
+❌ WRONG: `include_str!("cube.wgsl")` - shader files are in different directory
+
+✅ VertexState Requirements:
+```rust
+vertex: wgpu::VertexState {
+    module: &shader,
+    entry_point: "main_vs",
+    buffers: &[],
+    compilation_options: Default::default(),  // ⚠️ REQUIRED in 0.20
+},
+```
+
+✅ FragmentState Requirements:
+```rust
+fragment: Some(wgpu::FragmentState {
+    module: &shader,
+    entry_point: "main_fs", 
+    targets: &[Some(wgpu::ColorTargetState {
+        format: wgpu::TextureFormat::Rgba8UnormSrgb,
+        blend: None,
+        write_mask: wgpu::ColorWrites::ALL,
+    })],
+    compilation_options: Default::default(),  // ⚠️ REQUIRED in 0.20
+}),
+```
+
+✅ RenderPassDescriptor Requirements:
+```rust
+let mut render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+    label: None,
+    color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+        view: &texture_view,
+        resolve_target: None,
+        ops: wgpu::Operations {
+            load: wgpu::LoadOp::Clear(wgpu::Color::BLACK),
+            store: wgpu::StoreOp::Store,  // ⚠️ StoreOp enum, NOT boolean
+        },
+    })],
+    depth_stencil_attachment: None,
+    occlusion_query_set: None,      // ⚠️ REQUIRED in 0.20
+    timestamp_writes: None,         // ⚠️ REQUIRED in 0.20
+});
+```
+
+COMPLETE WORKING TEMPLATE
+=========================
+
+```rust
+use clap::Parser;
+use std::{borrow::Cow, fs, path::PathBuf, time::Instant};
+
+#[derive(Parser)]
+struct Opts {
+    #[arg(short, long)]
+    shader: PathBuf,
+    #[arg(short, long, default_value = "out.png")]
+    output: PathBuf,
+    #[arg(short = 'z', long, default_value_t = 1024)]
+    size: u32,
+}
+
+fn main() {
+    let opts = Opts::parse();
+    let code = fs::read_to_string(&opts.shader)
+        .expect("failed to read shader file");
+
+    // GPU initialization
+    let instance = wgpu::Instance::default();
+    let adapter = pollster::block_on(instance.request_adapter(
+        &wgpu::RequestAdapterOptions::default(),
+    )).expect("No compatible GPU");
+
+    let (device, queue) = pollster::block_on(adapter.request_device(
+        &wgpu::DeviceDescriptor {
+            required_features: wgpu::Features::TIMESTAMP_QUERY | wgpu::Features::TIMESTAMP_QUERY_INSIDE_ENCODERS,
+            required_limits: wgpu::Limits::default(),
+            label: None,
+        },
+        None,
+    )).expect("Device failed");
+
+    // Shader compilation
+    let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+        label: Some("user_shader"),
+        source: wgpu::ShaderSource::Wgsl(Cow::Owned(code)),
+    });
+
+    // Pipeline setup
+    let pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+        bind_group_layouts: &[],
+        push_constant_ranges: &[],
+        label: None,
+    });
+
+    let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+        label: Some("pipeline"),
+        layout: Some(&pipeline_layout),
+        vertex: wgpu::VertexState {
+            module: &shader,
+            entry_point: "main_vs",
+            buffers: &[],
+            compilation_options: Default::default(),  // REQUIRED
+        },
+        fragment: Some(wgpu::FragmentState {
+            module: &shader,
+            entry_point: "main_fs",
+            targets: &[Some(wgpu::ColorTargetState {
+                format: wgpu::TextureFormat::Rgba8UnormSrgb,
+                blend: None,
+                write_mask: wgpu::ColorWrites::ALL,
+            })],
+            compilation_options: Default::default(),  // REQUIRED
+        }),
+        primitive: wgpu::PrimitiveState::default(),
+        depth_stencil: None,
+        multisample: wgpu::MultisampleState::default(),
+        multiview: None,
+    });
+
+    // Render target setup
+    let extent = wgpu::Extent3d {
+        width: opts.size,
+        height: opts.size,
+        depth_or_array_layers: 1,
+    };
+    
+    let texture = device.create_texture(&wgpu::TextureDescriptor {
+        label: Some("output"),
+        size: extent,
+        mip_level_count: 1,
+        sample_count: 1,
+        dimension: wgpu::TextureDimension::D2,
+        format: wgpu::TextureFormat::Rgba8UnormSrgb,
+        usage: wgpu::TextureUsages::RENDER_ATTACHMENT | wgpu::TextureUsages::COPY_SRC,
+        view_formats: &[],
+    });
+    
+    let texture_view = texture.create_view(&Default::default());
+
+    // Readback buffer (CRITICAL: account for alignment padding)
+    let bytes_per_row = {
+        let unpadded = 4 * opts.size;
+        let align = 256;
+        (unpadded + align - 1) / align * align
+    };
+    let buffer_size = (bytes_per_row * opts.size) as wgpu::BufferAddress;
+    let readback = device.create_buffer(&wgpu::BufferDescriptor {
+        label: Some("readback"),
+        size: buffer_size,
+        usage: wgpu::BufferUsages::COPY_DST | wgpu::BufferUsages::MAP_READ,
+        mapped_at_creation: false,
+    });
+
+    // Render commands
+    let mut encoder = device.create_command_encoder(&wgpu::CommandEncoderDescriptor { 
+        label: None 
+    });
+
+    {
+        let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+            label: None,
+            color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+                view: &texture_view,
+                resolve_target: None,
+                ops: wgpu::Operations {
+                    load: wgpu::LoadOp::Clear(wgpu::Color::BLACK),
+                    store: wgpu::StoreOp::Store,  // StoreOp enum, not boolean
+                },
+            })],
+            depth_stencil_attachment: None,
+            occlusion_query_set: None,     // REQUIRED
+            timestamp_writes: None,        // REQUIRED
+        });
+        
+        pass.set_pipeline(&render_pipeline);
+        pass.draw(0..3, 0..1); // Full-screen triangle
+    }
+
+    // Copy texture to readback buffer (CRITICAL: proper alignment)
+    let bytes_per_row = {
+        let unpadded = 4 * opts.size;
+        let align = 256;
+        (unpadded + align - 1) / align * align
+    };
+    
+    encoder.copy_texture_to_buffer(
+        wgpu::ImageCopyTexture {
+            texture: &texture,
+            mip_level: 0,
+            origin: wgpu::Origin3d::ZERO,
+            aspect: wgpu::TextureAspect::All,
+        },
+        wgpu::ImageCopyBuffer {
+            buffer: &readback,
+            layout: wgpu::ImageDataLayout {
+                offset: 0,
+                bytes_per_row: Some(bytes_per_row),  // ALIGNED
+                rows_per_image: Some(opts.size),
+            },
+        },
+        extent,
+    );
+
+    // Submit and wait
+    queue.submit(Some(encoder.finish()));
+    device.poll(wgpu::Maintain::Wait);
+
+    // Read pixels and save PNG
+    pollster::block_on(async {
+        let buffer_slice = readback.slice(..);
+        let (sender, receiver) = futures_intrusive::channel::shared::oneshot_channel();
+        buffer_slice.map_async(wgpu::MapMode::Read, move |v| sender.send(v).unwrap());
+        device.poll(wgpu::Maintain::wait()).panic_on_timeout();
+        receiver.receive().await.unwrap().unwrap();
+    });
+
+    // Extract image data (handle alignment padding)
+    let img_data = readback.slice(..).get_mapped_range();
+    let mut rgba_data = Vec::with_capacity((opts.size * opts.size * 4) as usize);
+    
+    // Copy row by row, skipping alignment padding
+    for y in 0..opts.size {
+        let row_start = (y * bytes_per_row) as usize;
+        let pixel_data_end = row_start + (opts.size * 4) as usize;
+        rgba_data.extend_from_slice(&img_data[row_start..pixel_data_end]);
+    }
+    
+    let png = image::RgbaImage::from_raw(opts.size, opts.size, rgba_data)
+        .expect("size mismatch");
+    png.save(&opts.output).expect("png save failed");
+
+    println!("SUCCESS: Shader rendered to {:?}", opts.output);
+}
+```
+
+COMMON WGPU 0.20 ERRORS
+=======================
+
+❌ Error: "missing field `compilation_options`"
+✅ Fix: Add `compilation_options: Default::default()` to VertexState/FragmentState
+
+❌ Error: "expected `StoreOp`, found `bool`"
+✅ Fix: Use `wgpu::StoreOp::Store` instead of `true`
+
+❌ Error: "missing fields `occlusion_query_set` and `timestamp_writes`"
+✅ Fix: Add both fields as `None` to RenderPassDescriptor
+
+❌ Error: "struct `DeviceDescriptor` has no field named `features`"
+✅ Fix: Use `required_features:` instead of `features:`
+
+❌ Error: "struct `DeviceDescriptor` has no field named `limits`"
+✅ Fix: Use `required_limits:` instead of `limits:`
+
+❌ Error: "couldn't read `src/cube.wgsl`: No such file or directory"
+✅ Fix: Use `fs::read_to_string(&opts.shader)` instead of `include_str!()`
+
+❌ Error: "attempt to subtract with overflow" (timestamps)
+✅ Fix: Add bounds checking before timestamp subtraction
+
+⚠️ MOST COMMON ERROR: "Bytes per row does not respect `COPY_BYTES_PER_ROW_ALIGNMENT`"
+===============================================================================
+
+❌ ERROR CODE (DO NOT GENERATE):
+```rust
+bytes_per_row: Some(4 * opts.size),           // ❌ CAUSES VALIDATION ERROR
+size: (buffer_dimensions.0 * buffer_dimensions.1 * 4) as u64,  // ❌ WRONG
+```
+
+✅ REQUIRED CODE (ALWAYS GENERATE):
+```rust
+// CRITICAL: Calculate aligned bytes_per_row
+let bytes_per_row = {
+    let unpadded = 4 * opts.size;  // 4 bytes per pixel (RGBA)
+    let align = 256;               // Required WGPU alignment
+    (unpadded + align - 1) / align * align  // Round up to 256-byte boundary
+};
+let buffer_size = (bytes_per_row * opts.size) as wgpu::BufferAddress;
+
+// Use aligned calculation in buffer creation
+let readback = device.create_buffer(&wgpu::BufferDescriptor {
+    size: buffer_size,  // ✅ Use aligned size
+    // ...
+});
+
+// Use aligned calculation in texture copy
+encoder.copy_texture_to_buffer(
+    // ...
+    wgpu::ImageCopyBuffer {
+        layout: wgpu::ImageDataLayout {
+            bytes_per_row: Some(bytes_per_row),  // ✅ Use aligned value
+            // ...
+        },
+    },
+    // ...
+);
+```
+
+⚠️ CRITICAL RULE: NEVER use `4 * opts.size` directly. ALWAYS calculate alignment first.
+
+TIMESTAMP QUERY HANDLING
+========================
+
+Safe timestamp calculation:
+```rust
+let nanos = if ts.len() >= 2 && ts[1] >= ts[0] {
+    (ts[1] - ts[0]) as f64 * period as f64
+} else {
+    0.0
+};
+```
+
+SHADER SOURCE HANDLING
+======================
+
+For WGSL shaders:
+```rust
+source: wgpu::ShaderSource::Wgsl(Cow::Owned(code)),
+```
+
+For GLSL shaders (requires naga compilation):
+```rust
+// First compile GLSL to WGSL using naga
+let wgsl_code = compile_glsl_to_wgsl(&code)?;
+source: wgpu::ShaderSource::Wgsl(Cow::Owned(wgsl_code)),
+```
+
+FULL-SCREEN TRIANGLE VERTEX SHADER
+=================================
+
+Standard vertex shader for fragment-only rendering:
+```wgsl
+@vertex
+fn main_vs(@builtin(vertex_index) vid: u32) -> @builtin(position) vec4<f32> {
+    let x = f32(i32(vid & 1u) * 4 - 1);
+    let y = f32(i32((vid >> 1u) & 1u) * 4 - 1);
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+```
+
+PERFORMANCE CONSIDERATIONS
+=========================
+
+- Use `wgpu::Maintain::Wait` for synchronous execution
+- Set appropriate buffer sizes: `4 * width * height` for RGBA8
+- Enable timestamp queries for performance measurement
+- Use `pollster::block_on` for async operations in main thread
+
+ERROR HANDLING PATTERNS
+=======================
+
+```rust
+.expect("No compatible GPU")       // Adapter creation
+.expect("Device failed")           // Device creation  
+.expect("failed to read shader")   // File I/O
+.expect("size mismatch")           // Image creation
+.expect("png save failed")         // PNG output
+```
+
+This guide ensures WGPU 0.20 compatibility and proper off-screen rendering setup.

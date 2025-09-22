@@ -1,0 +1,51 @@
+__MATHEMATICAL_ACCURACY__
+
+**Spherical Inversion Formula Verification (3 pts)**
+- Sample 50 grid points and verify inversion formula: p'·p = R² within 1% error
+- Points inside sphere (r < 2.0) correctly mapped outside and vice versa
+- Mathematical consistency of inversion transformation maintained
+- Radius R = 2.0 precisely implemented in all calculations
+
+**Grid Completeness Assessment (2 pts)**
+- All 1331 grid points visible in final rendering
+- No missing connections or incomplete grid lines
+- Both original and inverted grid structures fully present
+- Grid topology preserved through inversion transformation
+
+**Geometric Transformation Accuracy**
+- "Inside-out" distortion characteristic properly demonstrated
+- Grid point density changes reflect inversion mathematics
+- Sphere center correctly positioned as inversion origin
+
+__VISUAL_IMPLEMENTATION__
+
+**Color Mapping System (2 pts)**
+- Original grid: blue-white color scheme with distance-based gradients
+- Inverted grid: red-yellow color scheme distinctly different
+- Smooth color transitions based on distance from sphere center
+- Color coding enhances understanding of geometric transformation
+
+**Sphere Representation Quality (2 pts)**
+- Wireframe sphere clearly visible at correct radius 2.0
+- Sphere boundary serves as visual inversion reference
+- Transparent or semi-transparent rendering allows grid visibility
+- Proper proportions and centered positioning
+
+**Visual Clarity and Effects (1 pt)**
+- Both grid structures clearly distinguishable despite overlap
+- Glow effect on inverted grid elements enhances visibility
+- Sufficient contrast between original and transformed elements
+- Clean rendering without visual artifacts or confusion
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+**Input Requirements**
+- Spec: generation prompt for Spherical Inversion Mapping
+- Candidate: PNG output from renderer for evaluation
+- Task: integer score S (1-10) with comprehensive rationale
+
+**Output Format Compliance**
+- Score: S/10 with detailed point breakdown
+- Rationale: ≤180 words explaining evaluation decisions
+- All aspects systematically assessed per rubric guidelines
+- Clear documentation of mathematical and visual criteria met/failed

@@ -1,0 +1,50 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Problem 062.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+## __MATHEMATICAL_ACCURACY__
+
+**Interference pattern spacing (0-3 pts)**
+- For each channel, verify bright-bright spacing: Λ_c = λ_c/(2sin10°)
+- 10 λ_G-wide domain must contain exactly 3 bright peaks and 3 dark gaps for green
+- Red channel: 2.3 periods, Blue channel: 2.1 periods
+- Peak-to-peak distance within ±3% measured on green channel
+- Fractional peaks visible at domain edges
+
+**Fringe orientation and geometry (0-2 pts)**
+- Fringes must be perfectly vertical (parallel to y-axis)
+- Centerlines deviate <1° from vertical alignment
+- No curvature (<0.1 px deviation from straightness)
+- Spans full domain height with clean termination
+
+## __VISUAL_IMPLEMENTATION__
+
+**Color superposition accuracy (0-2 pts)**
+- Repeating rainbow sequence: cyan → green → yellow → red → magenta → blue
+- Colors cycle consistently left-to-right across domain
+- Monotonic color transitions between peaks
+- No spurious color mixing or artifacts
+
+**Contrast and intensity range (0-2 pts)**
+- 100% fringe contrast: pure black minima, pure color maxima
+- Minimum intensity < 5% in every channel
+- Maximum intensity > 95% in every channel
+- No moiré patterns or aliasing artifacts
+
+**Frame and boundary quality (0-1 pts)**
+- Sharp domain edge with clean termination
+- Exterior must be pure black (#000000)
+- No edge bleeding or boundary artifacts
+- Proper clipping at domain boundaries
+
+## __COMPLETENESS_AND_SPECIFICATIONS__
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```

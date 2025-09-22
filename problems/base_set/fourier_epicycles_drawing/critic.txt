@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Fourier Series Implementation:
+- Correct Fourier series decomposition: f(t) = Σ(aₙcos(nt) + bₙsin(nt))
+- Accurate calculation of Fourier coefficients for target shape
+- Proper radius calculation: radius = √(aₙ² + bₙ²)
+- Correct angular velocity implementation: ω = n for each harmonic
+- Mathematical precision in series summation and convergence
+
+Epicycle Mathematical Properties:
+- Each epicycle represents one term in the Fourier series
+- Proper phase relationships between harmonics maintained
+- Correct frequency spacing and harmonic ordering
+- Accurate mathematical relationship between circles and resulting path
+- Geometric accuracy in epicycle chain positioning and rotation
+
+__VISUAL_IMPLEMENTATION__
+Epicycle Visualization Standards:
+- At least 5 epicycles clearly visible and distinguishable
+- Clear circle hierarchy showing epicycle chain structure
+- Smooth circular motion for each individual epicycle
+- Proper visual distinction between different harmonic components
+- Professional rendering of rotating circles with appropriate styling
+
+Path Drawing and Animation Quality:
+- Smooth animation showing the complete drawing process
+- Clean path rendering without visual artifacts
+- Both epicycles and resulting path clearly visible simultaneously
+- Recognizable shape emergence (square, heart, star, or similar)
+- Fluid drawing animation with proper path accumulation
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required System Components:
+- Complete Fourier epicycles system with all mathematical elements
+- Animated drawing process showing path generation
+- Both epicycle visualization and path tracing implemented
+- Recognizable target shape drawn through epicycle motion
+- All specified mathematical relationships properly demonstrated
+
+Technical and Educational Requirements:
+- Minimum 5 epicycles as specified in requirements
+- Perfect synchronization between epicycle motion and path drawing
+- Educational value demonstrating Fourier series principles
+- Complete implementation of all specified technical features
+- Full adherence to Fourier epicycles visualization specifications

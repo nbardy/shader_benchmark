@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Riemann Zeta Zero Positioning:
+- Accurate positioning of first 40 non-trivial zeros with reference values t₁=14.134725141, t₂=21.022039639, ..., t₄₀≈200.123
+- Marker position test: x-coordinate precision |x−tₖ| ≤0.001 (0.125 pt each), ≤0.005 (half credit)
+- Mathematical precision in critical line zero location representation
+- Accurate implementation of Riemann zeta function non-trivial zero positions
+- Perfect mathematical accuracy in zero positioning along critical line
+
+Zeta Function Magnitude Representation:
+- Correct representation of |ζ(½+it)| magnitude along critical line
+- Curve-touch test: orange curve at zero positions must be ≤0.02 log-units from baseline
+- Peak alignment: local maxima exceed preceding minima by ≥0.5 log-units between zeros
+- Mathematical precision in zeta function magnitude oscillatory behavior
+- Accurate implementation of logarithmic scaling in magnitude representation
+
+__VISUAL_IMPLEMENTATION__
+Critical Line Visualization Quality:
+- Visual clarity showing zeros as minima with blue dots touching baseline
+- Amber curve exhibiting characteristic oscillatory behavior with peaks between zeros
+- Professional visualization conveying mathematical significance of special zero points
+- Clear distinction between zero positions and magnitude curve peaks
+- High-quality graphical presentation supporting mathematical understanding
+
+Graphic Fidelity Standards:
+- Orange stroke width 4 ± 0.4 pixels with opacity 60 ± 5% meeting specification
+- Blue circles radius 7 ± 1 pixel for zero markers with consistent appearance
+- Professional color scheme enhancing mathematical visualization clarity
+- High-quality curve rendering maintaining mathematical precision
+- Visual presentation meeting mathematical publication standards
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Zeta Function Elements:
+- Complete Riemann zeta zeros visualization with all 40 non-trivial zeros properly positioned
+- All magnitude curve characteristics correctly represented along critical line
+- Perfect mathematical accuracy in zero locations and magnitude oscillations
+- Proper logarithmic scaling throughout entire visualization domain
+- Full adherence to Riemann zeta function mathematical requirements
+
+Technical and Mathematical Standards:
+- All mathematical accuracy tests satisfied within specified precision tolerances
+- Professional rendering quality meeting mathematical visualization standards
+- Complete implementation of zeta function critical line properties
+- All graphic fidelity and visual clarity standards met
+- Full adherence to Riemann zeta zeros specification requirements

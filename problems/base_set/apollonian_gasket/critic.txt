@@ -1,0 +1,29 @@
+__MATHEMATICAL_ACCURACY__
+- Fractal dimension must equal the analytic Hausdorff dimension (high-precision value 1.30568673)
+- Box-count dimension test must achieve slope D̂ with |D̂−1.3057| ≤ 0.03 for full 4 pts (3 pts if ≤ 0.05, 2 pts if ≤ 0.08, 1 pt if ≤ 0.12)
+- Point cloud recovery must accurately threshold image α > 0.1 to binary mask and sample centroids of connected 3×3 blobs
+- Grid analysis must use appropriate scales ε = 2^-8 ... 2^-4 · canvas for log-log fitting of N(ε) vs ε
+- Self-similar fractal structure must demonstrate correct scaling properties at all resolution levels
+- Kleinian group generators must produce mathematically correct limit set geometry
+
+__VISUAL_IMPLEMENTATION__
+- Red/green coloring must represent even/odd word lengths in Kleinian group generators with precise parity-based distribution
+- Cluster-sample analysis of 100,000 pixels must show red:green ratio within 50% ± 3% tolerance (2 pts)
+- High-quality rendering must include appropriate bloom effect with radius σ ≈ 1 ± 0.3 px (+1 pt)
+- Background must be pure black with σ<2 RGB units for rendering hygiene (+1 pt)
+- Crystalline detail must be visible and consistent at all scales within the circular region
+- Visual clarity must effectively demonstrate the intricate fractal pattern structure
+- Color classification by hue must accurately distinguish between even/odd regions
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+- Apollonian gasket must fill a complete circular region without dropout areas
+- Density uniformity test must show median-to-max ratio ≥ 0.1 across 20 radial annuli (2 pts)
+- All fractal detail must be present with appropriate self-similar characteristics
+- Gemstone-like appearance must be achieved through proper crystalline rendering
+- Classical fractal properties must be demonstrated throughout the visualization
+- Assessment protocol must include point cloud recovery, box-count testing, parity-color balance, density uniformity, and rendering quality checks
+- Limit set must accurately represent the mathematical properties of the Kleinian group structure
+
+Output format:
+Score: S/10
+Rationale: <≤120 words>

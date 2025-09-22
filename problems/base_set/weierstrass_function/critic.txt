@@ -1,0 +1,47 @@
+__MATHEMATICAL_ACCURACY__
+Fractal Mathematical Properties:
+- Hölder/fractal roughness exponent α_theory = -ln(a)/ln(b) = -ln(0.5)/ln(3) ≈ 0.630930
+- Log-log fit of increments |W(x+δ)-W(x)| vs. δ converging to theoretical slope
+- Structure function S(δ) evaluated correctly for δ = [1,2,4,8,16,32] pixels
+- Linear least-squares fit in log-space achieving slope α̂ within tolerance ranges
+- Mathematical accuracy verified with |α̂ - 0.631| meeting precision requirements
+- Non-differentiable nature demonstrated through continuous roughness at all scales
+
+Spectral Analysis Requirements:
+- Power spectrum containing spikes at spatial frequencies f_n = b^n Hz (up to 3^50) mod π
+- FFT spectral-spike test identifying first 10 theoretical peak frequencies f_n = 3^n
+- Peak qualification requiring amplitude ≥ 20 dB above local median
+- Zero-padded series to 16,384 samples for accurate frequency analysis
+- Spectral peaks demonstrating fractal self-similarity across frequency scales
+- Mathematical verification of Weierstrass function spectral characteristics
+
+__VISUAL_IMPLEMENTATION__
+Curve Rendering Standards:
+- Orange stroke with hue ≈ 30° and saturation > 0.9 for proper color identification
+- Stroke width median = 3 ± 0.3 pixels maintaining visual consistency
+- Continuously rough appearance without any smooth sections visible
+- Jagged, self-similar structure clearly demonstrated at all observable scales
+- Professional curve rendering meeting mathematical visualization standards
+
+Graph Layout and Presentation:
+- Proper scale and centering with y-range occupying 80 ± 10% of canvas height
+- Axes lines rendered in grey (RGB ≈ 144) with 1 ± 0.2 pixel thickness
+- Vector reconstruction capability through center-line sampling every 2 pixels
+- Clean graphical presentation suitable for mathematical analysis
+- Professional mathematical function visualization with clear axis definition
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Function Elements:
+- Complete Weierstrass "Monster" Function visualization demonstrating all properties
+- Mathematical accuracy verified through Hölder exponent and spectral analysis
+- Visual quality meeting all specified styling and presentation requirements
+- Proper implementation of continuous everywhere but differentiable nowhere property
+- Fractal characteristics clearly visible and mathematically verifiable
+
+Technical Specification Compliance:
+- All mathematical ground-truth requirements satisfied within tolerance
+- Image processing capability for PNG to linear-RGB conversion
+- Canny-edge detection compatibility for orange stroke isolation
+- Complete grading workflow support for mathematical verification
+- Full adherence to Weierstrass function visualization specifications
+EOF < /dev/null

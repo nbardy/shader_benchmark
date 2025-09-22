@@ -1,0 +1,62 @@
+Evaluate this shader-generated image based on the 4D Hyper Menger Cube intersection with 3-sphere visualization requirements.
+
+
+**Inputs**
+
+1. *Spec* – the exact text of Prompt #3 (generation prompt).
+2. *Candidate image* – the renderer's output produced from that spec.
+
+**Task**
+Provide a *reasoned* score **S** on the integer scale 1 – 10 that measures how well the candidate image fulfils the spec. Use the rubric below (maximum in parentheses, total = 10). Include a short justification (≤ 150 words).
+
+## __MATHEMATICAL_ACCURACY__
+
+**4D Fractal Structure (0-3 pts)**
+- Evidence of proper 4D Menger cube construction projected to 3D
+- Characteristic fractal cross-sections visible at multiple scales and orientations
+- At least 3 iterations of the 4D Menger construction must be visible
+- Self-similar structure apparent at multiple scales
+- Proper fractal pattern consistency across all visible cross-sections
+
+**Spherical Intersection constraint (0-2 pts)**
+- Geometry properly constrained to 3-sphere surface
+- Clear spherical boundaries with no spurious geometry beyond unit sphere
+- Proper intersection mathematics between 4D fractal and 3-sphere
+- No artifacts extending outside spherical domain
+
+**Stereographic Projection accuracy (0-2 pts)**
+- Mathematically correct 4D to 3D projection behavior
+- Proper handling of projection singularities
+- Compression effects near singularities handled correctly
+- Topologically consistent projection throughout
+
+## __VISUAL_IMPLEMENTATION__
+
+**Color and transparency mapping (0-2 pts)**
+- W-coordinate color mapping: yellow at north pole, orange at equator, purple at south pole
+- Semi-transparent material (α≈0.8) properly rendered
+- Internal structure visible through transparency
+- Smooth color gradients without banding artifacts
+
+**Technical rendering quality (0-1 pts)**
+- High resolution (≥1600x1600) image quality
+- Multiple light sources creating proper illumination
+- Deep space background gradient implemented correctly
+- No rendering artifacts or visual glitches
+
+## __COMPLETENESS_AND_SPECIFICATIONS__
+
+**Output format**
+
+```text
+Score: S/10
+Rationale: <concise explanation>
+```
+
+**Scoring conventions**
+
+* A mathematically accurate 4D intersection with proper projection earns *10*.
+* Missing or incorrect 4D fractal structure caps the score at *≤ 5*.
+* Incorrect spherical constraint or projection errors cap the score at *≤ 6*.
+* Wrong color mapping or material properties subtract 1 – 2 points.
+* Poor technical execution (low resolution, bad lighting) subtracts 1 point.

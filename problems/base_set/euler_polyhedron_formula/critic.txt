@@ -1,0 +1,29 @@
+__MATHEMATICAL_ACCURACY__
+
+* Euler formula verification: Continuous demonstration that V - E + F = 2 throughout all polyhedron transformations
+* Vertex count precision: Accurate real-time counting of all polyhedron vertices with correct labeling and identification
+* Edge enumeration accuracy: Precise tracking of all edges during transformations maintaining mathematical consistency
+* Face calculation correctness: Exact face counting including proper handling of complex polyhedral surfaces
+* Topological invariance demonstration: Clear proof that Euler characteristic remains constant during continuous deformations
+* Multi-polyhedron validation: Formula confirmation across multiple different polyhedra showing universal applicability
+* Mathematical relationship clarity: Visual demonstration of how vertex, edge, and face counts relate through Euler's formula
+
+__VISUAL_IMPLEMENTATION__
+
+* Dynamic labeling system: Clear, readable real-time labels for vertices (V), edges (E), and faces (F) with proper visibility
+* Transformation animation quality: Smooth transitions between 3D polyhedron and 2D net representations
+* Element highlighting: Visual emphasis of counted geometric elements during enumeration process
+* Net unfolding accuracy: Correct 2D unfolding patterns maintaining topological connectivity and edge relationships
+* Formula display prominence: Clear, prominent display of V - E + F = 2 equation with dynamic value updates
+* Animation timing optimization: Intuitive pacing allowing viewers to follow counting and transformation processes
+* Visual distinction: Clear differentiation between vertices, edges, and faces through color coding or other visual means
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+* Complete transformation sequence: Full animation cycle from 3D polyhedron through net unfolding and back
+* Connectivity preservation: Accurate maintenance of face-edge relationships during unfolding transformations
+* Educational effectiveness: Clear demonstration making Euler's formula accessible and understandable
+* Interactive element tracking: Systematic highlighting and counting of all geometric elements
+* Mathematical demonstration completeness: Full proof cycle showing why V - E + F = 2 holds universally
+* Output format compliance: Structured evaluation following specified criteria with appropriate scoring
+* Implementation verification: All required animation components present and functioning as specified

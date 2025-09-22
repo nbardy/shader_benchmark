@@ -1,0 +1,212 @@
+GLSL Shader Programming Guide for Mathematical Visualization
+===========================================================
+
+VERSION: OpenGL Core 4.5 / GLSL 450
+TARGET: Mathematical visualization and computational geometry  
+RENDERER: WGPU with GLSL-to-WGSL compilation via Naga
+PIPELINE: GLSL → Naga IR → WGSL → GPU execution
+
+IMPORTANT: Write ONLY the fragment shader. The vertex shader is automatically generated.
+
+REQUIRED FRAGMENT SHADER STRUCTURE
+=================================
+
+```glsl
+#version 450 core
+
+out vec4 fragColor;
+
+void main() {
+    // Convert gl_FragCoord to normalized coordinates [-1, 1]  
+    vec2 uv = (gl_FragCoord.xy - 512.0) / 512.0;  // For 1024x1024 canvas
+    
+    // Your mathematical visualization code here
+    vec3 color = computeVisualization(uv);
+    
+    fragColor = vec4(color, 1.0);
+}
+```
+
+SUPPORTED FEATURES (vs WGSL)
+===========================
+
+✅ VARIABLE ARRAY INDEXING:
+```glsl
+vec3 vertices[8] = vec3[](/* ... */);
+for (int i = 0; i < 8; i++) {
+    vec3 vertex = vertices[i];  // ✅ Works in GLSL
+}
+```
+
+✅ FUNCTION RECURSION (with limits):
+```glsl
+float fractalBranch(vec2 p, int depth) {
+    if (depth <= 0) return 1000.0;
+    return min(
+        distanceToLine(p, a, b),
+        fractalBranch(p + offset1, depth-1)  // ✅ Recursion allowed
+    );
+}
+```
+
+✅ DYNAMIC CONTROL FLOW:
+```glsl
+if (condition_based_on_input) {
+    // Complex branching allowed
+}
+```
+
+MATHEMATICAL CONSTANTS
+=====================
+
+```glsl
+#define PI 3.14159265359
+#define TAU 6.28318530718
+#define E 2.71828182846
+#define PHI 1.61803398875  // Golden ratio
+#define SQRT2 1.41421356237
+```
+
+COMMON MATHEMATICAL FUNCTIONS
+============================
+
+Distance Functions (for SDFs):
+```glsl
+float sdSphere(vec3 p, float r) {
+    return length(p) - r;
+}
+
+float sdBox(vec3 p, vec3 b) {
+    vec3 q = abs(p) - b;
+    return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0);
+}
+```
+
+Matrix Operations:
+```glsl
+mat3 rotateX(float angle) {
+    float c = cos(angle), s = sin(angle);
+    return mat3(1,0,0, 0,c,-s, 0,s,c);
+}
+
+mat3 rotateY(float angle) {
+    float c = cos(angle), s = sin(angle);
+    return mat3(c,0,s, 0,1,0, -s,0,c);
+}
+```
+
+Complex Numbers (as vec2):
+```glsl
+vec2 cmul(vec2 a, vec2 b) {
+    return vec2(a.x*b.x - a.y*b.y, a.x*b.y + a.y*b.x);
+}
+
+vec2 cdiv(vec2 a, vec2 b) {
+    float d = dot(b, b);
+    return vec2(dot(a, b), a.y*b.x - a.x*b.y) / d;
+}
+```
+
+COORDINATE SYSTEMS
+=================
+
+Screen to World Conversion:
+```glsl
+// For 1024x1024 canvas, center at origin
+vec2 screenToWorld(vec2 fragCoord) {
+    return (fragCoord.xy - 512.0) / 512.0;
+}
+
+// For arbitrary size with aspect ratio preservation
+vec2 screenToWorld(vec2 fragCoord, vec2 resolution) {
+    vec2 uv = fragCoord / resolution;
+    uv = uv * 2.0 - 1.0;  // [-1, 1]
+    uv.x *= resolution.x / resolution.y;  // Correct aspect ratio
+    return uv;
+}
+```
+
+PERFORMANCE GUIDELINES
+====================
+
+Loop Limits:
+- Keep loop iterations < 100 for mobile compatibility
+- Use early breaks when possible
+- Unroll small fixed loops manually
+
+Precision:
+- Use `highp` for positions and complex calculations
+- Use `mediump` for colors and simple operations
+- Use `lowp` for flags and simple interpolants
+
+Branching:
+- Avoid divergent branching in tight loops
+- Use `mix()` instead of `if/else` for simple cases
+
+COMMON PATTERNS
+==============
+
+Anti-aliasing:
+```glsl
+float antialias(float d, float width) {
+    return 1.0 - smoothstep(0.0, width, abs(d));
+}
+```
+
+Color Mixing:
+```glsl
+vec3 mixColors(vec3 a, vec3 b, float t) {
+    return mix(a, b, smoothstep(0.0, 1.0, t));
+}
+```
+
+Mandelbrot Set:
+```glsl
+int mandelbrot(vec2 c, int maxIter) {
+    vec2 z = vec2(0.0);
+    for (int i = 0; i < maxIter; i++) {
+        if (dot(z, z) > 4.0) return i;
+        z = cmul(z, z) + c;
+    }
+    return maxIter;
+}
+```
+
+DEBUGGING TIPS
+=============
+
+Color Debugging:
+```glsl
+// Visualize values as colors
+fragColor = vec4(abs(value), 0.0, 0.0, 1.0);  // Red channel
+fragColor = vec4(vec3(smoothstep(0.0, 1.0, value)), 1.0);  // Grayscale
+```
+
+Step-by-step Visualization:
+```glsl
+if (gl_FragCoord.x < 256.0) {
+    // Show intermediate step 1
+} else if (gl_FragCoord.x < 512.0) {
+    // Show intermediate step 2
+} else {
+    // Show final result
+}
+```
+
+ERROR AVOIDANCE
+==============
+
+❌ AVOID:
+- Division by zero: `a / b` → `a / max(b, 1e-6)`
+- Taking sqrt of negative: `sqrt(x)` → `sqrt(max(x, 0.0))`
+- Infinite loops: Always have exit conditions
+- Very large numbers: Keep values in reasonable ranges
+
+✅ PREFER:
+- Built-in functions: `length()`, `normalize()`, `dot()`, `cross()`
+- GLSL swizzling: `vec3.xzy`, `vec4.rgb`
+- Efficient distance fields for 3D rendering
+- Procedural generation over texture lookups
+
+This guide ensures your mathematical shaders will compile and run efficiently
+while maintaining visual accuracy and mathematical correctness.

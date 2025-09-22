@@ -1,0 +1,47 @@
+__MATHEMATICAL_ACCURACY__
+Topological Structure Analysis:
+- Are exactly three separate, mutually linked tori visible representing pre-images of latitude circles (+60°, 0°, -60°)?
+- Does each fiber link every other fiber exactly once (Hopf linking property)?
+- Is the mathematical relationship between S³ and S² correctly visualized?
+
+Stereographic Projection Verification:
+- Are circular fibers correctly projected from S³ to ℝ³ using north pole (0,0,0,1)?
+- Do projected fibers maintain proper geometric relationships?
+- Are relative sizes and nested arrangements consistent with stereographic projection?
+
+Hopf Fibration Mathematical Properties:
+- Does the visualization correctly show p(z₀,z₁) = (2z₀z̄₁, |z₀|² - |z₁|²)?
+- Are the three chosen base loops at correct latitudes (θ = π/3, π/2, 2π/3)?
+- Is the fiber structure mathematically consistent with S¹ bundles over S²?
+
+__VISUAL_IMPLEMENTATION__
+Fiber Construction and Rendering:
+- Are fibers rendered as smooth tubes of constant radius (≈1% circumscribed diameter)?
+- Does each fiber contain at least 500 points for smooth appearance?
+- Are tube surfaces free from clipping, gaps, or aliasing artifacts?
+
+Color Implementation Accuracy:
+- Is HSV hue wheel correctly implemented with Hue = φ/(2π)?
+- Does each fiber maintain consistent coloring from its base point?
+- Are colors properly interpolated along fiber length without banding?
+
+Lighting and Material Properties:
+- Is soft Phong shading applied as specified?
+- Are materials appropriate for mathematical visualization clarity?
+- Is lighting setup optimal for showing 3D topological structure?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Reference Sphere and Legend Elements:
+- Is translucent grey reference sphere present in lower-right quadrant?
+- Are three colored base loops correctly plotted on reference sphere?
+- Are orientation axes (±x,±y,±z) visible as thin rods with proper labeling?
+
+Technical Specifications Compliance:
+- Is image resolution at least 1600×1600 pixels as specified?
+- Is background pure white without gradients or textures?
+- Is proper anti-aliasing applied to eliminate jagged edges?
+
+Compositional Requirements:
+- Are all three tori clearly visible and distinguishable?
+- Is camera angle optimal for showing linking topology?
+- Does overall presentation meet publication-quality standards? 

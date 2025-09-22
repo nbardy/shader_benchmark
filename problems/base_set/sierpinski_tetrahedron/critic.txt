@@ -1,0 +1,43 @@
+__MATHEMATICAL_ACCURACY__
+
+**Fractal Construction Correctness (4 pts)**
+- Recursive subdivision creating exactly 341 tetrahedra at depth 4
+- Proper edge length scaling with factor of 0.5 per recursion level
+- Edge-length clustering: k-means into 5 groups, means differ by factor 2±3%
+- Self-similar structure maintaining geometric proportions across scales
+
+**Face Count Verification (2 pts)**
+- Total exterior triangular faces must equal 1024 ± 20 (calculated as 4 × 4⁴)
+- De-duplication algorithm correctly removes interior faces
+- Each smallest tetrahedron contributes one face per orientation
+
+**Self-Similarity Test (2 pts)**
+- Cross-sectional analysis at z = 0 plane revealing exactly 16 voids (4²)
+- Hough-triangle detection confirms fractal void pattern
+- Recursive void structure visible at multiple magnification levels
+
+__VISUAL_IMPLEMENTATION__
+
+**Material and Color Accuracy (2 pts)**
+- Glass-blue color gradient correctly mapped to recursion depth
+- Icy quartz crystalline appearance with proper transparency
+- Color-depth correlation: sample 3000 vertices, r ≥ 0.95 between depth and HSV-value
+- Proper alpha blending showing internal structure
+
+**Geometric Visualization Quality**
+- Clear visibility of self-similar voids creating crystalline structure
+- Intricate geometric patterns evident at each recursion level
+- Proper 3D depth perception and spatial relationships
+- Tetrahedral faces properly oriented and shaded
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+**Technical Implementation**
+- Mesh extraction protocol: marching-tetrahedra if PNG-only, direct geometry loading
+- Ground-truth verification: child edge ratio = 0.5 per level confirmed
+- Mathematical consistency with Sierpinski 3D fractal definition
+
+**Output Requirements**
+- Score format: S/10 with detailed breakdown
+- Rationale: ≤120 words summarizing test results
+- All geometric and visual criteria systematically evaluated

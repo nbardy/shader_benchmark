@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Quantum Wave Function Topology:
+- All nodal lines present at correct positions: vertical and horizontal lines where P=0 (at x=0, x=1, y=0, y=1)
+- Internal nodal curves accurately rendered: curved "figure-8" through domain center plus crescent-shaped zeros
+- Mathematical precision in quantum superposition nodal structure implementation
+- Phase offset effects properly generating internal nodal curve patterns
+- Accurate representation of quantum probability density topology
+
+Probability Lobe Structure:
+- Eight high-probability lobes arranged in pin-wheel configuration as mathematically required
+- Four large lobes positioned near centers of each quadrant with proper symmetry
+- Four smaller satellite lobes correctly positioned between main lobes
+- Mirror symmetry maintained across both x and y axes as quantum mechanics demands
+- Mathematical accuracy in lobe count, positioning, and relative intensity relationships
+
+__VISUAL_IMPLEMENTATION__
+Contour Line Accuracy:
+- P=0.2 contour correctly encloses every bright lobe as specified
+- P=0.4 contour accurately hugs mid-radius of main lobes
+- P=0.6 contour appears only inside the four largest lobes as required
+- Each contour value encloses described regions with mathematical precision
+- Professional contour rendering supporting quantum visualization understanding
+
+Color Mapping and Visual Quality:
+- Magma color palette correctly implemented with full dynamic range
+- Color ramp progresses monotonically from black (nodes) through deep purple to orange-yellow (anti-nodes)
+- Professional color mapping enhancing quantum probability visualization
+- High-quality color gradients supporting mathematical interpretation
+- Visual clarity in probability density representation
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Quantum Elements:
+- Complete quantum probability wave visualization with all nodal structures properly implemented
+- All eight probability lobes correctly positioned and sized
+- Perfect symmetry maintained throughout quantum wave function representation
+- All contour lines accurately positioned at specified probability values
+- Full adherence to quantum probability wave mathematical requirements
+
+Technical and Frame Standards:
+- Exact 1600 × 1600 pixel resolution meeting specification requirements
+- 60-pixel pure-black border implemented with exact precision
+- No artifacts or unwanted graphics compromising visualization clarity
+- Professional rendering quality meeting quantum mechanics visualization standards
+- Complete implementation of quantum probability wave specification requirements

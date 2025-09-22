@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Domain Coloring Implementation:
+- Correct domain coloring with continuous hue based on complex argument
+- Accurate opacity mapping from complex magnitude |f(z)|
+- Proper representation of singularities with appropriate mathematical symmetry
+- Branch cuts visible and correctly positioned as special glass arrangements
+- Mathematical precision in complex function visualization and analysis
+
+Complex Function Visualization:
+- Singularities represented as decorative rose windows with correct symmetry
+- Lead came positioned at complex magnitude contour lines |f(z)| = 2ⁿ
+- Accurate mathematical representation of complex analysis concepts
+- Proper handling of complex function discontinuities and special points
+- All mathematical elements correctly integrated into visual presentation
+
+__VISUAL_IMPLEMENTATION__
+Glass Craftsmanship and Materials:
+- Realistic glass materials with varying thickness and authentic color depth
+- Lead came properly separating glass sections at mathematical contour lines
+- Glass imperfections (bubbles, waves) strategically placed near singular points
+- Professional stained glass craftsmanship with authentic structural details
+- Realistic material properties enhancing mathematical visualization
+
+Lighting and Atmospheric Effects:
+- Caustic light patterns projected onto cathedral floor with physical accuracy
+- Residue-based light intensity variation corresponding to mathematical properties
+- Proper transparency behavior showing complex function characteristics
+- Dust motes in light beams creating authentic cathedral atmosphere
+- Professional lighting setup with window as primary illumination source
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Architectural Elements:
+- Gothic pointed arch window frame constructed in authentic stone materials
+- Dark cathedral interior setting with appropriate atmospheric mood
+- Stone textures and architectural details meeting Gothic style requirements
+- Cathedral atmosphere with proper scale and architectural proportions
+- Complete architectural context supporting mathematical visualization
+
+Integration and Artistic Quality:
+- Mathematical and aesthetic elements blend seamlessly throughout composition
+- Complex analysis concepts clearly visualized through stained glass metaphor
+- All specified visual elements properly implemented and integrated
+- Professional artistic quality meeting both mathematical and aesthetic standards
+- Complete adherence to complex analysis stained glass visualization requirements

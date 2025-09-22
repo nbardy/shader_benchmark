@@ -1,0 +1,29 @@
+__MATHEMATICAL_ACCURACY__
+- Ackermann function values A(3,n) must be mathematically correct for n=0 to 10
+- Logarithmic scaling must accurately accommodate the extreme exponential tower growth from single digits to hundreds of digits
+- Bar heights must correspond precisely to log₁₀ values with errors ≤ 0.5% (6 pts total, -0.5 pt per offending bar)
+- Ground-truth verification against reference values: A(3,0)=1 (log=0), A(3,1)=2 (log=0.30103), A(3,2)=6 (log=0.77815), A(3,3)=14 (log=1.14613), A(3,4)=65534 (log=4.81641), continuing to A(3,10) with log≈308.002
+- Exponential tower notation must be correctly represented for larger values (A(3,5)=2^65535-3, A(3,6)=2^(2^65535-3)-3)
+- Numerical precision must be maintained to 15 significant digits for logarithmic calculations
+
+__VISUAL_IMPLEMENTATION__
+- Color gradient must transition linearly from blue to red across all 11 bars
+- HSV hue mapping must be linear within ±5° tolerance for each bar position (+2 pts)
+- Visual clarity must effectively convey the dramatic exponential growth pattern
+- Bar positioning must accurately reflect logarithmic scale mapping from pixel coordinates
+- Grid system must display exactly 11 horizontal grid lines with equal spacing (+2 pts)
+- Y-axis tick positions must be precisely readable for scale verification
+- Overall rendering quality must clearly illustrate the function's extreme growth characteristics
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+- All 11 bars must be present representing A(3,n) for n=0 through 10
+- Proper annotations must show tower notation for larger values where applicable
+- Grid system must be complete with correctly positioned horizontal reference lines
+- Color progression must span the full range from blue (smallest values) to red (largest values)
+- Scale indicators and axis labels must be clearly visible and properly positioned
+- Visualization must demonstrate the transition from comprehensible small values to astronomically large numbers
+- Assessment pipeline must extract bar heights, map to log scale, compute errors, and verify grid/color specifications
+
+Output format:
+Score: S/10
+Rationale: <brief narrative (≤120 words) summarising which tests passed/failed>

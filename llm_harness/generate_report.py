@@ -10,7 +10,6 @@ import os
 import json
 import glob
 import argparse
-import base64
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -46,7 +45,12 @@ class TestResult:
         return None
         
     def _check_image_exists(self) -> bool:
-        """Check if result.png exists."""
+        """Check if result.png exists in test directory or artifacts folder."""
+        # Check for result.png in artifacts folder (new location)
+        artifacts_png = self.test_dir / 'artifacts' / 'result.png'
+        if artifacts_png.exists():
+            return True
+        # Check for result.png in test directory (legacy location)
         return (self.test_dir / 'result.png').exists()
         
     def _check_scores_exist(self) -> bool:
@@ -118,28 +122,26 @@ class ReportGenerator:
         result = TestResult(test_dir)
         self.results.append(result)
         
-    def scan_for_results(self, base_dir: str = ".") -> int:
+    def scan_for_results(self, base_dir: str = ".", single_test_dir: str = None) -> int:
         """Scan for test result directories and add them to the report."""
-        pattern = os.path.join(base_dir, "test_*_results")
-        test_dirs = glob.glob(pattern)
-        
-        for test_dir in sorted(test_dirs):
-            self.add_test_result(test_dir)
+        if single_test_dir:
+            # Single directory mode: only scan the specified directory
+            if Path(single_test_dir).exists():
+                self.add_test_result(single_test_dir)
+                return 1
+            else:
+                print(f"Warning: Test directory not found: {single_test_dir}")
+                return 0
+        else:
+            # Multi-directory mode: scan for all test directories (legacy behavior)
+            pattern = os.path.join(base_dir, "test_*_results")
+            test_dirs = glob.glob(pattern)
             
-        return len(test_dirs)
+            for test_dir in sorted(test_dirs):
+                self.add_test_result(test_dir)
+                
+            return len(test_dirs)
         
-    def _embed_image(self, image_path: Path) -> str:
-        """Convert image to base64 data URL for embedding in markdown."""
-        if not image_path.exists():
-            return "![Image not found]()"
-            
-        try:
-            with open(image_path, 'rb') as f:
-                image_data = f.read()
-            base64_data = base64.b64encode(image_data).decode('utf-8')
-            return f"![Rendered Output](data:image/png;base64,{base64_data})"
-        except Exception as e:
-            return f"![Error loading image: {e}]()"
             
     def _copy_image_to_report_dir(self, image_path: Path, report_dir: Path, test_id: str) -> str:
         """Copy image to report directory and return relative path."""
@@ -167,12 +169,12 @@ class ReportGenerator:
             
         table = "| Category | Score |\n|----------|-------|\n"
         for category, score in zip(self.SCORE_CATEGORIES, scores):
-            table += f"| {category} | {score}/10 |\n"
+            table += f"| {category} | {score}/100 |\n"
         
         total = sum(scores)
         avg = total / len(scores)
-        table += f"| **Total** | **{total}/50** |\n"
-        table += f"| **Average** | **{avg:.1f}/10** |\n"
+        table += f"| **Total** | **{total}/500** |\n"
+        table += f"| **Average** | **{avg:.1f}/100** |\n"
         
         return table
         
@@ -209,14 +211,32 @@ class ReportGenerator:
             'worst_test': worst_test
         }
         
-    def generate_report(self, output_file: str = None, embed_images: bool = False) -> str:
-        """Generate the complete markdown report."""
-        if output_file is None:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            output_file = f"shader_benchmark_report_{self.model_name.replace('/', '_')}_{timestamp}.md"
+    def generate_report(self, output_file: str = None, target_dir: str = None) -> str:
+        """Generate the complete markdown report in isolated UUID directory or target directory."""
+        import uuid
+        
+        if target_dir:
+            # Use existing target directory (for single test runs)
+            report_dir = Path(target_dir)
+            if not report_dir.exists():
+                report_dir.mkdir(exist_ok=True)
             
-        report_dir = Path(output_file).parent
-        report_dir.mkdir(exist_ok=True)
+            if output_file is None:
+                output_file = "current_results_report.md"
+        else:
+            # Create isolated report directory with timestamp and UUID (for batch reports)
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            report_uuid = str(uuid.uuid4())
+            report_dir_name = f"report_{timestamp}_{report_uuid}"
+            report_dir = Path(report_dir_name)
+            report_dir.mkdir(exist_ok=True)
+            
+            if output_file is None:
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                output_file = f"shader_benchmark_report_{self.model_name.replace('/', '_')}_{timestamp}.md"
+            
+        # Report file goes inside the target directory
+        output_path = report_dir / output_file
         
         # Sort results by timestamp (newest first) or test_id if no timestamp
         self.results.sort(key=lambda r: r.timestamp or datetime.min, reverse=True)
@@ -227,13 +247,15 @@ class ReportGenerator:
         # Generate report content
         report = self._generate_header(stats)
         report += self._generate_summary_section(stats)
-        report += self._generate_detailed_results(report_dir, embed_images)
+        report += self._generate_detailed_results(report_dir)
         
-        # Write report to file
-        with open(output_file, 'w') as f:
+        # Write report to file in UUID directory
+        with open(output_path, 'w') as f:
             f.write(report)
             
-        return output_file
+        print(f"Report generated in isolated directory: {report_dir}")
+        print(f"Report file: {output_path}")
+        return str(output_path)
         
     def _generate_header(self, stats: Dict) -> str:
         """Generate the report header."""
@@ -259,26 +281,26 @@ class ReportGenerator:
             section += "### Average Scores by Category\n\n"
             section += "| Category | Average Score |\n|----------|---------------|\n"
             for category, avg_score in zip(self.SCORE_CATEGORIES, stats['avg_scores']):
-                section += f"| {category} | {avg_score:.1f}/10 |\n"
+                section += f"| {category} | {avg_score:.1f}/100 |\n"
             
             total_avg = sum(stats['avg_scores'])
             overall_avg = total_avg / len(stats['avg_scores'])
-            section += f"| **Overall Average** | **{overall_avg:.1f}/10** |\n\n"
+            section += f"| **Overall Average** | **{overall_avg:.1f}/100** |\n\n"
             
             # Best and worst performing tests
             if stats['best_test'] and stats['worst_test']:
                 section += "### Performance Highlights\n\n"
                 section += f"**Best Test:** {stats['best_test'].problem_name} "
-                section += f"(Total: {sum(stats['best_test'].scores)}/50)  \n"
+                section += f"(Total: {sum(stats['best_test'].scores)}/500)  \n"
                 section += f"**Worst Test:** {stats['worst_test'].problem_name} "
-                section += f"(Total: {sum(stats['worst_test'].scores)}/50)  \n\n"
+                section += f"(Total: {sum(stats['worst_test'].scores)}/500)  \n\n"
         else:
             section += "*No scored tests available for statistical analysis.*\n\n"
             
         section += "---\n\n"
         return section
         
-    def _generate_detailed_results(self, report_dir: Path, embed_images: bool) -> str:
+    def _generate_detailed_results(self, report_dir: Path) -> str:
         """Generate the detailed results section."""
         section = "## Detailed Test Results\n\n"
         
@@ -306,17 +328,19 @@ class ReportGenerator:
             # Add image
             if result.has_image:
                 section += "#### Rendered Output\n\n"
-                image_path = result.test_dir / 'result.png'
-                
-                if embed_images:
-                    section += self._embed_image(image_path) + "\n\n"
+                # Check for result.png in artifacts folder first, then test directory
+                artifacts_png = result.test_dir / 'artifacts' / 'result.png'
+                if artifacts_png.exists():
+                    image_path = artifacts_png
                 else:
-                    # Copy image to report directory
-                    relative_path = self._copy_image_to_report_dir(image_path, report_dir, result.test_id)
-                    if relative_path:
-                        section += f"![Rendered Output]({relative_path})\n\n"
-                    else:
-                        section += "*Error: Could not copy image*\n\n"
+                    image_path = result.test_dir / 'result.png'
+                
+                # Copy image to report directory and embed inline
+                relative_path = self._copy_image_to_report_dir(image_path, report_dir, result.test_id)
+                if relative_path:
+                    section += f"![Rendered Output]({relative_path})\n\n"
+                else:
+                    section += "*Error: Could not copy image*\n\n"
             else:
                 section += "#### Rendered Output\n\n*No image available (compilation or execution failed)*\n\n"
                 
@@ -331,10 +355,10 @@ def main():
                        help='Name of the model being reported on')
     parser.add_argument('--output', '-o', type=str, 
                        help='Output markdown file (default: auto-generated)')
-    parser.add_argument('--embed-images', action='store_true',
-                       help='Embed images as base64 data URLs instead of copying files')
     parser.add_argument('--scan-dir', type=str, default='.',
                        help='Directory to scan for test results (default: current directory)')
+    parser.add_argument('--test-dir', type=str,
+                       help='Single test directory to generate report for (enables isolated mode)')
     
     args = parser.parse_args()
     
@@ -342,15 +366,26 @@ def main():
     generator = ReportGenerator(args.model)
     
     # Scan for test results
-    found_tests = generator.scan_for_results(args.scan_dir)
-    print(f"Found {found_tests} test result directories")
+    if args.test_dir:
+        # Single test directory mode
+        found_tests = generator.scan_for_results(single_test_dir=args.test_dir)
+        print(f"Scanning single test directory: {args.test_dir}")
+        target_dir = args.test_dir
+    else:
+        # Multi-directory mode (legacy)
+        found_tests = generator.scan_for_results(args.scan_dir)
+        print(f"Found {found_tests} test result directories")
+        target_dir = None
     
     if found_tests == 0:
-        print("No test results found. Make sure you're in the directory containing test_*_results folders.")
+        if args.test_dir:
+            print(f"Test directory not found: {args.test_dir}")
+        else:
+            print("No test results found. Make sure you're in the directory containing test_*_results folders.")
         return
         
     # Generate report
-    output_file = generator.generate_report(args.output, args.embed_images)
+    output_file = generator.generate_report(args.output, target_dir)
     print(f"Report generated: {output_file}")
     
     # Print summary
@@ -362,7 +397,7 @@ def main():
     
     if stats['avg_scores']:
         overall_avg = sum(stats['avg_scores']) / len(stats['avg_scores'])
-        print(f"  Overall average score: {overall_avg:.1f}/10")
+        print(f"  Overall average score: {overall_avg:.1f}/100")
 
 if __name__ == '__main__':
     main()

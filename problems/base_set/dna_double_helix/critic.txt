@@ -1,0 +1,29 @@
+__MATHEMATICAL_ACCURACY__
+
+* Helical pitch precision: Distance between successive turns along z-axis exactly 3.4 Å ≈ 0.54 per radian with ±3% tolerance
+* Phase offset consistency: Constant π ± 0.5° angular difference between dual DNA strands maintained throughout helix
+* Rung count verification: Precisely 60 rungs distributed across 6 complete helical turns (10 rungs per turn)
+* Rung spacing uniformity: Z-axis spacing of 0.34 Å between consecutive rungs with ±5% tolerance
+* Helix radius accuracy: Each strand maintains radius of 1 unit with ±2% deviation from center axis
+* Cross-sectional geometry: Center-to-center distance of 2 units between complementary strand positions
+* Helical parameter relationships: Correct mathematical relationships between pitch, radius, and turn frequency
+
+__VISUAL_IMPLEMENTATION__
+
+* Strand intersection elimination: No geometric intersections between DNA strands or base pair rungs
+* Anti-aliasing quality: Smooth helical curves without pixelation or jagged edges along spiral paths
+* Color specification compliance: Accurate color representation for DNA strands and base pair connections
+* Three-dimensional depth perception: Clear visualization of helical structure with proper perspective and depth cues
+* Base pair rung rendering: Clear connections between complementary bases showing hydrogen bonding relationships
+* Structural clarity: Distinct visualization of dual antiparallel strands with proper chirality representation
+* Surface quality: Smooth cylindrical representation of DNA backbone without rendering artifacts
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+* Complete helical structure: Full 6-turn DNA segment with all 60 base pair rungs properly positioned
+* Geometric parameter verification: All dimensional specifications (pitch, radius, spacing) measurable from visual output
+* Structural biology accuracy: Representation consistent with B-form DNA geometry and Watson-Crick base pairing
+* Rendering completeness: Both major and minor groove features visible with appropriate proportions
+* Output format compliance: Integer score 1-10 with explanatory text rationale following specified structure
+* Quantitative measurement capability: Visual output enables verification of all specified numerical parameters
+* Biological fidelity: Accurate representation of DNA double helix structure suitable for educational or research purposes

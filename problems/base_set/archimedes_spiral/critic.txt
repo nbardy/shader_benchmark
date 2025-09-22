@@ -1,0 +1,25 @@
+__MATHEMATICAL_ACCURACY__
+- Spiral must be correctly generated using equation r = θ/π with mathematically precise parametric representation
+- Uniform spacing between turns must be maintained consistently throughout the spiral construction
+- Angle trisection demonstration must accurately show 60° → 20° conversion using classical geometric methods
+- Area calculations must properly implement Archimedes' exhaustion method with inscribed polygons
+- Tangent properties must be correctly calculated and visually demonstrated at various spiral points
+- All mathematical relationships must be historically accurate to Archimedes' original propositions
+
+__VISUAL_IMPLEMENTATION__
+- Spiral animation must be smooth showing uniform motion with proper temporal consistency
+- Compass-and-straightedge construction aesthetics must be faithfully represented
+- Papyrus background with aging effects must appear convincing and historically appropriate
+- Construction lines and geometric measurements must be clearly visible and properly rendered
+- Greek letters and mathematical notation must be used appropriately throughout the visualization
+- Visual elements including spiral, constructions, and annotations must work together harmoniously
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+- All classical applications must be clearly demonstrated including angle trisection and area calculation
+- Historical authenticity must be maintained in representing ancient Greek mathematical methods
+- Educational value must effectively communicate Archimedes' discoveries to modern viewers
+- Visual proof of circle squaring for the first turn must be included and clearly shown
+- Connection between ancient methods and modern mathematics must be apparent
+- Geometric construction marks must be clear and appropriate to the historical period
+- Animation must make Archimedes' 2200-year-old investigations accessible to contemporary audiences
+- Overall presentation must capture the genius of Archimedes while maintaining mathematical rigor

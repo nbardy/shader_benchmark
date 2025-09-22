@@ -19,7 +19,7 @@ fn main() {
     // --- parse CLI ---------------------------------------------------------
     let opts = Opts::parse();
     let code = fs::read_to_string(&opts.shader)
-        .expect("failed to read WGSL file");
+        .expect("failed to read shader file");
 
     // --- init GPU ----------------------------------------------------------
     let now = Instant::now();
@@ -190,7 +190,11 @@ fn main() {
         let data = buffer_slice.get_mapped_range();
         let ts: &[u64] = bytemuck::cast_slice(&data);
         let period = queue.get_timestamp_period();
-        let nanos = (ts[1] - ts[0]) as f64 * period as f64;
+        let nanos = if ts.len() >= 2 && ts[1] >= ts[0] {
+            (ts[1] - ts[0]) as f64 * period as f64
+        } else {
+            0.0
+        };
         nanos / 1_000_000.0 // ms
     });
 

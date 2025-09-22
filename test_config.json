@@ -1,0 +1,33 @@
+{
+  "name": "Shader Benchmark - Initial Test",
+  "description": "Testing 4 models on 5 geometric problems",
+  "timestamp": "2025-07-31",
+  "models": [
+    "openai/o3",
+    "anthropic/claude-sonnet-4", 
+    "qwen/qwen3-coder",
+    "moonshotai/kimi-vl-a3b-thinking"
+  ],
+  "problems": [
+    "geometric_cube",
+    "regular_tetrahedron",
+    "regular_octahedron",
+    "rounded_box",
+    "torus_donut_parametric"
+  ],
+  "settings": {
+    "timeout_minutes": 5,
+    "pause_between_tests": 1,
+    "pause_between_models": 3,
+    "embed_images": true,
+    "output_directory": "output"
+  },
+  "progress": {
+    "completed_models": [],
+    "failed_models": [],
+    "total_tests": 20,
+    "completed_tests": 0,
+    "start_time": null,
+    "end_time": null
+  }
+}

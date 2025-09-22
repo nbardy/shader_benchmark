@@ -1,9 +1,0 @@
-/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_0d259a27-6fb1-4525-b88b-477e8655004d_results/target/debug/deps/libclap-dc281a84f0765986.rmeta: /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap-4.5.40/src/lib.rs /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap-4.5.40/src/../examples/demo.rs /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap-4.5.40/src/../examples/demo.md
-
-/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_0d259a27-6fb1-4525-b88b-477e8655004d_results/target/debug/deps/libclap-dc281a84f0765986.rlib: /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap-4.5.40/src/lib.rs /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap-4.5.40/src/../examples/demo.rs /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap-4.5.40/src/../examples/demo.md
-
-/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_0d259a27-6fb1-4525-b88b-477e8655004d_results/target/debug/deps/clap-dc281a84f0765986.d: /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap-4.5.40/src/lib.rs /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap-4.5.40/src/../examples/demo.rs /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap-4.5.40/src/../examples/demo.md
-
-/Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap-4.5.40/src/lib.rs:
-/Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap-4.5.40/src/../examples/demo.rs:
-/Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap-4.5.40/src/../examples/demo.md:

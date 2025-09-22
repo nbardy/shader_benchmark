@@ -1,0 +1,29 @@
+__MATHEMATICAL_ACCURACY__
+
+* Platonic solid representation: All five Platonic solids (tetrahedron, cube, octahedron, dodecahedron, icosahedron) accurately rendered with correct geometry
+* Vertex-edge-face counts: Precise V, E, and F values for each solid verified against mathematical standards
+* Euler formula demonstration: Clear proof that V - E + F = 2 for each Platonic solid with explicit calculations
+* Topological transformation validity: Mathematically sound cube-to-sphere transformation preserving topological invariants
+* Counting accuracy: Systematic enumeration of vertices, edges, and faces with error-free mathematical verification
+* Geometric proportions: Accurate representation of Platonic solid proportions, angles, and symmetry properties
+* Proof method fidelity: Correct implementation of Euler's original proof methodology through face removal and flattening
+
+__VISUAL_IMPLEMENTATION__
+
+* Historical manuscript aesthetics: Authentic 18th-century mathematical manuscript styling with copperplate engraving appearance
+* Material rendering quality: Beautiful gold vertices, silver edges, and translucent faces with appropriate material properties
+* Candlelight illumination: Effective period-appropriate lighting creating authentic historical ambiance
+* Animation smoothness: High-quality rotating animations enhancing understanding without distracting from mathematics
+* Counting visualization: Clear, helpful counting animations for V, E, and F with proper visual emphasis
+* Topological invariance demonstration: Effective visual proof showing invariance during continuous deformations
+* Period decorative elements: Authentic baroque borders and styling elements appropriate to Euler's era
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+* Five Platonic solids coverage: Complete representation of all required Platonic solids with full mathematical detail
+* Educational effectiveness: Clear communication of why V - E + F = 2 is mathematically profound and historically significant
+* Historical context integration: Meaningful connections to Descartes, modern topology, and mathematical development
+* Proof visualization completeness: Full implementation of face removal, flattening, and counting demonstration
+* Euler's genius representation: Clear illustration of Euler's insight in recognizing this fundamental topological pattern
+* Pedagogical clarity: Accessible presentation making complex mathematical concepts understandable to modern viewers
+* Historical authenticity balance: Successful combination of mathematical precision with period-appropriate visual style

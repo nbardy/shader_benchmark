@@ -1,0 +1,96 @@
+# Evaluation for Prime-Defect Crystal Lattice Visualization
+
+## __MATHEMATICAL_ACCURACY__
+
+### Prime Position Identification
+**Expected:** Correct identification of 25 prime positions as vacancies along y=0
+- **Actual:** [Count distinct black disk centroids; verify x-positions match prime list within 1 px]
+- **Score:** [0-4] where 4 = exactly 25 prime positions correctly identified
+
+### Strain Field Mathematics
+**Expected:** Accurate strain field computation following discrete Laplace equation
+- **Actual:** [Verify strain field follows ∇²ε = δ(prime positions)]
+- **Score:** [0-5] where 5 = mathematically correct strain field implementation
+
+### 1/r Decay Law Implementation
+**Expected:** Proper decay of strain field away from defects (ε ∝ 1/|r|)
+- **Actual:** [Test strain profile along y=±20; fit log-log slope -1 ± 0.1]
+- **Score:** [0-3] where 3 = perfect 1/r decay characteristics
+
+### Superposition Mathematics
+- **Expected:** Correct interference pattern where multiple strain fields overlap
+- **Actual:** [Verify linear superposition of individual strain contributions]
+- **Score:** [0-5] where 5 = accurate strain field superposition
+
+## __VISUAL_IMPLEMENTATION__
+
+### Vacancy Visualization
+- **Expected:** Clear black disks at prime positions showing lattice defects
+- **Actual:** [Assess vacancy representation clarity and accuracy]
+- **Score:** [0-5] where 5 = excellent vacancy visualization
+
+### Inferno Colormap Implementation
+**Expected:** Pixel with max ε maps to inferno RGB ≈ (#fcffa4) ± ΔE 6
+- **Actual:** [Verify colormap accuracy and color mapping precision]
+- **Score:** [0-1] where 1 = accurate inferno colormap implementation
+
+### Strain Field Visualization Quality
+- **Expected:** Clear visualization of strain field intensity and distribution
+- **Actual:** [Assess strain field visual representation effectiveness]
+- **Score:** [0-5] where 5 = excellent strain field visualization
+
+### Rendering Resolution and Clarity
+- **Expected:** High-quality rendering with smooth color gradients
+- **Actual:** [Evaluate visual clarity and rendering quality]
+- **Score:** [0-5] where 5 = excellent rendering quality
+
+### Color Scale Effectiveness
+- **Expected:** Effective color scaling showing strain intensity variations
+- **Actual:** [Assess color scale utility for strain visualization]
+- **Score:** [0-5] where 5 = optimal color scale implementation
+
+## __COMPLETENESS_AND_SPECIFICATIONS__
+
+### Frame and Border Quality
+**Expected:** White border uniform 100 ± 2 px with proper dimensions
+- **Actual:** [Measure border uniformity and dimensions]
+- **Score:** [0-2] where 2 = perfect frame specifications
+
+### Grid Resolution Accuracy
+**Expected:** Inner grid exactly 201×201 data points
+- **Actual:** [Verify computational grid resolution]
+- **Score:** [0-5] where 5 = exact grid resolution as specified
+
+### Materials Science Authenticity
+- **Expected:** Realistic representation of crystal lattice defects and strain
+- **Actual:** [Assess physical authenticity of defect physics]
+- **Score:** [0-5] where 5 = highly authentic materials science representation
+
+### Computational Efficiency
+- **Expected:** Efficient strain field calculation and rendering
+- **Actual:** [Evaluate computational performance]
+- **Score:** [0-5] where 5 = optimal computational efficiency
+
+### Number Theory Integration
+- **Expected:** Meaningful connection between prime number theory and crystal physics
+- **Actual:** [Assess integration of mathematical concepts]
+- **Score:** [0-5] where 5 = excellent conceptual integration
+
+## Grading Constraints
+
+### Reference Parameters
+- Number of vacancy columns: N_v = 25
+- Expected strain decay: ε ∝ 1/|y| along horizontal lines
+
+## Overall Score: [Sum of all scores]/50
+
+## Summary
+**Strengths:**
+- [List what works well]
+
+**Areas for Improvement:**
+- [List what could be better]
+
+**Mathematical Accuracy:** [Accurate/Has errors]
+**Physical Realism:** [Excellent/Good/Fair/Poor]
+**Visualization Quality:** [Professional/Amateur/Poor]

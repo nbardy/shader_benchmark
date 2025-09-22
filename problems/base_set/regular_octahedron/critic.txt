@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Octahedral Edge Equality:
+- All 12 edges must have equal length within ±1% tolerance for geometric precision
+- Mathematical precision in edge length uniformity maintaining octahedral regularity
+- Perfect geometric accuracy in Platonic solid edge construction
+- Consistent edge measurements throughout entire octahedral structure
+- Accurate implementation of regular octahedron edge equality requirements
+
+Face and Angle Mathematical Properties:
+- Exactly 8 equilateral triangular faces meeting geometric requirements
+- Proper dihedral angles ≈ 109.47° (arccos(-1/3)) measured between adjacent faces
+- Mathematical precision in triangular face construction with equilateral properties
+- Correct angular relationships maintaining octahedral geometric integrity
+- Accurate implementation of octahedral face-angle mathematical relationships
+
+__VISUAL_IMPLEMENTATION__
+Crystalline Structure Visualization:
+- Diamond-like shape appearance demonstrating proper octahedral geometry
+- Professional rendering with appropriate material properties enhancing geometric visibility
+- High-quality surface rendering supporting crystalline structure understanding
+- Clean geometric presentation revealing octahedral symmetries and properties
+- Visual clarity in eight triangular face differentiation and arrangement
+
+Lighting and Material Quality:
+- Quality rendering with appropriate material and lighting enhancing three-dimensional form
+- Professional lighting setup revealing geometric structure and face relationships
+- Material properties supporting geometric visualization and scientific understanding
+- High-quality lighting effects demonstrating octahedral three-dimensional properties
+- Visual presentation meeting crystallographic visualization standards
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Octahedral Elements:
+- Complete regular octahedron with all 8 triangular faces properly implemented
+- All 12 edges correctly positioned and sized meeting equality requirements
+- Perfect geometric accuracy in face count, edge lengths, and angular measurements
+- Proper octahedral symmetry maintained throughout entire structure
+- Full adherence to regular octahedron Platonic solid mathematical requirements
+
+Technical and Geometric Standards:
+- All geometric precision tests satisfied within specified edge length tolerances
+- Professional rendering quality meeting crystallographic visualization standards
+- Complete implementation of octahedral mathematical properties and relationships
+- All face count, edge equality, and dihedral angle standards met
+- Full adherence to regular octahedron specification requirements

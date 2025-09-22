@@ -19,6 +19,8 @@ async def main():
     parser = argparse.ArgumentParser(description='LLM Shader Harness')
     parser.add_argument('--model', required=True, help='OpenRouter model name')
     parser.add_argument('--prompt-folder', required=True, help='Path to prompt folder')
+    parser.add_argument('--no-report', action='store_true', help='Skip individual test report generation')
+    parser.add_argument('--no-judge', action='store_true', help='Skip judge evaluation (for debugging)')
     
     args = parser.parse_args()
     
@@ -28,7 +30,6 @@ async def main():
     # Load prompts
     prompt_loader = PromptLoader()
     request_prompt = prompt_loader.load_request_prompt(args.prompt_folder)
-    judge_prompt = prompt_loader.load_judge_prompt(args.prompt_folder)
     
     # Initialize LLM client
     llm_client = LLMClient()
@@ -53,14 +54,19 @@ async def main():
         result_image = await test_runner.run_test(test_folder)
         print(f"Shader execution successful! Image saved: {result_image}")
         
-        # Judge the result if we have an image
-        if result_image and result_image.exists():
+        # Judge the result if we have an image (unless disabled)
+        if not args.no_judge and result_image and result_image.exists():
             print("Starting judge evaluation...")
             judge = Judge()
-            scores = await judge.evaluate(judge_prompt, result_image)
+            critic_path = Path(args.prompt_folder) / 'critic.txt'
+            request_path = Path(args.prompt_folder) / 'request.txt'
+            scores = await judge.evaluate_with_template(critic_path, request_path, result_image, test_folder)
             print(f"Judge evaluation completed. Scores: {scores}")
         else:
-            print("No result image to judge")
+            if args.no_judge:
+                print("Skipping judge evaluation (--no-judge flag set)")
+            else:
+                print("No result image to judge")
             scores = [0, 0, 0, 0, 0]  # Failed execution scores
             
     except Exception as e:
@@ -69,6 +75,26 @@ async def main():
     
     # Always save results (even if failed)
     test_runner.save_results(test_folder, scores, result_image is not None)
+    
+    # Generate isolated report for this test run (unless disabled)
+    if not args.no_report:
+        print("Generating report for this test run...")
+        import subprocess
+        try:
+            cmd = [
+                sys.executable, "generate_report.py",
+                "--model", args.model,
+                "--test-dir", str(test_folder)
+            ]
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            if result.returncode == 0:
+                print(f"Report generated in: {test_folder}/current_results_report.md")
+            else:
+                print(f"Report generation failed: {result.stderr}")
+        except Exception as e:
+            print(f"Error generating report: {e}")
+    else:
+        print("Skipping individual test report (--no-report flag set)")
     
     print("Test completed!")
     print(f"Results saved in: {test_folder}")

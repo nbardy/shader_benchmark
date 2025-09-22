@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Torus Geometric Properties:
+- Major radius R must equal exactly 2.0 units
+- Minor radius r must equal exactly 0.7 units with oscillating variation
+- Proper parametric torus construction using standard equations
+- Smooth surface generation with no geometric discontinuities
+- Correct torus topology with proper hole structure
+
+Parametric Implementation:
+- Accurate parametric equations for torus surface generation
+- Proper (u,v) parameter mapping across surface
+- Minor radius oscillation implemented mathematically
+- Dual rotation mechanics: y-axis and major axis rotation
+- Mathematical precision in all geometric calculations
+
+__VISUAL_IMPLEMENTATION__
+Surface Visualization Standards:
+- HSV coloring system based on (u,v) parametric coordinates
+- Gaussian curvature visualization with red/blue color tints
+- Parametric grid lines visible and properly spaced across surface
+- Glossy ceramic material appearance with appropriate reflections
+- Smooth surface rendering with proper normal calculations
+
+Rendering and Animation Quality:
+- Three-point lighting setup with key, fill, and rim lighting
+- Ambient occlusion effects enhancing surface depth perception
+- Depth of field blur effects for visual sophistication
+- Smooth animation with dual rotation system implementation
+- Professional anti-aliasing throughout all surface elements
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Mathematical Elements:
+- Complete torus form with proper major and minor radius relationships
+- Oscillating minor radius animation clearly visible
+- All parametric surface details properly implemented
+- Grid line overlay showing parametric coordinate structure
+- Curvature visualization completing mathematical demonstration
+
+Technical Specification Compliance:
+- 1600×1600 resolution with high-quality rendering
+- All animation components functioning smoothly
+- Complete lighting setup as specified
+- Professional rendering quality meeting all technical requirements
+- Full adherence to torus visualization specifications

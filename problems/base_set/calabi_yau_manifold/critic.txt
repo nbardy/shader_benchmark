@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Topological Structure Requirements:
+- Minimum five large through-holes clearly visible and properly formed
+- Surface genus greater than 3 with negative Euler characteristic
+- Complex topological structure resembling "gnarled sponge" morphology
+- Proper hole distribution with holes along positive/negative axis pairs
+- Mathematical accuracy in complex manifold surface generation
+
+Geometric Curvature Properties:
+- Gaussian curvature switching signs frequently across surface
+- No large flat regions maintaining complex curvature throughout
+- Average curvature variation demonstrating manifold complexity
+- Proper geometric relationships in surface normal calculations
+- Mathematical precision in curvature computation and visualization
+
+__VISUAL_IMPLEMENTATION__
+Surface Rendering and Material Properties:
+- High-resolution mesh with triangles less than 3px mean edge length
+- No visible cracks or mesh discontinuities in surface structure
+- Smooth surface interpolation maintaining manifold properties
+- Professional mesh quality with proper geometric tessellation
+- Clean surface topology without rendering artifacts
+
+Lighting and Visual Effects:
+- Specular highlights coherent with light direction on forward-facing lobes
+- Proper light interaction with complex surface geometry
+- Background untouched by lighting effects maintaining clean presentation
+- Realistic material response to lighting with appropriate reflectance
+- Professional lighting setup enhancing geometric complexity perception
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Manifold Elements:
+- Complete Calabi-Yau manifold visualization with all topological features
+- Minimum five holes as specified in requirements
+- "Gnarled sponge" appearance with complex surface morphology
+- Proper symmetry hints with 5-fold rotational characteristics
+- Structure roughly invariant under 72° rotation around (1,1,1) axis
+
+Color Gradient and Technical Specifications:
+- Color gradient from purple to yellow along (0.3,0.7,0.6) direction vector
+- Viridis-style gradient properly aligned with lighting vector
+- Color-normal map correlation demonstrating surface orientation
+- All technical requirements met for manifold visualization
+- Complete adherence to Calabi-Yau manifold specification requirements

@@ -1,0 +1,29 @@
+__MATHEMATICAL_ACCURACY__
+
+* Cylindrical radius consistency: Precise radius of curvature R = 1.5 ± 0.02 verified across minimum 30 sample points
+* Grid line orthogonality preservation: Original rectangular grid maintains perpendicular intersections after cylindrical deformation
+* Bend direction geometry: Grid lines remain perfectly straight along the cylindrical bend axis without distortion
+* Deformation mathematics: Correct implementation of cylindrical bending transformation preserving arc length and area relationships
+* Thickness uniformity: Consistent material thickness maintained throughout the cylindrical bending process
+* Geometric continuity: Smooth curvature transitions without discontinuities or mathematical singularities in the deformation field
+* Strain tensor accuracy: Proper handling of mechanical strain relationships during the bending transformation
+
+__VISUAL_IMPLEMENTATION__
+
+* Anisotropic material highlights: Directional metallic reflections following the cylindrical bend orientation
+* Color gradient execution: Smooth blue-to-bronze transition correlating with surface curvature and thickness variation
+* Embossed grid line rendering: Three-dimensional grid lines with appropriate depth shading and surface relief effects
+* Surface thickness visualization: Clear solid plate appearance with visible edge thickness and proper depth perception
+* Metallic material properties: Realistic metal surface rendering with appropriate specularity and reflection characteristics
+* Lighting quality: Proper illumination showcasing the cylindrical geometry and surface curvature details
+* Edge definition: Clean geometric edges without rendering artifacts or aliasing issues
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+* Grid deformation completeness: Entire rectangular grid successfully transformed into cylindrical arc configuration
+* Visual measurement capability: Output enables verification of radius, orthogonality, and geometric properties
+* Material specification adherence: Blue inner surface and bronze outer surface colors implemented as specified
+* Embossing effect implementation: Grid lines show proper three-dimensional relief with correct shading patterns
+* Geometric artifact absence: Clean rendering without discontinuities, gaps, or mathematical computation errors
+* Output format compliance: Integer score 1-10 with explanatory rationale following specified structure requirements
+* Quantitative verification support: Visual output allows measurement and validation of specified geometric parameters

@@ -1,0 +1,58 @@
+__MATHEMATICAL_ACCURACY__
+Geometric Precision and Proportions:
+- Outer glass shell with exact radius R₁ = 1.0 units as specified
+- Inner glass surface with precise radius R₂ = 0.85 units maintaining shell thickness
+- Inner red sphere with accurate radius r = 0.6 units positioned concentrically
+- Perfect concentric alignment with proper clearance between all spherical surfaces
+- Mathematical precision in spherical geometry maintaining proportional relationships
+
+Ray Tracing Physics Implementation:
+- Accurate implementation of Snell's law for refraction through glass surfaces
+- Correct Fresnel effect calculations for realistic glass reflectance behavior
+- Proper ray-sphere intersection mathematics for multiple surface interactions
+- Accurate refraction index implementation creating realistic light bending
+- Mathematical precision in optical physics calculations throughout ray tracing
+
+Optical Phenomena Mathematics:
+- Accurate caustic pattern formation following light ray convergence principles
+- Multiple reflection calculations between inner glass surfaces
+- Proper volumetric light scattering from inner sphere emission
+- Mathematical accuracy in light ray interaction with curved glass surfaces
+- Correct implementation of optical physics governing photorealistic rendering
+
+__VISUAL_IMPLEMENTATION__
+Glass Material Rendering Quality:
+- Realistic glass transparency with appropriate clarity and depth
+- Subtle blue tint implementation as specified in material requirements
+- Professional glass surface rendering with accurate surface properties
+- Fresnel reflections clearly evident and physically accurate
+- High-quality glass material appearance meeting photorealistic standards
+
+Inner Sphere Glow and Emission Effects:
+- Deep red base color with bright red glow effects properly implemented
+- Subsurface scattering effects visible and contributing to realistic appearance
+- Appropriate material roughness creating natural surface interaction
+- Professional emission rendering with realistic light distribution
+- Volumetric lighting effects from inner sphere enhancing realism
+
+Caustic and Lighting Effects:
+- Caustic patterns visible on ground plane following optical physics
+- Multiple reflections between glass surfaces creating complex lighting
+- Professional lighting setup with key light and environment implementation
+- High-quality rendering with appropriate anti-aliasing throughout
+- Advanced optical effects enhancing photorealistic appearance
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Glass Sphere Elements:
+- Complete glass sphere structure with proper nested geometry
+- All geometric proportions meeting exact specification requirements
+- Inner red sphere with full emission and glow implementation
+- Ground plane with caustic pattern visualization
+- All optical physics effects properly demonstrated
+
+Technical Specification Compliance:
+- High resolution (≥1600×1600) meeting image quality requirements
+- Clean rendering without artifacts, noise, or technical imperfections
+- Professional ray tracing implementation meeting photorealistic standards
+- All geometric constraints satisfied within specified tolerances
+- Complete adherence to glass sphere ray tracing demonstration requirements

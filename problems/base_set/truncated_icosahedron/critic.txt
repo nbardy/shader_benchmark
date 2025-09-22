@@ -1,0 +1,49 @@
+__MATHEMATICAL_ACCURACY__
+Polyhedron Geometric Properties:
+- Exactly 12 pentagonal faces (all black) conforming to truncated icosahedron structure
+- Exactly 20 hexagonal faces (all white) positioned according to mathematical specifications
+- All edges equal length maintaining uniform geometric relationships
+- 60 vertices correctly positioned following Archimedean solid mathematics
+- Perfect spherical overall shape with proper truncated icosahedron topology
+- Accurate implementation of semi-regular polyhedron geometric principles
+
+Face Arrangement Mathematics:
+- No two pentagons share an edge (critical topological constraint)
+- Each pentagon correctly surrounded by exactly 5 hexagons
+- Each hexagon touches exactly 3 pentagons and 3 hexagons
+- Correct alternating pattern maintained throughout polyhedron
+- Symmetrical distribution around sphere following icosahedral symmetry group
+- Proper vertex connections with exactly 3 edges meeting at each vertex
+
+__VISUAL_IMPLEMENTATION__
+Material and Surface Properties:
+- Slightly glossy finish balancing between matte and mirror reflectance
+- Subtle leather texture visible upon close inspection
+- Appropriate specular highlights showing realistic material response
+- Black pentagons rendered fully black without color contamination
+- White hexagons bright white maintaining sharp color contrast
+- Professional sports ball appearance with authentic material characteristics
+
+Rendering and Visual Quality:
+- Sharp contrast between black and white faces without color bleeding
+- Clean anti-aliasing on all edges eliminating jagged artifacts
+- No gaps between adjacent faces maintaining seamless construction
+- Consistent edge thickness throughout polyhedron structure
+- Realistic material response to lighting conditions
+- No geometric errors or distortions compromising shape accuracy
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Soccer Ball Elements:
+- Complete truncated icosahedron with all geometric specifications met
+- Perfect soccer ball geometry with classic black and white pattern
+- All face count requirements satisfied (12 pentagons, 20 hexagons)
+- Proper 3D appearance with appropriate shading and highlights
+- Outdoor lighting creating natural shadows enhancing dimensionality
+
+Technical Specification Compliance:
+- Grass green gradient background as specified
+- 3/4 view angle showing both face types clearly
+- Professional rendering quality suitable for educational demonstration
+- Overall convincing soccer ball representation meeting all standards
+- Full adherence to truncated icosahedron visualization specifications
+EOF < /dev/null

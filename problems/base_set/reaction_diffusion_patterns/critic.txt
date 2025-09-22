@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Reaction-Diffusion Pattern Mathematics:
+- Stripe thickness 4-8 pixels at 2048px resolution with average wavelength ≈ 12 ± 3 pixels
+- Mathematical precision in reaction-diffusion equation solution generating labyrinth patterns
+- Proper implementation of activator-inhibitor dynamics creating stripe formation
+- Radial growth pattern from seeded center square with mathematically consistent propagation
+- Accurate reaction-diffusion parameter values producing stable pattern formation
+
+Pattern Morphology and Structure:
+- Dense labyrinth with ≥45 stripe ridges across diagonal meeting mathematical density requirements
+- Dark stripes (low u) separated by bright yellow ridges (high u) following reaction-diffusion dynamics
+- Stripe ends splitting into isolated spots ~8-12px diameter with proper spacing constraints
+- Mix of stripes and spots present with spots never touching as mathematically required
+- No large uniform areas: every point belongs to stripe or spot following reaction-diffusion coverage
+
+__VISUAL_IMPLEMENTATION__
+Color Palette and Visual Quality:
+- Full Turbo color palette spanning <5%-95% range with darkest blues at stripe cores
+- Bright whites/yellows at ridge centers demonstrating proper concentration mapping
+- Professional color mapping accurately representing reaction-diffusion concentration values
+- High-quality color gradients supporting pattern visualization and scientific interpretation
+- Visual clarity in reaction-diffusion pattern representation
+
+Pattern Symmetry and Borders:
+- Radial symmetry clearly centered with no directional bias >15%
+- Roughly circular pattern with slight four-fold bias from square seed edges as expected
+- Clean 40-pixel pure-white frame surrounding square field with exact precision
+- Professional border rendering without artifacts or inconsistencies
+- Proper symmetry maintenance throughout pattern development
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Pattern Elements:
+- Complete reaction-diffusion pattern with all morphological features properly implemented
+- All stripe and spot formations correctly positioned and sized
+- Perfect radial growth from center seed maintaining mathematical consistency
+- Proper pattern density and coverage meeting all specification requirements
+- Full adherence to reaction-diffusion pattern mathematical properties
+
+Technical and Numerical Standards:
+- No checkerboard noise, NaNs, or flat regions >10 pixels compromising pattern quality
+- Numerical stability maintained throughout reaction-diffusion simulation
+- Professional rendering quality meeting scientific visualization standards
+- All mathematical accuracy and visual quality tests satisfied
+- Complete implementation of reaction-diffusion pattern specification requirements

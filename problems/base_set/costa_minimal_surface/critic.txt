@@ -1,0 +1,29 @@
+__MATHEMATICAL_ACCURACY__
+
+* Topological correctness: Euler characteristic V-E+F = -2 confirming genus-1 minimal surface topology
+* Mean curvature minimization: RMS mean curvature vector |H| ≤ 8×10^-4 throughout surface via cotangent Laplacian analysis
+* Three-fold rotational symmetry: Catenoidal ends positioned at 120° ± 5° angular intervals around central axis
+* Minimal surface equation satisfaction: Surface satisfies H = 0 constraint with numerical precision ≤ 1.2×10^-3
+* Branch point handling: Correct mathematical treatment of Costa surface's characteristic branch points and singularities
+* Saddle region geometry: Proper hyperbolic curvature in central connecting region between catenoidal ends
+* Parametric accuracy: Surface generation follows correct Costa surface parametrization with appropriate parameter domains
+
+__VISUAL_IMPLEMENTATION__
+
+* Frosted glass material rendering: Elegant translucent appearance with appropriate subsurface scattering effects
+* Curvature-based tinting: Lime-green highlighting accurately represents regions of lowest mean curvature (H < 5×10^-4)
+* Three-dimensional depth perception: Clear visualization of surface topology including handle structure and catenoidal ends
+* Surface continuity: Smooth rendering without mesh artifacts or discontinuities at branch points
+* Lighting quality: Appropriate illumination showcasing surface curvature variations and topological features
+* Transparency effects: Proper alpha blending and depth sorting for translucent material representation
+* Anti-aliasing implementation: Clean edges and smooth surface transitions without pixelation artifacts
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+* Mesh extraction capability: Surface geometry recoverable from alpha channel silhouette via marching tetrahedra
+* Quantitative verification: Numerical tests for Euler characteristic, curvature bounds, and symmetry measurements
+* Render quality standards: All triangles maintain interior angles ≥ 5° for geometric stability
+* Curvature color mapping: Minimum 80% green pixel coverage in low-curvature regions (H < 5×10^-4)
+* Symmetry verification: Point-cloud slicing at |z| > 1.2 enables clustering analysis of three catenoidal ends
+* Output format compliance: Score 1-10 with ≤120-word rationale summarizing test results
+* Mathematical visualization fidelity: Visual output enables verification of Costa surface's fundamental mathematical properties

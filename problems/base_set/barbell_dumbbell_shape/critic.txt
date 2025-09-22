@@ -1,0 +1,26 @@
+__MATHEMATICAL_ACCURACY__
+- Two spheres must be correctly sized and positioned with precise geometric proportions
+- Cylindrical connecting element must maintain proper dimensional relationships to spheres
+- Smooth blending at sphere-cylinder junctions must be mathematically continuous
+- Initial 15° tilt angle must be geometrically accurate and properly implemented
+- Overall shape proportions must conform to standard barbell/dumbbell geometric specifications
+- Rotation animation must maintain geometric integrity throughout motion
+
+__VISUAL_IMPLEMENTATION__
+- Metallic PBR materials must be correctly applied with distinct finishes: chrome spheres vs brushed cylinder
+- Three-light configuration must be properly implemented with correct intensities and positions
+- Soft shadows must be visible and contribute to realistic material appearance
+- 1600×1600 resolution must be achieved with high-quality rendering
+- 8× antialiasing must provide smooth edge rendering without visible artifacts
+- Background gradient must be correctly implemented according to specifications
+- Camera angle must clearly show the complete shape structure
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+- Both spherical ends must be present and properly formed
+- Connecting cylinder must be complete and appropriately scaled
+- Material differentiation between spheres and cylinder must be clearly visible
+- Smooth rotation animation must be implemented showing the shape from multiple angles
+- All lighting components must be present and functioning correctly
+- Rendering quality must meet professional standards with no visible aliasing
+- Background and overall composition must enhance the visualization without distraction
+- Assessment must verify shape accuracy (3 pts), material quality (2 pts), lighting setup (2 pts), rotation/camera (1 pt), and rendering quality (2 pts)

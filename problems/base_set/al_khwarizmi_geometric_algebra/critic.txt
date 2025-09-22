@@ -1,0 +1,26 @@
+__MATHEMATICAL_ACCURACY__
+- Equation x² + 10x = 39 must be correctly solved geometrically showing x = 3 as the final solution
+- Geometric construction sequence must follow Al-Khwarizmi's method: x×x square → x×2.5 rectangles → 2.5×2.5 corner squares
+- Dimensional accuracy must be maintained throughout (x×x square, x×2.5 rectangles, 2.5×2.5 corners)
+- Visual proof must clearly demonstrate the "completing the square" technique through geometric area relationships
+- Connection between geometric construction and algebraic solution must be mathematically sound
+- Area calculations and relationships must be precisely represented in both symbolic and numeric forms
+
+__VISUAL_IMPLEMENTATION__
+- Animation must be smooth and well-timed throughout the construction sequence
+- Islamic manuscript background and color palette must be historically appropriate and visually appealing
+- Traditional Islamic design elements including geometric patterns, arabesque decorations, and calligraphy style must be integrated
+- Construction lines must be helpful and clearly visible during the animation process
+- Final solution must be prominently displayed with appropriate visual emphasis
+- Overall composition must balance mathematical content with decorative Islamic artistic elements
+- Rendering quality must honor the Islamic mathematical tradition with authentic visual styling
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+- All steps of the geometric construction sequence must be clearly animated and properly sequenced
+- Areas must be properly labeled with both symbolic and numeric values throughout the process
+- Historical authenticity must be maintained in representing 9th century Islamic mathematical methods
+- Educational clarity must be achieved through step-by-step demonstration of algebraic concepts emerging from geometry
+- Cultural representation must include appropriate Islamic artistic elements without overwhelming the mathematical content
+- Manuscript styling must reflect the historical context of the House of Wisdom in Baghdad
+- Animation must be accessible to modern learners while respecting historical mathematical heritage
+- Decorative borders and geometric patterns must enhance rather than distract from the mathematical demonstration

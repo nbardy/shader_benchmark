@@ -2,6 +2,7 @@ import os
 import shutil
 import subprocess
 import uuid
+from datetime import datetime
 from pathlib import Path
 from typing import Dict
 
@@ -10,10 +11,17 @@ class TestRunner:
         self.shader_harness_path = Path("../shader_harness")
         
     def create_test_folder(self) -> Path:
-        """Create a unique test folder for this run"""
+        """Create a unique test folder with timestamp and UUID for this run"""
         test_uuid = str(uuid.uuid4())
-        test_folder = Path(f"test_{test_uuid}_results")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        test_folder = Path(f"test_{timestamp}_{test_uuid}_results")
         test_folder.mkdir(exist_ok=True)
+        
+        # Create artifacts subfolder for preserving all outputs
+        artifacts_folder = test_folder / "artifacts"
+        artifacts_folder.mkdir(exist_ok=True)
+        
+        print(f"Created isolated test environment: {test_folder}")
         return test_folder
     
     def setup_test_files(self, test_folder: Path, shaders: Dict[str, str], main_rs: str):
@@ -30,9 +38,16 @@ class TestRunner:
             if cargo_toml_src.exists():
                 shutil.copy2(cargo_toml_src, test_folder / "Cargo.toml")
             
-            # Write new main.rs
+            # ALWAYS use LLM-generated main.rs for true isolation testing
             with open(test_folder / "src" / "main.rs", 'w') as f:
                 f.write(main_rs)
+            print(f"Using LLM-generated main.rs (no file reuse)")
+            
+            # Copy the working main.rs as backup reference only
+            main_rs_src = self.shader_harness_path / "src" / "main.rs"
+            if main_rs_src.exists():
+                shutil.copy2(main_rs_src, test_folder / "main_rs_reference.rs")
+                print("Saved working main.rs as reference backup")
             
             # Write shader files
             for filename, content in shaders.items():
@@ -47,6 +62,9 @@ class TestRunner:
     async def run_test(self, test_folder: Path) -> Path:
         """Run cargo run in the test folder and return path to result.png"""
         
+        # NO PNG REMOVAL - Each test gets fresh timestamp-based directory
+        # All artifacts are preserved for debugging and analysis
+        
         # Change to test directory and run cargo
         original_cwd = os.getcwd()
         
@@ -55,8 +73,10 @@ class TestRunner:
             
             print(f"Running cargo run in {test_folder}...")
             
-            # Find the main shader file to use
-            shader_files = list(Path("shaders").glob("*.wgsl"))
+            # Find the main shader file to use (support both .wgsl and .glsl)
+            wgsl_files = list(Path("shaders").glob("*.wgsl"))
+            glsl_files = list(Path("shaders").glob("*.glsl"))
+            shader_files = wgsl_files + glsl_files
             main_shader = None
             
             # Look for a compute or fragment shader
@@ -71,10 +91,12 @@ class TestRunner:
             if not main_shader:
                 raise FileNotFoundError("No shader files found to execute")
             
-            # Run with proper arguments
-            cmd = ["cargo", "run", "--", "--shader", str(main_shader), "--output", "result.png", "--size", "1600"]
+            # Source cargo environment and run (output to artifacts)
+            # Note: Size argument may not be supported by all generated binaries
+            output_path = "artifacts/result.png"
+            cargo_env_cmd = "source ~/.cargo/env && cargo run -- --shader {} --output {}".format(str(main_shader), output_path)
             result = subprocess.run(
-                cmd,
+                ["bash", "-c", cargo_env_cmd],
                 capture_output=True,
                 text=True,
                 timeout=120  # 2 minute timeout
@@ -88,30 +110,30 @@ class TestRunner:
             
             print("Cargo run completed successfully")
             
-            # Look for result.png or any PNG output
-            result_image = test_folder / "result.png"
-            if not result_image.exists():
-                # Look for any PNG files
-                png_files = list(test_folder.glob("*.png"))
-                if png_files:
-                    result_image = png_files[0]
-                    print(f"Found output image: {result_image}")
-                else:
-                    raise FileNotFoundError("No PNG output file found after running shader")
+            # Check for result.png in artifacts folder (we're already in test_folder)
+            result_image_local = Path("artifacts/result.png")
+            if not result_image_local.exists():
+                raise FileNotFoundError("artifacts/result.png not found - shader execution failed")
             
-            return result_image
+            print(f"SUCCESS: Generated fresh result.png in artifacts/")
+            # Return the absolute path for use outside this directory
+            return test_folder / "artifacts" / "result.png"
             
         finally:
             os.chdir(original_cwd)
     
     def save_results(self, test_folder: Path, scores: list, execution_success: bool = True):
         """Save the evaluation results"""
+        # Check for any PNG files, not just result.png
+        png_files = list(test_folder.glob("*.png"))
+        has_image = len(png_files) > 0
+        
         results = {
             "scores": scores,
             "test_folder": str(test_folder),
             "status": "completed" if execution_success else "failed",
             "execution_success": execution_success,
-            "has_image": (test_folder / "result.png").exists()
+            "has_image": has_image
         }
         
         results_file = test_folder / "results.json"

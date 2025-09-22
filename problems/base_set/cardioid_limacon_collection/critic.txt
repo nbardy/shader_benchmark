@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Polar Equation Implementation:
+- Correct polar parametric form: r = a + b*cos(theta)
+- Accurate parameter relationships for different curve types
+- Proper mathematical distinction between cardioid and limaçon cases
+- Full 2π angular coverage for complete curve generation
+- Mathematical precision in polar coordinate calculations
+
+Curve Classification Accuracy:
+- Cardioid case: perfect implementation when a=b with characteristic cusp
+- Inner loop limaçon: accurate when a<b with distinct loop formation
+- Dimpled limaçon: correct when a>b but a<2b showing inward dimple
+- Convex limaçon: proper when a≥2b producing smooth convex curves
+- Accurate mathematical relationships between parameters and curve shapes
+
+__VISUAL_IMPLEMENTATION__
+Curve Rendering Quality:
+- At least 4 different curves clearly displayed and distinguishable
+- Smooth curve rendering without pixelation or visual artifacts
+- Heart-shaped cardioid with sharp, well-defined cusp
+- Clear inner loop visibility in appropriate limaçon variants
+- Professional curve smoothness and mathematical precision
+
+Visual Distinction and Presentation:
+- Different colors for each curve type enabling clear identification
+- Appropriate color coding system for curve classification
+- Clean, professional presentation with good contrast
+- Proper spacing and layout for multiple curve display
+- High-quality rendering meeting visualization standards
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Curve Collection:
+- Complete collection including all specified curve types
+- Minimum 4 different curves as required
+- Both cardioid and multiple limaçon variants represented
+- All mathematical cases properly demonstrated
+- Complete coverage of parameter space showing curve variations
+
+Technical Specification Compliance:
+- Accurate implementation of all curve types with proper parameters
+- Educational demonstration of polar coordinate relationships
+- Clear visual representation of mathematical principles
+- All specified curve variants properly categorized and displayed
+- Full adherence to cardioid and limaçon collection requirements

@@ -1,0 +1,49 @@
+__MATHEMATICAL_ACCURACY__
+
+**Recursion Depth Verification (4 pts)**
+- Exactly 6 iterations of Sierpinski triangle construction
+- Total small triangles count = 3⁶ = 729 triangles precisely
+- Each iteration correctly removes central triangular regions
+- Self-similar fractal structure maintained at all scales
+
+**Geometric Precision (2 pts)**
+- All gaps between triangles form exactly equilateral triangles
+- Triangle side ratios maintain 1:2 scaling per iteration level
+- Vertex alignment consistent across all recursion levels
+- No geometric distortions or irregular spacing
+
+**Mathematical Consistency**
+- Fractal dimension calculation verification through triangle counting
+- Proper implementation of Sierpinski construction algorithm
+- Each removed triangle creates three smaller copies at next level
+
+__VISUAL_IMPLEMENTATION__
+
+**Stroke Quality Assessment (2 pts)**
+- Black outline matches level-0 triangle boundary thickness
+- Consistent line width throughout all triangle edges
+- Clean, sharp edges without aliasing artifacts
+- Proper contrast between filled and empty regions
+
+**Visual Alignment (2 pts)**
+- Perfect geometric alignment of all triangle vertices
+- Equilateral triangle proportions maintained at every scale
+- Symmetrical distribution of triangular gaps
+- Clean visual separation between fractal levels
+
+**Rendering Quality**
+- High-contrast black-on-white or colored presentation
+- Sharp boundary definition between filled and void regions
+- No visual artifacts or rendering errors
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+**Input Processing**
+- Spec: generation prompt for Sierpinski Triangle implementation
+- Candidate: PNG output from renderer evaluation
+- Task completion: integer score S (1-10) with detailed rationale
+
+**Output Requirements**
+- Score format: S/10 with point breakdown by category
+- Rationale: ≤180 words explaining scoring decisions
+- Comprehensive evaluation covering all mathematical and visual aspects

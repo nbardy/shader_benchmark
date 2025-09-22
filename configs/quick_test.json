@@ -1,0 +1,28 @@
+{
+  "name": "Quick Test - 2 Models",
+  "description": "Quick validation test with 2 models on 2 problems",
+  "timestamp": "2025-07-31",
+  "models": [
+    "anthropic/claude-sonnet-4",
+    "qwen/qwen3-coder"
+  ],
+  "problems": [
+    "geometric_cube",
+    "regular_tetrahedron"
+  ],
+  "settings": {
+    "timeout_minutes": 5,
+    "pause_between_tests": 1,
+    "pause_between_models": 2,
+    "embed_images": true,
+    "output_directory": "output/quick_test"
+  },
+  "progress": {
+    "completed_models": [],
+    "failed_models": [],
+    "total_tests": 4,
+    "completed_tests": 0,
+    "start_time": null,
+    "end_time": null
+  }
+}

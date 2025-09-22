@@ -1,0 +1,58 @@
+__MATHEMATICAL_ACCURACY__
+Triangle Group Theory Properties:
+- Correct triangle counts at each depth level following sequence {1,3,6,12,24}
+- Proper implementation of (2,3,∞) triangle group acting on hyperbolic plane
+- Mathematical precision in flood-fill region adjacency graph construction
+- Accurate BFS depth labeling ensuring correct hierarchical structure
+- Fundamental domain generation following group theory principles
+
+Hyperbolic Geometry Implementation:
+- Proper hyperbolic geometry with orthogonal edge circles as required
+- Edge orthogonality test: 50+ random edge pixels fitting circles accurately
+- Circle center to origin distance equals radius within 2% tolerance
+- Mathematical precision in hyperbolic metric calculations throughout
+- Accurate implementation of Poincaré disk model geometry
+
+Area Preservation Mathematics:
+- Accurate hyperbolic area calculations for all 46 triangles
+- Fundamental domain area A₀ = π/2 maintained with mathematical precision
+- Sum of hyperbolic areas equals 46 × A₀ within ±5% tolerance
+- Proper numeric integration for area computation verification
+- Mathematical accuracy in hyperbolic area metric preservation
+
+__VISUAL_IMPLEMENTATION__
+Depth-Based Color System:
+- Appropriate luminance decay with depth following exponential pattern
+- Color luminance base coefficient lying between 0.65–0.75 as specified
+- Triangle fill luminance Y values properly converted and analyzed
+- Consistent exponential decay function fitted across depth levels
+- Professional color mapping enhancing hierarchical structure visualization
+
+Kaleidoscopic Pattern Quality:
+- Clear kaleidoscopic pattern showing complete tiling through reflections
+- Visual effectiveness demonstrating group action on hyperbolic plane
+- Professional presentation suitable for mathematical group theory analysis
+- High-quality rendering maintaining geometric precision throughout
+- Depth-based coloring helping viewers understand hierarchical structure
+
+Visual Clarity and Structure:
+- Clean geometric rendering without artifacts or distortions
+- Clear distinction between different depth levels through color variation
+- Professional visualization enabling mathematical analysis of group structure
+- Appropriate contrast and visibility for all geometric elements
+- High-quality presentation meeting scientific visualization standards
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Group Theory Elements:
+- Complete (2,3,∞) triangle group implementation with proper tiling
+- All triangle counts matching exact mathematical sequence requirements
+- Fundamental domain properly generated through group reflections
+- Hyperbolic geometry accurately implemented throughout visualization
+- Complete kaleidoscopic pattern demonstrating group action properties
+
+Technical Specification Compliance:
+- All geometric constraints satisfied within specified mathematical tolerances
+- Edge orthogonality requirements met with required precision levels
+- Area preservation tests passing within specified tolerance ranges
+- Color luminance decay meeting exponential function requirements
+- Complete adherence to group theory kaleidoscope specification standards

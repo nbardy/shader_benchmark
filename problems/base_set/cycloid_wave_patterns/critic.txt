@@ -1,0 +1,29 @@
+__MATHEMATICAL_ACCURACY__
+
+* Wavelength periodicity: Consistent crest-to-crest distance of 2π ≈ 6.283 units with <1% measurement error across first four cycles
+* Amplitude precision: Peak heights exactly +2 and trough depths exactly -2 with tolerance ±0.05 units
+* Vertical symmetry: Perfect y→-y mirror symmetry with <0.5% deviation between positive and negative wave components
+* Tangent conditions at extrema: Horizontal tangent slopes <0.02 at wave crests, vertical undefined slopes at trough cusps
+* Cycloid equation fidelity: Wave form accurately follows parametric cycloid equations x = r(t - sin t), y = r(1 - cos t)
+* Phase relationship accuracy: Correct phase relationships between positive and negative cycloid components
+* Mathematical continuity: Smooth transitions without discontinuities at connection points between wave segments
+
+__VISUAL_IMPLEMENTATION__
+
+* Anti-aliasing quality: Smooth curve rendering without pixelation or jagged edges along wave paths
+* Color specification compliance: Exact color implementation matching specified visual requirements
+* Baseline visualization: Straight horizontal reference line clearly visible for amplitude measurement
+* Curve smoothness: Continuous smooth curves without rendering artifacts or numerical noise
+* Contrast optimization: Appropriate color contrast enabling clear distinction of wave features and measurement points
+* Line thickness consistency: Uniform stroke width throughout wave patterns for professional appearance
+* Visual clarity: Clear representation enabling accurate measurement and verification of mathematical properties
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+* Periodic pattern completeness: Full cycloid wave patterns displayed with all required mathematical features visible
+* Measurement verification capability: Visual output enables precise measurement of wavelength, amplitude, and slope characteristics
+* Symmetry demonstration: Both positive and negative wave components clearly shown with proper vertical symmetry
+* Baseline reference implementation: Horizontal baseline provided for accurate amplitude and positioning measurements
+* Output format compliance: Integer score 1-10 with ≤180-word rationale following specified structure
+* Rendering resolution adequacy: Sufficient detail to verify mathematical accuracy within specified tolerance limits
+* Color and styling adherence: All visual elements conform to specified color scheme and presentation requirements

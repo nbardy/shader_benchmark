@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Fractal Iteration Construction:
+- Exactly 4 or more levels of recursive subdivision with mathematically correct patterns
+- Characteristic cross-shaped holes present and properly oriented at each scale
+- Recursive pattern consistent with Menger cube algorithm: each face divided into 9 squares
+- Center square plus 4 edge-adjacent squares removed at each iteration level
+- Mathematical precision in fractal construction maintaining geometric relationships
+
+Geometric Precision and Structure:
+- Accurate cube proportions with perfect 1:1:1 aspect ratio
+- Holes positioned at exact 1/3 intervals along each axis as required
+- Proper cross/plus-shape orientation maintained throughout all iterations
+- Clean geometric edges without z-fighting artifacts or clipping
+- No gaps between recursive levels maintaining structural integrity
+
+__VISUAL_IMPLEMENTATION__
+Color Gradient and Material Properties:
+- Deep blue to white color gradient properly implemented based on iteration levels
+- Metallic/crystalline material appearance with appropriate surface properties
+- Correct color progression corresponding to fractal iteration depth
+- Professional material rendering enhancing three-dimensional perception
+- Consistent color application across all fractal iteration levels
+
+Lighting and Visual Quality:
+- Three-point lighting setup (key, fill, rim) clearly evident
+- Soft shadows enhancing depth perception and dimensional clarity
+- Dark gradient background providing appropriate contrast
+- Good contrast and professional dimensional clarity throughout structure
+- High-quality rendering with proper anti-aliasing eliminating artifacts
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Fractal Elements:
+- Complete Menger cube structure with all specified iteration levels
+- All geometric requirements met for proper fractal construction
+- Clear recursive cubic structure with correct hole patterns
+- No missing or incorrect subdivisions in fractal generation
+- Complete implementation of Menger cube mathematical properties
+
+Technical Specification Compliance:
+- High resolution (≥1600×1600) as specified in requirements
+- No rendering artifacts, z-fighting, or visual imperfections
+- All visual quality standards met for professional presentation
+- Complete adherence to Menger cube fractal specifications
+- Perfect implementation meeting all geometric and visual requirements

@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Klein Bottle Topology:
+- Proper Klein bottle topology with no boundary edges (Euler characteristic 0)
+- Self-intersection line where neck passes through body at x≈0, y≈0 plane
+- RMS distance between two sheets at intersection < 0.01 units
+- Mathematically correct Klein bottle construction with proper self-intersection
+- Accurate topological properties demonstrating non-orientable surface
+
+Geometric Precision:
+- Neck diameter measuring approximately 0.8 units within ±5% tolerance
+- Major radius R = 2.0 units within ±3% geometric accuracy
+- Proper proportional relationships between Klein bottle components
+- Accurate parametric surface construction maintaining geometric constraints
+- Mathematical precision in self-intersection geometry and positioning
+
+__VISUAL_IMPLEMENTATION__
+Curvature Visualization:
+- Curvature color scale spanning exactly -0.5 to +0.5 range
+- Correct curvature distribution across Klein bottle surface
+- Appropriate color mapping showing positive and negative curvature regions
+- Visual distinction between different curvature areas of the surface
+- Professional curvature visualization enhancing mathematical understanding
+
+Rendering Quality and Clarity:
+- High resolution meeting specified image quality requirements
+- Appropriate lighting setup revealing Klein bottle structure
+- Correct background and composition for optimal visibility
+- Clean rendering without visual artifacts or rendering errors
+- Professional presentation enabling clear geometric analysis
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Klein Bottle Elements:
+- Complete Klein bottle structure with all topological features
+- Self-intersection line clearly visible and properly positioned
+- All geometric measurements meeting specified tolerances
+- Curvature coloring system fully implemented
+- Boundary-free surface construction as required
+
+Technical Specification Compliance:
+- All geometric constraints satisfied within specified tolerances
+- Complete implementation of Klein bottle mathematical properties
+- Professional visualization meeting all technical requirements
+- Accurate representation of non-orientable surface characteristics
+- Full adherence to Klein bottle specification requirements

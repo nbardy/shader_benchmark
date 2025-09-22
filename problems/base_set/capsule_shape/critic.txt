@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Geometric Form Verification:
+- Cylindrical body must be exactly 3.0 units tall with consistent radius
+- Hemispherical caps with radius of 0.8 units matching cylinder radius
+- Total height calculation: cylinder height plus two radii (4.6 total)
+- Perfect spherical curvature for both hemispherical end caps
+- Vertical orientation axis alignment maintained throughout
+
+Dimensional Precision:
+- Consistent radius of 0.8 throughout entire cylinder section
+- Seamless mathematical transition from cylinder to hemisphere
+- No geometric distortion or scaling errors
+- Precise parametric surface construction
+- Accurate proportional relationships between components
+
+__VISUAL_IMPLEMENTATION__
+Material and Surface Quality:
+- Porcelain white base color with semi-glossy finish
+- Subtle blue undertones visible in shadows and indirect lighting
+- Specular highlights appropriate for ceramic material properties
+- Surface continuity with no visible seams or discontinuities
+- No polygonal artifacts, faceting, or rendering imperfections
+
+Lighting and Rendering Standards:
+- Three-point lighting setup with clear key, fill, and rim lighting
+- Rim light creates proper edge definition against dark background
+- Dark gradient background provides appropriate contrast
+- Low camera angle emphasizes vertical height and proportions
+- Professional anti-aliasing on all edges and curves
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Geometric Elements:
+- Complete capsule shape with cylinder body and hemispherical caps
+- Vertical orientation as specified in requirements
+- Proper surface smoothness throughout entire form
+- No missing geometric components or incomplete sections
+- Consistent curvature maintaining capsule shape definition
+
+Technical and Visual Standards:
+- Clean, professional rendering quality without noise or artifacts
+- Shadows that enhance three-dimensional form perception
+- Overall elegant, sculptural appearance meeting aesthetic requirements
+- Proper form modeling through lighting to show dimensional depth
+- Complete adherence to capsule shape specifications

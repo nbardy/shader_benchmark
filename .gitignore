@@ -1,0 +1,23 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+.env
+
+# Rust build artifacts
+shader_harness/target/
+
+# Generated test outputs
+llm_harness/test_*_results/
+llm_harness/harness_*/*
+output/
+archive/
+
+# Images generated locally
+llm_harness/images/
+shader_harness/*.png
+
+# OS files
+.DS_Store

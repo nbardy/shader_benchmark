@@ -1,0 +1,58 @@
+__MATHEMATICAL_ACCURACY__
+Mandelbulb Fractal Mathematical Properties:
+- Clear 8-fold symmetry throughout fractal structure as mathematically required
+- Accurate implementation of Mandelbulb iteration formula z^8 + c in 3D space
+- Proper escape-time calculation producing smooth mathematical bands
+- Correct fractal dimension and self-similarity at multiple scales
+- Mathematical precision in complex number arithmetic extended to 3D
+
+Ray Marching Mathematical Precision:
+- Distance field calculations maintaining mathematical accuracy
+- No banding, blocky steps, or visible distance-field computational errors
+- Proper sphere-tracing algorithm implementation with appropriate step sizes
+- Mathematical consistency in surface normal calculations for lighting
+- Accurate ray-surface intersection detection maintaining geometric precision
+
+Fractal Structure Integrity:
+- No large holes, clipping artifacts, or missing fractal regions
+- Complete fractal structure without computational gaps or errors
+- Proper handling of fractal boundary conditions and iteration limits
+- Mathematical accuracy in fractal generation preventing structural defects
+- Consistent fractal detail across all visible regions and scales
+
+__VISUAL_IMPLEMENTATION__
+Color Mapping and Visual Quality:
+- Continuous rainbow hue progression without abrupt color transitions
+- Dark core region contrasting with bright outer fractal structure
+- White background providing optimal contrast for fractal visibility
+- Professional color mapping enhancing fractal structure visualization
+- Smooth color gradients supporting mathematical structure analysis
+
+Lighting and Camera Implementation:
+- Viewpoint and shading matching specification requirements
+- Highlight illumination from +xyz direction as specified
+- Professional lighting setup revealing fractal surface details
+- Appropriate camera positioning showcasing fractal geometry
+- Realistic shading effects enhancing three-dimensional perception
+
+Rendering Quality and Technical Excellence:
+- High resolution (≥2k pixels) meeting image quality requirements
+- Proper anti-aliasing eliminating aliasing artifacts throughout image
+- No compression artifacts or gamma correction errors
+- Professional rendering quality suitable for mathematical analysis
+- Clean image output without technical rendering defects
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Mandelbulb Elements:
+- Complete 3D Mandelbulb fractal with all mathematical properties demonstrated
+- 8-fold symmetry clearly visible throughout fractal structure
+- Proper escape-time visualization with smooth color banding
+- Ray marching implementation meeting technical quality standards
+- All fractal characteristics properly rendered without missing elements
+
+Technical Specification Compliance:
+- All mathematical constraints satisfied for accurate fractal generation
+- Ray marching algorithm meeting precision and quality requirements
+- Color mapping and lighting implementation according to specifications
+- Image quality standards achieved with proper resolution and anti-aliasing
+- Complete adherence to Mandelbulb fractal visualization requirements

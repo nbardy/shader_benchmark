@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Riemann Surface Topology:
+- Two half-spiral "ramps" rising ±√r as one travels around the origin
+- Correct branch cut alignment along negative x-axis only
+- Sheets continuous everywhere except at the intentional branch cut
+- Both sheets pinch to single point at origin forming proper cone tip
+- Mathematical precision in complex function branch cut implementation
+
+Branch Cut Mathematical Properties:
+- Branch cut positioned exclusively along negative real axis
+- Sheets separate from positive real axis as mathematically required
+- Seamless sheet joining along negative real axis branch cut line
+- No gaps or discontinuities except at intended branch cut location
+- Accurate complex function multi-valued behavior representation
+
+__VISUAL_IMPLEMENTATION__
+Color and Hue Mapping:
+- Hue varies monotonically with arg(z) argument function
+- Complete 360° rotation yields full color cycle as required
+- Upper sheet displays full-bright rainbow color spectrum
+- Lower sheet shows identical hues but with reduced brightness
+- Professional color mapping demonstrating complex argument visualization
+
+Opacity and Visual Contrast:
+- Lower sheet brightness between 25-80% of upper sheet intensity
+- Clear opacity contrast enabling visual distinction between sheets
+- Proper visual cues differentiating upper and lower Riemann sheets
+- Edge outlines visible maintaining geometric structure clarity
+- Professional rendering quality with appropriate visual contrasts
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Surface Elements:
+- Complete Riemann surface with both sheets properly constructed
+- All topological features correctly implemented
+- Branch cut behavior accurately demonstrated
+- Proper cone point formation at origin
+- No missing triangles or flipped geometric elements
+
+Mesh and Technical Quality:
+- No face inversions maintaining proper surface orientation
+- RMS normal variation ≤ 5° across neighboring mesh elements
+- Clean mesh integrity without geometric artifacts
+- All specified mathematical and visual requirements satisfied
+- Complete adherence to Riemann surface branch cut specifications

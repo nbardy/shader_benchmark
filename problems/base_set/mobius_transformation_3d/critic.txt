@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Möbius Transformation Formula Verification:
+- Verify Möbius transformation formula accuracy at 20 sample points with error <2%
+- Mathematical precision in complex function implementation maintaining geometric relationships
+- Proper implementation of Möbius transformation z → (az+b)/(cz+d) formula
+- Accurate computation of transformation magnitude |cw+d|⁻¹ throughout domain
+- Mathematical correctness in complex analysis transformation properties
+
+Conformal Property Preservation:
+- Angles preserved at lattice intersections with measurement accuracy at 10 random angles
+- Conformal distortion maintains angle preservation as required by Möbius transformations
+- Mathematical verification of angle-preserving property throughout transformation
+- Geometric accuracy in conformal mapping implementation
+- Proper preservation of local geometric relationships under transformation
+
+__VISUAL_IMPLEMENTATION__
+Lattice Structure Visualization:
+- Two distinct lattice structures: original (grey, faded) and transformed (glowing, colored)
+- Original lattice rendered with appropriate grey tones and reduced opacity
+- Transformed lattice with vibrant colors and enhanced visibility through glow effects
+- Clear visual distinction between original and transformed geometric structures
+- Professional lattice rendering demonstrating transformation effects
+
+Color and Size Mapping Standards:
+- Colors and tube thickness correctly reflect transformation magnitude |cw+d|⁻¹
+- Smooth color gradient indicating transformation magnitude throughout structure
+- Variable tube thickness based on transformation scaling factors
+- Proper visual encoding of mathematical transformation properties
+- Professional color mapping enhancing geometric understanding
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Transformation Elements:
+- Complete Möbius transformation with all mathematical properties properly implemented
+- Singularity region showing extreme warping/stretching effects
+- Focal sphere marking singularity location for visual reference
+- Visual continuity with smooth warping and no discontinuities except at singularity
+- Full adherence to conformal mapping mathematical requirements
+
+Technical and Rendering Quality:
+- Both lattices clearly visible with appropriate contrast and lighting
+- Volumetric glow effects enhancing transformed structure visibility
+- Professional rendering quality meeting visualization standards
+- All mathematical accuracy tests satisfied within specified tolerances
+- Complete implementation of Möbius transformation 3D visualization requirements

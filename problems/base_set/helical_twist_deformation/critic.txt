@@ -1,0 +1,49 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Helical Twist Deformation.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+## __MATHEMATICAL_ACCURACY__
+
+**Helical twist linearity (0-3 pts)**
+- Measure rotation angle at 10 heights across the cube
+- Rotation should vary linearly with height (R² > 0.99)
+- Full 360° rotation from bottom to top
+- Verify consistent angular velocity throughout twist
+
+**Geometric deformation quality (0-2 pts)**
+- No discontinuities in surface parametrization
+- Absence of self-intersections or topology errors
+- Beveled edges maintain consistent radius throughout
+- Proper preservation of cube volume during deformation
+
+## __VISUAL_IMPLEMENTATION__
+
+**Material and reflection rendering (0-2 pts)**
+- Metallic surface with physically accurate Fresnel reflections
+- Reflections must be visible at grazing angles
+- Proper index of refraction for metallic materials
+- Surface roughness consistent with specification
+
+**Color gradient implementation (0-2 pts)**
+- Smooth transition from blue at bottom to golden yellow at top
+- Hue variation must be < ±15° from expected values
+- No banding or discontinuities in gradient
+- Color space accuracy and gamma correction
+
+**Lighting and shadow quality (0-1 pts)**
+- Three distinct light sources clearly visible
+- Soft shadows properly rendered and positioned
+- Consistent illumination across twisted surface
+- No harsh lighting artifacts or over-exposure
+
+## __COMPLETENESS_AND_SPECIFICATIONS__
+
+**Output format**
+
+```
+Score: S/10
+Rationale: …
+```

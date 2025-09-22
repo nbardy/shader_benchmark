@@ -1,0 +1,26 @@
+__MATHEMATICAL_ACCURACY__
+- Double cone must be properly constructed as infinite and oblique following Apollonius's classical geometric description
+- Cone angle must be precisely 30° from vertical for accurate mathematical representation
+- All three conic sections (ellipse, parabola, hyperbola) must be correctly generated from their respective cutting plane intersections
+- Cutting plane angles must be accurate: 45° for ellipse, 30° for parabola, 15° for hyperbola
+- Intersection curves must demonstrate valid parametric representations and proper geometric relationships
+- Construction methods must be mathematically sound and true to classical geometric principles
+
+__VISUAL_IMPLEMENTATION__
+- Cone must be rendered as a clear wireframe structure with appropriate transparency
+- Cutting planes must be semi-transparent and visually distinguishable from each other
+- Intersection curves must be bold and properly colored: blue ellipse, green parabola, red hyperbola
+- Parchment background and orthographic projection must create authentic ancient manuscript aesthetics
+- Overall composition must be balanced and reminiscent of historical mathematical diagrams
+- Visual clarity must effectively distinguish between the three different conic types
+- Wireframe and transparency effects must enhance rather than obscure the geometric relationships
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+- All three conic sections must be present and clearly demonstrated in the visualization
+- Geometric annotations including generators, normals, and Greek letters must be present and helpful
+- Educational value must be achieved through clear demonstration of how different plane angles create different conic types
+- Historical authenticity must be maintained through classical Greek geometric approach and diagrammatic style
+- Infinite cone extension must be appropriately represented to show the complete mathematical concept
+- Modern rendering techniques must be applied while preserving ancient mathematical concepts
+- Accessibility to contemporary learners must be balanced with historical mathematical heritage
+- Visual demonstration must clearly connect cutting plane geometry to resulting conic section properties

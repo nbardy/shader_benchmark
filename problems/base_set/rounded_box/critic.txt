@@ -1,0 +1,45 @@
+__MATHEMATICAL_ACCURACY__
+Box Geometric Properties:
+- Correct base dimensions with 2×3×1.5 proportional relationships clearly visible
+- All edges uniformly rounded with consistent radius throughout
+- Corners smoothly blend where three edges meet without discontinuities
+- Shape maintains proper box-like appearance despite edge rounding
+- No sharp edges or geometric discontinuities in rounded transitions
+- Mathematical precision in edge radius calculations and corner blending
+
+Rounded Edge Implementation:
+- Consistent rounding radius applied to all 12 edges of the box
+- Proper mathematical transitions from flat faces to rounded edges
+- Accurate geometric modeling of rounded corner intersections
+- Smooth parametric surface generation for all rounded elements
+- Correct implementation of rounded box mathematical formulations
+
+__VISUAL_IMPLEMENTATION__
+Surface Material Properties:
+- Mint green color (light green with slight blue tint) consistently applied
+- Matte surface finish with minimal specular highlights
+- Diffuse shading only without reflective properties
+- Consistent color distribution across entire surface
+- Plastic-like material appearance without metallic characteristics
+
+Rendering Quality Standards:
+- Smooth edge transitions without visible polygonization artifacts
+- Proper ambient occlusion effects in rounded corners
+- Professional anti-aliasing on all edges and surfaces
+- No z-fighting or rendering artifacts visible
+- High-quality surface smoothness throughout all geometry
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Box Elements:
+- Complete 3D rounded box with all specified dimensional proportions
+- All edges and corners properly rounded as specified
+- Mint green material properties correctly implemented
+- Proper perspective view showing three faces clearly
+- Professional lighting setup with key and ambient illumination
+
+Technical Specification Compliance:
+- Soft shadows from key light creating proper form definition
+- Light gray gradient background as specified
+- Overall soft, professional lighting setup
+- All geometric accuracy requirements met
+- Full adherence to rounded box visualization specifications

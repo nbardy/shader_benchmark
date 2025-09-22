@@ -1,87 +1,25 @@
+⚠️ VIEWABILITY REQUIREMENTS:
+- Scale elements to 0.3-0.8 of canvas size
+- Use lineWidth 0.003-0.01 for wireframes (not 0.0003!)
+- Normalize coordinates properly: `uv = (pos.xy - canvasSize/2.0) / (canvasSize/2.0)`
+- Ensure shapes are centered and visible
+
+⚠️ DISTANCE FIELD RENDERING:
+- Calculate distance to ALL edges/shapes in every pixel (no conditionals)
+- Apply visual effects (dashing, colors) AFTER distance calculation
+- Never use `if` statements that skip distance calculations
+- Example: `minDist = min(minDist, line_distance(uv, p0, p1));` for ALL edges
+
 {problem_prompt}
 
-## CRITICAL PROGRAMMING RULES
-
-You must follow these rules exactly to create working shader programs:
-
-### WGSL Shader Programming Rules:
-
-1. **No Recursive Functions**: WGSL does not support recursive function calls. Use iterative approaches instead.
-
-2. **Reserved Keywords**: Avoid these reserved keywords in variable names:
-   - `target`, `source`, `blend`, `location`, `binding`, `group`, `vertex_index`, `instance_index`
-   - Use alternatives like `look_at`, `origin`, `mix_mode`, `pos`, `bind_point`, `set_idx`
-
-3. **Variable Mutability**: 
-   - Function parameters are immutable by default. Use `var` not `let` for mutable variables
-   - Example: `fn my_func(mut_var: vec3<f32>)` → declare `var p = mut_var;` inside function to modify
-
-4. **Entry Points**: Always include both vertex and fragment shaders:
-   - Vertex: `@vertex fn main_vs(@builtin(vertex_index) vid: u32) -> VertexOut`
-   - Fragment: `@fragment fn main_fs(in: VertexOut) -> @location(0) vec4<f32>`
-
-5. **Built-in Functions**: Use correct WGSL built-ins:
-   - `length()`, `normalize()`, `dot()`, `cross()`, `min()`, `max()`, `clamp()`
-   - `sin()`, `cos()`, `atan2()`, `pow()`, `exp()`, `log()`
-
-6. **Ray Marching**: For complex geometry, use iterative ray marching with distance fields:
-   ```wgsl
-   for (var i = 0; i < MAX_STEPS; i++) {
-       let dist = scene_sdf(ray_pos);
-       if (dist < EPSILON) { break; }
-       ray_pos += ray_dir * dist;
-   }
-   ```
-
-### Rust Programming Rules:
-
-1. **No Undefined Variables**: Every variable must be declared before use
-   - If referencing constants from shaders, define them in Rust too
-
-2. **CLI Arguments**: Use unique short flags:
-   - `-s` for `--shader`
-   - `-o` for `--output` 
-   - `-z` for `--size` (NOT `-s`)
-
-3. **Error Handling**: Use `.expect()` or proper error handling for all fallible operations
-
-4. **Dependencies**: Only use crates already in the example Cargo.toml
-
-### Mathematical Implementation Guidelines:
-
-1. **Complex Math**: Break down complex formulas into multiple simpler steps
-2. **4D Operations**: Implement 4D math manually using vec4<f32> components
-3. **Matrix Operations**: Use manual matrix multiplication, avoid recursive matrix inversions
-4. **Optimization**: Use early exits and distance field optimizations for performance
-
-## Example Project Structure
-
+TECHNICAL CONSTRAINTS:
 {shader_harness_example}
 
-## Output Format
-
-Provide exactly this XML structure:
-
-```xml
-<shader file="descriptive_name.wgsl">
-// Full WGSL shader with vertex and fragment shaders
-// Include all necessary functions and proper variable declarations
+OUTPUT FORMAT:
+<shader file="filename.wgsl">
+...shader code...
 </shader>
 
 <main_rs>
-// Complete Rust main.rs file
-// Must compile without errors
-// Use the same structure as the example but adapt as needed
+...main.rs code...
 </main_rs>
-```
-
-## Final Checklist
-
-Before submitting, verify:
-- [ ] No recursive functions in WGSL
-- [ ] No reserved keywords used as variable names  
-- [ ] All variables declared before use
-- [ ] Unique CLI argument short flags
-- [ ] Both vertex and fragment shader entry points
-- [ ] All mathematical operations use valid WGSL syntax
-- [ ] Code follows the exact XML output format above

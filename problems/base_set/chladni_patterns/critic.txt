@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Standing Wave Pattern Implementation:
+- Correct standing wave pattern for (4,3) mode with accurate mathematical formulation
+- Proper nodal line positions showing 4 vertical and 3 horizontal divisions
+- Accurate amplitude distribution following sine function mathematics
+- Wave equation implementation with correct frequency and mode relationships
+- Mathematical precision in standing wave superposition and interference patterns
+
+Physical Boundary Conditions:
+- Realistic boundary conditions at plate edges with proper wave reflection
+- Correct implementation of fixed boundary constraints
+- Accurate representation of wave physics at plate perimeter
+- Proper mathematical handling of edge effects and wave termination
+- Physical accuracy in vibrational mode characteristics and properties
+
+__VISUAL_IMPLEMENTATION__
+Sand Particle Simulation Quality:
+- Particles accumulate accurately at nodal lines where amplitude is zero
+- Natural-looking particle distribution with realistic physics behavior
+- Appropriate particle density along nodes without overcrowding or gaps
+- No particles floating in high-amplitude regions maintaining physical accuracy
+- Realistic particle physics simulation with proper gravitational and vibrational effects
+
+Visual Representation and Clarity:
+- Clear distinction between nodes and antinodes with effective color coding
+- Smooth color gradients for amplitude visualization without banding artifacts
+- Effective 3D height mapping showing wave amplitude variation
+- Professional presentation with proper plate boundaries and clean aesthetics
+- High-quality rendering without aliasing or visual artifacts
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Chladni Elements:
+- Complete Chladni pattern simulation with all physical and visual components
+- Accurate (4,3) mode pattern as specified in requirements
+- Sand particle simulation demonstrating nodal line accumulation
+- Wave physics implementation with correct mathematical relationships
+- All boundary conditions and edge constraints properly implemented
+
+Technical and Visual Standards:
+- Efficient wave equation implementation with proper coordinate mapping
+- Clean particle physics simulation without computational artifacts
+- Professional visual quality meeting scientific visualization standards
+- Complete adherence to Chladni pattern physics and visual requirements
+- All technical specifications properly satisfied without deductions

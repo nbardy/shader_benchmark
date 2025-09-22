@@ -1,0 +1,45 @@
+__MATHEMATICAL_ACCURACY__
+Rose Curve Geometric Properties:
+- Exactly 7 petals with perfect symmetry (odd k = 7 gives k petals)
+- Each petal covers angular width of 360°/7 ≈ 51.43 degrees
+- Curve passes through origin exactly 14 times between petals
+- Petal tips positioned on unit circle at radius 1.0
+- Inner indent depth maintains ratio of 0.155 × radius for proper shape
+- Rotational symmetry error must be less than 1 degree for accuracy
+
+Polar Coordinate Implementation:
+- Correct polar equation r = cos(k·θ) with k = 7
+- Smooth parametric curve generation without mathematical discontinuities
+- Proper angular parameter mapping covering full 0 to 2π range
+- Accurate coordinate transformation from polar to Cartesian
+- Mathematical precision in curve calculation and rendering
+
+__VISUAL_IMPLEMENTATION__
+Curve Rendering Standards:
+- Stroke width consistently 6 pixels throughout entire curve
+- Professional anti-aliasing eliminating jagged edges
+- Smooth curvature with no visible kinks or sharp transitions
+- Proper curve thickness maintaining visual consistency
+- High-quality line rendering meeting professional standards
+
+Grid and Background Elements:
+- Grid lines clearly visible beneath rose curve structure
+- Grid opacity at 0.9 allowing curve visibility without obstruction
+- All concentric circles and radial spokes properly rendered
+- Grid elements supporting curve visualization without interference
+- Clean background presentation enhancing overall visual quality
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Rose Curve Elements:
+- Complete 7-petal rose curve with perfect geometric accuracy
+- All petal tips reaching unit circle radius within 2% tolerance
+- Proper petal symmetry and angular spacing as specified
+- Complete grid system with circles and spokes fully rendered
+- Mathematical accuracy in all curve generation calculations
+
+Technical Specification Compliance:
+- Scale accuracy with tip radius measurements within tolerance
+- Complete curve smoothness without geometric imperfections
+- All visual quality requirements met for educational visualization
+- Professional rendering standards maintained throughout
+- Full adherence to rose curve visualization specifications

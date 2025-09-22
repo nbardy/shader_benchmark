@@ -1,0 +1,58 @@
+__MATHEMATICAL_ACCURACY__
+Complex Number Polar Form Representation:
+- Correct angular placement of complex numbers following polar coordinate system
+- Accurate representation of argument (angle) for each complex number z = re^(iθ)
+- Proper magnitude calculation |z| = √(x² + y²) for each complex number
+- Mathematical precision in complex number positioning on the Gauss plane
+- Correct implementation of Euler's formula for polar-rectangular conversion
+
+Angular Separation and Distribution:
+- Proper spacing and distribution of complex number points
+- Clear visualization of angular relationships between complex numbers
+- Accurate angular measurements with proper θ values in [0, 2π] range
+- Mathematical consistency in angular placement across the complex plane
+- Precise angular calculations maintaining geometric relationships
+
+Unit Circle Mathematical Properties:
+- Precise rendering of unit circle with exact radius = 1 coordinate unit
+- Clear mathematical demarcation between |z| < 1, |z| = 1, and |z| > 1 regions
+- Accurate scale and proportional relationships throughout complex plane
+- Proper coordinate system alignment with standard complex plane conventions
+- Mathematical precision in circle construction and positioning
+
+__VISUAL_IMPLEMENTATION__
+Color Coding and Visual Hierarchy:
+- Effective color coding system for magnitude and/or phase visualization
+- Clear visual hierarchy distinguishing different complex number properties
+- Appropriate use of color gradients or discrete colors enhancing understanding
+- Professional color scheme supporting mathematical analysis and interpretation
+- Consistent color mapping across all complex number representations
+
+Rendering Quality and Clarity:
+- Clean rendering without visual artifacts, aliasing, or distortion
+- High-resolution presentation suitable for detailed mathematical analysis
+- Professional aesthetic presentation meeting scientific visualization standards
+- Clear readability of all mathematical elements and annotations
+- Smooth curves and precise geometric elements throughout visualization
+
+Visual Distinction and Accessibility:
+- Clear visual distinction between inside and outside unit circle regions
+- Appropriate contrast levels for optimal visibility of all elements
+- Professional presentation suitable for educational and research purposes
+- Visual clarity supporting complex number analysis and interpretation
+- Accessible design enabling clear mathematical understanding
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Complex Plane Elements:
+- Complete Gauss complex plane with proper coordinate system implementation
+- All complex numbers correctly positioned according to mathematical specifications
+- Unit circle properly rendered with exact geometric accuracy
+- Full implementation of complex number visualization requirements
+- Mathematical accuracy in all polar and rectangular coordinate conversions
+
+Technical Specification Compliance:
+- All geometric constraints satisfied within specified mathematical tolerances
+- Color coding requirements fully implemented according to specifications
+- Resolution and quality standards met for professional mathematical visualization
+- Complete adherence to Gauss complex plane representation requirements
+- Full implementation meeting all mathematical and visual specification standards

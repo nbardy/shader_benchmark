@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Twist Angle Mathematical Properties:
+- Integrated Frenet frame rotation must equal exactly 180° ± 3° tolerance
+- Total rotation of strip normal along edge curve (v=±0.2) precisely measured
+- Mathematical precision in half-twist implementation maintaining geometric accuracy
+- Proper parametrisation ensuring complete 180-degree rotation through strip
+- Accurate implementation of Möbius strip single half-twist topological property
+
+One-Sided Topological Verification:
+- One-sidedness test: ray following parametrisation 0→4π returns with color flip sequence front→back→front
+- Single-sided surface topology correctly implemented without false boundaries
+- Color alternation occurs exactly once during complete parametric traversal
+- Mathematical verification of non-orientable surface properties
+- Topological accuracy in single-sided strip construction
+
+__VISUAL_IMPLEMENTATION__
+Surface Quality and Mesh Integrity:
+- Face normals coherent throughout surface with no flipped triangles
+- Mesh quality maintained without topological artifacts or orientation errors
+- Clean surface rendering demonstrating proper Möbius strip geometry
+- Professional mesh construction with consistent normal vectors
+- High-quality geometric representation without rendering defects
+
+Lighting and Resolution Standards:
+- Highlight positioning matches light direction specifications
+- Minimum resolution ≥2.2k pixels ensuring adequate detail
+- No aliasing artifacts compromising visual quality
+- Professional lighting compliance enhancing surface visibility
+- Proper anti-aliasing maintaining smooth geometric edges
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Geometric Properties:
+- Complete Möbius strip with proper half-twist implementation
+- No self-intersection with minimum distance edge↔surface ≥ 0.02
+- All topological requirements satisfied for single-sided surface
+- Perfect geometric accuracy in twist angle and surface construction
+- Full adherence to Möbius strip mathematical specifications
+
+Technical and Visual Compliance:
+- All mathematical accuracy tests satisfied within specified tolerances
+- Professional rendering quality meeting visualization requirements
+- Complete implementation of half-twist topological properties
+- All mesh quality and lighting standards met
+- Full adherence to Möbius strip half-twist specification requirements

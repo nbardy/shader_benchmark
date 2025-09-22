@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Parametric Equation Implementation:
+- Exact x equation: x = sin(t) * (e^cos(t) - 2*cos(4*t) - sin(t/12)^5)
+- Exact y equation: y = cos(t) * (e^cos(t) - 2*cos(4*t) - sin(t/12)^5)
+- Parameter t ranging correctly from 0 to 12π for complete curve
+- Proper exponential term computation: e^cos(t)
+- Accurate trigonometric function calculations throughout
+
+Mathematical Precision:
+- All parametric equation components implemented with numerical accuracy
+- Correct evaluation of complex trigonometric expressions
+- Proper handling of exponential and power functions
+- Mathematical consistency in curve generation algorithm
+- Accurate parametric form producing recognizable butterfly shape
+
+__VISUAL_IMPLEMENTATION__
+Butterfly Curve Visualization:
+- Clear, recognizable butterfly silhouette with distinctive wing shapes
+- Intricate wing patterns showing mathematical complexity
+- Symmetrical butterfly wings demonstrating parametric precision
+- Natural butterfly coloring with appropriate gradient schemes
+- Fine detail resolution in wing pattern structures
+
+Animation and Flight Motion:
+- Smooth animated flight motion suggesting realistic butterfly movement
+- Convincing flight realism with appropriate motion dynamics
+- Seamless animation loop continuity without jumps or artifacts
+- Professional animation quality enhancing visual appeal
+- Smooth parameter progression creating fluid motion effects
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Butterfly Elements:
+- Complete parametric butterfly curve implementation
+- All mathematical equation components properly rendered
+- Full parameter range coverage producing complete butterfly shape
+- Intricate wing patterns as specified in requirements
+- Animated flight motion completing the visualization
+
+Technical and Visual Standards:
+- High-quality rendering with proper numerical stability
+- Professional visual presentation meeting aesthetic requirements
+- Efficient shader implementation with clean code structure
+- Complete adherence to butterfly curve specification requirements
+- All technical and artistic elements properly integrated

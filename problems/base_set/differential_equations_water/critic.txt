@@ -1,0 +1,29 @@
+__MATHEMATICAL_ACCURACY__
+
+* Differential equation variety: Minimum three distinct equation types (wave, heat, Schrödinger) with mathematically appropriate visual signatures
+* Wave equation implementation: Regular oscillatory patterns consistent with hyperbolic PDE solution behavior in clear water regions
+* Heat equation visualization: Smooth, viscous flow patterns reflecting parabolic diffusion equation characteristics in honey-like zones
+* Schrödinger equation representation: Probability-cloud appearance with quantum mechanical uncertainty visualization in violet-tinted regions
+* Boundary condition handling: Correct mathematical treatment of different boundary types (Dirichlet, Neumann, mixed) at shoreline interfaces
+* Solution discontinuity identification: Foam formation accurately positioned at high gradient regions where solutions exhibit discontinuities
+* Layered solution history: Underwater sediment layers representing temporal evolution of differential equation solutions
+
+__VISUAL_IMPLEMENTATION__
+
+* Water rendering realism: Advanced caustics, accurate reflections, subsurface scattering, and proper transparency effects
+* Golden hour atmospheric lighting: Warm color temperature with appropriate light scattering and atmospheric perspective
+* Equation-specific visual signatures: Distinct visual characteristics clearly differentiating each differential equation type
+* Depth perception quality: Proper underwater perspective with graduated visibility and light attenuation effects
+* Foam and bubble rendering: Realistic foam formation at solution discontinuities with appropriate particle dynamics
+* Mist and atmospheric effects: Volumetric rendering creating proper atmospheric depth and golden hour ambiance
+* Surface interaction visualization: Clear representation of wave-surface interactions and boundary layer phenomena
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+* Multi-region implementation: All required water regions successfully representing different differential equation types
+* Mathematical visualization fidelity: Visual patterns accurately reflect underlying differential equation solution behaviors
+* Environmental completeness: Golden hour lighting, atmospheric effects, and underwater views fully implemented
+* Interaction detail coverage: Foam at discontinuities, sediment layers, and boundary conditions all visually represented
+* Rendering quality standards: High-resolution output with professional-grade water simulation and lighting effects
+* Output format compliance: Integer score 1-10 with ≤180-word rationale following specified structure
+* Educational effectiveness: Visualization successfully demonstrates relationships between differential equations and physical water phenomena

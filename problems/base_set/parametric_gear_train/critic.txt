@@ -1,0 +1,116 @@
+# Evaluation for Parametric Gear Train (ID: 219)
+
+## __MATHEMATICAL_ACCURACY__
+
+### Gear Profile Mathematics
+**Prompt Requirement:** "Gear profile using: r(θ) = r_base + tooth_height * cos(n_teeth * θ)"
+- **Expected:** Correct tooth profile equation implementation
+- **Actual:** [Verify parametric equation in shader code]
+- **Score:** [0-5] where 5 = exact mathematical implementation
+
+### Gear Ratio Calculations
+**Prompt Requirement:** "Rotation speeds: ω₂ = ω₁ * (r₁/r₂) * (n₁/n₂)"
+- **Expected:** Correct angular velocity relationships
+- **Actual:** [Verify speed ratio calculations]
+- **Score:** [0-5] where 5 = mathematically accurate ratios
+
+### Meshing Geometry
+**Prompt Requirement:** "proper tooth meshing"
+- **Expected:** Correct gear contact points and timing
+- **Actual:** [Analyze gear tooth interaction]
+- **Score:** [0-5] where 5 = perfect mechanical meshing
+
+### Animation Synchronization
+**Prompt Requirement:** "smooth rotation animation"
+- **Expected:** Phase-locked rotation with no slippage
+- **Actual:** [Check rotation consistency across gears]
+- **Score:** [0-5] where 5 = perfectly synchronized motion
+
+## __VISUAL_IMPLEMENTATION__
+
+### Gear System Visualization
+**Prompt Requirement:** "Generate an animated parametric gear train system"
+- **Expected:** Multiple interconnected gears visible as complete system
+- **Actual:** [Describe overall gear train appearance]
+- **Score:** [0-5] where 5 = comprehensive gear train visualization
+
+### Gear Count and Sizing
+**Prompt Requirement:** "at least 3 interlocking gears of different sizes"
+- **Expected:** Minimum 3 gears with clear size differentiation
+- **Actual:** [Count gears and assess size variation]
+- **Score:** [0-5] where 5 = 3+ gears with appropriate size variety
+
+### Tooth Definition and Detail
+- **Expected:** Well-defined gear teeth with crisp edges
+- **Actual:** [Evaluate tooth clarity and definition]
+- **Score:** [0-5] where 5 = sharp, detailed tooth profiles
+
+### Material and Shading Quality
+- **Expected:** Metallic or mechanical surface appearance
+- **Actual:** [Assess material rendering and lighting]
+- **Score:** [0-5] where 5 = convincing mechanical materials
+
+### Animation Fluidity
+- **Expected:** Smooth, continuous rotation without stuttering
+- **Actual:** [Evaluate animation smoothness and consistency]
+- **Score:** [0-5] where 5 = perfectly fluid motion
+
+## __COMPLETENESS_AND_SPECIFICATIONS__
+
+### System Architecture
+**Prompt Requirement:** "parametric gear train system"
+- **Expected:** Complete functioning gear mechanism
+- **Actual:** [Assess system completeness and interconnection]
+- **Score:** [0-5] where 5 = fully realized gear train system
+
+### Mechanical Realism
+**Prompt Requirement:** "realistic mechanical motion"
+- **Expected:** Believable mechanical behavior and constraints
+- **Actual:** [Evaluate mechanical authenticity]
+- **Score:** [0-5] where 5 = highly realistic mechanical motion
+
+### Technical Implementation Quality
+- **Expected:** Efficient shader code with clear gear generation logic
+- **Actual:** [Review code structure and performance]
+- **Score:** [0-5] where 5 = excellent technical implementation
+
+### Visual Composition
+- **Expected:** Well-arranged gear layout with good visibility
+- **Actual:** [Assess overall visual arrangement and composition]
+- **Score:** [0-5] where 5 = excellent visual organization
+
+### Performance Optimization
+- **Expected:** Smooth rendering without performance issues
+- **Actual:** [Evaluate rendering performance and frame rate]
+- **Score:** [0-5] where 5 = optimal performance
+
+## Technical Correctness Summary
+
+### Mechanical Accuracy
+1. **Gear Ratios:** [Correct/Incorrect]
+2. **Tooth Count:** [Appropriate/Issues]
+3. **Meshing Geometry:** [Accurate/Has gaps]
+4. **Speed Synchronization:** [Perfect/Has slippage]
+
+### Animation Quality
+1. **Rotation Consistency:** [Uniform/Variable]
+2. **Phase Relationships:** [Correct/Off]
+3. **Frame Rate:** [Smooth/Choppy]
+
+### Shader Code Quality
+1. **Gear Generation:** [Efficient/Complex]
+2. **Animation Logic:** [Clear/Confusing]
+3. **Performance:** [Good/Poor]
+
+## Overall Score: [Sum of all scores]/65
+
+## Summary
+**Strengths:**
+- [List what works well]
+
+**Areas for Improvement:**
+- [List what could be better]
+
+**Mechanical Accuracy:** [Accurate/Has errors]
+**Visual Quality:** [Excellent/Good/Fair/Poor]
+**Animation Realism:** [Convincing/Unconvincing]

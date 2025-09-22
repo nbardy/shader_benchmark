@@ -1,68 +1,141 @@
 # LLM Shader Harness
 
-This harness tests LLM shader generation capabilities by:
+This harness tests LLM shader generation capabilities with complete test isolation and comprehensive reporting.
 
-1. Loading prompts from a specified folder
-2. Calling an OpenRouter model to generate shader code 
-3. Parsing the response for shader files and main.rs
-4. Creating a test environment based on the shader_harness template
-5. Running the shader with `cargo run` to generate result.png
-6. Using GPT-4o via OpenRouter as a judge to evaluate the output
-7. Parsing and saving standardized scores (5 integers 1-10)
+## Features
+
+- **Individual Test Mode**: Run single problems with isolated UUID directories
+- **Harness Mode**: Run multiple problems with consolidated reporting  
+- **True Isolation**: Each test run creates `test_YYYYMMDD_HHMMSS_UUID_results/` directory
+- **Structured Evaluation**: 5-category scoring system (1-100 scale each)
+- **WGSL Support**: Full WGPU shader pipeline with guides and constraints
+- **Judge Integration**: GPT-4o evaluation with XML score parsing
+
+## Architecture
+
+### Core Components
+- `main.py` - Single test runner with isolated reporting
+- `benchmark_harness.py` - Multi-test harness with consolidated reports
+- `generate_report.py` - Unified report generator (individual & batch modes)
+- `judge.py` - GPT-4o evaluation system with template support
+- `test_runner.py` - Test isolation and WGPU execution
+- `llm_client.py` - OpenRouter API interface
+
+### Support Systems  
+- `critic_template.py` - Structured evaluation template parser
+- `shader_parser.py` - LLM XML response parser
+- `prompt_loader.py` - Problem specification loader
 
 ## Setup
 
-1. Install dependencies:
+### Environment Setup
 ```bash
+# Option 1: uv (recommended)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+cd llm_harness
+uv sync
+
+# Option 2: Traditional venv
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-2. API key is already configured in `.env/.env` file
+### API Configuration
+Create `.env` file:
+```bash
+OPENROUTER_API_KEY=your_api_key_here
+```
 
 ## Usage
 
+### Single Test Mode
 ```bash
-python main.py --model "anthropic/claude-3-sonnet" --prompt-folder "../tests/problem_1"
+# With uv
+uv run python main.py --model "anthropic/claude-3.5-sonnet-20241022" --prompt-folder "../problems/base_set/geometric_cube"
+
+# With venv
+source venv/bin/activate
+python main.py --model "anthropic/claude-3.5-sonnet-20241022" --prompt-folder "../problems/base_set/geometric_cube"
 ```
 
-## Expected Response Format
+**Output**: `test_YYYYMMDD_HHMMSS_UUID_results/` with individual report
 
-The LLM should respond with XML blocks:
+### Harness Mode (Multiple Tests)
+```bash
+python benchmark_harness.py --model "anthropic/claude-3.5-sonnet-20241022" --problems geometric_cube five_pointed_star_polygon mandala_circles
+```
 
+**Output**: `harness_MODEL_TIMESTAMP/` with consolidated report
+
+## LLM Response Format
+
+Expected XML structure:
 ```xml
-<shader file="vertex.wgsl">
+<shader file="shader_name.wgsl">
 @vertex
-fn main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
-    // shader code
+fn main_vs(@builtin(vertex_index) vid: u32) -> @builtin(position) vec4<f32> {
+    // WGSL vertex shader code
 }
-</shader>
 
-<shader file="fragment.wgsl">
 @fragment  
-fn main() -> @location(0) vec4<f32> {
-    // shader code
+fn main_fs(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    // WGSL fragment shader code
 }
 </shader>
 
 <main_rs>
-use std::fs;
-// Rust code that uses the shaders
+use wgpu;
+// Rust WGPU harness code
 </main_rs>
 ```
 
-## Judge Output Format
+## Judge Evaluation System
 
-The judge must end responses with:
+### Scoring Categories (1-100 each)
+1. **Mathematical Accuracy** - Correctness of mathematical implementation
+2. **Visual Quality** - Rendering quality and aesthetics  
+3. **Problem-Specific Category 3** - Varies by problem type
+4. **Problem-Specific Category 4** - Varies by problem type
+5. **Problem-Specific Category 5** - Varies by problem type
+
+### Expected Judge Output
+```xml
+<scores><S1>85</S1><S2>72</S2><S3>91</S3><S4>67</S4><S5>88</S5></scores>
 ```
-SCORES: [X, X, X, X, X]
+
+## Output Structure
+
+### Individual Test
+```
+test_20250805_143022_a1b2c3d4-e5f6-7890-abcd-ef1234567890_results/
+├── artifacts/result.png          # Rendered output
+├── shaders/problem_name.wgsl     # Generated shader
+├── src/main.rs                   # Generated Rust code
+├── results.json                  # Scores and metadata
+├── current_results_report.md     # Individual test report
+└── images/UUID_result.png        # Report image copy
 ```
 
-Where each X is an integer from 1-10.
+### Harness Report  
+```
+harness_MODEL_TIMESTAMP/
+└── harness_report_MODEL_TIMESTAMP.md  # Consolidated multi-test report
+```
 
-## Output
+## WGSL Constraints
 
-Results are saved in `test_[uuid]_results/` folders containing:
-- Generated shader files
-- main.rs
-- result.png (shader output)
-- results.json (scores and metadata)
+The system includes comprehensive guides for:
+- **WGSL Constraints**: Variable array indexing limitations, manual vertex expansion
+- **WGPU API**: Texture alignment (256-byte boundary), compilation options
+- **Rust Integration**: Proper WGPU 0.20 API usage patterns
+
+## Testing
+
+```bash
+# Test single component
+python -c "from critic_template import CriticTemplate; print('Template system OK')"
+
+# Test full pipeline
+python main.py --model "anthropic/claude-3.5-sonnet-20241022" --prompt-folder "../problems/base_set/geometric_cube"
+```

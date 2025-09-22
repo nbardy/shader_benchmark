@@ -53,6 +53,30 @@ class LLMClient:
         example_files = []
         shader_harness_path = "../shader_harness"
         
+        # Read GLSL guide first
+        try:
+            with open(f"{shader_harness_path}/glsl_guide.txt", 'r') as f:
+                guide_content = f.read()
+                example_files.append(f"GLSL_PROGRAMMING_GUIDE:\n{guide_content}")
+        except FileNotFoundError:
+            pass
+        
+        # Read Rust WGPU guide
+        try:
+            with open(f"{shader_harness_path}/rust_wgpu_guide.txt", 'r') as f:
+                rust_guide_content = f.read()
+                example_files.append(f"RUST_WGPU_HARNESS_GUIDE:\n{rust_guide_content}")
+        except FileNotFoundError:
+            pass
+        
+        # Read WGSL constraints guide
+        try:
+            with open(f"{shader_harness_path}/wgsl_constraints_guide.txt", 'r') as f:
+                wgsl_constraints_content = f.read()
+                example_files.append(f"WGSL_CONSTRAINTS_GUIDE:\n{wgsl_constraints_content}")
+        except FileNotFoundError:
+            pass
+        
         # Read main.rs
         try:
             with open(f"{shader_harness_path}/src/main.rs", 'r') as f:
@@ -61,11 +85,18 @@ class LLMClient:
         except FileNotFoundError:
             pass
         
-        # Read shader files
+        # Read shader files (both GLSL and WGSL)
         shaders_path = f"{shader_harness_path}/shaders"
         if os.path.exists(shaders_path):
             for shader_file in os.listdir(shaders_path):
-                if shader_file.endswith('.wgsl'):
+                if shader_file.endswith('.glsl'):
+                    try:
+                        with open(f"{shaders_path}/{shader_file}", 'r') as f:
+                            shader_content = f.read()
+                            example_files.append(f"{shader_file}:\n```glsl\n{shader_content}\n```")
+                    except FileNotFoundError:
+                        pass
+                elif shader_file.endswith('.wgsl'):
                     try:
                         with open(f"{shaders_path}/{shader_file}", 'r') as f:
                             shader_content = f.read()

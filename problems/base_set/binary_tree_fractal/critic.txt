@@ -1,0 +1,29 @@
+__MATHEMATICAL_ACCURACY__
+- Binary tree topology must have exactly depth 7 with precisely 127 segments (N=127 ± 0)
+- Branching angles must be accurate: 45° from parent branch with ±35° rotation tolerance
+- Length scaling must follow mathematical rule: branch length of level k = 0.7^k
+- Radius tapering must conform to scaling factor 0.6 per level with end-radius level 7 ≈ 0.08·0.6^7
+- BFS through centreline graph must yield correct binary tree structure
+- Least-squares fit of length vs depth must achieve slope log0.7 ± 0.05 for mathematical precision
+
+__VISUAL_IMPLEMENTATION__
+- 3D fractal tree must appear organic and natural despite mathematical construction
+- Realistic bark texture must be applied consistently across all branch segments
+- Lighting must enhance the three-dimensional tree structure effectively
+- Background gradient must be exact with no deviations from specification
+- No aliasing must be visible on twig tips or branch edges
+- Visual quality must create convincing winter tree silhouette
+- Rendering must balance mathematical precision with natural organic appearance
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+- All 127 segments must be present and properly connected in binary tree structure
+- Recursive branching pattern must be complete to depth 7
+- Progressive thinning and shortening must be consistent with scaling rules throughout
+- Angle accuracy verification must pass for 200 random branch splits with mean 45° ± 3°
+- Visual realism must be maintained while preserving mathematical accuracy
+- Tree structure must appear convincing as natural winter tree despite fractal construction
+- Assessment must verify topology (3 pts), angle accuracy (2 pts), length scaling (2 pts), radius scaling (1 pt), and render clarity (2 pts)
+
+Output format:
+Score: S/10
+Rationale: <brief narrative (≤120 words) summarising which tests passed/failed>

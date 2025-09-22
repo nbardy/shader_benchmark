@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Surface Equation Implementation:
+- Correct catenoid equations: x = c*cosh(v)*cos(u), y = c*cosh(v)*sin(u), z = v
+- Accurate helicoid equations: x = v*cos(u), y = v*sin(u), z = c*u
+- Proper parameter ranges: u ∈ [0, 2π], v ∈ [-2, 2], t ∈ [0, π/2]
+- Mathematical precision in hyperbolic and trigonometric function calculations
+- Exact implementation of minimal surface mathematical properties
+
+Morphing Formula Accuracy:
+- Correct morphing parameter implementation: X(u,v,t) = cos(t)*X_catenoid + sin(t)*X_helicoid
+- Proper isometric transformation maintaining surface properties
+- Mathematical continuity during morphing transition
+- Zero mean curvature property preserved throughout morphing sequence
+- Accurate parameter space mapping and coordinate transformations
+
+__VISUAL_IMPLEMENTATION__
+Surface Rendering Quality:
+- Clean minimal surface appearance with smooth geometry
+- Proper surface tessellation without visible artifacts or discontinuities
+- Professional surface shading showing curvature characteristics clearly
+- High-quality mesh resolution maintaining surface smoothness
+- Pristine surface visualization meeting mathematical visualization standards
+
+Animation and Morphing Effects:
+- Smooth morphing animation between catenoid and helicoid surfaces
+- Seamless transition without jumps or visual discontinuities
+- Well-paced animation timing enhancing visual understanding
+- Mesmerizing morphing effect demonstrating mathematical relationships
+- Perfect animation loop continuity without visible seams
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Surface Elements:
+- Complete implementation of both catenoid and helicoid minimal surfaces
+- Morphing animation showing smooth transition between surface types
+- All mathematical surface properties properly maintained during morphing
+- Correct parameter space coverage and surface generation
+- Both surfaces clearly recognizable in their respective states
+
+Technical and Mathematical Standards:
+- Accurate implementation of all minimal surface equations and properties
+- Proper lighting and shading to visualize surface curvature effectively
+- Complete adherence to mathematical specifications and parameter ranges
+- Professional visualization quality meeting educational and technical standards
+- Full compliance with catenoid-helicoid morphing requirements

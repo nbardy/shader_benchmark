@@ -1,0 +1,58 @@
+__MATHEMATICAL_ACCURACY__
+Lissajous Curve Mathematical Properties:
+- Nine curves defined by parameter pairs (a,b)∈{1,2,3}² as specified
+- Parametric period T=2π with curve closure after T_c=2π/gcd(a,b)
+- Correct axial intercept counts: N_x=2b and N_y=2a for each curve
+- Mathematical precision in Lissajous curve generation maintaining parametric relationships
+- Accurate implementation of harmonic motion equations for all parameter combinations
+
+Frequency Analysis Accuracy:
+- FFT analysis of resampled curve coordinates (2048 equally spaced points)
+- Dominant peak indexes exactly equal to parameters a and b within ±0.5 tolerance
+- Mathematical precision in frequency domain analysis confirming parametric accuracy
+- Correct edge detection and center-of-stroke sampling for accurate curve representation
+- Proper discrete Fourier transform implementation revealing harmonic frequencies
+
+Geometric Scaling and Proportions:
+- Bounding-box width W satisfying 0.80≤W/Cell≤0.88 for all curves
+- Proper curve scaling maintaining mathematical proportions within grid cells
+- Accurate geometric positioning ensuring curves fit appropriately within boundaries
+- Mathematical precision in coordinate scaling preserving Lissajous curve properties
+- Consistent geometric relationships across all nine parameter combinations
+
+__VISUAL_IMPLEMENTATION__
+Color Mapping and Hue System:
+- Median HSV hue of stroke pixels following hue ≈ atan2(a,b)/π formula
+- Hue accuracy within ±6° tolerance when converted to degrees
+- Professional color coding system enabling parameter identification through visual inspection
+- Consistent hue mapping across all curves enhancing mathematical understanding
+- Mean hue error across grid < 6° maintaining color accuracy standards
+
+Grid Layout and Visual Organization:
+- 150-px gutters with pure white RGB(255,255,255) background separation
+- Gutter color purity with standard deviation σ<3 ensuring clean visual separation
+- Professional grid organization enabling clear individual curve analysis
+- Appropriate cell spacing supporting visual clarity and mathematical analysis
+- Clean grid hygiene meeting professional visualization standards
+
+Axis Lines and Reference Elements:
+- Two perpendicular grey (#bbbbbb) lines per cell detected via Hough transform
+- Axis line thickness ≤1 pixel maintaining clean reference without curve interference
+- Professional axis implementation supporting curve analysis and measurement
+- Clear geometric reference elements enhancing mathematical understanding
+- Consistent axis rendering across all grid cells
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Lissajous Garden Elements:
+- Complete 3×3 grid with all nine Lissajous curves properly implemented
+- All frequency combinations (a,b) from parameter set {1,2,3}² represented
+- Correct intercept counts N_x and N_y in ≥8/9 cells meeting accuracy requirements
+- Professional curve rendering with appropriate stroke quality and visibility
+- Complete implementation of Lissajous curve mathematical and visual properties
+
+Technical Specification Compliance:
+- All geometric constraints satisfied within specified mathematical tolerances
+- Frequency analysis requirements met with proper FFT peak identification
+- Color mapping system fully implemented according to hue formula specifications
+- Grid layout and axis requirements achieved meeting professional standards
+- Complete adherence to Lissajous curve garden visualization requirements

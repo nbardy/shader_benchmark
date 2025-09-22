@@ -1,0 +1,29 @@
+__MATHEMATICAL_ACCURACY__
+
+* Conformal property preservation: Angles maintained at exactly 90° ± 2° across minimum 20 intersection points
+* Logarithmic spiral equation verification: Vertical grid lines transform to perfect log spirals following r = e^(aθ) form
+* Radial ray geometry: Horizontal grid lines become perfectly straight rays emanating from central origin
+* Complex transformation accuracy: Mapping from z-plane to w-plane follows w = log(z) with correct branch cuts
+* Singularity handling: Central point properly represents logarithmic singularity with appropriate mathematical treatment
+* Grid orthogonality preservation: Original rectangular grid's perpendicular intersections maintained after conformal mapping
+* Transformation magnitude correlation: 3D height elevation accurately represents |w| = log(1+|z|) relationship
+
+__VISUAL_IMPLEMENTATION__
+
+* Color coding consistency: Blue spirals for transformed vertical lines, orange rays for horizontal transformations
+* Glass-like material rendering: Transparent surfaces with appropriate refractive properties and caustic light effects
+* 3D elevation mapping: Smooth height variations based on transformation magnitude without discontinuities or artifacts
+* Central singularity visualization: Clear visual marker indicating the mathematical singularity point at origin
+* Anti-aliased rendering quality: Smooth curves without pixelation or jagged edges in spiral and ray geometry
+* Caustic light effects: Realistic light focusing patterns through the glass-like material surfaces
+* Depth perception enhancement: Proper 3D perspective with appropriate shadowing and lighting to emphasize elevation changes
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+* Grid transformation completeness: All rectangular grid elements successfully transformed into spiral-ray pattern
+* Visual clarity requirements: Clear distinction between different geometric elements (spirals vs rays)
+* Rendering resolution adequacy: Sufficient detail to verify mathematical accuracy at intersection points
+* Color specification adherence: Exact blue and orange color implementation as specified for element identification
+* Material property implementation: Glass-like appearance with proper transparency and optical effects
+* Output format compliance: Integer score 1-10 with ≤180-word rationale following specified structure
+* Mathematical verification capability: Visual output enables measurement and verification of conformal mapping properties

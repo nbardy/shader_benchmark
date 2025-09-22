@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Brahmagupta's Formula Implementation:
+- Accurate calculation of all four side lengths (a, b, c, d)
+- Correct semiperimeter calculation: s = (a+b+c+d)/2
+- Precise area calculation: Area = √[(s-a)(s-b)(s-c)(s-d)]
+- Real-time mathematical updates for all computed values
+- Mathematical accuracy maintained in all formula computations
+
+Cyclic Property Verification:
+- All vertices must remain on the circumscribed circle
+- Maintained cyclic property throughout entire animation sequence
+- No vertices crossing or creating invalid geometric configurations
+- Proper geometric relationships preserved during vertex movement
+- Accurate demonstration of cyclic quadrilateral constraints
+
+__VISUAL_IMPLEMENTATION__
+Animation and Geometric Display:
+- Smooth vertex movement along the circumscribed circle
+- Clear visualization of the inscribed quadrilateral structure
+- Proper circle and quadrilateral rendering with clean lines
+- Color coding for sides matching formula variables (a, b, c, d)
+- Professional visual presentation with appropriate contrasts
+
+Special Cases and Demonstrations:
+- Clear presentation of square configuration cases
+- Rectangle configuration with mathematically correct proportions
+- Irregular cyclic quadrilateral examples with varied shapes
+- Smooth transitions between different geometric configurations
+- Visual verification that Brahmagupta's formula works for all cases
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Mathematical Elements:
+- Complete implementation of Brahmagupta's area formula
+- All special case demonstrations (square, rectangle, irregular)
+- Real-time numerical displays showing calculations
+- Clear, readable numerical values with proper formatting
+- Optional Ptolemy's theorem visualization with diagonal relationships
+
+Technical Specification Compliance:
+- Appropriate use of 2000×2000 canvas resolution
+- Professional layout and typography for all text elements
+- Complete animation system showing mathematical principles
+- All required geometric elements properly displayed
+- Full adherence to cyclic quadrilateral demonstration requirements

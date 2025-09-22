@@ -1,0 +1,57 @@
+__MATHEMATICAL_ACCURACY__
+
+**Helical Geometry Precision (4 pts)**
+- Central column serves as axis for twin helical staircases
+- Rise × tread product correctly forms helix radius = 1.0
+- Mathematical relationship between step dimensions and helical parameters
+- Consistent helical pitch maintained throughout entire structure
+
+**Step Count Verification (2 pts)**
+- Exactly 160 treads ± 1 per staircase (320 total steps)
+- Even distribution of steps around helical path
+- Proper step spacing ensuring uniform rise and run
+- Mathematical consistency in step progression
+
+**Clearance and Intersection Analysis (2 pts)**
+- Two staircases never intersect at any point in 3D space
+- Horizontal clearance ≥ 0.05 units maintained between staircases
+- Vertical separation adequate for safe passage
+- Structural integrity maintained without support conflicts
+
+__VISUAL_IMPLEMENTATION__
+
+**Architectural Visualization Quality (2 pts)**
+- Clear representation of twin helical staircase arrangement
+- Central support column properly rendered and positioned
+- Realistic staircase construction with proper tread and riser proportions
+- Appropriate perspective showing both staircases simultaneously
+
+**Camera and Rendering Quality (2 pts)**
+- Camera position optimally chosen to show helical structure
+- Adequate resolution for architectural detail verification
+- Visual clarity enabling step counting and clearance assessment
+- Proper depth perception showing 3D helical relationship
+
+**Structural Detail Representation**
+- Individual steps clearly defined and properly oriented
+- Handrails or safety features appropriately rendered
+- Connection points between steps and central column visible
+- Realistic materials and textures enhancing architectural visualization
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+**Problem Identification and Requirements**
+- Problem 209: Spiral Staircase Tower specification
+- Input processing: generation prompt and PNG evaluation
+- Architectural engineering accuracy requirements satisfied
+
+**Technical Implementation Verification**
+- Helix mathematics correctly implemented in 3D space
+- Structural engineering principles reflected in design
+- Safety clearances maintained per specification
+- No impossible or unsafe architectural configurations
+
+**Evaluation Protocol Compliance**
+- Score: S/10 with detailed architectural assessment
+- Rationale: ≤180 words covering geometric and visual criteria
+- Systematic verification of all structural and mathematical requirements

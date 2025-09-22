@@ -1,0 +1,29 @@
+__MATHEMATICAL_ACCURACY__
+
+* Cusp count and positioning: Exactly 4 cusps located precisely at 0°, 90°, 180°, 270° angles with <1% positional deviation
+* Epicycloid radius verification: Maximum radius of 5 units (5 × r = 5) maintained with ±2% tolerance from theoretical value
+* Curve length calculation: Total epicycloid arc length of 16π units consistent with mathematical prediction
+* Cusp curvature properties: Zero curvature radius at all four cusp points forming mathematically sharp vertices
+* Guide circle accuracy: Dashed reference circle with radius R = 4 units, concentric with epicycloid centroid
+* Parametric equation fidelity: Curve follows correct epicycloid parametric equations with proper rolling circle geometry
+* Scale proportionality: All geometric elements maintain correct proportional relationships based on generating circle parameters
+
+__VISUAL_IMPLEMENTATION__
+
+* Curve rendering quality: Smooth continuous stroke without gaps, breaks, or rendering discontinuities
+* Cusp visualization: Four red marker dots clearly indicating cusp positions with high visibility
+* Guide circle presentation: Grey dashed circle properly rendered with appropriate dash pattern and visibility
+* Color specification compliance: Accurate color implementation for all elements (curve, cusps, guide circle)
+* Anti-aliasing implementation: Smooth curve edges without pixelation or jagged artifacts along epicycloid path
+* Centering accuracy: Epicycloid properly centered with guide circle maintaining concentric alignment
+* Visual clarity: Clear distinction between all geometric elements enabling easy identification and measurement
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+* Complete epicycloid structure: Full four-cusp epicycloid curve with all required geometric features present
+* Marker specification adherence: Only specified visual elements present (curve, 4 red cusp dots, grey guide circle)
+* Geometric measurement capability: Visual output enables verification of radius, cusp positions, and curve properties
+* Color legend compliance: All colors match specified requirements with no extraneous visual elements
+* Scale verification support: Rendering allows measurement of maximum radius and guide circle dimensions
+* Output format compliance: Integer score 1-10 with explanatory text rationale following specified structure
+* Mathematical demonstration effectiveness: Visualization clearly illustrates epicycloid generation and geometric properties

@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Geometric Structure and Proportions:
+- Two perfect tetrahedra with mathematically correct proportions and angles
+- Tetrahedra rotated exactly 180° relative to each other as required
+- Eight triangular star points protruding with accurate geometric positioning
+- Correct edge length proportions maintained throughout compound structure
+- Central octahedral void properly formed with accurate spatial relationships
+
+Intersection Mathematics:
+- Tetrahedra interpenetrate at mathematically correct depth and positioning
+- Each tetrahedron's vertices emerge from opposite tetrahedron's faces accurately
+- Six square cross-sections visible at intersections with proper geometric properties
+- Symmetrical arrangement maintained from all viewing perspectives
+- Mathematical precision in intersection calculations with no geometric errors
+
+__VISUAL_IMPLEMENTATION__
+Crystal Material Properties:
+- High transparency (80%) allowing proper see-through visualization
+- Correct refraction implementation with index of refraction 1.5
+- Multiple internal reflections visible between intersecting faces
+- Subtle blue tint consistently applied throughout entire crystal volume
+- Realistic crystal-like appearance with authentic material behavior
+
+Optical and Lighting Effects:
+- Light bending accurately implemented at all surface boundaries
+- Internal reflections properly rendered between intersecting faces
+- Caustics and light concentration effects demonstrating complex optics
+- Proper Fresnel reflections at grazing angles enhancing realism
+- Complex light paths through intersections showing optical sophistication
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Polyhedra Elements:
+- Complete stella octangula compound structure with both tetrahedra
+- Eight-pointed star configuration clearly visible and properly formed
+- All geometric intersection patterns accurately implemented
+- No gaps or overlaps at intersection lines maintaining mathematical precision
+- Complete compound polyhedra meeting all structural requirements
+
+Visual and Technical Standards:
+- Black background providing maximum contrast for crystal visualization
+- Dramatic spot lighting creating strong highlights emphasizing geometry
+- Sharp, well-defined edges maintained despite transparency effects
+- Camera angle optimally positioned to show interpenetration clearly
+- Professional rendering quality without artifacts or visual imperfections

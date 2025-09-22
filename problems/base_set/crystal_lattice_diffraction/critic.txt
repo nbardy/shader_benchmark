@@ -1,0 +1,29 @@
+__MATHEMATICAL_ACCURACY__
+
+* Selection rule compliance: Only diffraction spots with even h+k Miller indices present, forbidden reflections completely absent
+* Structure factor calculation: Relative spot intensities follow |F|² relationship with correct atomic form factors
+* Reciprocal lattice geometry: Rectangular grid pattern with proper scaling reflecting crystal lattice parameters
+* Centrosymmetric pattern: Friedel's law satisfied with identical intensities at (h,k) and (-h,-k) positions
+* Direct beam suppression: Central (0,0) reflection properly suppressed or minimized in diffraction pattern
+* Miller index accuracy: Correct correspondence between spot positions and crystallographic Miller indices
+* Lattice parameter correlation: Spot spacing accurately reflects inverse relationship to real-space lattice dimensions
+
+__VISUAL_IMPLEMENTATION__
+
+* Spot morphology quality: Smooth circular disks without pixelation or irregular edges
+* Intensity gradient mapping: Proper brightness representation of structure factor magnitudes across dynamic range
+* Background uniformity: Clean black background without noise or artifacts interfering with spot visibility
+* Spot size consistency: Uniform spot diameters appropriate for resolution and visibility requirements
+* High resolution rendering: Sufficient pixel density to accurately represent fine diffraction details
+* Dynamic range optimization: Proper contrast allowing visibility of both strong and weak reflections
+* Anti-aliasing implementation: Smooth spot edges and transitions without digital artifacts
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+* Forbidden reflection verification: Complete absence of spots violating h+k even selection rule
+* Grid positioning accuracy: Precise rectangular lattice with correct geometric scaling and orientation
+* Intensity distribution completeness: All allowed reflections present with appropriate relative intensities
+* Pattern symmetry verification: Full centrosymmetric pattern with proper Friedel pair relationships
+* Resolution adequacy: Sufficient detail to enable quantitative analysis of spot positions and intensities
+* Output format compliance: Score 1-10 with explanatory rationale text following specified structure
+* Crystallographic fidelity: Pattern accurately represents theoretical X-ray diffraction from specified crystal structure

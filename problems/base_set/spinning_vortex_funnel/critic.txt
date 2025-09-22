@@ -1,0 +1,55 @@
+__MATHEMATICAL_ACCURACY__
+
+**Logarithmic Spiral Verification (4 pts)**
+- Streamlines follow precise logarithmic spiral form: r² + const·θ = c
+- Sample 20 representative streamlines for mathematical accuracy
+- RMS error between theoretical and rendered curves must be < 5%
+- Spiral curvature and pitch consistent with vortex fluid dynamics
+
+**Funnel Geometry Precision (2 pts)**
+- Funnel half-angle exactly arctan(1/3) ≈ 18.43°
+- Conical boundary maintains consistent angular profile
+- Mathematical relationship between vortex flow and funnel shape
+- Proper geometric scaling from wide opening to narrow exit
+
+**Streamline Distribution Mathematics**
+- Density distribution follows fluid dynamic principles
+- Flow velocity gradient correctly represented by streamline spacing
+- Conservation of mass principles reflected in streamline convergence
+
+__VISUAL_IMPLEMENTATION__
+
+**Streamline Density and Distribution (2 pts)**
+- Exactly 150 streamlines rendered with proper spatial distribution
+- Even angular distribution around funnel circumference
+- Appropriate streamline spacing maintaining visual clarity
+- No clustering or gaps that distort flow visualization
+
+**Color and Transparency Implementation (2 pts)**
+- Funnel rendered in transparent blue allowing streamline visibility
+- Appropriate alpha blending showing both surface and interior flow
+- Color intensity variations enhance depth perception
+- Clear distinction between funnel surface and flow streamlines
+
+**Visual Flow Representation**
+- Streamlines clearly show rotational and downward motion
+- Proper visualization of vortex acceleration toward center
+- Smooth curves without jagged or pixelated artifacts
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+**Problem Identification and Scope**
+- Problem 212: Spinning Vortex Funnel specification
+- Input processing: generation prompt and PNG candidate evaluation
+- Fluid dynamics visualization requirements fully addressed
+
+**Rendering Quality Assessment (2 pts)**
+- Adequate resolution for mathematical accuracy verification
+- Visual clarity enabling streamline path analysis
+- Proper color implementation supporting scientific visualization
+- Professional presentation quality appropriate for technical assessment
+
+**Output Format Compliance**
+- Score: S/10 with component-wise breakdown
+- Rationale: ≤180 words covering mathematical and visual evaluation
+- Systematic verification of all specified criteria

@@ -1,0 +1,55 @@
+__MATHEMATICAL_ACCURACY__
+
+**Kinematic Gear Ratio Verification (4 pts)**
+- Pitch radii ratio precisely A:B:C = 24:16:12 (2:4/3:1 simplified)
+- Centre distances between gears match theoretical ratios within ±2% tolerance
+- Gear spacing ensures proper meshing without interference
+- Mathematical relationship between gear sizes and rotational speeds maintained
+
+**Contact Point Mechanics (2 pts)**
+- Tooth normals at contact points match within ±3° angular tolerance
+- Proper gear meshing demonstrated at all contact interfaces
+- No gaps or overlaps at gear engagement points
+- Consistent tooth profile shapes maintaining involute geometry
+
+**Angular Velocity Relationships**
+- Inverse relationship between gear radius and angular velocity
+- Rotational speed ratios match gear diameter ratios precisely
+- Conservation of angular momentum across gear train
+
+__VISUAL_IMPLEMENTATION__
+
+**Arrow Representation Accuracy (2 pts)**
+- Angular velocity arrows lengths proportional to ω values
+- Correct directional indication of gear rotation
+- Arrow scaling factor consistent across all three gears
+- Visual clarity of rotational motion indicators
+
+**Material and Rendering Quality (2 pts)**
+- Grey metallic material appearance appropriate for mechanical gears
+- Orthographic view projection correctly implemented
+- Proper depth perception and dimensional accuracy
+- Industrial/mechanical aesthetic maintained throughout
+
+**Gear Tooth Visualization**
+- Clear definition of individual gear teeth
+- Consistent tooth spacing and profile shapes
+- Proper gear meshing visualization at contact points
+- No visual artifacts or rendering errors
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+**Problem Identification**
+- Problem 206: Spinning Gear Assembly specification
+- Input spec: generation prompt compliance
+- Candidate: PNG output evaluation requirements
+
+**Technical Implementation Verification**
+- All three gears (A, B, C) present and properly positioned
+- Mechanical constraints satisfied (no impossible configurations)
+- Engineering accuracy in gear train design
+
+**Output Requirements**
+- Score: S/10 with detailed component breakdown
+- Rationale: ≤180 words covering all evaluation aspects
+- Systematic assessment of both mathematical and visual criteria

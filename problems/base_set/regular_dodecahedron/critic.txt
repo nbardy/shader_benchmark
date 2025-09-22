@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Dodecahedron Geometric Properties:
+- Exactly 12 regular pentagonal faces with perfect geometric precision
+- Each face must be a perfect pentagon with side equality within ±1% tolerance
+- Correct vertex count of exactly 20 vertices positioned accurately
+- Proper edge count of exactly 30 edges maintaining dodecahedron structure
+- Mathematical precision in all geometric relationships and proportions
+
+Golden Ratio Mathematical Implementation:
+- Ratio of face-diagonal to edge approximately φ = (1+√5)/2 ≈ 1.618
+- Golden ratio property maintained within 2% mathematical accuracy
+- Geometric relationships embodying the fundamental mathematical constant
+- Pentagonal face construction demonstrating golden ratio principles
+- Accurate implementation of dodecahedron's connection to golden ratio geometry
+
+__VISUAL_IMPLEMENTATION__
+Surfacề and Material Quality:
+- Quality bronze metallic rendering with appropriate material properties
+- Professional metallic appearance enhancing geometric structure visibility
+- Proper surface reflection and material characteristics
+- Clean rendering without missing faces or geometric imperfections
+- High-quality material presentation meeting aesthetic requirements
+
+Geometric Visualization Standards:
+- Clear presentation of all 12 pentagonal faces
+- Proper geometric structure revealing dodecahedron symmetries
+- Professional lighting enhancing three-dimensional form perception
+- Clean edge definition and face boundaries
+- Optimal viewing angle displaying geometric relationships
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Dodecahedron Elements:
+- Complete regular dodecahedron with all geometric components
+- All pentagonal faces properly constructed and positioned
+- Correct vertex and edge counts meeting Platonic solid requirements
+- No missing faces or incomplete geometric elements
+- Perfect geometric regularity throughout entire structure
+
+Technical and Mathematical Compliance:
+- All geometric accuracy tests satisfied within specified tolerances
+- Golden ratio relationships properly demonstrated
+- Complete implementation of dodecahedron mathematical properties
+- Professional rendering quality meeting visualization standards
+- Full adherence to regular dodecahedron specification requirements

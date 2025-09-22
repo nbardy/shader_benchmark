@@ -1,0 +1,44 @@
+__MATHEMATICAL_ACCURACY__
+Hypercube Geometric Properties:
+- Correct 4D hypercube structure with 16 vertices and 32 edges
+- All visible edge lengths must be equal within 3% tolerance
+- 4D distance preservation throughout rotation transformations
+- Proper 4D to 3D projection mathematics maintaining geometric relationships
+- Accurate hypercube topology with correct vertex connectivity
+
+Rotational Mathematics:
+- 4D rotation matrices applied correctly to hypercube vertices
+- Distance measurements unchanged before and after rotation
+- Proper 4D geometric transformations preserving hypercube structure
+- Mathematical precision in projection calculations
+- Consistent application of 4D rotation principles
+
+__VISUAL_IMPLEMENTATION__
+Edge Rendering Standards:
+- 32 visible edges clearly displayed with solid lines
+- 24 hidden edges shown with dashed line styling
+- Proper depth perception through edge visibility determination
+- Clear distinction between visible and hidden edge rendering
+- Consistent line weights and styles throughout visualization
+
+Visual Clarity and Quality:
+- High resolution rendering with clean edge definition
+- Appropriate color scheme distinguishing visible from hidden edges
+- Smooth rotation animation maintaining visual continuity
+- Professional presentation with clear geometric structure
+- No visual artifacts or rendering inconsistencies
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Hypercube Elements:
+- Complete 4D hypercube structure with all geometric components
+- All 32 edges properly counted and categorized as visible/hidden
+- Rotation system demonstrating 4D mathematical principles
+- Edge equality verification meeting specified tolerance requirements
+- Full implementation of 4D to 3D projection system
+
+Technical Specification Compliance:
+- Accurate edge counting and classification system
+- Mathematical verification of 4D distance preservation
+- Complete rotation functionality as specified
+- All visual requirements met for educational demonstration
+- Full adherence to hypercube visualization specifications

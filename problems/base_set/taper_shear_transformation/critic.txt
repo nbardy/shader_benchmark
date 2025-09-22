@@ -1,0 +1,56 @@
+__MATHEMATICAL_ACCURACY__
+
+**Taper Function Verification (3 pts)**
+- Quadratic taper function: s(z) = 1-0.6(z/4)²
+- Measure radius at 5 different heights to verify mathematical accuracy
+- Wide base transitioning smoothly to narrow top
+- Cylindrical tower base geometry maintained throughout transformation
+
+**Shear Transformation Precision (2 pts)**
+- Linear displacement: (0.3, 0.1) per unit height
+- Visible lean accurately implemented across entire structure
+- Consistent shear vector application at all building levels
+- Mathematical relationship between height and lateral displacement maintained
+
+**Geometric Consistency**
+- Proper integration of taper and shear transformations
+- No geometric distortions or mathematical inconsistencies
+- Structural proportions remain architecturally plausible
+
+__VISUAL_IMPLEMENTATION__
+
+**Architectural Detail Quality (2 pts)**
+- Exactly 20 distinct floor divisions clearly visible
+- Proper window grid alignment maintained through transformations
+- Scattered illuminated offices creating realistic occupancy pattern
+- Architectural detail preserved throughout geometric transformations
+
+**Material Rendering System (2 pts)**
+- Glass-to-metal material gradient from bottom to top
+- Physically accurate reflections and light interaction
+- Realistic material transition enhancing structural appearance
+- Environment mapping appropriately applied to reflective surfaces
+
+**Lighting and Environment (1 pt)**
+- Sun shadows present and geometrically correct
+- Ground plane reflection showing building base accurately
+- Realistic lighting conditions enhancing 3D visualization
+- Environmental effects supporting architectural presentation
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+
+**Input Processing Requirements**
+- Spec: Taper and Shear Transformation generation prompt
+- Candidate: PNG output from renderer
+- Task completion: integer score S (1-10) with comprehensive evaluation
+
+**Technical Implementation Standards**
+- All expected visual cues systematically verified
+- Mathematical transformations correctly applied
+- Architectural realism maintained throughout modifications
+
+**Output Format Compliance**
+- Score: S/10 with detailed component breakdown
+- Rationale: ≤180 words covering all evaluation aspects
+- Systematic assessment of mathematical accuracy and visual quality
+- Professional architectural visualization standards met

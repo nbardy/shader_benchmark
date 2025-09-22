@@ -1,0 +1,48 @@
+**Inputs**
+
+1. *Spec* – the generation prompt for Problem 213.
+2. *Candidate* – the PNG produced by the renderer.
+
+**Task** Return an integer **S** (1‑10) plus a ≤ 180‑word rationale.
+
+## __MATHEMATICAL_ACCURACY__
+
+**Euler angle precision (0-3 pts)**
+- Measure rotation angles about orthogonal axes
+- Must be exactly 30° ± 2° for each ring
+- Verify axes are truly orthogonal (dot product < 0.01)
+- Check that rotations compose correctly
+
+**Geometric centering (0-2 pts)**
+- All rings must share common center within 0.5%
+- Measure center-of-mass deviation from origin
+- Verify radial symmetry preservation
+- Check for uniform ring distribution
+
+## __VISUAL_IMPLEMENTATION__
+
+**Ring intersection handling (0-2 pts)**
+- No ring intersections allowed (clearance ≥ 0.05)
+- Measure minimum distance between ring surfaces
+- Verify proper depth ordering and occlusion
+- Check for visual artifacts at near-intersections
+
+**Color specification compliance (0-1 pts)**
+- Ring colors must match exactly: #f66, #6f6, #66f
+- Verify consistent color assignment per axis
+- Check for proper gamma correction and color space
+
+**Rendering quality (0-2 pts)**
+- Camera positioning and orientation correctness
+- Proper lighting and shading on cylindrical surfaces
+- Anti-aliasing and edge quality assessment
+- Overall image clarity and resolution
+
+## __COMPLETENESS_AND_SPECIFICATIONS__
+
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```
