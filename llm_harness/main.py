@@ -19,9 +19,11 @@ async def main():
     parser = argparse.ArgumentParser(description='LLM Shader Harness')
     parser.add_argument('--model', required=True, help='OpenRouter model name')
     parser.add_argument('--prompt-folder', required=True, help='Path to prompt folder')
+    parser.add_argument('--judge-model', default='anthropic/claude-3.5-haiku',
+                       help='Judge model for evaluation (default: anthropic/claude-3.5-haiku)')
     parser.add_argument('--no-report', action='store_true', help='Skip individual test report generation')
     parser.add_argument('--no-judge', action='store_true', help='Skip judge evaluation (for debugging)')
-    
+
     args = parser.parse_args()
     
     print(f"Running LLM Shader Harness with model: {args.model}")
@@ -56,8 +58,8 @@ async def main():
         
         # Judge the result if we have an image (unless disabled)
         if not args.no_judge and result_image and result_image.exists():
-            print("Starting judge evaluation...")
-            judge = Judge()
+            print(f"Starting judge evaluation with {args.judge_model}...")
+            judge = Judge(judge_model=args.judge_model)
             critic_path = Path(args.prompt_folder) / 'critic.txt'
             request_path = Path(args.prompt_folder) / 'request.txt'
             scores = await judge.evaluate_with_template(critic_path, request_path, result_image, test_folder)

@@ -10,11 +10,12 @@ from dotenv import load_dotenv
 from critic_template import CriticTemplate
 
 class Judge:
-    def __init__(self):
+    def __init__(self, judge_model: str = "anthropic/claude-3.5-haiku"):
         self.api_key = os.getenv('OPENROUTER_API_KEY')
         if not self.api_key:
             raise ValueError("OPENROUTER_API_KEY environment variable not set")
-        
+
+        self.judge_model = judge_model
         self.base_url = "https://openrouter.ai/api/v1"
         self.headers = {
             "Authorization": f"Bearer {self.api_key}",
@@ -48,7 +49,7 @@ class Judge:
         
         try:
             payload = {
-                "model": "openai/gpt-4o",
+                "model": self.judge_model,
                 "messages": [
                     {
                         "role": "user",

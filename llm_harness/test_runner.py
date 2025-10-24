@@ -2,25 +2,30 @@ import os
 import shutil
 import subprocess
 import uuid
+import asyncio
 from datetime import datetime
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Tuple
+from error_handler import use_safe, save_subprocess_output
 
 class TestRunner:
-    def __init__(self):
+    def __init__(self, compile_semaphore=None, render_semaphore=None):
         self.shader_harness_path = Path("../shader_harness")
+        # Pipeline stage semaphores for resource management
+        self.compile_semaphore = compile_semaphore or asyncio.Semaphore(os.cpu_count() or 8)
+        self.render_semaphore = render_semaphore or asyncio.Semaphore(4)
         
     def create_test_folder(self) -> Path:
         """Create a unique test folder with timestamp and UUID for this run"""
         test_uuid = str(uuid.uuid4())
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        test_folder = Path(f"test_{timestamp}_{test_uuid}_results")
+        test_folder = Path(f"test_{timestamp}_{test_uuid}_results").resolve()  # Always return absolute path
         test_folder.mkdir(exist_ok=True)
-        
+
         # Create artifacts subfolder for preserving all outputs
         artifacts_folder = test_folder / "artifacts"
         artifacts_folder.mkdir(exist_ok=True)
-        
+
         print(f"Created isolated test environment: {test_folder}")
         return test_folder
     
@@ -59,68 +64,110 @@ class TestRunner:
         else:
             raise FileNotFoundError(f"shader_harness directory not found at {self.shader_harness_path}")
     
+    async def compile_shader(self, test_folder: Path) -> Tuple[bool, str]:
+        """Stage 1: Compile the shader project (CPU-bound)"""
+        async with self.compile_semaphore:
+            original_cwd = os.getcwd()
+            try:
+                os.chdir(test_folder)
+
+                # Compile only (cargo build --release)
+                cargo_env_cmd = "source ~/.cargo/env && cargo build --release"
+                loop = asyncio.get_event_loop()
+                result = await loop.run_in_executor(
+                    None,
+                    lambda: subprocess.run(
+                        ["bash", "-c", cargo_env_cmd],
+                        capture_output=True,
+                        text=True,
+                        timeout=120
+                    )
+                )
+
+                # Save logs (automatically saves error_log if failed)
+                save_subprocess_output(test_folder, "compile", result, cargo_env_cmd)
+
+                if result.returncode != 0:
+                    return False, f"Compilation failed: {result.stderr[:500]}"
+
+                return True, "Compilation successful"
+
+            finally:
+                os.chdir(original_cwd)
+
+    async def render_shader(self, test_folder: Path) -> Path:
+        """Stage 2: Execute the compiled shader (GPU-bound)"""
+        async with self.render_semaphore:
+            original_cwd = os.getcwd()
+            try:
+                os.chdir(test_folder)
+
+                # Ensure artifacts directory exists
+                Path("artifacts").mkdir(exist_ok=True)
+
+                # Find the main shader file to use (support both .wgsl and .glsl)
+                shader_files = list(Path("shaders").glob("*.wgsl")) + list(Path("shaders").glob("*.glsl"))
+                main_shader = None
+
+                # Look for specific shader names first
+                for shader_file in shader_files:
+                    if "hopf" in shader_file.name.lower() or "main" in shader_file.name.lower():
+                        main_shader = shader_file
+                        break
+
+                # Use first shader as fallback
+                if not main_shader and shader_files:
+                    main_shader = shader_files[0]
+
+                if not main_shader:
+                    raise FileNotFoundError("No shader files found to execute")
+
+                # Check binary exists (name comes from Cargo.toml package name)
+                binary_path = "target/release/shader-bench"
+                if not Path(binary_path).exists():
+                    raise FileNotFoundError(f"Compiled binary not found at {binary_path}")
+
+                # Run shader
+                output_path = "artifacts/result.png"
+                run_cmd = f"{binary_path} --shader {main_shader} --output {output_path}"
+
+                loop = asyncio.get_event_loop()
+                result = await loop.run_in_executor(
+                    None,
+                    lambda: subprocess.run(
+                        ["bash", "-c", run_cmd],
+                        capture_output=True,
+                        text=True,
+                        timeout=60
+                    )
+                )
+
+                # Save logs (automatically saves error_log if failed)
+                save_subprocess_output(test_folder, "render", result, run_cmd)
+
+                if result.returncode != 0:
+                    raise RuntimeError(f"Shader execution failed: {result.stderr[:500]}")
+
+                # Check output was generated
+                if not Path("artifacts/result.png").exists():
+                    raise FileNotFoundError("artifacts/result.png not found - shader execution failed")
+
+                # Return absolute path
+                return test_folder / "artifacts" / "result.png"
+
+            finally:
+                os.chdir(original_cwd)
+
     async def run_test(self, test_folder: Path) -> Path:
-        """Run cargo run in the test folder and return path to result.png"""
-        
-        # NO PNG REMOVAL - Each test gets fresh timestamp-based directory
-        # All artifacts are preserved for debugging and analysis
-        
-        # Change to test directory and run cargo
-        original_cwd = os.getcwd()
-        
-        try:
-            os.chdir(test_folder)
-            
-            print(f"Running cargo run in {test_folder}...")
-            
-            # Find the main shader file to use (support both .wgsl and .glsl)
-            wgsl_files = list(Path("shaders").glob("*.wgsl"))
-            glsl_files = list(Path("shaders").glob("*.glsl"))
-            shader_files = wgsl_files + glsl_files
-            main_shader = None
-            
-            # Look for a compute or fragment shader
-            for shader_file in shader_files:
-                if "hopf" in shader_file.name.lower() or "main" in shader_file.name.lower():
-                    main_shader = shader_file
-                    break
-            
-            if not main_shader and shader_files:
-                main_shader = shader_files[0]  # Use first shader as fallback
-            
-            if not main_shader:
-                raise FileNotFoundError("No shader files found to execute")
-            
-            # Source cargo environment and run (output to artifacts)
-            # Note: Size argument may not be supported by all generated binaries
-            output_path = "artifacts/result.png"
-            cargo_env_cmd = "source ~/.cargo/env && cargo run -- --shader {} --output {}".format(str(main_shader), output_path)
-            result = subprocess.run(
-                ["bash", "-c", cargo_env_cmd],
-                capture_output=True,
-                text=True,
-                timeout=120  # 2 minute timeout
-            )
-            
-            if result.returncode != 0:
-                print(f"Cargo run failed with return code {result.returncode}")
-                print(f"STDOUT: {result.stdout}")
-                print(f"STDERR: {result.stderr}")
-                raise RuntimeError(f"Cargo run failed: {result.stderr}")
-            
-            print("Cargo run completed successfully")
-            
-            # Check for result.png in artifacts folder (we're already in test_folder)
-            result_image_local = Path("artifacts/result.png")
-            if not result_image_local.exists():
-                raise FileNotFoundError("artifacts/result.png not found - shader execution failed")
-            
-            print(f"SUCCESS: Generated fresh result.png in artifacts/")
-            # Return the absolute path for use outside this directory
-            return test_folder / "artifacts" / "result.png"
-            
-        finally:
-            os.chdir(original_cwd)
+        """Run full pipeline: compile → render (uses pipeline semaphores)"""
+        # Stage 1: Compile
+        compile_success, compile_msg = await self.compile_shader(test_folder)
+        if not compile_success:
+            raise RuntimeError(compile_msg)
+
+        # Stage 2: Render
+        result_image = await self.render_shader(test_folder)
+        return result_image
     
     def save_results(self, test_folder: Path, scores: list, execution_success: bool = True):
         """Save the evaluation results"""
