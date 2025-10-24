@@ -296,3 +296,97 @@ absolute_path = script_dir.parent / "some_directory"
 ```
 
 This ensures paths are resolved once at module initialization, independent of runtime working directory changes.
+
+---
+
+## THIRD CRITICAL BUG: LLM Client Shader Harness Path Resolution
+
+**Date**: October 24, 2025 (discovered when investigating shader validation errors)
+**Issue**: WGSL constraints guide not being loaded into LLM prompts
+**Status**: ✅ FIXED (llm_client.py:54-58)
+**Root Cause**: Same as Bugs #1 and #2 - relative path resolution
+
+### The Problem
+
+The WGSL constraints guide (`wgsl_constraints_guide.txt`) contains critical instructions to avoid forbidden WGSL patterns:
+- ❌ Dynamic array indexing: `array[i]` where `i` is a runtime variable
+- ❌ Variable array assignment: `array[i] = value`
+- ❌ Lambda/closure syntax (not supported in WGSL)
+
+This guide **was being loaded** by `llm_client.py` but only if the relative path `../shader_harness` could be resolved from the current working directory.
+
+### Impact on LLM Quality
+
+Without the constraints guide in the prompt:
+- LLMs generate shaders with **dynamic array indexing**
+- Shaders **fail WGSL validation** with "may only be indexed by a constant" error
+- **0% success rate** even though code was functionally correct
+- LLMs didn't know about the constraints and kept generating forbidden patterns
+
+### The Bug Location
+
+In `llm_client.py:51-54`:
+```python
+def _get_shader_harness_example(self) -> str:
+    """Read the shader_harness example files to provide as context"""
+    example_files = []
+    shader_harness_path = "../shader_harness"  # ❌ BROKEN
+```
+
+### The Fix
+
+**Location**: `llm_harness/llm_client.py`, lines 54-58
+
+**Before**:
+```python
+shader_harness_path = "../shader_harness"
+```
+
+**After**:
+```python
+# CRITICAL FIX: Use absolute path based on script location, not relative to CWD
+# This ensures shader_harness directory is found regardless of where the script is invoked from
+from pathlib import Path
+script_dir = Path(__file__).parent.absolute()
+shader_harness_path = str(script_dir.parent / "shader_harness")
+```
+
+### Why This Matters
+
+This path is read **during LLM prompt generation**, which happens in an async context. If the path resolves to `None` or the wrong directory, the constraints guide isn't loaded. This means:
+
+1. ✅ **Before fix**: Constraints guide was conditionally included (only if path resolved)
+2. ✅ **After fix**: Constraints guide **always** included in LLM prompt
+
+### System Pattern Identified
+
+This is the **third occurrence of the same bug pattern**:
+
+| File | Issue | Impact |
+|------|-------|--------|
+| `benchmark_harness.py:205` | Problem directory not found | Multi-problem tests failed |
+| `test_runner.py:13` | Shader harness not found | Compilation failed for problems 1+ |
+| `llm_client.py:54` | Constraints guide not loaded | LLM generated forbidden WGSL patterns |
+
+**The pattern**: Using `../relative/paths` in modules that are invoked from different working directory contexts.
+
+### Solution Template
+
+Apply to **all relative path resolution** in the codebase:
+
+```python
+from pathlib import Path
+
+# ❌ NEVER DO THIS:
+path = "../some_directory"
+
+# ✅ ALWAYS DO THIS:
+script_dir = Path(__file__).parent.absolute()
+path = script_dir.parent / "some_directory"
+```
+
+### Next Steps
+
+1. Search codebase for remaining `"../"` relative paths
+2. Apply the absolute path fix pattern to all instances
+3. Test with different working directories to verify robustness
