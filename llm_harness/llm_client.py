@@ -51,7 +51,11 @@ class LLMClient:
     def _get_shader_harness_example(self) -> str:
         """Read the shader_harness example files to provide as context"""
         example_files = []
-        shader_harness_path = "../shader_harness"
+        # CRITICAL FIX: Use absolute path based on script location, not relative to CWD
+        # This ensures shader_harness directory is found regardless of where the script is invoked from
+        from pathlib import Path
+        script_dir = Path(__file__).parent.absolute()
+        shader_harness_path = str(script_dir.parent / "shader_harness")
         
         # Read GLSL guide first
         try:
