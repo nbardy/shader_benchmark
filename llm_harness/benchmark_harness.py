@@ -202,7 +202,10 @@ class BenchmarkHarness:
         # Log problem start
         self.logger.log_problem_start(problem_index, problem)
 
-        problem_path = Path(f"../problems/base_set/{problem}")
+        # CRITICAL FIX: Use absolute path based on script location, not relative to CWD
+        # This ensures problem directories are found regardless of where the script is invoked from
+        script_dir = Path(__file__).parent.absolute()
+        problem_path = script_dir.parent / "problems" / "base_set" / problem
         if not Path(problem_path).exists():
             self.logger.log_warning(problem_index, problem, f"Problem directory not found: {problem_path}")
             if pbar:
