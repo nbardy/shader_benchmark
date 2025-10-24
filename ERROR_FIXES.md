@@ -219,3 +219,80 @@ This was a **critical bug** that silently prevented multi-problem testing from w
 The logging system implemented in the previous session made this bug discoverable. Without those detailed execution logs, this issue would have remained invisible.
 
 **Status**: ✅ FIX DEPLOYED AND VALIDATED - READY FOR COMPREHENSIVE TESTING
+
+---
+
+## SECOND CRITICAL BUG: Shader Harness Path Resolution
+
+**Date**: October 24, 2025 (discovered during 100-problem benchmark)
+**Issue**: Multi-problem test runs failing with "shader_harness directory not found"
+**Status**: ✅ FIXED (test_runner.py:13-16)
+**Root Cause**: Same as Problem Bug #1 - relative path resolution
+
+### The Problem
+
+Tests attempting to run 100+ problems simultaneously would fail with:
+```
+[EXCEPTION] FileNotFoundError: shader_harness directory not found at ../shader_harness
+```
+
+Only the first 0-2 problems would execute before encountering this path error for all remaining problems.
+
+### Root Cause Analysis
+
+In `test_runner.py:13`, the shader harness path was defined as:
+```python
+self.shader_harness_path = Path("../shader_harness")
+```
+
+This path is relative to the **current working directory**, which changes as problems are executed in parallel contexts.
+
+### The Fix
+
+**Location**: `llm_harness/test_runner.py`, lines 13-16
+
+**Before**:
+```python
+self.shader_harness_path = Path("../shader_harness")
+```
+
+**After**:
+```python
+# CRITICAL FIX: Use absolute path based on script location, not relative to CWD
+# This ensures shader_harness directory is found regardless of where the script is invoked from
+script_dir = Path(__file__).parent.absolute()
+self.shader_harness_path = script_dir.parent / "shader_harness"
+```
+
+### Validation
+
+The fix resolves to:
+```
+Script location: /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_runner.py
+Resolved path: /Users/nicholasbardy/git/shader_benchmark/shader_harness
+Exists: ✅ True
+```
+
+### Impact
+
+This fix, combined with the previous benchmark_harness.py fix, enables:
+- ✅ Full 100-problem batch test execution
+- ✅ Parallel problem processing without path errors
+- ✅ Comprehensive shader compilation and rendering across all problems
+- ✅ Complete evaluation and scoring pipeline for all 100 problems
+
+### Critical Insight
+
+Both path resolution bugs stemmed from the same root cause: **using relative paths that are resolved from the current working directory instead of the script location**. In concurrent execution contexts, the CWD can change, breaking relative path resolution.
+
+The pattern for fixing path resolution bugs in this codebase:
+```python
+# BEFORE (broken in async contexts):
+relative_path = Path("../some_directory")
+
+# AFTER (works everywhere):
+script_dir = Path(__file__).parent.absolute()
+absolute_path = script_dir.parent / "some_directory"
+```
+
+This ensures paths are resolved once at module initialization, independent of runtime working directory changes.

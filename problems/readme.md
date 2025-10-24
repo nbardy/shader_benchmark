@@ -1,236 +1,249 @@
-# Visual Programming Benchmark
+# Problem Catalog — 101 Mathematical Visualization Challenges
 
-Currently all vision LLM benchmarks are focused on visual analysis (Give an image return fact X). No one is focusing on the opposite. Given X, make me an image! This benchmark fixes that with a set of challenging visual programming problems and a benchmark to judge them. Current models perform very poorly on these problems in a zero-shot setting, but can be incredibly capable when paired with a human. Current models have become incredibly capable at visual programming and have gone from basic to WOW!. For evidence check out my recent shadertoy collection (https://www.shadertoy.com/user/nbardy/sort=newest) all created with chatgpt and friends. Most of these are made by me passing back and forth rendering of each result and building up a long chain of context and critique until the model can get it right, as well as copy and pasting wikipedia articles in context. You **CAN** get LLMs to do advanced shader math and geometry, but it's a **LOT** of time and work. This shows a spark of generalization and with the current rapid pace of LLM development a spark of generalization turns into Expertise within months. All you need is a benchmark to motivate researchers. This benchmark aims to give LLM Researchers a platform to train and test their models in visual programming tasks. Sets out the ambitious goal of lowering the bar for advanced visual programming to the masses. Soon you can just ask ChatGPT for a demo reel!
+Comprehensive collection of shader programming problems spanning classical geometry, advanced topology, fractals, physics simulations, and historical mathematics.
 
-Each problem has a prompt to ask the model for a shader.
-Evaluates the shader
-And uses a VLLM as a judge to test the success of the results across a rubric.
+## Problem Categories
 
-## Problems
+### Classical Geometry (15 problems)
+Platonic solids, parameterized surfaces, and foundational 3D primitives.
 
-### #1 - Hopf Fibration
-A complex 4D dimensional object rendered in 3D via fibrations
+- `geometric_cube` — Regular cube with proper normals and Phong shading
+- `regular_tetrahedron` — Four-face Platonic solid with symmetry verification
+- `regular_octahedron` — Eight-face dual of cube with edge visualization
+- `dodecahedron` — Twelve-face Platonic solid with pentagonal faces
+- `icosahedron` — Twenty-face Platonic solid with golden ratio properties
+- `truncated_icosahedron` — Soccer ball topology (32 faces, 60 vertices)
+- `rounded_box` — Smooth box with filleted edges using SDF techniques
+- `capsule_shape` — Cylinder with hemispherical caps
+- `barbell_dumbbell_shape` — Two spheres connected by cylinder
+- `torus_donut_parametric` — Mathematical torus with major/minor radii
+- `geodesic_sphere` — Triangulated sphere with icosahedral subdivision
+- `compound_polyhedra_stella_octangula` — Interpenetrating tetrahedra
+- `five_pointed_star_polygon` — Regular pentagram with golden ratio
+- `star_tetrahedron` — Merkaba geometry (two interpenetrating tetrahedra)
+- `icosahedron_wireframe` — Edge-only rendering with hidden line removal
 
-### #2 - Menger Cube
-A simple basic fractal
+### Fractals & Recursion (12 problems)
+Self-similar structures across multiple scales.
 
-### #3 - Hyper Meneger Cube intersects the 3-Sphere in 4D dimensions
-A 4d dimensional intersection rendering
+- `mandelbrot_set` — Classic complex plane fractal with escape-time coloring
+- `julia_set` — Complex quadratic polynomial fractal landscapes
+- `sierpinski_triangle` — Recursive 2D fractal with 6 iterations
+- `dragon_curve_fractal` — Space-filling curve with L-system generation
+- `hilbert_curve_fractal` — Space-filling curve with locality preservation
+- `apollonian_gasket` — Circle packing with Descartes Circle Theorem
+- `menger_sponge` — 3D fractal with recursive cube removal
+- `binary_tree_fractal` — Recursive branching structure
+- `fractal_tree_3d` — 3D recursive tree with angle variations
+- `koch_snowflake` — Perimeter-maximizing fractal curve
+- `mandala_circles` — Sacred geometry with tangent circle packing
+- `phyllotaxis_spiral` — Golden angle plant growth patterns
 
-### #4 A clear class spherical shell with a glowing red solid sphere inside
-A Classic raytracing demo
+### Differential Geometry (8 problems)
+Minimal surfaces, curvature, and advanced differential topology.
 
-### #5 - Poincaré Disc 
-Regular hyperbolic triangle tessellation {3,8} in the Poincaré disk model with checkerboard coloring
+- `catenoid_helicoid_minimal` — Minimal surface family interpolation
+- `costa_minimal_surface` — Genus-one minimal surface with planar ends
+- `klein_bottle` — Non-orientable 4D surface immersed in 3D
+- `mobius_strip` — Single-sided surface with half-twist topology
+- `mobius_strip_3_twists` — Triple-twist Möbius with 540° rotation
+- `trefoil_knot` — Parametric (2,3)-torus knot with torsion coloring
+- `hopf_fibration` — S³ → S² fiber bundle with stereographic projection
+- `calabi_yau_manifold` — Quintic Calabi-Yau cross-section (string theory)
 
-### #6 - Mandelbulb Fractal (Advanced)
-Order-8 Mandelbulb fractal with ray-marching, distance estimation, and rainbow escape-time coloring
+### Physics & Simulations (7 problems)
+Dynamic systems, wave equations, and physical phenomena.
 
-### #7 - Voronoi Diagram (Intermediate) 
-30-seed Voronoi tessellation with Poisson-disk sampling and distinct Tableau-20 coloring
+- `lorenz_attractor` — Chaotic dynamical system with butterfly structure
+- `reaction_diffusion_patterns` — Gray-Scott PDE simulation
+- `schwarzschild_black_hole` — Gravitational lensing with photon rings
+- `wave_deformation_field` — Wave equation visualization
+- `chladni_patterns` — Acoustic resonance modes on 2D plate
+- `loxodromic_sphere_spirals` — Sphere spirals with constant bearing
+- `spinning_vortex_funnel` — Fluid flow with logarithmic streamlines
 
-### #8 - Crystal Lattice Diffraction (Advanced)
-2D X-ray diffraction pattern of FCC crystal with proper structure factors and intensity mapping
+### Parametric Curves & Spirals (10 problems)
+Classical and modern curve families.
 
-### #9 - Schwarzschild Black Hole (Advanced)
-Gravitational lensing visualization with starfield distortion and photon ring highlighting
+- `archimedes_spiral` — Linear spiral with ancient trisection methods
+- `archimedean_spiral_galaxy` — Two-arm galaxy with stellar populations
+- `butterfly_curve` — Transcendental plane curve (Fay's equation)
+- `cardioid_limacon_collection` — Epitrochoid family with cusp
+- `fibonacci_spiral_golden_rectangle` — Golden ratio spiral approximation
+- `rose_curves` — Polar curves r=cos(kθ) with k-fold symmetry
+- `epicycloids` — Traced by circle rolling outside fixed circle
+- `logarithmic_spiral_motion` — Equiangular spiral with constant growth
+- `cycloid_wave_patterns` — Cycloid tiling with mirror symmetry
+- `fermat_parabolic_spiral` — r²=a²θ with equal-area property
 
-### #10 - Reaction-Diffusion Patterns (Advanced)
-Gray-Scott reaction-diffusion system simulation with zebra/spot patterns and turbo colormap
+### Topology & Knot Theory (6 problems)
+Non-orientable surfaces and knotted structures.
 
-### #11 - Holographic Interference (Advanced)
-RGB interference pattern from two coherent plane waves intersecting at 20° angle
+- `dna_double_helix` — Anti-parallel helices with 3.4Å pitch
+- `braided_rope` — Three-strand helical braid with phase offsets
+- `helical_twisted_cube` — Cube edges following helical paths
+- `spinning_gear_assembly` — Three-gear kinematic system
+- `spiral_staircase_tower` — Twin helical staircases
+- `gyroscopic_nested_rings` — Three orthogonal rotating rings
 
-### #12 - Menger Sponge Fractal (Advanced)
-Order-4 Menger sponge ray-marching with signed distance functions and soft shadows
+### Historical Mathematics (8 problems)
+Visualizations of mathematical milestones across cultures.
 
-### #13 - Quantum Probability Waves (Advanced)
-2D infinite square-well eigenstate superposition with magma palette and isolines
+- `apollonius_conic_sections` — Ancient Greek double-cone geometry (~200 BCE)
+- `al_khwarizmi_geometric_algebra` — Islamic Golden Age algebraic geometry (9th c.)
+- `brahmagupta_cyclic_quadrilaterals` — Indian mathematical innovations (628 CE)
+- `chinese_remainder_sunzi` — Modular arithmetic from Sunzi Suanjing (3rd-5th c.)
+- `euler_polyhedron_formula` — V-E+F=2 demonstration (1752)
+- `gauss_complex_plane` — Gaussian integers and complex primes (1831)
+- `fermat_last_theorem_viz` — Visualization of Fermat's conjecture
+- `riemann_surface_branch_cuts` — Two-sheet surface of w=√z
 
-### #14 - Hopf Fibration 4D → 3D (Advanced)
-Complete Hopf fibration visualization with stereographic projection from S³ to ℝ³
+### Advanced Topology (7 problems)
+4D projections and exotic manifolds.
 
-### #15 - Riemann Surface with Branch Cuts (Advanced)
-Two-sheet Riemann surface of w=√z with branch cut along negative real axis
+- `rotating_hypercube_projection` — 4D tesseract with dual rotations
+- `twisted_stellated_polyhedron` — Stellated dodecahedron with rotated spikes
+- `penrose_tiling_p3` — Rhombic aperiodic tiling with deflation
+- `hyperbolic_geometry_poincare_disk` — {3,8} tessellation in H²
+- `spherical_inversion_mapping` — Circle inversion transformations
+- `mobius_transformation_3d` — Complex projective transformations
+- `conformal_spiral_mapping` — Angle-preserving complex mappings
 
-### #16 - Penrose Tiling (P3) (Advanced)
-Rhombic Penrose tiling through three deflation steps with matching rule arrows
+### Complex Analysis & Visualization (6 problems)
+Complex functions and analytic structures.
 
-### #17 - Calabi-Yau Manifold Cross-Section (Advanced)
-Quintic Calabi-Yau manifold isosurface with viridis coloring and 5-fold symmetry
+- `riemann_zeta_zeros` — Critical line visualization
+- `complex_analysis_stained_glass` — Domain coloring with phase/magnitude
+- `holographic_interference` — Two-beam interference patterns
+- `quantum_probability_waves` — 2D infinite square well eigenstates
+- `weierstrass_function` — Continuous nowhere-differentiable function
+- `ramanujan_mock_theta` — Mock theta function visualization
 
-### #18 - Lorenz Attractor with Poincaré Section (Advanced)
-3D Lorenz butterfly trajectory with fractal Poincaré section visualization
+### Deformations & Transformations (8 problems)
+Geometric manipulation techniques.
 
-### #19 - Mandala of Circles (Intermediate)
-Sacred geometry mandala with 12-fold radial symmetry and mutually tangent circles
+- `cylindrical_bend_deformation` — Mesh bending with curvature
+- `helical_twist_deformation` — Torsion-based geometry warping
+- `taper_shear_transformation` — Scale and shear composition
+- `parametric_gear_train` — Involute gear tooth profiles
+- `crystal_lattice_diffraction` — FCC X-ray diffraction pattern
+- `voronoi_diagram` — 30-seed tessellation with Poisson-disk sampling
+- `trigonometric_mandalas` — Harmonic mandala with sine harmonics
+- `mandelbulb_fractal` — 3D Mandelbrot with ray-marching
 
-### #20 - Archimedean Spiral Galaxy (Advanced)
-Two-arm spiral galaxy simulation with realistic star distribution and color temperature
+### Number Theory & Algebra (4 problems)
+Prime structures and algebraic geometry.
 
-### #21 - Rose Curves (Intermediate)
-Polar curve r = cos(7θ) creating 7-petal rose pattern with grid overlay
+- `ackermann_function_growth` — Rapidly growing recursive function
+- `prime_crystal_lattice` — Prime number geometric arrangement
+- `kleinian_group_limit_sets` — Fractal limit sets of Kleinian groups
+- `group_theory_kaleidoscope` — Symmetry group visualizations
 
-### #22 - Epicycloids (Intermediate)
-Classical epicycloid traced by circle rolling around fixed circle with 4 cusps
+### Cross-Disciplinary (10 problems)
+Interdisciplinary mathematical art and science.
 
-### #23 - Trigonometric Mandalas (Intermediate)
-Harmonic mandala with multiple sine wave harmonics and radial gradient
+- `fourier_architectural_blueprints` — Fourier series building designs
+- `differential_equation_water` — Navier-Stokes fluid simulation
+- `number_theory_music` — Sonification of number theoretic patterns
+- `topology_fabric_texture` — Topological invariants as textures
+- `probability_weather_patterns` — Stochastic process visualization
+- `hyperbolic_heat_kernel` — Heat diffusion on hyperbolic manifolds
+- `alexander_polynomial_viz` — Knot invariant visualization
+- `loxodromic_transformation` — Möbius transformation spirals
+- `fractal_loxodromic_patterns` — Iterated loxodromic functions
+- `eight_pointed_star` — Geometric star with octagonal symmetry
 
-### #24 - Cycloid Wave Patterns (Intermediate)
-Classical cycloid wave tiling with mirror reflection and precise periodicity
+## Problem Structure
 
-### #25 - Five-Pointed Star Polygon (Beginner)
-Regular pentagram with golden ratio proportions and proper vertex connections
+Each problem directory contains:
+```
+problem_name/
+├── request.txt    # Natural language specification for LLM
+└── critic.txt     # Structured evaluation rubric (3 sections)
+```
 
-### #26 - Sierpinski Triangle (Intermediate)  
-6-iteration recursive fractal with 729 small triangles and perfect self-similarity
+### Critic File Format
+```
+__MATHEMATICAL_ACCURACY__
+[Detailed mathematical correctness criteria]
 
-### #27 - Torus (Donut) (Intermediate)
-Mathematical torus with major/minor radii and proper Phong lighting
+__VISUAL_IMPLEMENTATION__
+[Rendering quality and technical requirements]
 
-### #28 - Barbell Shape (Beginner)
-Two spheres connected by cylinder with tangent continuity and matte shading
+__COMPLETENESS_AND_SPECIFICATIONS__
+[Requirement fulfillment and specification adherence]
+```
 
-### #29 - Icosahedron Wireframe (Intermediate)
-Regular icosahedron with 30 edges, 12 vertices, and hidden edge visualization
+## Difficulty Distribution
 
-### #30 - 2D Fractal Tree (Intermediate)
-Recursive binary tree with 7 levels, ±45° branching, and perfect symmetry
+| Level | Count | Characteristics |
+|-------|-------|-----------------|
+| **Beginner** | 15 | Basic geometry, simple parametric curves |
+| **Intermediate** | 40 | Fractals, parametric surfaces, basic topology |
+| **Advanced** | 46 | Differential geometry, 4D projections, physics sims |
 
-## Advanced Topology & Geometry Problems (201-213)
+## Implementation Notes
 
-### #201 - Möbius Strip (½-twist) (Advanced)
-Single half-twist Möbius strip with dual-color visualization and topological verification
+### Common Techniques Required
+- **Signed Distance Functions (SDF)** — Most 3D geometry uses implicit surfaces
+- **Ray Marching** — Volume rendering technique for SDFs
+- **Parametric Equations** — Curves and surfaces via parameter space
+- **Coordinate Transformations** — Spherical, cylindrical, homogeneous coords
+- **Recursion Simulation** — Iterative approximation of fractals
+- **Numerical Methods** — ODE solvers for dynamical systems
 
-### #202 - DNA Double Helix (Advanced)
-Anti-parallel helices with 3.4Å pitch, phase offset π, and 60 connecting rungs
+### WGSL Constraints
+- No variable array indexing (constant indices only)
+- Manual vertex expansion (no dynamic vertex generation)
+- 256-byte texture alignment for framebuffer transfers
+- Limited recursion (must be unrolled or iteratively approximated)
 
-### #203 - Trefoil Knot (Advanced)
-Parametric trefoil with torsion-based coloring and three-fold rotational symmetry
+## Usage Examples
 
-### #204 - Klein Bottle (Advanced)
-Non-orientable surface with self-intersection line and Gaussian curvature coloring
+### Single Problem Test
+```bash
+cd llm_harness
+source venv/bin/activate
+python main.py --model "anthropic/claude-3.5-sonnet-20241022" \
+  --prompt-folder "../problems/base_set/mandelbrot_set"
+```
 
-### #205 - Helical Twisted Cube (Advanced)
-Cube with edges following true helical paths during 90° twist transformation
+### Category-Focused Evaluation
+```bash
+# Test fractal rendering capability
+python benchmark_harness.py --model MODEL \
+  --problems mandelbrot_set julia_set sierpinski_triangle dragon_curve_fractal
 
-### #206 - Spinning Gear Assembly (Intermediate)
-Three-gear kinematic system with proper tooth engagement and angular velocity vectors
+# Test topology understanding
+python benchmark_harness.py --model MODEL \
+  --problems klein_bottle mobius_strip trefoil_knot hopf_fibration
+```
 
-### #207 - Braided Rope (Intermediate)
-Three-strand helical braid with 120° phase offsets and ABCABC crossing pattern
+## Research Applications
 
-### #208 - Twisted Stellated Polyhedron (Advanced)
-Stellated dodecahedron with 20° rotated spikes creating drill-flute geometry
+These problems enable systematic investigation of:
+- **Geometric reasoning:** Understanding of mathematical structures
+- **Code synthesis:** Translation from specification to implementation
+- **Visual programming:** Graphics pipeline and shader knowledge
+- **Domain transfer:** Applying mathematical knowledge to graphics code
+- **Error correction:** Debugging complex mathematical algorithms
 
-### #209 - Spiral Staircase Tower (Intermediate)
-Twin helical staircases with 160 steps each around central column
+## Citation
 
-### #210 - Rotating Hypercube Projection (Advanced)
-4D tesseract with dual rotation matrices projected through 3D to 2D visualization
+When using this problem set in research:
+```bibtex
+@misc{shader_benchmark_problems_2025,
+  title={Shader Benchmark Problem Catalog: 101 Mathematical Visualization Challenges},
+  author={Nicholas Bardy},
+  year={2025},
+  url={https://github.com/nbardy/shader_benchmark/tree/main/problems}
+}
+```
 
-### #211 - Möbius Strip with 3 Half-Twists (Advanced)
-Triple-twist Möbius strip with 540° rotation and three-cycle hue visualization
+## Contributing
 
-### #212 - Spinning Vortex Funnel (Advanced)
-Fluid flow visualization with 150 logarithmic spiral streamlines and density field
-
-### #213 - Gyroscopic Nested Rings (Intermediate)
-Three concentric rings with orthogonal 30° rotations about x, y, z axes
-
-## Historical Mathematics Visualizations (301-308)
-
-### #301 - Apollonius's Conic Sections (~200 BCE) (Advanced)
-Ancient Greek geometric construction showing ellipse, parabola, and hyperbola emerging from a double cone with different cutting planes
-
-### #302 - Al-Khwarizmi's Geometric Algebra (9th Century) (Advanced)
-Islamic Golden Age visualization of solving x² + 10x = 39 using geometric completion method that gave birth to algebra
-
-### #303 - Archimedes' Spiral (225 BCE) (Advanced)
-Ancient Greek spiral with demonstrations of angle trisection and circle quadrature using the exhaustion method
-
-### #304 - Fermat's Parabolic Spiral (1636) (Advanced)
-Renaissance mathematics showing Fermat's spiral with equal-area property and pre-calculus tangent construction
-
-### #305 - Euler's Polyhedron Formula (1752) (Advanced)
-Interactive demonstration of V - E + F = 2 through the five Platonic solids with 18th-century styling
-
-### #306 - Gauss's Complex Plane (1831) (Advanced)
-Visualization of Gaussian integers, complex primes, and the two-square theorem in 19th-century German style
-
-### #307 - Chinese Remainder Theorem (3rd-5th Century) (Advanced)
-Ancient Chinese modular arithmetic from Sunzi Suanjing with modern cryptographic connections
-
-### #308 - Brahmagupta's Cyclic Quadrilaterals (628 CE) (Advanced)
-Indian mathematical innovations including cyclic quadrilateral formula and systematic use of zero and negatives
-
-## Implementation Status
-
-### Missing Problem Directories
-The following problems from the 80-item comprehensive list need to be implemented:
-
-#### Basic Problems (1-30)
-- [ ] **#19 - Sierpinski Pyramid** - TODO: Create sierpinski_pyramid directory
-- [ ] **#21 - 3-D Fractal Tree** - TODO: Create fractal_tree_3d directory  
-- [ ] **#23 - Eight-Pointed Star** - TODO: Create eight_pointed_star directory
-- [ ] **#24 - Star Tetrahedron** - TODO: Create star_tetrahedron directory
-- [ ] **#25 - Perfect Tetrahedron** - TODO: Create perfect_tetrahedron directory
-- [ ] **#26 - Geometric Cube** - TODO: Create geometric_cube directory
-- [ ] **#27 - Regular Octahedron** - TODO: Create regular_octahedron directory
-- [ ] **#28 - Dodecahedron** - TODO: Create dodecahedron directory
-- [ ] **#29 - Icosahedron** - TODO: Create icosahedron directory (Note: icosahedron_wireframe exists but may be different)
-
-#### Intermediate Problems (31-50)
-- [ ] **#32 - Rounded Box** - TODO: Create rounded_box directory
-- [ ] **#33 - Capsule Shape** - TODO: Create capsule_shape directory
-- [ ] **#34 - Compound Polyhedra (Stella Octangula)** - TODO: Create compound_polyhedra directory
-- [ ] **#35 - Truncated Icosahedron** - TODO: Create truncated_icosahedron directory
-
-#### Advanced Problems (51-80)
-- [ ] **#57 - Weierstrass Function** - TODO: Create weierstrass_function directory (Note: tests/problem_5 might be this)
-- [ ] **#58 - Ramanujan's Mock-Theta Functions** - TODO: Create ramanujan_mock_theta directory
-- [ ] **#59 - Costa Minimal Surface** - TODO: Create costa_minimal_surface directory
-- [ ] **#60 - Ackermann Function Growth** - TODO: Create ackermann_function directory
-- [ ] **#61 - Riemann Zeta Zeros** - TODO: Create riemann_zeta_zeros directory
-- [ ] **#62 - Kleinian Group Limit Sets** - TODO: Create kleinian_group directory
-- [ ] **#63 - Alexander Polynomial Visualizer** - TODO: Create alexander_polynomial directory
-- [ ] **#64 - Hyperbolic Heat Kernel** - TODO: Create hyperbolic_heat_kernel directory
-- [ ] **#65 - Prime Crystal Lattice** - TODO: Move from novel_visualization_challenges
-- [ ] **#66 - Fourier Architectural Blueprints** - TODO: Move from novel_visualization_challenges
-- [ ] **#67 - Group-Theory Kaleidoscope** - TODO: Move from novel_visualization_challenges
-- [ ] **#68 - Differential-Equation Water Simulation** - TODO: Move from novel_visualization_challenges
-- [ ] **#69 - Number-Theory Music** - TODO: Move from novel_visualization_challenges
-- [ ] **#70 - Topology Fabric Texture** - TODO: Move from novel_visualization_challenges
-- [ ] **#71 - Probability Weather Patterns** - TODO: Move from novel_visualization_challenges
-- [ ] **#72 - Complex-Analysis Stained-Glass** - TODO: Move from novel_visualization_challenges
-- [ ] **#73 - Apollonius's Conic Sections** - TODO: Create apollonius_conic_sections directory
-- [ ] **#74 - Al-Khwarizmi's Geometric Algebra** - TODO: Create al_khwarizmi_algebra directory
-- [ ] **#75 - Archimedes' Spiral** - TODO: Create archimedes_spiral directory (Note: archimedean_spiral_galaxy exists but is different)
-- [ ] **#76 - Fermat's Parabolic Spiral** - TODO: Create fermat_spiral directory
-- [ ] **#77 - Euler's Polyhedron Formula (V-E+F=2)** - TODO: Create euler_polyhedron directory
-- [ ] **#78 - Gauss's Complex Plane** - TODO: Create gauss_complex_plane directory
-- [ ] **#79 - Chinese Remainder Theorem Illustration** - TODO: Create chinese_remainder directory
-- [ ] **#80 - Brahmagupta's Cyclic Quadrilaterals** - TODO: Create brahmagupta_quadrilaterals directory
-
-### Extra Visualization Directories
-The following directories exist but are not part of the original 80-item list:
-- `chladni_patterns`
-- `conformal_spiral_mapping`
-- `cylindrical_bend_deformation`
-- `fractal_loxodromic_patterns`
-- `helical_twist_deformation`
-- `logarithmic_spiral_motion`
-- `loxodromic_sphere_spirals`
-- `mandala_circles`
-- `mobius_transformation_3d`
-- `parametric_gear_train`
-- `phyllotaxis_spiral`
-- `spherical_inversion_mapping`
-- `taper_shear_transformation`
-- `wave_deformation_field`
-
-### Notes on tests/ Directory
-The `tests/` directory contains 23 numbered problems (problem_1 through problem_23) which appear to be recent additions including:
-- Problems 5-15: Recently added advanced mathematical visualizations
-- Problems 16-23: Historical mathematics problems that should map to #73-80
+To propose new problems:
+1. Follow existing `request.txt` format (clear specification, constraints, success criteria)
+2. Create structured `critic.txt` with 3-section format
+3. Ensure problem requires mathematical/geometric understanding (not just graphics API usage)
+4. Include reference images or mathematical formulas where applicable

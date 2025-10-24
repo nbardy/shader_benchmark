@@ -10,7 +10,10 @@ from error_handler import use_safe, save_subprocess_output
 
 class TestRunner:
     def __init__(self, compile_semaphore=None, render_semaphore=None):
-        self.shader_harness_path = Path("../shader_harness")
+        # CRITICAL FIX: Use absolute path based on script location, not relative to CWD
+        # This ensures shader_harness directory is found regardless of where the script is invoked from
+        script_dir = Path(__file__).parent.absolute()
+        self.shader_harness_path = script_dir.parent / "shader_harness"
         # Pipeline stage semaphores for resource management
         self.compile_semaphore = compile_semaphore or asyncio.Semaphore(os.cpu_count() or 8)
         self.render_semaphore = render_semaphore or asyncio.Semaphore(4)

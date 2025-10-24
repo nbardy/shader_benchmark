@@ -163,3 +163,91 @@ If you see "may only be indexed by a constant" - you have used variable array in
 The solution is ALWAYS manual expansion. There are no exceptions or workarounds.
 
 WGSL is designed for GPU parallelism and prohibits many dynamic patterns that work in CPU code.
+
+QUICK REFERENCE: ERROR PATTERNS → SOLUTIONS
+============================================
+
+| Error Message Pattern | Root Cause | Solution |
+|----------------------|------------|----------|
+| "may only be indexed by a constant" | Variable array indexing: `array[i]` | Manual expansion - define each element explicitly |
+| "expected expression, found '\|'" | Lambda/closure syntax | Use regular functions instead |
+| "variable assignment" + array | Variable array assignment: `array[i] = x` | Manual expansion - assign each element explicitly |
+| "naga::Expression" validation | Variable indexing in expression | Unroll loops, use explicit element access |
+
+COMMON ANTI-PATTERNS TO AVOID
+==============================
+
+❌ DON'T: Loop with variable array access
+```wgsl
+let values = array<f32, 10>(/* ... */);
+for (var i = 0; i < 10; i++) {
+    let v = values[i];  // ERROR!
+}
+```
+
+✅ DO: Unroll loops or use explicit access
+```wgsl
+let v0 = 1.0;
+let v1 = 2.0;
+let v2 = 3.0;
+// ... etc for all values
+
+// Then use them explicitly:
+var result = v0 + v1 + v2 + ...;
+```
+
+❌ DON'T: Store in arrays then iterate
+```wgsl
+var heights: array<f32, 10>;
+for (var i = 0; i < 10; i++) {
+    heights[i] = computeHeight(i);  // ERROR!
+}
+```
+
+✅ DO: Compute and use directly
+```wgsl
+let h0 = computeHeight(0);
+let h1 = computeHeight(1);
+let h2 = computeHeight(2);
+// ... etc
+
+// Use directly in calculations:
+minDist = min(minDist, distanceToBar(uv, h0));
+minDist = min(minDist, distanceToBar(uv, h1));
+// ... etc
+```
+
+TESTED ERROR: Ackermann Function Visualization
+===============================================
+
+Real error from benchmark test (2025-10-23):
+```
+Line 39: let height = min(values[i] * 0.05, 0.8);
+         Error: "The expression [24] may only be indexed by a constant"
+```
+
+Problem: Loop variable `i` used to index array `values`
+
+Solution: Manual expansion required:
+```wgsl
+// Instead of: let values = array<f32, 11>(...);
+// Use explicit variables:
+let v0 = 0.0;
+let v1 = 0.301;
+let v2 = 0.477;
+let v3 = 1.114;
+let v4 = 4.817;
+let v5 = 19728.0;
+let v6 = 78913.0;
+let v7 = 315652.0;
+let v8 = 1262611.0;
+let v9 = 5050444.0;
+let v10 = 20201776.0;
+
+// Then use explicitly (no loop):
+var minDist = 1000.0;
+minDist = min(minDist, distanceToBar(uv, 0, min(v0 * 0.05, 0.8)));
+minDist = min(minDist, distanceToBar(uv, 1, min(v1 * 0.05, 0.8)));
+minDist = min(minDist, distanceToBar(uv, 2, min(v2 * 0.05, 0.8)));
+// ... continue for all values
+```
