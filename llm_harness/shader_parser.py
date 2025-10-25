@@ -49,7 +49,7 @@ class ShaderParser:
             raise ValueError("No shader files found in LLM response")
 
         return shaders, main_rs
-    
+
     def validate_shader_syntax(self, shader_content: str) -> bool:
         """Validate shader syntax using language_spec validator.
 

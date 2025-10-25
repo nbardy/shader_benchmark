@@ -71,6 +71,25 @@ WRONG (GLSL):                          RIGHT (WGSL):
 - step(edge, x)                     → step(edge, x)  ✓ (exists)
 - smoothstep(e0, e1, x)             → smoothstep(e0, e1, x)  ✓ (exists)
 
+⚠️ CRITICAL: select() FUNCTION SIGNATURE:
+---------------------------------------------
+The select() function in WGSL has a different signature than GLSL ternary operator.
+
+WRONG (Missing arguments):
+let result = select(value);  // Error: expected 3 arguments, found 1
+let result = select(true_val, false_val);  // Error: expected 3, found 2
+
+RIGHT (Complete signature - 3 arguments required):
+select(false_value, true_value, condition)  // NOT (condition, true, false)
+
+EXAMPLES:
+- let color = select(vec3<f32>(0.0), vec3<f32>(1.0), x > 0.5);
+  // If x > 0.5 is TRUE, returns vec3<f32>(1.0); if FALSE, returns vec3<f32>(0.0)
+- let val = select(0.0, 1.0, is_active);
+  // If is_active is TRUE, returns 1.0; if FALSE, returns 0.0
+
+NOTE: The argument order is (false_value, true_value, condition) - different from ternary!
+
 TYPE REQUIREMENTS:
 ---------------------------------------------
 - Use explicit types: vec2<f32>, vec3<f32>, vec4<f32>, NOT vec2, vec3, vec4
@@ -84,6 +103,32 @@ TYPE REQUIREMENTS:
 - For arithmetic with vector components, cast to appropriate type:
   - WRONG: let hash = pos.x * 19349663u;  (f32 * u32 = error)
   - RIGHT: let hash = u32(pos.x * 1000.0) * 19349663u;
+
+NUMERIC LITERAL CONSTRAINTS (CRITICAL):
+---------------------------------------------
+⚠️ f32 floating-point literals have strict range and exponent limits.
+
+f32 Range and Exponent:
+- Valid exponent range: approximately ±38 (e.g., 1.0e10, 1.5e-5)
+- INVALID: Exponents like e19726, e-19726, e1000 (out of f32 range)
+- Maximum representable value: ~3.4e38
+- Minimum representable value: ~1.2e-38
+
+WRONG (Numeric Literal Overflow):
+let x = 5.942e19726;  // Error: exponent out of range for f32
+let y = 1.0e-50;      // Error: exponent out of range (smaller than minimum)
+
+RIGHT (Valid f32 Literals):
+let x = 5.942e10;     // Valid: exponent within range
+let y = 1.0;          // Valid: simple integer
+let z = 3.14159;      // Valid: typical floating-point
+let w = 1.5e-5;       // Valid: exponent in range
+
+GUIDANCE:
+- Keep exponents within ±38 range
+- Use normalized values: instead of 1e100, use 1.0 and multiply/divide as needed
+- Cast integer results to f32 explicitly: f32(large_integer)
+- For very large numbers, divide instead: (big / 1.0) works better than 1.0e100
 
 SYNTAX YOU MUST NOT USE:
 ---------------------------------------------
