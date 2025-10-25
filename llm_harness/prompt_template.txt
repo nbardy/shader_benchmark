@@ -23,26 +23,67 @@ fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
 
 BIND GROUP CONTRACT:
 ---------------------------------------------
-All uniforms must use this structure (modify contents, not layout):
+Standard uniform parameters are available to your shader.
+
+⚠️ CRITICAL REQUIREMENT: You MUST include BOTH the struct definition AND binding statement below.
+The struct MUST be defined BEFORE the binding statement in the file order.
+
+struct Params {
+    resolution: vec2<f32>,       // Viewport dimensions (width, height)
+    time: f32,                   // Elapsed time in seconds
+    aspect: f32,                 // Aspect ratio (width / height)
+    // Optional: Add problem-specific fields as needed
+};
 
 @group(0) @binding(0) var<uniform> Params: Params;
 
-struct Params {
-    // Add your float32 fields here
-    // Example:
-    // time: f32,
-    // aspect: f32,
-    // resolution: vec2<f32>,
-};
+The struct definition MUST come before @group/@binding in your shader code.
+Do NOT change the names, types, or order of the standard three fields.
+You may ONLY add new fields at the end of the struct if your shader needs them.
+
+EXAMPLES:
+- let pixelCoord = uv * Params.resolution;
+- let t = Params.time;
+- let aspectRatio = Params.aspect;
+
+WGSL BUILT-IN FUNCTIONS (CRITICAL):
+---------------------------------------------
+⚠️ These GLSL functions DO NOT exist in WGSL - use alternatives below:
+
+WRONG (GLSL):                          RIGHT (WGSL):
+- mod(a, b) for modulo              → fract(a / b) * b  OR  a - b * floor(a / b)
+- mix(a, b, t) for interpolation    → select(a, b, t)  (for bools) OR  a + (b - a) * t
+- clamp(x, min, max)                → min(max(x, min), max)  OR  clamp(x, min, max)
+- max(a, b), min(a, b)              → max(a, b), min(a, b)  ✓ (these exist)
+- abs(x)                            → abs(x)  ✓ (exists)
+- sqrt(x)                           → sqrt(x)  ✓ (exists)
+- sin(x), cos(x), tan(x)            → sin(x), cos(x), tan(x)  ✓ (exist)
+- pow(x, y)                         → pow(x, y)  ✓ (exists)
+- exp(x), log(x), log2(x)           → exp(x), log(x), log2(x)  ✓ (exist)
+- floor(x), ceil(x), round(x)       → floor(x), ceil(x), round(x)  ✓ (exist)
+- fract(x)                          → fract(x)  ✓ (exists - fractional part)
+- length(v)                         → length(v)  ✓ (exists)
+- distance(a, b)                    → distance(a, b)  ✓ (exists)
+- dot(a, b)                         → dot(a, b)  ✓ (exists)
+- cross(a, b)                       → cross(a, b)  ✓ (exists - 3D vectors only)
+- normalize(v)                      → normalize(v)  ✓ (exists)
+- reflect(i, n)                     → reflect(i, n)  ✓ (exists)
+- step(edge, x)                     → step(edge, x)  ✓ (exists)
+- smoothstep(e0, e1, x)             → smoothstep(e0, e1, x)  ✓ (exists)
 
 TYPE REQUIREMENTS:
 ---------------------------------------------
 - Use explicit types: vec2<f32>, vec3<f32>, vec4<f32>, NOT vec2, vec3, vec4
 - Use i32, u32, f32 for scalars (NOT int, uint, float)
-- NO implicit type conversions
+- NO implicit type conversions - ALWAYS cast mixed types explicitly
+  - WRONG: pos.x * 73856093u  (mixing f32 and u32)
+  - RIGHT: u32(pos.x) * 73856093u  (explicit cast)
 - Array indexing ONLY with integer expressions: array[u32(expr)]
 - Use var<function> for function-local variables
 - Use let for immutable bindings
+- For arithmetic with vector components, cast to appropriate type:
+  - WRONG: let hash = pos.x * 19349663u;  (f32 * u32 = error)
+  - RIGHT: let hash = u32(pos.x * 1000.0) * 19349663u;
 
 SYNTAX YOU MUST NOT USE:
 ---------------------------------------------
@@ -53,6 +94,17 @@ SYNTAX YOU MUST NOT USE:
 ❌ #ifdef, #define, or any preprocessor
 ❌ uniform keyword (use @group/@binding instead)
 ❌ @attribute decorators inside structs (decoration goes on struct field)
+❌ Swizzle assignment: vec.xy = value (GLSL pattern, INVALID in WGSL)
+❌ Reserved keywords: target, sampler, buffer, storage, atomic, etc.
+❌ Vector member assignment on expressions: (vec1 + vec2).x = value (INVALID)
+❌ Implicit vector operations: pos.x * 73856093u (may cause type inference issues)
+❌ Ternary operator: condition ? true_val : false_val (GLSL syntax, INVALID in WGSL)
+   - Use instead: let result = select(false_val, true_val, condition);
+❌ DO NOT include Params struct or binding twice in your code
+   - If you define struct Params { ... } in your shader, you CANNOT also use the binding
+   - You MUST define the struct EXACTLY ONCE with exactly the fields shown in BIND GROUP CONTRACT
+   - WRONG: Defining Params twice (once at top, once in fragment function)
+   - RIGHT: Define struct Params once, then use @group(0) @binding(0) var<uniform> Params: Params; once
 
 EXAMPLE MINIMAL SHADER:
 ---------------------------------------------
@@ -64,11 +116,13 @@ fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<
     return vec4<f32>(x, y, 0.0, 1.0);
 }
 
-@group(0) @binding(0) var<uniform> Params: Params;
-
 struct Params {
     resolution: vec2<f32>,
+    time: f32,
+    aspect: f32,
 };
+
+@group(0) @binding(0) var<uniform> Params: Params;
 
 @fragment
 fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
@@ -95,14 +149,18 @@ fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<
     return vec4<f32>(x, y, 0.0, 1.0);
 }
 
-@group(0) @binding(0) var<uniform> Params: Params;
-
 struct Params {
-    // Your fields here
+    resolution: vec2<f32>,
+    time: f32,
+    aspect: f32,
+    // Add problem-specific fields here
 };
+
+@group(0) @binding(0) var<uniform> Params: Params;
 
 @fragment
 fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
     // Your fragment code here
+    // Standard uniforms available: Params.resolution, Params.time, Params.aspect
 }
 </shader>
