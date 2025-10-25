@@ -45,6 +45,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Tuple
 from error_handler import use_safe, save_subprocess_output
+from shader_parser import ShaderParser
 
 class TestRunner:
     def __init__(self, compile_semaphore=None, render_semaphore=None):
@@ -139,6 +140,9 @@ class TestRunner:
         PRE-BUILD FIX: No longer copies Cargo.toml or main.rs since we use pre-built binary.
         We only need to write the LLM-generated shader files to the test folder.
 
+        CLEANUP FIX: Automatically remove duplicate Params struct definitions from WGSL shaders
+        to prevent "redefinition of Params" compilation errors.
+
         Args:
             test_folder: Path to test results folder
             shaders: Dict mapping shader filenames to shader code content
@@ -150,8 +154,15 @@ class TestRunner:
         # Create shaders subdirectory
         (test_folder / "shaders").mkdir(exist_ok=True)
 
+        # Initialize parser for cleanup
+        parser = ShaderParser()
+
         # Write shader files (these will be executed by pre-built binary)
         for filename, content in shaders.items():
+            # Apply WGSL cleanup if it's a WGSL shader
+            if filename.endswith('.wgsl'):
+                content = parser.cleanup_wgsl_shader(content)
+
             with open(test_folder / "shaders" / filename, 'w') as f:
                 f.write(content)
 

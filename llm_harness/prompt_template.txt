@@ -90,7 +90,7 @@ EXAMPLES:
 
 NOTE: The argument order is (false_value, true_value, condition) - different from ternary!
 
-TYPE REQUIREMENTS:
+TYPE REQUIREMENTS AND VARIABLE BINDINGS:
 ---------------------------------------------
 - Use explicit types: vec2<f32>, vec3<f32>, vec4<f32>, NOT vec2, vec3, vec4
 - Use i32, u32, f32 for scalars (NOT int, uint, float)
@@ -98,11 +98,50 @@ TYPE REQUIREMENTS:
   - WRONG: pos.x * 73856093u  (mixing f32 and u32)
   - RIGHT: u32(pos.x) * 73856093u  (explicit cast)
 - Array indexing ONLY with integer expressions: array[u32(expr)]
-- Use var<function> for function-local variables
-- Use let for immutable bindings
 - For arithmetic with vector components, cast to appropriate type:
   - WRONG: let hash = pos.x * 19349663u;  (f32 * u32 = error)
   - RIGHT: let hash = u32(pos.x * 1000.0) * 19349663u;
+
+⚠️ CRITICAL: let vs var<function> - IMMUTABLE vs MUTABLE BINDINGS:
+---------------------------------------------
+In WGSL, you MUST use the correct binding type for your use case.
+
+USE let FOR IMMUTABLE (READ-ONLY) VALUES:
+- let my_value = vec3<f32>(1.0, 2.0, 3.0);  // Cannot change after this
+- let result = my_value * 2.0;               // OK - no mutation
+- WRONG: my_value = other_vector;            // Error: invalid left-hand side
+
+USE var<function> FOR MUTABLE (CHANGEABLE) VARIABLES:
+- var<function> accumulator = 0.0;           // Can change value
+- accumulator = accumulator + 1.0;           // OK - mutation allowed
+- accumulator += some_value;                 // OK - accumulation
+
+CRITICAL PATTERN - LOOP ACCUMULATION:
+This is a very common pattern in shaders:
+```wgsl
+var<function> result = vec3<f32>(0.0);  // MUST use var<function>!
+for (var i = 0u; i < iterations; i = i + 1u) {
+    result = result + some_contribution(i);  // Mutation requires var
+}
+return result;
+```
+
+WRONG (Using let for a variable you'll mutate):
+```wgsl
+let color = vec3<f32>(0.0);  // WRONG - you can't mutate a let binding
+color = color + more_color;  // Error: invalid left-hand side of assignment
+```
+
+RIGHT (Using var<function> for mutable accumulator):
+```wgsl
+var<function> color = vec3<f32>(0.0);  // RIGHT - var allows mutation
+color = color + more_color;            // OK - valid mutation
+```
+
+SUMMARY:
+- **let** = Read-only, assign once at declaration
+- **var<function>** = Can be changed multiple times in the function
+- If you plan to mutate a variable, ALWAYS use var<function>, NOT let
 
 NUMERIC LITERAL CONSTRAINTS (CRITICAL):
 ---------------------------------------------

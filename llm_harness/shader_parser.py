@@ -70,9 +70,51 @@ class ShaderParser:
             r'fn main\(',  # main function
             r'use\s+\w+',  # use statements
         ]
-        
+
         for pattern in required_patterns:
             if not re.search(pattern, main_rs_content):
                 return False
-        
+
         return True
+
+    def cleanup_wgsl_shader(self, shader_content: str) -> str:
+        """Clean up WGSL shader code to fix common LLM-generated issues.
+
+        Fixes:
+        - Removes duplicate struct Params definitions (keeps first, removes rest)
+        - Maintains struct order relative to binding declaration
+
+        Args:
+            shader_content: Raw WGSL shader code from LLM
+
+        Returns:
+            Cleaned shader code
+        """
+        # Find all struct Params definitions
+        struct_pattern = r'struct\s+Params\s*\{[^}]*\}'
+        struct_matches = list(re.finditer(struct_pattern, shader_content))
+
+        if len(struct_matches) <= 1:
+            # No duplicates, return as-is
+            return shader_content
+
+        # Remove all but the first struct Params definition
+        # Work backwards to maintain character positions
+        cleaned = shader_content
+        for match in reversed(struct_matches[1:]):
+            # Remove the duplicate definition and surrounding whitespace
+            start = match.start()
+            end = match.end()
+
+            # Check for trailing newline/semicolon and remove if present
+            if end < len(cleaned) and cleaned[end] in '\n;':
+                end += 1
+
+            # Also clean up leading whitespace on the line
+            line_start = cleaned.rfind('\n', 0, start) + 1
+            if cleaned[line_start:start].strip() == '':
+                start = line_start
+
+            cleaned = cleaned[:start] + cleaned[end:]
+
+        return cleaned
