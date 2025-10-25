@@ -90,31 +90,39 @@ class ShaderParser:
         Returns:
             Cleaned shader code
         """
-        # Find all struct Params definitions
-        struct_pattern = r'struct\s+Params\s*\{[^}]*\}'
-        struct_matches = list(re.finditer(struct_pattern, shader_content))
+        # Find all struct Params definitions using a more robust pattern
+        # This handles nested braces using a balanced brace matching approach
+        struct_pattern = r'struct\s+Params\s*\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}'
+        struct_matches = list(re.finditer(struct_pattern, shader_content, re.DOTALL))
 
         if len(struct_matches) <= 1:
             # No duplicates, return as-is
             return shader_content
 
         # Remove all but the first struct Params definition
-        # Work backwards to maintain character positions
+        # Work backwards through matches to maintain character positions
         cleaned = shader_content
         for match in reversed(struct_matches[1:]):
-            # Remove the duplicate definition and surrounding whitespace
+            # Get the match bounds
             start = match.start()
             end = match.end()
 
-            # Check for trailing newline/semicolon and remove if present
-            if end < len(cleaned) and cleaned[end] in '\n;':
+            # Clean up trailing whitespace/newlines after the struct
+            while end < len(cleaned) and cleaned[end] in ' \t\n':
                 end += 1
 
-            # Also clean up leading whitespace on the line
-            line_start = cleaned.rfind('\n', 0, start) + 1
+            # Also clean up leading whitespace at the beginning of the line
+            line_start = cleaned.rfind('\n', 0, start)
+            if line_start == -1:
+                line_start = 0
+            else:
+                line_start += 1  # Move past the newline
+
+            # Only remove from line_start if there's only whitespace before struct
             if cleaned[line_start:start].strip() == '':
                 start = line_start
 
+            # Remove the duplicate struct definition
             cleaned = cleaned[:start] + cleaned[end:]
 
         return cleaned
