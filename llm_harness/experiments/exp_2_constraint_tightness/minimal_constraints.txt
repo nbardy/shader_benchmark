@@ -1,0 +1,220 @@
+🔓 WGSL FORMAT - MINIMAL CONSTRAINTS (RELAXED MODE)
+====================================================
+
+You should generate valid WGSL code with relaxed type requirements.
+This version allows more flexibility than strict WGSL.
+
+ENTRYPOINT SIGNATURES (FIXED):
+---------------------------------------------
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    // Vertex shader logic
+    // Generate full-screen triangle
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    // Fragment shader logic
+    // Return color
+}
+
+BIND GROUP STRUCTURE:
+---------------------------------------------
+@group(0) @binding(0) var<uniform> Params: Params;
+
+struct Params {
+    // Your uniform fields (must be float32 aligned)
+}
+
+TYPE REQUIREMENTS (RELAXED):
+---------------------------------------------
+
+✅ FLEXIBLE TYPE SYNTAX:
+- vec2, vec3, vec4 allowed (type parameter optional)
+- vec2<f32> also allowed if you prefer explicit types
+- Use whichever style is clearer
+
+✅ FLEXIBLE SCALAR TYPES:
+- f32, i32, u32 (explicit)
+- float, int, uint (aliases - allowed in relaxed mode)
+- Use whichever is clearer
+
+✅ TYPE INFERENCE:
+- let bindings: Type inference allowed
+  let pos = vec2(0.0, 0.0);  // Type inferred
+- var bindings: Type can be inferred from initializer
+  var color = vec3(1.0, 0.0, 0.0);  // Type inferred
+
+✅ IMPLICIT CONVERSIONS (where safe):
+- Scalar to vector expansion: vec3(0.5) allowed
+- Integer literals: 0, 1, 2 can be used directly
+- Float literals: 0.0, 1.0 are fine
+
+✅ FLEXIBLE ARRAY INDEXING:
+- array[i] allowed where i is any integer type
+- No need for explicit u32() casts
+
+SIMPLIFIED SYNTAX:
+---------------------------------------------
+
+VARIABLES:
+let x = 5.0;              // Immutable, type inferred
+var y = vec2(1.0, 2.0);   // Mutable, type inferred
+var z: vec3 = vec3(0.0);  // Explicit type (optional)
+
+FUNCTIONS:
+fn distance(p: vec2) -> f32 {
+    return length(p);
+}
+
+LOOPS:
+for (var i = 0; i < 100; i = i + 1) {
+    // Loop body
+}
+
+CONDITIONALS:
+if (value > 0.5) {
+    color = vec3(1.0);
+} else {
+    color = vec3(0.0);
+}
+
+COMMON PATTERNS:
+---------------------------------------------
+
+1. COORDINATE NORMALIZATION:
+   let uv = pos.xy / Params.resolution;
+
+2. VECTOR CONSTRUCTION:
+   let color = vec3(uv, 0.5);  // Type inferred as vec3<f32>
+
+3. DISTANCE CALCULATION:
+   let d = length(uv - vec2(0.5));  // Type inference
+
+4. COLOR OUTPUT:
+   return vec4(color, 1.0);
+
+WHAT YOU STILL CANNOT DO:
+---------------------------------------------
+Even in relaxed mode, these remain forbidden:
+
+❌ @vertex, @fragment in function bodies
+❌ gl_* variables (OpenGL syntax)
+❌ #ifdef, #define (no preprocessor in WGSL)
+❌ Missing return statements
+❌ Uninitialized variables
+
+EXAMPLE MINIMAL SHADER (RELAXED):
+---------------------------------------------
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4(x, y, 0.0, 1.0);  // Type inferred
+}
+
+@group(0) @binding(0) var<uniform> Params: Params;
+
+struct Params {
+    resolution: vec2<f32>,  // Explicit type required in structs
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = pos.xy / Params.resolution;  // Type inferred
+    let color = vec3(uv, 0.5);  // Type inferred
+    return vec4(color, 1.0);  // Type inferred
+}
+
+COMPARISON: STRICT vs RELAXED:
+---------------------------------------------
+
+STRICT (baseline):
+  let pos: vec2<f32> = vec2<f32>(0.0, 0.0);
+  let color: vec3<f32> = vec3<f32>(pos, 0.5);
+  var counter: i32 = 0;
+
+RELAXED (this experiment):
+  let pos = vec2(0.0, 0.0);
+  let color = vec3(pos, 0.5);
+  var counter = 0;
+
+Both are valid WGSL, but relaxed is more concise.
+
+KEY DIFFERENCES FROM STRICT MODE:
+---------------------------------------------
+
+1. TYPE PARAMETERS OPTIONAL:
+   Strict: vec2<f32>
+   Relaxed: vec2 (type parameter inferred)
+
+2. TYPE INFERENCE ENCOURAGED:
+   Strict: let x: f32 = 5.0;
+   Relaxed: let x = 5.0;
+
+3. FLEXIBLE INDEXING:
+   Strict: array[u32(i)]
+   Relaxed: array[i]
+
+4. IMPLICIT CONVERSIONS:
+   Strict: vec3<f32>(f32(x), f32(y), 0.5)
+   Relaxed: vec3(x, y, 0.5)
+
+DEBUGGING:
+---------------------------------------------
+If you encounter errors:
+
+1. CHECK TYPE MISMATCHES:
+   Even with relaxed constraints, some type mismatches are errors
+   Example: Cannot mix i32 and f32 in arithmetic without conversion
+
+2. CHECK STRUCT DEFINITIONS:
+   Struct fields still require explicit types
+   Wrong: resolution: vec2,  // Error
+   Right: resolution: vec2<f32>,  // OK
+
+3. CHECK RETURN TYPES:
+   Function return types must still be explicit
+   Wrong: fn test() { return 5; }  // Error, no return type
+   Right: fn test() -> i32 { return 5; }  // OK
+
+OUTPUT FORMAT:
+---------------------------------------------
+<shader file="shader.wgsl">
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4(x, y, 0.0, 1.0);
+}
+
+@group(0) @binding(0) var<uniform> Params: Params;
+
+struct Params {
+    resolution: vec2<f32>,
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    // Your code here with relaxed constraints
+    let uv = pos.xy / Params.resolution;
+    return vec4(uv, 0.5, 1.0);
+}
+</shader>
+
+BENEFITS OF MINIMAL CONSTRAINTS:
+---------------------------------------------
+1. Less verbose code
+2. Faster to write
+3. Easier to read
+4. More familiar syntax (closer to GLSL)
+
+RISKS OF MINIMAL CONSTRAINTS:
+---------------------------------------------
+1. Potential for type inference errors
+2. Less explicit about types (harder to debug)
+3. May hit corner cases where inference fails
+
+This experiment tests whether the benefits outweigh the risks!

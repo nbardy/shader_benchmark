@@ -14,35 +14,43 @@ from prompt_loader import PromptLoader
 from shader_parser import ShaderParser
 from test_runner import TestRunner
 from judge import Judge
+from language_specs import get_language_spec, SUPPORTED_LANGUAGES
 
 async def main():
-    parser = argparse.ArgumentParser(description='LLM Shader Harness')
+    parser = argparse.ArgumentParser(description='LLM Shader Harness - Language-Agnostic Pipeline')
     parser.add_argument('--model', required=True, help='OpenRouter model name')
     parser.add_argument('--prompt-folder', required=True, help='Path to prompt folder')
+    parser.add_argument('--language-spec', default='wgsl',
+                       choices=SUPPORTED_LANGUAGES,
+                       help=f'Shader language specification (default: wgsl). Options: {", ".join(SUPPORTED_LANGUAGES)}')
     parser.add_argument('--judge-model', default='anthropic/claude-3.5-haiku',
                        help='Judge model for evaluation (default: anthropic/claude-3.5-haiku)')
     parser.add_argument('--no-report', action='store_true', help='Skip individual test report generation')
     parser.add_argument('--no-judge', action='store_true', help='Skip judge evaluation (for debugging)')
 
     args = parser.parse_args()
-    
+
+    # Get language specification
+    language_spec = get_language_spec(args.language_spec)
+
     print(f"Running LLM Shader Harness with model: {args.model}")
     print(f"Using prompt folder: {args.prompt_folder}")
-    
+    print(f"Language specification: {language_spec.name} ({language_spec.description})")
+
     # Load prompts
     prompt_loader = PromptLoader()
     request_prompt = prompt_loader.load_request_prompt(args.prompt_folder)
-    
-    # Initialize LLM client
-    llm_client = LLMClient()
-    
+
+    # Initialize LLM client with language specification
+    llm_client = LLMClient(language_spec=language_spec)
+
     # Generate shaders
-    print("Generating shaders with LLM...")
+    print(f"Generating {language_spec.name} shaders with LLM...")
     llm_response = await llm_client.generate_shaders(args.model, request_prompt)
-    
-    # Parse shader files
-    parser = ShaderParser()
-    shaders, main_rs = parser.parse_response(llm_response)
+
+    # Parse shader files with language specification
+    shader_parser = ShaderParser(language_spec=language_spec)
+    shaders, main_rs = shader_parser.parse_response(llm_response)
     
     # Create test folder and run
     test_runner = TestRunner()

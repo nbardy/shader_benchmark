@@ -1,0 +1,99 @@
+experiment_id: exp_5_prompt_engineering
+name: "Prompt Engineering (One-Shot → Few-Shot)"
+
+description: |
+  Tests whether few-shot examples improve LLM output quality more than
+  constraint specification alone.
+
+  This experiment compares the baseline one-shot prompting (single main.rs
+  example) against few-shot prompting (3 diverse shader examples) to measure
+  the value of additional examples versus explicit constraints.
+
+hypothesis: |
+  Few-shot examples will improve success rate by 10-20% by providing
+  diverse patterns for the LLM to learn from. However, this comes at
+  the cost of increased token usage (2-3x) and potential overfitting
+  to example patterns.
+
+  Expect:
+  - Few-shot: Higher success rate (+10-15%)
+  - Few-shot: Better code quality (fewer antipatterns)
+  - Few-shot: 2-3x token usage increase
+  - Few-shot: Potential template copying (less creative solutions)
+
+# Baseline configuration
+language_spec: wgsl
+constraint_level: standard
+validator_strategy: llm_judge
+
+# EXPERIMENTAL VARIATION: Few-shot prompting
+prompt_strategy: few-shot
+
+output_format:
+  resolution: 1600
+  format: png
+  color_space: srgb
+  hdr_enabled: false
+
+# Test on diverse problem types
+problems_to_test:
+  - geometric_cube              # Simple geometry
+  - sphere_wireframe            # Raymarching
+  - torus_knot                  # Parametric surface
+  - mandelbrot_set              # Mathematical iteration
+  - julia_set                   # Complex numbers
+  - sierpinski_triangle         # Recursive fractal
+  - koch_snowflake             # L-system
+  - apollonian_gasket          # Circle packing
+  - hopf_fibration_4d          # 4D projection
+  - voronoi_diagram            # Computational geometry
+
+expected_runtime_hours: 0.7
+
+success_criteria: |
+  Success if:
+  - Success rate improves by ≥10% over baseline
+  - Code diversity maintained (not just copying examples)
+  - Token usage increase is justified by quality gain
+  - Works across different problem categories
+
+  If improvement < 5%: Examples don't help beyond constraints.
+  If improvement > 20%: Examples are critical, constraints secondary.
+
+# File references
+constraint_prompt_path: null
+prompt_template_path: few_shot_prompt_template.txt
+validator_config_path: null
+
+baseline_comparison: baseline
+
+tags:
+  - prompt_variation
+  - few_shot_learning
+  - example_based
+  - phase_3_priority_3
+
+notes: |
+  IMPLEMENTATION REQUIREMENTS:
+
+  1. Create few_shot_prompt_template.txt with 3 diverse examples
+  2. Select examples that demonstrate different patterns:
+     - Example 1: Simple geometry (cube/sphere)
+     - Example 2: Mathematical iteration (Mandelbrot/Julia)
+     - Example 3: Raymarching/SDF (sphere wireframe)
+  3. Track token usage per request for cost analysis
+
+  EXAMPLE SELECTION CRITERIA:
+  - Cover different shader techniques (rasterization, raymarching, iteration)
+  - Show different WGSL patterns (loops, functions, structs)
+  - Demonstrate constraint adherence
+  - Keep total prompt length < 8K tokens
+
+  FEW-SHOT EXAMPLES TO INCLUDE:
+  1. geometric_cube.wgsl - Basic vertex/fragment, simple math
+  2. mandelbrot_set.wgsl - Complex iteration, parameter usage
+  3. sphere_wireframe.wgsl - Raymarching, distance fields
+
+  ZERO-SHOT VARIANT (optional):
+  Also test with NO examples (constraints only) to measure
+  the full spectrum: zero-shot < one-shot < few-shot

@@ -87,19 +87,23 @@ class TestResult:
         
     def _infer_problem_name(self) -> str:
         """Infer the problem name from shader files."""
-        shader_files = list((self.test_dir / 'shaders').glob('*.wgsl')) if (self.test_dir / 'shaders').exists() else []
-        if shader_files:
-            # Extract problem name from shader filename
-            shader_name = shader_files[0].stem
-            # Convert underscores to spaces and title case
-            return shader_name.replace('_', ' ').title()
+        if (self.test_dir / 'shaders').exists():
+            # Look for both .glsl and .wgsl files
+            shader_files = list((self.test_dir / 'shaders').glob('*.glsl')) + list((self.test_dir / 'shaders').glob('*.wgsl'))
+            if shader_files:
+                # Extract problem name from shader filename
+                shader_name = shader_files[0].stem
+                # Convert underscores to spaces and title case
+                return shader_name.replace('_', ' ').title()
         return "Unknown Problem"
-        
+
     def _get_shader_files(self) -> List[str]:
-        """Get list of shader files."""
+        """Get list of shader files (both .glsl and .wgsl)."""
         shader_dir = self.test_dir / 'shaders'
         if shader_dir.exists():
-            return [f.name for f in shader_dir.glob('*.wgsl')]
+            glsl_files = [f.name for f in shader_dir.glob('*.glsl')]
+            wgsl_files = [f.name for f in shader_dir.glob('*.wgsl')]
+            return glsl_files + wgsl_files
         return []
 
 class ReportGenerator:

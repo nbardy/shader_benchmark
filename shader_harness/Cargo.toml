@@ -4,10 +4,10 @@ version     = "0.1.0"
 edition     = "2021"
 
 [dependencies]
-# Core GPU stack  
+# Core GPU stack
 wgpu        = "0.20"        # WebGPU native bindings
 pollster    = "0.3"         # block_on!
-bytemuck    = "1.0"         # cast_slice helper
+bytemuck   = { version = "1.0", features = ["derive"] }  # cast_slice helper + derive macros
 futures-intrusive = "0.5"   # async channels
 # Image dump helpers
 image       = { version = "0.25", default-features = false, features = ["png"] }

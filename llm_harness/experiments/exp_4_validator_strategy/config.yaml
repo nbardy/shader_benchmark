@@ -1,0 +1,96 @@
+experiment_id: exp_4_validator_strategy
+name: "Validator Strategy (LLM Judge → Metric-Based)"
+
+description: |
+  Tests whether LLM judges are biased by visual aesthetics compared to
+  objective metric-based validation (SSIM, MSE).
+
+  This experiment compares LLM evaluation against image similarity metrics
+  computed from reference images to identify potential judge bias and
+  provide ground truth for visual quality scores.
+
+hypothesis: |
+  LLM judges may be biased toward aesthetically pleasing outputs even if
+  mathematically incorrect. Metric-based validation provides objective
+  ground truth for visual quality (S2, S4) but cannot evaluate mathematical
+  correctness (S1, S3, S5).
+
+  Expect:
+  - SSIM/MSE scores more consistent (lower variance)
+  - LLM scores may be higher for "pretty but wrong" outputs
+  - Metrics only applicable to S2/S4 (visual quality)
+
+# Baseline configuration
+language_spec: wgsl
+constraint_level: standard
+prompt_strategy: one-shot
+
+# EXPERIMENTAL VARIATION: Metric-based validation
+validator_strategy: metric_based
+
+output_format:
+  resolution: 1600
+  format: png
+  color_space: srgb
+  hdr_enabled: false
+
+# Test on problems with known reference images
+problems_to_test:
+  - geometric_cube
+  - sphere_wireframe
+  - torus_knot
+  - mandelbrot_set
+  - julia_set
+  - sierpinski_triangle
+  - koch_snowflake
+  - dragon_curve
+
+expected_runtime_hours: 0.5
+
+success_criteria: |
+  Success if:
+  - SSIM metric validation completes for all problems
+  - Identify correlation between LLM S2/S4 and SSIM/MSE
+  - Quantify judge bias (if LLM S2 >> SSIM for incorrect outputs)
+
+  This provides objective ground truth for future judge calibration
+  and identifies when LLM judges are unreliable.
+
+# File references
+constraint_prompt_path: null
+prompt_template_path: null
+validator_config_path: metric_validator_config.json
+
+baseline_comparison: baseline
+
+tags:
+  - validator_variation
+  - metric_validation
+  - ssim
+  - judge_bias_test
+  - phase_3_priority_5
+
+notes: |
+  IMPLEMENTATION REQUIREMENTS:
+
+  1. Create metric_validator.py with SSIM/MSE implementations
+  2. Generate reference images for test problems (human-verified shaders)
+  3. Integrate metric validator into judge.py
+  4. Compare metric scores vs LLM scores for correlation analysis
+
+  METRICS TO IMPLEMENT:
+  - SSIM (Structural Similarity Index) - perceptual similarity
+  - MSE (Mean Squared Error) - pixel-level accuracy
+  - PSNR (Peak Signal-to-Noise Ratio) - optional
+
+  REFERENCE IMAGE GENERATION:
+  Create reference images by running hand-verified correct shaders
+  for each problem. Store in problems/base_set/{problem}/reference.png
+
+  VALIDATION STRATEGY:
+  - S1, S3, S5: Cannot be validated with metrics (require LLM)
+  - S2: SSIM score (structural visual quality)
+  - S4: MSE score (pixel-level accuracy)
+
+  HYBRID APPROACH (future):
+  Use metrics for S2/S4, LLM for S1/S3/S5 to get best of both.

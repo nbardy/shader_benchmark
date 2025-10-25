@@ -1,31 +1,72 @@
-GLSL Shader Programming Guide for Mathematical Visualization
-===========================================================
+WGSL Shader Programming Guide - Patterns for Success
+====================================================
 
-VERSION: OpenGL Core 4.5 / GLSL 450
-TARGET: Mathematical visualization and computational geometry  
-RENDERER: WGPU with GLSL-to-WGSL compilation via Naga
-PIPELINE: GLSL → Naga IR → WGSL → GPU execution
+VERSION: WGSL (WebGPU Shading Language) via WGPU
+RUNTIME: WGPU 0.20 native execution (Metal/Vulkan/DX12)
+HARNESS: Renders fragment-only shaders with automatic vertex pipeline
 
-IMPORTANT: Write ONLY the fragment shader. The vertex shader is automatically generated.
+⚠️ LIMITATION: WGSL forbids dynamic array indexing (GPU parallelism constraint)
+- Cannot do: `array[runtime_variable]`
+- Cannot do: unstructured loops over arrays
+- Solution: Manual expansion patterns (see examples below)
 
-REQUIRED FRAGMENT SHADER STRUCTURE
-=================================
+WHY THIS MATTERS FOR LLM GENERATION
+===================================
+LLMs have minimal WGSL training data (~3 years old, ~2021+) due to:
+✅ WGSL is new (standardized 2023-2024)
+✅ Training data cutoff before wide WGSL adoption
+✅ LLMs naturally default to GLSL patterns they know well
+❌ GLSL patterns FAIL in WGSL (dynamic indexing forbidden)
+❌ This is a hardware-level GPU constraint, not a compiler limitation
+
+CRITICAL INSIGHTS FOR SHADER GENERATION
+========================================
+1. **Dynamic Indexing Problem**: GPU hardware processes pixels in parallel. Each pixel must follow the same code path. Dynamic array indexing breaks this guarantee.
+2. **Manual Expansion Solution**: Expand all array indices at compile-time (use if/else or explicit variable definitions).
+3. **Function Abstraction**: WGSL functions can still take parameters, allowing code reuse without dynamic indexing.
+
+REQUIRED SHADER STRUCTURE
+==========================
+
+All GLSL shaders must use this format with vertex and fragment shader sections:
 
 ```glsl
-#version 450 core
+#version 330 core
+
+// VERTEX SHADER SECTION
+#ifdef VERTEX_SHADER
+
+layout(location = 0) in vec2 position;
+
+void main() {
+    gl_Position = vec4(position, 0.0, 1.0);
+}
+
+#endif  // VERTEX_SHADER
+
+// FRAGMENT SHADER SECTION
+#ifdef FRAGMENT_SHADER
 
 out vec4 fragColor;
 
 void main() {
-    // Convert gl_FragCoord to normalized coordinates [-1, 1]  
-    vec2 uv = (gl_FragCoord.xy - 512.0) / 512.0;  // For 1024x1024 canvas
-    
+    // Convert gl_FragCoord to normalized coordinates
+    vec2 uv = (gl_FragCoord.xy - 512.0) / 512.0;  // For 1024x1024 canvas, center at origin
+
     // Your mathematical visualization code here
     vec3 color = computeVisualization(uv);
-    
+
     fragColor = vec4(color, 1.0);
 }
+
+#endif  // FRAGMENT_SHADER
 ```
+
+⚠️ IMPORTANT REQUIREMENTS:
+- Use `#version 330 core` (compatible with Naga translation)
+- Separate vertex and fragment code with `#ifdef VERTEX_SHADER` / `#ifdef FRAGMENT_SHADER` blocks
+- Write output to `fragColor` in fragment shader
+- Always set alpha = 1.0 (no transparency)
 
 SUPPORTED FEATURES (vs WGSL)
 ===========================

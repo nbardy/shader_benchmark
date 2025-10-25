@@ -1,0 +1,83 @@
+experiment_id: exp_3_output_format
+name: "Output Format (1600x → 512x Resolution)"
+
+description: |
+  Tests whether higher resolution improves visual quality scores (S2, S4)
+  without affecting mathematical accuracy scores (S1, S3, S5).
+
+  This experiment compares 512x512 output (faster rendering, lower quality)
+  against the baseline 1600x1600 to measure the impact of resolution on
+  both LLM judge evaluation and objective quality metrics.
+
+hypothesis: |
+  Resolution affects visual quality scores (S2, S4) but not mathematical
+  accuracy scores (S1, S3, S5). Expect:
+  - 512x: S2/S4 scores 10-15 points lower, S1/S3/S5 unchanged
+  - Render time 16x faster (resolution squared)
+  - No change in compile rates or code quality
+
+# Baseline configuration
+language_spec: wgsl
+constraint_level: standard
+prompt_strategy: one-shot
+validator_strategy: llm_judge
+
+# EXPERIMENTAL VARIATION: Lower resolution
+output_format:
+  resolution: 512
+  format: png
+  color_space: srgb
+  hdr_enabled: false
+
+# Test on visually complex problems
+problems_to_test:
+  - geometric_cube
+  - sphere_wireframe
+  - torus_knot
+  - mandelbrot_set
+  - julia_set
+  - sierpinski_triangle
+  - koch_snowflake
+  - apollonian_gasket
+  - archimedean_spiral_galaxy
+  - voronoi_diagram
+
+expected_runtime_hours: 0.3
+
+success_criteria: |
+  Success if:
+  - S1, S3, S5 scores within ±3 points of baseline (math unchanged)
+  - S2, S4 scores 10-20 points lower (visual quality degraded)
+  - Render time reduced by 10-15x
+  - Compile rate unchanged
+
+  This validates that resolution is a performance/quality tradeoff
+  without affecting correctness.
+
+# File references
+constraint_prompt_path: null
+prompt_template_path: null
+validator_config_path: null
+
+baseline_comparison: baseline
+
+tags:
+  - output_variation
+  - resolution
+  - performance_optimization
+  - phase_3_priority_4
+
+notes: |
+  IMPLEMENTATION REQUIREMENTS:
+
+  1. Shader harness already supports --size flag
+  2. Benchmark harness needs to pass resolution to test_runner
+  3. Judge should receive resolution context for fair evaluation
+
+  ADDITIONAL TEST CONFIGURATIONS:
+  - 512x512: Fast iteration, low quality
+  - 1600x1600: Baseline (current)
+  - 4096x4096: High quality, slow (optional extended test)
+
+  This is a "quick win" experiment - minimal code changes,
+  provides performance/quality tradeoff data for optimization.

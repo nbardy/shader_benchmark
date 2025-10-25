@@ -1,0 +1,86 @@
+experiment_id: exp_2_constraint_tightness
+name: "Constraint Tightness (Standard → Minimal)"
+
+description: |
+  Tests whether explicit type constraints reduce LLM errors compared to
+  minimal constraint specification.
+
+  This experiment compares the standard constraint-heavy prompting against
+  a minimal constraint version that allows implicit conversions and looser
+  type specifications to measure the value of constraint enforcement.
+
+hypothesis: |
+  Explicit type constraints prevent common errors and improve compile rates.
+  Relaxing constraints should decrease success rate by 10-20% as LLMs
+  make more type errors and implicit conversion mistakes.
+
+# Baseline language
+language_spec: wgsl
+
+# EXPERIMENTAL VARIATION: Relaxed constraints
+constraint_level: minimal
+
+# All other parameters match baseline
+prompt_strategy: one-shot
+validator_strategy: llm_judge
+
+output_format:
+  resolution: 1600
+  format: png
+  color_space: srgb
+  hdr_enabled: false
+
+# Test on subset with known type complexity
+problems_to_test:
+  - geometric_cube
+  - sphere_wireframe
+  - torus_knot
+  - mandelbrot_set
+  - julia_set
+  - sierpinski_triangle
+  - koch_snowflake
+  - dragon_curve
+  - hilbert_curve
+  - apollonian_gasket
+
+expected_runtime_hours: 0.6
+
+success_criteria: |
+  Success if:
+  - Compile rate ≥ 40% (expect 10-20% drop from baseline)
+  - Identify specific error patterns from relaxed constraints
+  - Quantify which constraint violations are most common
+
+  If minimal ≈ standard: Constraints may be unnecessary overhead.
+  If minimal << standard: Validates constraint-based approach.
+
+# File references
+constraint_prompt_path: minimal_constraints.txt
+prompt_template_path: null
+validator_config_path: null
+
+baseline_comparison: baseline
+
+tags:
+  - constraint_variation
+  - type_system
+  - error_analysis
+  - phase_3_priority_2
+
+notes: |
+  IMPLEMENTATION REQUIREMENTS:
+
+  1. Create minimal_constraints.txt with relaxed type rules
+  2. Allow implicit type conversions (vec2 instead of vec2<f32>)
+  3. Allow type inference for local variables
+  4. Allow flexible array indexing
+
+  This experiment validates whether the verbose type annotations
+  in WGSL_CONSTRAINT_SPEC.md actually prevent errors or just
+  add cognitive load.
+
+  MINIMAL CONSTRAINTS TO TEST:
+  - Allow vec2, vec3, vec4 (without <f32>)
+  - Allow float, int (instead of f32, i32)
+  - Allow implicit conversions
+  - Remove address space requirements for local vars

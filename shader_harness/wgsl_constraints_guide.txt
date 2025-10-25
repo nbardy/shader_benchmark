@@ -1,11 +1,23 @@
 WGPU+WGSL Programming Guide - Expected Output Format
 ===================================================
 
+COMPILER STACK:
+- Language: WGSL (WebGPU Shading Language) - W3C standard, ~3 years old
+- Runtime: WGPU 0.20 (native WebGPU implementation for Rust)
+- Validator: naga (WGSL validator built into WGPU - validates BEFORE compilation)
+- Target: Native GPU code (Metal on macOS, Vulkan on Linux, DX12 on Windows)
+
 VERSION: WGSL (WebGPU Shading Language) + WGPU Runtime
 TARGET: Mathematical visualization shaders that WORK with WGPU
 EXPECTED OUTPUT: Valid WGSL that compiles and renders successfully
 
 ⚠️ CRITICAL: Generate EXACTLY this format - WGPU enforces strict validation rules
+
+⚠️ IMPORTANT: WGSL is very new (~2021) with limited training data
+- Most GPU code in training data is GLSL (which ALLOWS dynamic indexing)
+- WGSL is much more restrictive due to GPU parallelism requirements
+- This constraint is HARDWARE-LEVEL, not a compiler bug
+- You will NOT find similar patterns in GLSL or CPU code
 
 ⚠️ WGSL FORBIDDEN SYNTAX - WILL CAUSE VALIDATION ERRORS
 ========================================================

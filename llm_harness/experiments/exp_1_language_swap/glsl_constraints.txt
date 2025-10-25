@@ -1,0 +1,237 @@
+🎨 SHADERTOY GLSL FORMAT - STANDARD SPECIFICATION
+==================================================
+
+You MUST generate valid GLSL code compatible with Shadertoy format.
+This is NOT a negotiable suggestion—it is the mandatory format.
+
+ENTRYPOINT SIGNATURE (DO NOT MODIFY):
+---------------------------------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    // Your fragment shader logic here
+    // MUST set fragColor to vec4 color output
+    // fragCoord provides pixel coordinates
+}
+
+This function signature is FIXED. Do not modify the signature or create a main() function.
+
+AVAILABLE UNIFORMS:
+---------------------------------------------
+The following uniforms are available for use:
+
+uniform vec2 iResolution;   // Viewport resolution (in pixels)
+                            // Example: vec2(1600.0, 1600.0)
+
+uniform float iTime;        // Shader playback time (in seconds)
+                            // NOTE: Currently fixed at 0.0 in harness
+                            // Do NOT depend on animated time values
+
+COORDINATE SYSTEM:
+---------------------------------------------
+- fragCoord: Pixel coordinates, bottom-left is (0,0)
+- iResolution: Full viewport size
+- Standard normalization: vec2 uv = fragCoord / iResolution.xy;
+- Centered coordinates: vec2 centered = (uv - 0.5) * 2.0;
+
+TYPE SYSTEM:
+---------------------------------------------
+GLSL provides implicit type conversions and flexible typing:
+
+✅ ALLOWED: vec2, vec3, vec4 (no type parameters needed)
+✅ ALLOWED: float, int (standard GLSL types)
+✅ ALLOWED: Implicit conversions (float to vec3, etc.)
+✅ ALLOWED: Swizzling (vec.xyz, vec.rgb, etc.)
+
+Examples:
+  vec2 pos = vec2(0.5);              // Scalar expansion OK
+  vec3 color = vec3(pos, 0.0);       // Mixed construction OK
+  float x = color.r;                  // Swizzle access OK
+
+COMMON PATTERNS:
+---------------------------------------------
+
+1. NORMALIZE COORDINATES:
+   vec2 uv = fragCoord / iResolution.xy;
+   // uv is now [0,1] range
+
+2. CENTER AND ASPECT CORRECT:
+   vec2 uv = fragCoord / iResolution.xy;
+   uv = (uv - 0.5) * 2.0;  // Range [-1, 1]
+   float aspect = iResolution.x / iResolution.y;
+   uv.x *= aspect;  // Correct for aspect ratio
+
+3. DISTANCE CALCULATIONS:
+   vec2 p = uv - vec2(0.5);
+   float d = length(p);
+
+4. COLOR OUTPUT:
+   fragColor = vec4(color, 1.0);  // RGB + alpha
+   // or
+   fragColor = vec4(vec3(grayscale), 1.0);
+
+MATHEMATICAL FUNCTIONS:
+---------------------------------------------
+Standard GLSL math functions available:
+
+Trigonometry: sin, cos, tan, asin, acos, atan
+Powers: pow, exp, exp2, log, log2, sqrt
+Common: abs, sign, floor, ceil, fract, mod, min, max
+Geometric: length, distance, dot, cross, normalize
+Interpolation: mix, step, smoothstep
+
+Example:
+  float angle = atan(uv.y, uv.x);
+  float radius = length(uv);
+  vec3 color = vec3(sin(angle), cos(angle), radius);
+
+CONTROL FLOW:
+---------------------------------------------
+
+LOOPS:
+  for (int i = 0; i < 100; i++) {
+      // iteration logic
+      if (condition) break;
+  }
+
+CONDITIONALS:
+  if (value > threshold) {
+      color = vec3(1.0);
+  } else {
+      color = vec3(0.0);
+  }
+
+FUNCTIONS:
+  float sdf_circle(vec2 p, float radius) {
+      return length(p) - radius;
+  }
+
+SYNTAX YOU MUST NOT USE:
+---------------------------------------------
+❌ main() function (use mainImage instead)
+❌ WGSL syntax (@vertex, @fragment, etc.)
+❌ Explicit type parameters (vec2<f32> is WGSL, not GLSL)
+❌ @group, @binding decorators (WGSL-specific)
+❌ var<uniform> declarations (use uniform keyword)
+❌ fn keyword (use function type instead)
+❌ Address spaces (function, private, etc.)
+
+EXAMPLE MINIMAL SHADER:
+---------------------------------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    // Normalize coordinates to [0, 1]
+    vec2 uv = fragCoord / iResolution.xy;
+
+    // Simple gradient
+    vec3 color = vec3(uv.x, uv.y, 0.5);
+
+    // Output
+    fragColor = vec4(color, 1.0);
+}
+
+EXAMPLE MATHEMATICAL SHADER (Mandelbrot Set):
+---------------------------------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = fragCoord / iResolution.xy;
+    vec2 c = (uv - vec2(0.5, 0.5)) * vec2(3.5, 2.0);
+
+    vec2 z = vec2(0.0);
+    int iterations = 0;
+
+    for (int i = 0; i < 100; i++) {
+        if (dot(z, z) > 4.0) break;
+        z = vec2(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y) + c;
+        iterations = i;
+    }
+
+    float value = float(iterations) / 100.0;
+    fragColor = vec4(vec3(value), 1.0);
+}
+
+EXAMPLE 3D SHADER (Sphere Raymarching):
+---------------------------------------------
+float sdf_sphere(vec3 p, float radius) {
+    return length(p) - radius;
+}
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord / iResolution.xy - vec2(0.5)) * 2.0;
+    float aspect = iResolution.x / iResolution.y;
+    uv.x *= aspect;
+
+    // Ray setup
+    vec3 ro = vec3(0.0, 0.0, -3.0);  // Ray origin
+    vec3 rd = normalize(vec3(uv, 1.0));  // Ray direction
+
+    // Raymarch
+    float t = 0.0;
+    for (int i = 0; i < 64; i++) {
+        vec3 p = ro + rd * t;
+        float d = sdf_sphere(p, 1.0);
+        if (d < 0.01) {
+            fragColor = vec4(vec3(1.0), 1.0);
+            return;
+        }
+        t += d;
+        if (t > 10.0) break;
+    }
+
+    // Miss
+    fragColor = vec4(vec3(0.0), 1.0);
+}
+
+DEBUGGING TIPS:
+---------------------------------------------
+1. Output intermediate values as colors:
+   fragColor = vec4(vec3(someValue), 1.0);
+
+2. Visualize coordinates:
+   fragColor = vec4(uv, 0.0, 1.0);  // Red = x, Green = y
+
+3. Check ranges:
+   float clamped = clamp(value, 0.0, 1.0);
+
+4. Use step functions for boolean viz:
+   float isInside = step(distance, radius);
+
+COMMON PITFALLS:
+---------------------------------------------
+1. ❌ Using WGSL syntax accidentally
+   Wrong: vec2<f32> pos
+   Right: vec2 pos
+
+2. ❌ Forgetting to set fragColor
+   Wrong: vec3 color = ...;
+   Right: fragColor = vec4(color, 1.0);
+
+3. ❌ Incorrect coordinate normalization
+   Wrong: vec2 uv = fragCoord * iResolution.xy;
+   Right: vec2 uv = fragCoord / iResolution.xy;
+
+4. ❌ Integer division issues
+   Wrong: float ratio = 1 / 2;  // Gives 0
+   Right: float ratio = 1.0 / 2.0;  // Gives 0.5
+
+OUTPUT FORMAT:
+---------------------------------------------
+Wrap your complete GLSL shader code in XML tags:
+
+<shader file="shader.glsl">
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    // Your shader code here
+    fragColor = vec4(color, 1.0);
+}
+</shader>
+
+IMPORTANT: Output ONLY the mainImage function and any helper functions.
+Do NOT include main(), version directives, or uniform declarations.
+The harness will wrap your code with necessary boilerplate.
+
+VERIFICATION CHECKLIST:
+---------------------------------------------
+Before submitting, verify:
+[ ] Uses mainImage(out vec4 fragColor, in vec2 fragCoord) signature
+[ ] Sets fragColor in all code paths
+[ ] Uses GLSL syntax (not WGSL)
+[ ] Normalizes coordinates correctly
+[ ] Handles aspect ratio if needed
+[ ] Uses only available uniforms (iResolution, iTime)
+[ ] Wrapped in <shader file="shader.glsl"> tags

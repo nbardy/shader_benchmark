@@ -1,0 +1,79 @@
+experiment_id: exp_1_language_swap
+name: "Language Swap (WGSL → GLSL)"
+
+description: |
+  Tests whether constraint-based WGSL prompting outperforms
+  training-data-dependent GLSL generation.
+
+  This experiment compares WGSL (3 years of training data, explicit constraints)
+  against GLSL (20+ years of training data, looser constraints) to determine
+  whether the explicit type system and constraint specification provides
+  sufficient advantage to overcome the training data gap.
+
+hypothesis: |
+  WGSL with explicit constraints will perform comparably to GLSL despite
+  having significantly less training data. If GLSL substantially outperforms
+  WGSL, it suggests training data volume matters more than constraint clarity.
+  If WGSL ≥ GLSL, it validates the constraint-based approach.
+
+# EXPERIMENTAL VARIATION: Language changed to GLSL
+language_spec: glsl
+
+# All other parameters match baseline
+constraint_level: standard
+prompt_strategy: one-shot
+validator_strategy: llm_judge
+
+output_format:
+  resolution: 1600
+  format: png
+  color_space: srgb
+  hdr_enabled: false
+
+# Test on representative subset for quick validation
+problems_to_test:
+  - ackermann_function_growth
+  - al_khwarizmi_geometric_algebra
+  - apollonian_gasket
+  - apollonius_conic_sections
+  - archimedean_spiral_galaxy
+  - geometric_cube
+  - sphere_wireframe
+  - torus_knot
+  - mandelbrot_set
+  - julia_set
+
+expected_runtime_hours: 0.8
+
+success_criteria: |
+  Success if:
+  - Compile rate ≥ 30% (expect lower due to different syntax requirements)
+  - For successful compiles, avg score ≥ 200/500
+  - S1 (mathematical accuracy) similar to WGSL baseline
+
+  If success_rate < WGSL baseline by >20%, confirms training data hypothesis.
+  If success_rate ≈ WGSL baseline, confirms constraint effectiveness.
+
+# File references (relative to this config file)
+constraint_prompt_path: glsl_constraints.txt
+prompt_template_path: null  # Will be created as prompt_template_glsl.txt in parent dir
+validator_config_path: null
+
+baseline_comparison: baseline
+
+tags:
+  - language_variation
+  - glsl
+  - training_data_test
+  - phase_3_priority_1
+
+notes: |
+  IMPLEMENTATION REQUIREMENTS:
+
+  1. Shader harness must support GLSL compilation (add shaderc dependency)
+  2. Create GLSL-specific prompt template (Shadertoy format)
+  3. Parser must wrap GLSL mainImage() in full shader boilerplate
+  4. Compiler must detect .glsl extension and use SPIR-V compilation path
+
+  This experiment is highest priority as it validates the core hypothesis
+  that motivated the WGSL migration.

@@ -1,0 +1,27 @@
+{
+  "metrics": {
+    "ssim": {
+      "enabled": true,
+      "data_range": 255,
+      "channel_axis": 2,
+      "description": "Structural Similarity Index - perceptual quality"
+    },
+    "mse": {
+      "enabled": true,
+      "description": "Mean Squared Error - pixel-level accuracy"
+    },
+    "psnr": {
+      "enabled": false,
+      "description": "Peak Signal-to-Noise Ratio - optional metric"
+    }
+  },
+  "reference_images_path": "../../../problems/base_set/{problem_name}/reference.png",
+  "score_mapping": {
+    "s1": "none",
+    "s2": "ssim",
+    "s3": "none",
+    "s4": "mse",
+    "s5": "none"
+  },
+  "notes": "Metrics can only evaluate visual quality (S2, S4). Mathematical correctness (S1, S3, S5) requires LLM judge."
+}

@@ -1,10 +1,22 @@
 use clap::Parser;
 use std::{borrow::Cow, fs, path::PathBuf, time::Instant};
 
-/// Render a WGSL shader off-screen, save PNG + timings.
+// GPU-aligned struct for uniform buffer
+// CRITICAL: Matches WGSL_CONSTRAINT_SPEC.md section 2.3 contract:
+//   @group(0) @binding(0) var<uniform> Params: Params;
+//   struct Params { resolution: vec2<f32>, ... }
+#[repr(C)]
+#[derive(Copy, Clone, Debug, bytemuck::Pod, bytemuck::Zeroable)]
+struct Params {
+    resolution: [f32; 2],
+    _padding: [f32; 2],  // Align to 16 bytes (vec4 alignment requirement)
+}
+
+/// Render WGSL shaders off-screen, save PNG + timings.
+/// WGSL only: locked format for deterministic LLM generation.
 #[derive(Parser)]
 struct Opts {
-    /// WGSL shader file (expects `@vertex main_vs` & `@fragment main_fs`)
+    /// Shader file (.wgsl)
     #[arg(short, long)]
     shader: PathBuf,
     /// PNG file to write
@@ -18,7 +30,7 @@ struct Opts {
 fn main() {
     // --- parse CLI ---------------------------------------------------------
     let opts = Opts::parse();
-    let code = fs::read_to_string(&opts.shader)
+    let shader_code = fs::read_to_string(&opts.shader)
         .expect("failed to read shader file");
 
     // --- init GPU ----------------------------------------------------------
@@ -40,13 +52,61 @@ fn main() {
     // --- resources ---------------------------------------------------------
     let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
         label: Some("user_shader"),
-        source: wgpu::ShaderSource::Wgsl(Cow::Owned(code)),
+        source: wgpu::ShaderSource::Wgsl(Cow::Owned(shader_code)),
     });
 
-    // full-screen triangle – no vertex buffer
+    // --- uniform buffer setup ----------------------------------------------
+    // Create uniform buffer for Params struct (resolution, etc.)
+    // WGSL contract: @group(0) @binding(0) var<uniform> Params: Params;
+    let params = Params {
+        resolution: [opts.size as f32, opts.size as f32],
+        _padding: [0.0, 0.0],
+    };
+
+    let uniform_buffer = device.create_buffer(&wgpu::BufferDescriptor {
+        label: Some("uniform_buffer"),
+        size: std::mem::size_of::<Params>() as u64,
+        usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
+        mapped_at_creation: false,
+    });
+
+    // Write initial resolution to uniform buffer
+    queue.write_buffer(&uniform_buffer, 0, bytemuck::cast_slice(&[params]));
+
+    // Create bind group layout matching shader expectations
+    // Matches WGSL: @group(0) @binding(0) var<uniform> Params: Params;
+    let bind_group_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+        label: Some("uniform_bind_group_layout"),
+        entries: &[
+            wgpu::BindGroupLayoutEntry {
+                binding: 0,
+                visibility: wgpu::ShaderStages::FRAGMENT,
+                ty: wgpu::BindingType::Buffer {
+                    ty: wgpu::BufferBindingType::Uniform,
+                    has_dynamic_offset: false,
+                    min_binding_size: None,
+                },
+                count: None,
+            }
+        ],
+    });
+
+    // Create bind group binding the uniform buffer
+    let bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
+        label: Some("uniform_bind_group"),
+        layout: &bind_group_layout,
+        entries: &[
+            wgpu::BindGroupEntry {
+                binding: 0,
+                resource: uniform_buffer.as_entire_binding(),
+            }
+        ],
+    });
+
+    // full-screen triangle – no vertex buffer, single uniform bind group
     let pipeline_layout =
         device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-            bind_group_layouts: &[],
+            bind_group_layouts: &[&bind_group_layout],
             push_constant_ranges: &[],
             label: None,
         });
@@ -57,13 +117,13 @@ fn main() {
             layout: Some(&pipeline_layout),
             vertex: wgpu::VertexState {
                 module: &shader,
-                entry_point: "main_vs",
+                entry_point: "vs_main",
                 buffers: &[],
                 compilation_options: Default::default(),
             },
             fragment: Some(wgpu::FragmentState {
                 module: &shader,
-                entry_point: "main_fs",
+                entry_point: "fs_main",
                 targets: &[Some(wgpu::ColorTargetState {
                     format: wgpu::TextureFormat::Rgba8UnormSrgb,
                     blend: None,
@@ -77,6 +137,17 @@ fn main() {
             multiview: None,
         });
 
+    run_render_pass(&device, &queue, render_pipeline, &bind_group, &opts, now);
+}
+
+fn run_render_pass(
+    device: &wgpu::Device,
+    queue: &wgpu::Queue,
+    render_pipeline: wgpu::RenderPipeline,
+    bind_group: &wgpu::BindGroup,
+    opts: &Opts,
+    now: Instant,
+) {
     // output texture → buffer
     let extent = wgpu::Extent3d {
         width : opts.size,
@@ -134,6 +205,8 @@ fn main() {
                 timestamp_writes: None,
             });
         pass.set_pipeline(&render_pipeline);
+        // Bind uniform buffer at @group(0) for shader access to resolution
+        pass.set_bind_group(0, bind_group, &[]);
         pass.draw(0..3, 0..1); // full-screen triangle
     }
 
@@ -186,7 +259,7 @@ fn main() {
         buffer_slice.map_async(wgpu::MapMode::Read, move |v| sender.send(v).unwrap());
         device.poll(wgpu::Maintain::wait()).panic_on_timeout();
         receiver.receive().await.unwrap().unwrap();
-        
+
         let data = buffer_slice.get_mapped_range();
         let ts: &[u64] = bytemuck::cast_slice(&data);
         let period = queue.get_timestamp_period();

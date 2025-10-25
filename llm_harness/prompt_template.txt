@@ -1,25 +1,108 @@
-⚠️ VIEWABILITY REQUIREMENTS:
-- Scale elements to 0.3-0.8 of canvas size
-- Use lineWidth 0.003-0.01 for wireframes (not 0.0003!)
-- Normalize coordinates properly: `uv = (pos.xy - canvasSize/2.0) / (canvasSize/2.0)`
-- Ensure shapes are centered and visible
+🔒 WGSL FORMAT LOCK - STRICT ABI CONTRACT
+============================================
 
-⚠️ DISTANCE FIELD RENDERING:
-- Calculate distance to ALL edges/shapes in every pixel (no conditionals)
-- Apply visual effects (dashing, colors) AFTER distance calculation
-- Never use `if` statements that skip distance calculations
-- Example: `minDist = min(minDist, line_distance(uv, p0, p1));` for ALL edges
+You MUST generate ONLY valid WGSL code. This is NOT a negotiable suggestion—it is the mandatory format.
 
+ENTRYPOINT SIGNATURES (DO NOT MODIFY):
+---------------------------------------------
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    // You may customize the vertex logic, but signature is fixed.
+    // Full-screen triangle generation expected.
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    // Your fragment logic here
+    // MUST return vec4<f32>
+}
+
+BIND GROUP CONTRACT:
+---------------------------------------------
+All uniforms must use this structure (modify contents, not layout):
+
+@group(0) @binding(0) var<uniform> Params: Params;
+
+struct Params {
+    // Add your float32 fields here
+    // Example:
+    // time: f32,
+    // aspect: f32,
+    // resolution: vec2<f32>,
+};
+
+TYPE REQUIREMENTS:
+---------------------------------------------
+- Use explicit types: vec2<f32>, vec3<f32>, vec4<f32>, NOT vec2, vec3, vec4
+- Use i32, u32, f32 for scalars (NOT int, uint, float)
+- NO implicit type conversions
+- Array indexing ONLY with integer expressions: array[u32(expr)]
+- Use var<function> for function-local variables
+- Use let for immutable bindings
+
+SYNTAX YOU MUST NOT USE:
+---------------------------------------------
+❌ @vertex, @fragment in function bodies (only as attributes)
+❌ var without address space (e.g., var x: f32; is WRONG)
+❌ Implicit casts (e.g., f32(1) where 1 is i32)
+❌ gl_* variables
+❌ #ifdef, #define, or any preprocessor
+❌ uniform keyword (use @group/@binding instead)
+❌ @attribute decorators inside structs (decoration goes on struct field)
+
+EXAMPLE MINIMAL SHADER:
+---------------------------------------------
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+@group(0) @binding(0) var<uniform> Params: Params;
+
+struct Params {
+    resolution: vec2<f32>,
+};
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = pos.xy / Params.resolution;
+    return vec4<f32>(uv, 0.5, 1.0);
+}
+
+PROBLEM CONTEXT:
+---------------------------------------------
 {problem_prompt}
 
-TECHNICAL CONSTRAINTS:
+REFERENCE EXAMPLES:
+---------------------------------------------
 {shader_harness_example}
 
 OUTPUT FORMAT:
-<shader file="filename.wgsl">
-...shader code...
-</shader>
+---------------------------------------------
+<shader file="shader.wgsl">
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
 
-<main_rs>
-...main.rs code...
-</main_rs>
+@group(0) @binding(0) var<uniform> Params: Params;
+
+struct Params {
+    // Your fields here
+};
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    // Your fragment code here
+}
+</shader>

@@ -1,0 +1,1011 @@
+================================================================================
+                    SHADERTOY-COMPATIBLE GLSL SHADER GUIDE
+              For LLM-Based Shader Generation in the Benchmark Harness
+================================================================================
+
+This guide provides comprehensive examples and patterns for generating
+Shadertoy-compatible GLSL fragment shaders. The system compiles shaders to
+SPIR-V using shaderc and renders them with WGPU.
+
+================================================================================
+TABLE OF CONTENTS
+================================================================================
+
+1. SHADERTOY FORMAT OVERVIEW
+2. FUNCTION SIGNATURE AND UNIFORMS
+3. COORDINATE SYSTEMS AND CONVERSIONS
+4. SIMPLE GEOMETRIC EXAMPLES
+5. COLOR GRADIENTS AND PATTERNS
+6. MATHEMATICAL VISUALIZATIONS
+7. 3D RENDERING TECHNIQUES
+8. RAYMARCHING AND SIGNED DISTANCE FUNCTIONS
+9. CONSTRAINTS AND BEST PRACTICES
+10. COMMON PITFALLS AND SOLUTIONS
+11. COMPLETE EXAMPLE SHADERS
+
+================================================================================
+1. SHADERTOY FORMAT OVERVIEW
+================================================================================
+
+Shadertoy is a popular online shader editor that uses a specific format:
+- User provides ONLY a mainImage() function
+- The harness provides uniforms and wraps it with vertex/fragment shader setup
+- Output is a single rendered image (no animation support yet)
+
+KEY DIFFERENCES FROM STANDARD GLSL:
+- No main() function (use mainImage instead)
+- No manual uniform declarations for iResolution (provided automatically)
+- No texture sampling or external inputs (pure mathematical generation)
+- Coordinate system starts at bottom-left (OpenGL standard)
+
+COMPILATION PIPELINE:
+User GLSL → Wrapped with harness code → Compiled to SPIR-V → Rendered with WGPU
+
+================================================================================
+2. FUNCTION SIGNATURE AND UNIFORMS
+================================================================================
+
+REQUIRED FUNCTION SIGNATURE:
+----------------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+
+PARAMETERS:
+- fragColor: Output color (RGBA in range [0, 1])
+- fragCoord: Fragment coordinate in pixel space
+
+AVAILABLE UNIFORMS:
+-------------------
+const vec2 iResolution;  // Canvas size in pixels (e.g., vec2(1024.0, 1024.0))
+
+CURRENTLY NOT AVAILABLE:
+- iTime (time uniform) - Not yet implemented
+- iMouse (mouse position) - Not available in off-screen renderer
+- iChannel* (texture samplers) - Not supported
+
+EXAMPLE MINIMAL SHADER:
+-----------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    // Simple red output
+    fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}
+
+================================================================================
+3. COORDINATE SYSTEMS AND CONVERSIONS
+================================================================================
+
+FRAGMENT COORDINATE SYSTEM:
+---------------------------
+- fragCoord ranges from (0, 0) at bottom-left to (width, height) at top-right
+- Origin is at BOTTOM-LEFT corner (OpenGL standard)
+- Values are in PIXELS, not normalized
+
+NORMALIZED COORDINATES [-1, 1]:
+-------------------------------
+// Centered at origin, maintaining aspect ratio
+vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+// Result: square canvas maps to [-0.5, 0.5] vertically, proportional horizontally
+
+NORMALIZED COORDINATES [0, 1]:
+------------------------------
+// Simple normalization
+vec2 uv = fragCoord / iResolution.xy;
+// Result: (0, 0) at bottom-left, (1, 1) at top-right
+
+CENTERED COORDINATES (FOR SQUARE CANVAS):
+-----------------------------------------
+// Assumes square canvas (e.g., 1024x1024)
+vec2 uv = (fragCoord.xy - 512.0) / 512.0;
+// Result: [-1, 1] range, centered at origin
+
+ASPECT-CORRECTED COORDINATES:
+------------------------------
+vec2 uv = fragCoord / iResolution.xy;  // [0, 1]
+uv = uv * 2.0 - 1.0;                   // [-1, 1]
+uv.x *= iResolution.x / iResolution.y; // Correct aspect ratio
+
+================================================================================
+4. SIMPLE GEOMETRIC EXAMPLES
+================================================================================
+
+EXAMPLE: SOLID CIRCLE
+----------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    float radius = 0.3;
+    float dist = length(uv);
+
+    vec3 color = dist < radius ? vec3(0.0, 0.5, 1.0) : vec3(0.1);
+    fragColor = vec4(color, 1.0);
+}
+
+EXAMPLE: ANTI-ALIASED CIRCLE
+-----------------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    float radius = 0.3;
+    float dist = length(uv);
+
+    // Smooth edge using smoothstep
+    float circle = 1.0 - smoothstep(radius - 0.01, radius + 0.01, dist);
+
+    vec3 circleColor = vec3(0.0, 0.5, 1.0);
+    vec3 bgColor = vec3(0.1);
+    vec3 color = mix(bgColor, circleColor, circle);
+
+    fragColor = vec4(color, 1.0);
+}
+
+EXAMPLE: RECTANGLE
+------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    vec2 size = vec2(0.4, 0.2);
+    vec2 d = abs(uv) - size;
+    float rect = max(d.x, d.y);
+
+    vec3 color = rect < 0.0 ? vec3(1.0, 0.5, 0.0) : vec3(0.1);
+    fragColor = vec4(color, 1.0);
+}
+
+EXAMPLE: GRID PATTERN
+---------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = fragCoord / 100.0; // Scale for grid size
+
+    // Grid lines
+    vec2 grid = fract(uv);
+    float lineWidth = 0.05;
+    float gridMask = step(lineWidth, grid.x) * step(lineWidth, grid.y);
+
+    vec3 color = mix(vec3(0.2), vec3(0.9), gridMask);
+    fragColor = vec4(color, 1.0);
+}
+
+EXAMPLE: LINE DRAWING
+---------------------
+float distanceToLine(vec2 p, vec2 a, vec2 b) {
+    vec2 pa = p - a;
+    vec2 ba = b - a;
+    float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    vec2 p1 = vec2(-0.3, -0.2);
+    vec2 p2 = vec2(0.4, 0.3);
+
+    float dist = distanceToLine(uv, p1, p2);
+    float lineWidth = 0.005;
+
+    float line = 1.0 - smoothstep(0.0, lineWidth, dist);
+    vec3 color = mix(vec3(0.1), vec3(0.0, 0.8, 1.0), line);
+
+    fragColor = vec4(color, 1.0);
+}
+
+================================================================================
+5. COLOR GRADIENTS AND PATTERNS
+================================================================================
+
+EXAMPLE: LINEAR GRADIENT
+-------------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = fragCoord / iResolution.xy;
+
+    vec3 color1 = vec3(1.0, 0.2, 0.3);
+    vec3 color2 = vec3(0.2, 0.3, 1.0);
+    vec3 color = mix(color1, color2, uv.x);
+
+    fragColor = vec4(color, 1.0);
+}
+
+EXAMPLE: RADIAL GRADIENT
+-------------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    float dist = length(uv);
+    vec3 color = mix(vec3(1.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0), dist);
+
+    fragColor = vec4(color, 1.0);
+}
+
+EXAMPLE: HSV COLOR WHEEL
+-------------------------
+vec3 hsv2rgb(vec3 c) {
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    float angle = atan(uv.y, uv.x);
+    float hue = angle / (2.0 * 3.14159) + 0.5;
+    float dist = length(uv);
+
+    vec3 color = hsv2rgb(vec3(hue, 1.0, 1.0 - smoothstep(0.3, 0.4, dist)));
+    fragColor = vec4(color, 1.0);
+}
+
+EXAMPLE: CHECKERBOARD PATTERN
+------------------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = floor(fragCoord / 50.0);
+    float checker = mod(uv.x + uv.y, 2.0);
+
+    vec3 color = mix(vec3(0.2), vec3(0.8), checker);
+    fragColor = vec4(color, 1.0);
+}
+
+================================================================================
+6. MATHEMATICAL VISUALIZATIONS
+================================================================================
+
+EXAMPLE: SINE WAVE
+------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    float freq = 5.0;
+    float wave = sin(uv.x * freq * 3.14159) * 0.2;
+
+    float dist = abs(uv.y - wave);
+    float line = 1.0 - smoothstep(0.0, 0.01, dist);
+
+    vec3 color = mix(vec3(0.1), vec3(0.0, 1.0, 0.5), line);
+    fragColor = vec4(color, 1.0);
+}
+
+EXAMPLE: MANDELBROT SET
+-----------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+    vec2 c = uv * 2.5 - vec2(0.5, 0.0);
+
+    vec2 z = vec2(0.0);
+    int maxIter = 100;
+    int i;
+
+    for (i = 0; i < maxIter; i++) {
+        z = vec2(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y) + c;
+        if (length(z) > 2.0) break;
+    }
+
+    float t = float(i) / float(maxIter);
+    vec3 color = vec3(t);
+
+    fragColor = vec4(color, 1.0);
+}
+
+EXAMPLE: JULIA SET
+------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+    vec2 z = uv * 2.0;
+    vec2 c = vec2(-0.7, 0.27);
+
+    int maxIter = 100;
+    int i;
+
+    for (i = 0; i < maxIter; i++) {
+        z = vec2(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y) + c;
+        if (length(z) > 2.0) break;
+    }
+
+    float t = float(i) / float(maxIter);
+    vec3 color = vec3(sqrt(t), t, t * t);
+
+    fragColor = vec4(color, 1.0);
+}
+
+EXAMPLE: ARCHIMEDEAN SPIRAL
+----------------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    float theta = atan(uv.y, uv.x);
+    float r = length(uv);
+
+    float a = 0.1;
+    float expectedR = a * theta;
+
+    float dist = abs(r - expectedR);
+    float line = 1.0 - smoothstep(0.0, 0.01, dist);
+
+    vec3 color = mix(vec3(0.1), vec3(1.0, 0.6, 0.0), line);
+    fragColor = vec4(color, 1.0);
+}
+
+EXAMPLE: PARAMETRIC FUNCTION PLOT
+----------------------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    float minDist = 1000.0;
+
+    // Plot parametric curve: x = cos(3t), y = sin(2t)
+    for (float t = 0.0; t < 6.28; t += 0.01) {
+        vec2 p = vec2(cos(3.0 * t), sin(2.0 * t)) * 0.3;
+        float dist = length(uv - p);
+        minDist = min(minDist, dist);
+    }
+
+    float curve = 1.0 - smoothstep(0.0, 0.005, minDist);
+    vec3 color = mix(vec3(0.1), vec3(0.0, 1.0, 0.8), curve);
+
+    fragColor = vec4(color, 1.0);
+}
+
+================================================================================
+7. 3D RENDERING TECHNIQUES
+================================================================================
+
+EXAMPLE: ROTATING CUBE WIREFRAME
+---------------------------------
+mat3 rotateY(float angle) {
+    float c = cos(angle);
+    float s = sin(angle);
+    return mat3(c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c);
+}
+
+mat3 rotateX(float angle) {
+    float c = cos(angle);
+    float s = sin(angle);
+    return mat3(1.0, 0.0, 0.0, 0.0, c, -s, 0.0, s, c);
+}
+
+float distanceToLine(vec2 p, vec2 a, vec2 b) {
+    vec2 pa = p - a;
+    vec2 ba = b - a;
+    float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    // Pseudo-animation using position as time
+    float time = length(uv) * 2.0;
+
+    // Rotate cube
+    mat3 rot = rotateY(time * 0.5) * rotateX(time * 0.3);
+
+    // IMPORTANT: GLSL supports variable array indexing (unlike WGSL)
+    vec3 vertices[8] = vec3[](
+        vec3(-1.0, -1.0, -1.0), vec3( 1.0, -1.0, -1.0),
+        vec3( 1.0,  1.0, -1.0), vec3(-1.0,  1.0, -1.0),
+        vec3(-1.0, -1.0,  1.0), vec3( 1.0, -1.0,  1.0),
+        vec3( 1.0,  1.0,  1.0), vec3(-1.0,  1.0,  1.0)
+    );
+
+    // Transform and project vertices
+    vec2 projected[8];
+    for (int i = 0; i < 8; i++) {
+        vec3 rotated = rot * vertices[i];
+        projected[i] = rotated.xy * 0.3; // Simple orthographic projection
+    }
+
+    // Define edges (pairs of vertex indices)
+    int edges[24] = int[](
+        0, 1, 1, 2, 2, 3, 3, 0, // Back face
+        4, 5, 5, 6, 6, 7, 7, 4, // Front face
+        0, 4, 1, 5, 2, 6, 3, 7  // Connecting edges
+    );
+
+    float minDistance = 1000.0;
+
+    // Find closest edge
+    for (int i = 0; i < 24; i += 2) {
+        vec2 p0 = projected[edges[i]];
+        vec2 p1 = projected[edges[i + 1]];
+        float dist = distanceToLine(uv, p0, p1);
+        minDistance = min(minDistance, dist);
+    }
+
+    // Render wireframe
+    float lineWidth = 0.01;
+    float alpha = 1.0 - smoothstep(0.0, lineWidth, minDistance);
+    vec3 color = mix(vec3(0.1), vec3(0.0, 0.5, 1.0), alpha);
+
+    fragColor = vec4(color, 1.0);
+}
+
+EXAMPLE: SIMPLE PERSPECTIVE CAMERA
+-----------------------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    // Camera setup
+    vec3 cameraPos = vec3(0.0, 0.0, 3.0);
+    vec3 lookAt = vec3(0.0, 0.0, 0.0);
+    vec3 forward = normalize(lookAt - cameraPos);
+    vec3 right = normalize(cross(vec3(0.0, 1.0, 0.0), forward));
+    vec3 up = cross(forward, right);
+
+    // Ray direction
+    vec3 rayDir = normalize(forward + uv.x * right + uv.y * up);
+
+    // Simple sphere at origin
+    vec3 sphereCenter = vec3(0.0, 0.0, 0.0);
+    float sphereRadius = 1.0;
+
+    // Ray-sphere intersection
+    vec3 oc = cameraPos - sphereCenter;
+    float b = dot(oc, rayDir);
+    float c = dot(oc, oc) - sphereRadius * sphereRadius;
+    float h = b * b - c;
+
+    vec3 color = vec3(0.1);
+    if (h > 0.0) {
+        float t = -b - sqrt(h);
+        vec3 hitPos = cameraPos + rayDir * t;
+        vec3 normal = normalize(hitPos - sphereCenter);
+
+        // Simple lighting
+        vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
+        float diff = max(dot(normal, lightDir), 0.0);
+        color = vec3(0.0, 0.5, 1.0) * (0.3 + 0.7 * diff);
+    }
+
+    fragColor = vec4(color, 1.0);
+}
+
+================================================================================
+8. RAYMARCHING AND SIGNED DISTANCE FUNCTIONS
+================================================================================
+
+Raymarching is a powerful technique for rendering complex 3D shapes using
+signed distance functions (SDFs). SDFs return the minimum distance from a
+point to a surface.
+
+EXAMPLE: SPHERE SDF
+-------------------
+float sdSphere(vec3 p, float radius) {
+    return length(p) - radius;
+}
+
+EXAMPLE: BOX SDF
+----------------
+float sdBox(vec3 p, vec3 size) {
+    vec3 d = abs(p) - size;
+    return min(max(d.x, max(d.y, d.z)), 0.0) + length(max(d, 0.0));
+}
+
+EXAMPLE: ROUNDED BOX SDF
+------------------------
+float sdRoundBox(vec3 p, vec3 size, float radius) {
+    vec3 q = abs(p) - size;
+    return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0) - radius;
+}
+
+EXAMPLE: TORUS SDF
+------------------
+float sdTorus(vec3 p, vec2 t) {
+    vec2 q = vec2(length(p.xz) - t.x, p.y);
+    return length(q) - t.y;
+}
+
+EXAMPLE: CAPSULE SDF
+--------------------
+float sdCapsule(vec3 p, vec3 a, vec3 b, float r) {
+    vec3 pa = p - a;
+    vec3 ba = b - a;
+    float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h) - r;
+}
+
+EXAMPLE: COMPLETE RAYMARCHING SHADER
+-------------------------------------
+float sdSphere(vec3 p, float radius) {
+    return length(p) - radius;
+}
+
+float map(vec3 p) {
+    // Scene: sphere at origin
+    return sdSphere(p, 1.0);
+}
+
+vec3 calcNormal(vec3 p) {
+    const float h = 0.001;
+    const vec2 k = vec2(1, -1);
+    return normalize(k.xyy * map(p + k.xyy * h) +
+                     k.yyx * map(p + k.yyx * h) +
+                     k.yxy * map(p + k.yxy * h) +
+                     k.xxx * map(p + k.xxx * h));
+}
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    // Camera setup
+    vec3 ro = vec3(0.0, 0.0, 3.0);
+    vec3 lookAt = vec3(0.0, 0.0, 0.0);
+    vec3 f = normalize(lookAt - ro);
+    vec3 r = normalize(cross(vec3(0.0, 1.0, 0.0), f));
+    vec3 u = cross(f, r);
+    vec3 rd = normalize(f + uv.x * r + uv.y * u);
+
+    vec3 col = vec3(0.1);
+
+    // Raymarching
+    float t = 0.0;
+    for (int i = 0; i < 100; i++) {
+        vec3 p = ro + rd * t;
+        float d = map(p);
+
+        if (d < 0.001) {
+            vec3 n = calcNormal(p);
+            vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
+            float diff = max(dot(n, lightDir), 0.0);
+            col = vec3(0.0, 0.5, 1.0) * (0.3 + 0.7 * diff);
+            break;
+        }
+
+        t += d;
+        if (t > 20.0) break;
+    }
+
+    fragColor = vec4(col, 1.0);
+}
+
+EXAMPLE: MULTIPLE OBJECTS WITH BOOLEAN OPERATIONS
+--------------------------------------------------
+float sdSphere(vec3 p, float r) {
+    return length(p) - r;
+}
+
+float sdBox(vec3 p, vec3 b) {
+    vec3 d = abs(p) - b;
+    return min(max(d.x, max(d.y, d.z)), 0.0) + length(max(d, 0.0));
+}
+
+// Boolean operations
+float opUnion(float d1, float d2) {
+    return min(d1, d2);
+}
+
+float opSubtraction(float d1, float d2) {
+    return max(-d1, d2);
+}
+
+float opIntersection(float d1, float d2) {
+    return max(d1, d2);
+}
+
+float map(vec3 p) {
+    float sphere = sdSphere(p - vec3(0.5, 0.0, 0.0), 0.7);
+    float box = sdBox(p - vec3(-0.5, 0.0, 0.0), vec3(0.6));
+    return opUnion(sphere, box);
+}
+
+vec3 calcNormal(vec3 p) {
+    const float h = 0.001;
+    const vec2 k = vec2(1, -1);
+    return normalize(k.xyy * map(p + k.xyy * h) +
+                     k.yyx * map(p + k.yyx * h) +
+                     k.yxy * map(p + k.yxy * h) +
+                     k.xxx * map(p + k.xxx * h));
+}
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    vec3 ro = vec3(0.0, 0.0, 3.0);
+    vec3 lookAt = vec3(0.0, 0.0, 0.0);
+    vec3 f = normalize(lookAt - ro);
+    vec3 r = normalize(cross(vec3(0.0, 1.0, 0.0), f));
+    vec3 u = cross(f, r);
+    vec3 rd = normalize(f + uv.x * r + uv.y * u);
+
+    vec3 col = vec3(0.1);
+
+    float t = 0.0;
+    for (int i = 0; i < 100; i++) {
+        vec3 p = ro + rd * t;
+        float d = map(p);
+
+        if (d < 0.001) {
+            vec3 n = calcNormal(p);
+            vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
+            float diff = max(dot(n, lightDir), 0.0);
+            col = vec3(0.8, 0.6, 0.2) * (0.3 + 0.7 * diff);
+            break;
+        }
+
+        t += d;
+        if (t > 20.0) break;
+    }
+
+    fragColor = vec4(col, 1.0);
+}
+
+EXAMPLE: SOFT SHADOWS
+---------------------
+float calcShadow(vec3 ro, vec3 rd, float mint, float maxt) {
+    float res = 1.0;
+    float t = mint;
+
+    for (int i = 0; i < 64; i++) {
+        float h = map(ro + rd * t);
+        res = min(res, 8.0 * h / t);
+        t += clamp(h, 0.02, 0.2);
+        if (h < 0.001 || t > maxt) break;
+    }
+
+    return clamp(res, 0.0, 1.0);
+}
+
+// Use in mainImage after finding intersection:
+float shadow = calcShadow(p + n * 0.001, lightDir, 0.001, 10.0);
+col = col * (0.3 + 0.7 * diff * shadow);
+
+================================================================================
+9. CONSTRAINTS AND BEST PRACTICES
+================================================================================
+
+GLSL VERSION AND FEATURES:
+--------------------------
+- Use GLSL version 450 or compatible
+- Variable array indexing IS SUPPORTED (unlike WGSL)
+- Dynamic loops are supported
+- Recursion is NOT supported
+
+ARRAY INDEXING:
+---------------
+GOOD: Variable array indexing works in GLSL
+vec3 vertices[8] = vec3[](...);
+for (int i = 0; i < 8; i++) {
+    vec3 v = vertices[i];  // This works!
+}
+
+ALTERNATIVE: Use if/else chains if you want to be extra safe
+vec3 getVertex(int i) {
+    if (i == 0) return vec3(-1, -1, -1);
+    if (i == 1) return vec3( 1, -1, -1);
+    // ... etc
+}
+
+TEXTURE SAMPLING:
+-----------------
+NOT AVAILABLE: No texture samplers or external inputs
+- Focus on pure mathematical generation
+- Use noise functions (value noise, Perlin noise) for texture effects
+- Implement procedural patterns
+
+PERFORMANCE CONSIDERATIONS:
+---------------------------
+1. Minimize expensive operations in tight loops
+2. Use step() instead of if() for discontinuous functions
+3. Use smoothstep() for smooth transitions
+4. Limit raymarching iterations (50-100 typical)
+5. Use early exits in loops when possible
+
+COORDINATE RANGE:
+-----------------
+- fragCoord is in pixel coordinates [0, resolution]
+- Always normalize to your preferred space
+- Be mindful of aspect ratio for non-square canvases
+
+COLOR OUTPUT:
+-------------
+- fragColor must be vec4 with alpha channel
+- RGB values should be in [0, 1] range
+- Alpha is typically 1.0 (opaque)
+- SRGB conversion is handled by the harness (Rgba8UnormSrgb format)
+
+MATHEMATICAL CONSTANTS:
+-----------------------
+#define PI 3.14159265359
+#define TAU 6.28318530718
+#define E 2.71828182846
+
+Or use built-in functions:
+float pi = acos(-1.0);
+
+================================================================================
+10. COMMON PITFALLS AND SOLUTIONS
+================================================================================
+
+PITFALL: Forgetting to normalize coordinates
+---------------------------------------------
+BAD:
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    float dist = length(fragCoord);  // This is in pixels!
+}
+
+GOOD:
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+    float dist = length(uv);
+}
+
+PITFALL: Incorrect aspect ratio handling
+-----------------------------------------
+BAD (for non-square canvas):
+vec2 uv = fragCoord / iResolution.xy * 2.0 - 1.0;
+// Creates distortion on non-square canvas
+
+GOOD:
+vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+// Maintains aspect ratio using height as reference
+
+PITFALL: Missing anti-aliasing
+-------------------------------
+BAD:
+float circle = dist < radius ? 1.0 : 0.0;  // Jagged edges
+
+GOOD:
+float circle = 1.0 - smoothstep(radius - 0.01, radius + 0.01, dist);
+
+PITFALL: Inefficient raymarching
+---------------------------------
+BAD:
+for (int i = 0; i < 1000; i++) {  // Too many iterations
+    t += 0.001;  // Fixed tiny step
+}
+
+GOOD:
+for (int i = 0; i < 100; i++) {
+    float d = map(p);
+    if (d < 0.001) break;  // Early exit
+    t += d;  // Adaptive step size
+    if (t > 20.0) break;
+}
+
+PITFALL: Not handling division by zero
+---------------------------------------
+BAD:
+float angle = atan(uv.y / uv.x);  // Division by zero at x=0
+
+GOOD:
+float angle = atan(uv.y, uv.x);  // Two-argument atan is safe
+
+PITFALL: Color values out of range
+-----------------------------------
+BAD:
+vec3 color = lightIntensity * materialColor;  // May exceed 1.0
+
+GOOD:
+vec3 color = min(lightIntensity * materialColor, vec3(1.0));
+// Or use tone mapping for HDR
+
+PITFALL: Forgetting alpha channel
+----------------------------------
+BAD:
+fragColor = vec3(color);  // Type mismatch
+
+GOOD:
+fragColor = vec4(color, 1.0);
+
+================================================================================
+11. COMPLETE EXAMPLE SHADERS
+================================================================================
+
+EXAMPLE 1: PSYCHEDELIC PATTERN
+-------------------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    float angle = atan(uv.y, uv.x);
+    float radius = length(uv);
+
+    float pattern = sin(radius * 20.0 - angle * 5.0) * 0.5 + 0.5;
+
+    vec3 color1 = vec3(1.0, 0.0, 0.5);
+    vec3 color2 = vec3(0.0, 0.5, 1.0);
+    vec3 color = mix(color1, color2, pattern);
+
+    fragColor = vec4(color, 1.0);
+}
+
+EXAMPLE 2: VORONOI PATTERN
+---------------------------
+vec2 random2(vec2 p) {
+    return fract(sin(vec2(dot(p, vec2(127.1, 311.7)),
+                          dot(p, vec2(269.5, 183.3)))) * 43758.5453);
+}
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = fragCoord / iResolution.y * 5.0;
+
+    vec2 iuv = floor(uv);
+    vec2 fuv = fract(uv);
+
+    float minDist = 1.0;
+
+    for (int y = -1; y <= 1; y++) {
+        for (int x = -1; x <= 1; x++) {
+            vec2 neighbor = vec2(float(x), float(y));
+            vec2 point = random2(iuv + neighbor);
+            vec2 diff = neighbor + point - fuv;
+            float dist = length(diff);
+            minDist = min(minDist, dist);
+        }
+    }
+
+    vec3 color = vec3(minDist);
+    fragColor = vec4(color, 1.0);
+}
+
+EXAMPLE 3: COMPLEX 3D SCENE
+----------------------------
+float sdSphere(vec3 p, float r) {
+    return length(p) - r;
+}
+
+float sdBox(vec3 p, vec3 b) {
+    vec3 d = abs(p) - b;
+    return min(max(d.x, max(d.y, d.z)), 0.0) + length(max(d, 0.0));
+}
+
+float sdPlane(vec3 p, vec3 n, float h) {
+    return dot(p, n) + h;
+}
+
+float map(vec3 p) {
+    float sphere1 = sdSphere(p - vec3(0.0, 0.5, 0.0), 0.5);
+    float box1 = sdBox(p - vec3(1.2, 0.4, 0.0), vec3(0.4, 0.4, 0.4));
+    float plane = sdPlane(p, vec3(0.0, 1.0, 0.0), 0.5);
+
+    return min(min(sphere1, box1), plane);
+}
+
+vec3 calcNormal(vec3 p) {
+    const float h = 0.001;
+    const vec2 k = vec2(1, -1);
+    return normalize(k.xyy * map(p + k.xyy * h) +
+                     k.yyx * map(p + k.yyx * h) +
+                     k.yxy * map(p + k.yxy * h) +
+                     k.xxx * map(p + k.xxx * h));
+}
+
+float calcAO(vec3 p, vec3 n) {
+    float occ = 0.0;
+    float sca = 1.0;
+    for (int i = 0; i < 5; i++) {
+        float h = 0.01 + 0.12 * float(i) / 4.0;
+        float d = map(p + h * n);
+        occ += (h - d) * sca;
+        sca *= 0.95;
+    }
+    return clamp(1.0 - 3.0 * occ, 0.0, 1.0);
+}
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    // Camera
+    vec3 ro = vec3(2.0, 1.5, 2.0);
+    vec3 lookAt = vec3(0.0, 0.0, 0.0);
+    vec3 f = normalize(lookAt - ro);
+    vec3 r = normalize(cross(vec3(0.0, 1.0, 0.0), f));
+    vec3 u = cross(f, r);
+    vec3 rd = normalize(f + uv.x * r + uv.y * u);
+
+    vec3 col = vec3(0.5, 0.7, 0.9); // Sky color
+
+    // Raymarching
+    float t = 0.0;
+    for (int i = 0; i < 100; i++) {
+        vec3 p = ro + rd * t;
+        float d = map(p);
+
+        if (d < 0.001) {
+            vec3 n = calcNormal(p);
+
+            // Lighting
+            vec3 lightPos = vec3(3.0, 4.0, 2.0);
+            vec3 lightDir = normalize(lightPos - p);
+            float diff = max(dot(n, lightDir), 0.0);
+
+            // Specular
+            vec3 viewDir = -rd;
+            vec3 halfDir = normalize(lightDir + viewDir);
+            float spec = pow(max(dot(n, halfDir), 0.0), 32.0);
+
+            // Ambient occlusion
+            float ao = calcAO(p, n);
+
+            // Material
+            vec3 matColor = vec3(0.8, 0.6, 0.4);
+
+            col = matColor * (0.2 + 0.6 * diff * ao) + vec3(0.3) * spec;
+            break;
+        }
+
+        t += d;
+        if (t > 20.0) break;
+    }
+
+    // Gamma correction
+    col = pow(col, vec3(0.4545));
+
+    fragColor = vec4(col, 1.0);
+}
+
+EXAMPLE 4: FRACTAL TREE
+------------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    vec3 col = vec3(0.9, 0.95, 1.0);
+
+    // Simple L-system-like fractal tree
+    vec2 pos = vec2(0.0, -0.4);
+    float angle = 1.5708; // PI/2, pointing up
+    float len = 0.3;
+
+    float minDist = 1000.0;
+
+    // Recursive-like iteration (unrolled)
+    for (int branch = 0; branch < 7; branch++) {
+        vec2 endPos = pos + vec2(cos(angle), sin(angle)) * len;
+
+        vec2 pa = uv - pos;
+        vec2 ba = endPos - pos;
+        float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+        float dist = length(pa - ba * h);
+        minDist = min(minDist, dist);
+
+        pos = endPos;
+
+        // Split into two branches
+        if (branch < 4) {
+            angle += 0.5;
+            len *= 0.7;
+        }
+    }
+
+    float tree = 1.0 - smoothstep(0.0, 0.005, minDist);
+    col = mix(col, vec3(0.3, 0.2, 0.1), tree);
+
+    fragColor = vec4(col, 1.0);
+}
+
+EXAMPLE 5: PLASMA EFFECT
+-------------------------
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = fragCoord / iResolution.xy;
+
+    // Create pseudo-time from position
+    float time = length(uv - 0.5) * 10.0;
+
+    float v = 0.0;
+    v += sin(uv.x * 10.0 + time);
+    v += sin(uv.y * 10.0 + time);
+    v += sin((uv.x + uv.y) * 10.0 + time);
+    v += sin(sqrt(uv.x * uv.x + uv.y * uv.y) * 10.0 + time);
+    v /= 4.0;
+
+    vec3 col = vec3(
+        sin(v * 3.14159),
+        sin(v * 3.14159 + 2.0),
+        sin(v * 3.14159 + 4.0)
+    ) * 0.5 + 0.5;
+
+    fragColor = vec4(col, 1.0);
+}
+
+================================================================================
+END OF GUIDE
+================================================================================
+
+This guide covers the essential patterns and techniques for generating
+Shadertoy-compatible GLSL shaders. For best results:
+
+1. Always include the mainImage() function signature
+2. Normalize coordinates appropriately for your visualization
+3. Use anti-aliasing (smoothstep) for clean edges
+4. Leverage GLSL's array indexing capabilities
+5. Keep performance in mind (limit iterations)
+6. Output colors in [0, 1] range with alpha channel
+
+For additional inspiration, study existing Shadertoy examples and adapt
+mathematical formulas to create unique visualizations.

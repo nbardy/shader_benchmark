@@ -1,0 +1,28 @@
+# Experiment Infrastructure Dependencies
+# Install with: pip install -r requirements.txt
+
+# Core Python packages (already in parent requirements.txt)
+# These are listed here for reference and documentation
+
+# Configuration parsing
+pyyaml>=6.0
+
+# Async execution
+aiohttp>=3.8.0
+
+# Environment management
+python-dotenv>=1.0.0
+
+# Image processing (for Experiment 4 - Metric Validator)
+scikit-image>=0.21.0
+Pillow>=10.0.0
+numpy>=1.24.0
+
+# Statistical analysis
+scipy>=1.11.0
+
+# Progress bars
+tqdm>=4.65.0
+
+# Note: Most dependencies are already satisfied by parent llm_harness/requirements.txt
+# Only scikit-image and scipy are new additions for metric-based validation

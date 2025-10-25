@@ -1,65 +1,68 @@
 import re
 import xml.etree.ElementTree as ET
-from typing import Dict, Tuple, List
+from typing import Dict, Tuple, List, Optional
+from language_specs import ShaderLanguageSpec, WGSLSpec
 
 class ShaderParser:
-    def __init__(self):
-        pass
+    def __init__(self, language_spec: Optional[ShaderLanguageSpec] = None):
+        """Initialize parser with language specification.
+
+        Args:
+            language_spec: Language specification defining syntax rules and validation.
+                          Defaults to WGSLSpec() for backward compatibility.
+        """
+        self.language_spec = language_spec or WGSLSpec()
     
     def parse_response(self, llm_response: str) -> Tuple[Dict[str, str], str]:
-        """Parse LLM response to extract shader files and main.rs content"""
+        """Parse LLM response to extract shader files (language-agnostic).
+
+        Uses language_spec to determine file extension and valid code block formats.
+        Supports both XML blocks and markdown code blocks.
+
+        NOTE: main.rs is not used in current pipeline (harness is fixed).
+
+        Returns:
+            Tuple of (shaders_dict, main_rs_str)
+        """
         shaders = {}
-        main_rs = ""
-        
+        main_rs = ""  # Not used in current pipeline
+
         # Parse XML blocks for shader files
         shader_pattern = r'<shader\s+file="([^"]+)">(.*?)</shader>'
         shader_matches = re.findall(shader_pattern, llm_response, re.DOTALL)
-        
+
         for filename, content in shader_matches:
             shaders[filename] = content.strip()
-        
-        # Parse main.rs content
-        main_rs_pattern = r'<main_rs>(.*?)</main_rs>'
-        main_rs_match = re.search(main_rs_pattern, llm_response, re.DOTALL)
-        
-        if main_rs_match:
-            main_rs = main_rs_match.group(1).strip()
-        else:
-            # Fallback: try to find code blocks that might be main.rs
-            rust_code_pattern = r'```rust\n(.*?)\n```'
-            rust_matches = re.findall(rust_code_pattern, llm_response, re.DOTALL)
-            if rust_matches:
-                # Take the longest rust code block as main.rs
-                main_rs = max(rust_matches, key=len).strip()
-        
-        if not main_rs:
-            raise ValueError("No main.rs content found in LLM response")
-        
+
         if not shaders:
-            # Try to extract shader files from code blocks
+            # Fallback: try to extract shader files from code blocks
+            # Support both wgsl and glsl code blocks
             shader_code_pattern = r'```(?:wgsl|glsl)\n(.*?)\n```'
             shader_matches = re.findall(shader_code_pattern, llm_response, re.DOTALL)
-            
+
             for i, shader_content in enumerate(shader_matches):
-                filename = f"shader_{i}.wgsl"
+                # Use language_spec to determine file extension
+                filename = f"shader_{i}{self.language_spec.file_extension}"
                 shaders[filename] = shader_content.strip()
-        
+
         if not shaders:
             raise ValueError("No shader files found in LLM response")
-        
+
         return shaders, main_rs
     
     def validate_shader_syntax(self, shader_content: str) -> bool:
-        """Basic validation of shader syntax"""
-        # Check for basic WGSL structure
-        if '@vertex' in shader_content or '@fragment' in shader_content or '@compute' in shader_content:
-            return True
-        
-        # Check for basic function definitions
-        if 'fn ' in shader_content:
-            return True
-        
-        return False
+        """Validate shader syntax using language_spec validator.
+
+        Delegates to language_spec.validate_syntax() for language-specific validation.
+        This enables clean separation between parsing logic and language rules.
+
+        Args:
+            shader_content: Shader source code to validate
+
+        Returns:
+            True if syntax appears valid per language_spec rules
+        """
+        return self.language_spec.validate_syntax(shader_content)
     
     def validate_main_rs_syntax(self, main_rs_content: str) -> bool:
         """Basic validation of main.rs syntax"""

@@ -57,6 +57,22 @@ class BenchmarkHarness:
         self.render_semaphore = asyncio.Semaphore(4)  # Rendering (GPU slots)
         self.judge_semaphore = asyncio.Semaphore(50)  # Judge evaluation (API limited)
 
+        # PRE-BUILD FIX: Create shared TestRunner for all problems
+        # This ensures shader-bench binary is built once and reused across all problems
+        #
+        # CRITICAL: Do NOT create new TestRunner instances per-problem!
+        # Creating new instances would cause:
+        #   - Multiple prebuild compilations (slow)
+        #   - Loss of shared binary path
+        #   - Potential race conditions
+        #
+        # CORRECT PATTERN: One TestRunner for entire benchmark (reused by all problems)
+        # See test_runner.py module docstring for architecture details
+        self.test_runner = TestRunner(
+            compile_semaphore=self.compile_semaphore,
+            render_semaphore=self.render_semaphore
+        )
+
         # Load checkpoints if resuming
         self.problem_checkpoints = self._load_checkpoints()
 
@@ -214,11 +230,9 @@ class BenchmarkHarness:
 
         start_time = datetime.now()
 
-        # Initialize test_runner at the start (needed for all stages)
-        test_runner = TestRunner(
-            compile_semaphore=self.compile_semaphore,
-            render_semaphore=self.render_semaphore
-        )
+        # PRE-BUILD FIX: Use shared test_runner (created once in __init__)
+        # This ensures shader-bench binary is built once and reused across all problems
+        test_runner = self.test_runner
 
         # Initialize variables
         test_folder = None
@@ -410,6 +424,16 @@ class BenchmarkHarness:
         print(f"⏳ Remaining: {len(self.problems) - fully_completed}")
         print(f"🔄 Pipeline limits: LLM={self.max_parallel}, Compile={self.compile_semaphore._value}, Render={self.render_semaphore._value}, Judge={self.judge_semaphore._value}")
         print("=" * 60)
+
+        # PRE-BUILD FIX: Build shader-bench binary once before running any problems
+        print("🔨 Pre-building shader-bench binary...")
+        try:
+            await self.test_runner.prebuild_shader_binary()
+            print("✅ Pre-build complete - binary ready for all problems")
+        except Exception as e:
+            print(f"❌ Pre-build failed: {e}")
+            print("Cannot proceed without working shader-bench binary")
+            raise
 
         self.start_time = datetime.now()
 

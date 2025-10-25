@@ -1,0 +1,505 @@
+SHADERTOY-COMPATIBLE GLSL SHADER GUIDE
+======================================
+
+VERSION: Shadertoy Format via GLSL
+RUNTIME: WGPU 0.20 native execution (Metal/Vulkan/DX12)
+COMPILER: shaderc (Google's GLSL → SPIR-V)
+HARNESS: Renders fragment shaders with automatic vertex pipeline
+
+This guide helps you write Shadertoy-compatible GLSL shaders that generate mathematical visualizations.
+
+═════════════════════════════════════════════════════════════════════════════
+
+SECTION 1: SHADERTOY FORMAT OVERVIEW
+=====================================
+
+Shadertoy is the most common shader format on GitHub and the web. It has 20+ years of training data in LLM models.
+
+KEY ADVANTAGE OVER WGSL:
+- ✅ Supports dynamic array indexing (loops over arrays)
+- ✅ Massive GitHub training corpus
+- ✅ Natural for mathematical visualization patterns
+
+COMPILATION PIPELINE:
+Your GLSL code → Wrapped in vertex/fragment structure → shaderc compiler → SPIR-V → GPU execution
+
+═════════════════════════════════════════════════════════════════════════════
+
+SECTION 2: FUNCTION SIGNATURE AND UNIFORMS
+============================================
+
+Your shader must implement this exact function signature:
+
+```glsl
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    // fragColor: Output color (you must set this)
+    // fragCoord: Input pixel coordinate in pixels [0, resolution]
+
+    // Your code here
+    fragColor = vec4(1.0, 0.0, 0.0, 1.0);  // Red pixel
+}
+```
+
+AVAILABLE UNIFORMS:
+- iResolution: vec2 - Canvas size in pixels (e.g., vec2(1024.0, 1024.0))
+
+COORDINATE SYSTEM:
+- fragCoord is in PIXEL SPACE: [0, width] horizontally, [0, height] vertically
+- Top-left is (0, 0), bottom-right is (width, height)
+
+OUTPUT REQUIREMENTS:
+- fragColor must be vec4 with values in [0.0, 1.0] range
+- RGB channels are color (0.0 = black, 1.0 = bright)
+- Alpha channel is opacity (1.0 = opaque, 0.0 = transparent)
+
+═════════════════════════════════════════════════════════════════════════════
+
+SECTION 3: COORDINATE SYSTEM CONVERSIONS
+=========================================
+
+CONVERT PIXEL TO NORMALIZED COORDINATES (-1 to 1):
+```glsl
+vec2 fragCoord = /* input */;
+vec2 resolution = iResolution;
+
+// Normalize to [0, 1]
+vec2 uv = fragCoord / resolution;
+
+// Convert to [-1, 1]
+uv = uv * 2.0 - 1.0;
+
+// Correct aspect ratio
+uv.x *= resolution.x / resolution.y;
+```
+
+CENTER AT ORIGIN:
+```glsl
+vec2 uv = (fragCoord - resolution * 0.5) / resolution.y;
+```
+
+POLAR COORDINATES FROM SCREEN CENTER:
+```glsl
+vec2 centered = (fragCoord - iResolution * 0.5) / iResolution.y;
+float angle = atan(centered.y, centered.x);
+float distance = length(centered);
+```
+
+═════════════════════════════════════════════════════════════════════════════
+
+SECTION 4: SIMPLE GEOMETRIC EXAMPLES
+====================================
+
+DRAWING A CIRCLE:
+```glsl
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = (fragCoord - iResolution * 0.5) / iResolution.y;
+
+    float distance = length(uv);
+    float radius = 0.3;
+
+    // Soft edge circle
+    float circle = smoothstep(radius + 0.02, radius - 0.02, distance);
+
+    fragColor = vec4(vec3(circle), 1.0);
+}
+```
+
+DRAWING A RECTANGLE:
+```glsl
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = (fragCoord - iResolution * 0.5) / iResolution.y;
+
+    vec2 halfSize = vec2(0.3, 0.2);
+    vec2 dist = abs(uv) - halfSize;
+    float rect = smoothstep(0.01, -0.01, max(dist.x, dist.y));
+
+    fragColor = vec4(vec3(rect), 1.0);
+}
+```
+
+DRAWING A GRID:
+```glsl
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = fragCoord / iResolution;
+    vec2 grid = fract(uv * 10.0);  // 10x10 grid
+    vec2 gridLine = smoothstep(0.05, 0.0, abs(grid - 0.5));
+
+    float line = max(gridLine.x, gridLine.y);
+    fragColor = vec4(vec3(line), 1.0);
+}
+```
+
+═════════════════════════════════════════════════════════════════════════════
+
+SECTION 5: COLOR GRADIENTS AND PATTERNS
+========================================
+
+HORIZONTAL GRADIENT:
+```glsl
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = fragCoord / iResolution;
+
+    vec3 color = mix(
+        vec3(1.0, 0.0, 0.0),  // Red
+        vec3(0.0, 0.0, 1.0),  // Blue
+        uv.x
+    );
+
+    fragColor = vec4(color, 1.0);
+}
+```
+
+RADIAL GRADIENT FROM CENTER:
+```glsl
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = (fragCoord - iResolution * 0.5) / iResolution.y;
+    float dist = length(uv);
+
+    vec3 color = mix(
+        vec3(1.0, 1.0, 0.0),  // Yellow center
+        vec3(0.0, 0.0, 0.0),  // Black edge
+        dist
+    );
+
+    fragColor = vec4(color, 1.0);
+}
+```
+
+HSV COLOR WHEEL:
+```glsl
+vec3 hsv2rgb(vec3 hsv) {
+    vec3 rgb = abs(mod(hsv.x * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) - 3.0);
+    return hsv.z * mix(vec3(1.0), clamp(rgb - 1.0, 0.0, 1.0), hsv.y);
+}
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = (fragCoord - iResolution * 0.5) / iResolution.y;
+
+    float hue = atan(uv.y, uv.x) / 6.28318 + 0.5;
+    float saturation = 1.0;
+    float value = smoothstep(0.5, 0.2, length(uv));
+
+    vec3 color = hsv2rgb(vec3(hue, saturation, value));
+    fragColor = vec4(color, 1.0);
+}
+```
+
+CHECKERBOARD PATTERN:
+```glsl
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = fragCoord / iResolution;
+    vec2 grid = fract(uv * 8.0);
+
+    float checker = mod(floor(uv.x * 8.0) + floor(uv.y * 8.0), 2.0);
+
+    fragColor = vec4(vec3(checker), 1.0);
+}
+```
+
+═════════════════════════════════════════════════════════════════════════════
+
+SECTION 6: MATHEMATICAL VISUALIZATIONS
+========================================
+
+SINE WAVE GRID:
+```glsl
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = fragCoord / iResolution;
+
+    float wave = sin(uv.x * 10.0 + uv.y * 5.0);
+    float height = abs(wave - uv.y * 2.0);
+    float line = smoothstep(0.05, 0.0, height);
+
+    fragColor = vec4(vec3(line), 1.0);
+}
+```
+
+MANDELBROT SET:
+```glsl
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = (fragCoord - iResolution * 0.5) / iResolution.y * 2.5 - vec2(0.7, 0.0);
+
+    vec2 z = vec2(0.0);
+    int iterations = 100;
+
+    for (int i = 0; i < iterations; i++) {
+        z = vec2(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y) + uv;
+        if (length(z) > 2.0) {
+            float color = float(i) / float(iterations);
+            fragColor = vec4(vec3(color), 1.0);
+            return;
+        }
+    }
+
+    fragColor = vec4(vec3(0.0), 1.0);
+}
+```
+
+SPIRAL PATTERN:
+```glsl
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = (fragCoord - iResolution * 0.5) / iResolution.y;
+
+    float angle = atan(uv.y, uv.x);
+    float distance = length(uv);
+
+    float spiral = sin(distance * 10.0 + angle * 3.0);
+
+    fragColor = vec4(vec3(spiral * 0.5 + 0.5), 1.0);
+}
+```
+
+═════════════════════════════════════════════════════════════════════════════
+
+SECTION 7: DISTANCE FIELD RENDERING
+====================================
+
+DISTANCE FUNCTIONS ARE KEY TO EFFICIENT RENDERING:
+
+Distance to Line Segment:
+```glsl
+float sdLineSegment(vec2 p, vec2 a, vec2 b) {
+    vec2 pa = p - a;
+    vec2 ba = b - a;
+    float t = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * t);
+}
+```
+
+Distance to Circle:
+```glsl
+float sdCircle(vec2 p, float r) {
+    return length(p) - r;
+}
+```
+
+Distance to Box:
+```glsl
+float sdBox(vec2 p, vec2 b) {
+    vec2 d = abs(p) - b;
+    return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
+}
+```
+
+RENDERING WITH DISTANCE FIELDS:
+```glsl
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = (fragCoord - iResolution * 0.5) / iResolution.y;
+
+    float minDist = 1e6;
+
+    // Combine multiple shapes
+    minDist = min(minDist, sdCircle(uv, 0.3));
+    minDist = min(minDist, sdBox(uv - vec2(0.5, 0.0), vec2(0.2, 0.2)));
+
+    // Visualize distance
+    vec3 color = vec3(0.0);
+    if (minDist < 0.01) {
+        color = vec3(1.0, 1.0, 1.0);  // White outline
+    } else {
+        color = vec3(minDist);  // Gradient
+    }
+
+    fragColor = vec4(color, 1.0);
+}
+```
+
+═════════════════════════════════════════════════════════════════════════════
+
+SECTION 8: CONSTRAINTS AND BEST PRACTICES
+==========================================
+
+WHAT WORKS IN GLSL:
+✅ Dynamic array indexing - can use `array[runtime_index]`
+✅ Variable loop counts
+✅ Complex control flow
+✅ Recursion (with limits)
+✅ Mathematical functions (sin, cos, sqrt, etc.)
+
+COORDINATE RANGES:
+- fragCoord input: [0, width] × [0, height] in pixels
+- Typical normalized range: [-1, 1] after transformation
+- Color output: [0, 1] for each channel
+
+PERFORMANCE GUIDELINES:
+- Keep loops < 100 iterations
+- Use built-in functions: length(), normalize(), dot(), cross()
+- Avoid very expensive operations in tight loops
+- Use distance fields for complex geometry
+
+COMMON MATHEMATICAL CONSTANTS:
+```glsl
+const float PI = 3.14159265359;
+const float TAU = 6.28318530718;
+const float E = 2.71828182846;
+const float PHI = 1.61803398875;  // Golden ratio
+```
+
+═════════════════════════════════════════════════════════════════════════════
+
+SECTION 9: COMMON PITFALLS AND SOLUTIONS
+==========================================
+
+PITFALL 1: Coordinate Normalization
+Problem: Forgot to normalize fragCoord to [-1,1] range
+Solution: Always include coordinate transformation at start
+```glsl
+vec2 uv = (fragCoord - iResolution * 0.5) / iResolution.y;
+```
+
+PITFALL 2: Aspect Ratio
+Problem: Circles appear as ovals
+Solution: Correct aspect ratio in normalization
+```glsl
+uv.x *= iResolution.x / iResolution.y;
+```
+
+PITFALL 3: Color Clipping
+Problem: Color values > 1.0 get clamped
+Solution: Use smoothstep() or normalize color output
+```glsl
+vec3 color = vec3(0.5, 1.5, 0.0);  // Bad
+vec3 color = normalize(vec3(0.5, 1.5, 0.0)) * 0.8;  // Better
+```
+
+PITFALL 4: Precision Issues
+Problem: Division by zero or very small numbers
+Solution: Add epsilon
+```glsl
+float value = distance / max(epsilon, length);
+```
+
+═════════════════════════════════════════════════════════════════════════════
+
+SECTION 10: COMPLETE EXAMPLE SHADERS
+====================================
+
+EXAMPLE 1: Simple Color Gradient
+```glsl
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = fragCoord / iResolution;
+
+    vec3 color = mix(
+        vec3(1.0, 0.0, 0.0),
+        vec3(0.0, 0.0, 1.0),
+        uv.x
+    );
+
+    fragColor = vec4(color, 1.0);
+}
+```
+
+EXAMPLE 2: Animated Sine Waves
+```glsl
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = fragCoord / iResolution;
+
+    // Create wave pattern
+    float wave = sin(uv.x * 20.0) * 0.1;
+    float line = abs(uv.y - (0.5 + wave));
+
+    vec3 color = vec3(1.0 - smoothstep(0.0, 0.02, line));
+
+    fragColor = vec4(color, 1.0);
+}
+```
+
+EXAMPLE 3: Concentric Circles
+```glsl
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = (fragCoord - iResolution * 0.5) / iResolution.y;
+
+    float dist = length(uv);
+    float rings = abs(sin(dist * 30.0));
+
+    vec3 color = vec3(rings);
+
+    fragColor = vec4(color, 1.0);
+}
+```
+
+EXAMPLE 4: Fractal Tree
+```glsl
+float fbm(vec2 p) {
+    float value = 0.0;
+    float amplitude = 1.0;
+    float frequency = 1.0;
+
+    for (int i = 0; i < 5; i++) {
+        value += amplitude * sin(frequency * p.x + frequency * p.y);
+        amplitude *= 0.5;
+        frequency *= 2.0;
+    }
+
+    return value;
+}
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = fragCoord / iResolution;
+
+    float noise = fbm(uv * 10.0);
+    vec3 color = vec3(noise * 0.5 + 0.5);
+
+    fragColor = vec4(color, 1.0);
+}
+```
+
+EXAMPLE 5: Geometric Pattern
+```glsl
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = (fragCoord - iResolution * 0.5) / iResolution.y;
+
+    vec2 grid = fract(uv * 5.0);
+    vec2 dist = abs(grid - 0.5);
+    float pattern = smoothstep(0.3, 0.2, max(dist.x, dist.y));
+
+    vec3 color = mix(vec3(0.0), vec3(1.0, 0.5, 0.0), pattern);
+
+    fragColor = vec4(color, 1.0);
+}
+```
+
+═════════════════════════════════════════════════════════════════════════════
+
+TIPS FOR LLM-GENERATED SHADERS
+==============================
+
+WHEN WRITING SHADERTOY GLSL:
+
+1. Always include mainImage() function signature
+2. Use fragCoord and iResolution correctly
+3. Output to fragColor as vec4
+4. Normalize coordinates at the start
+5. Use distance fields for complex shapes
+6. Test with simple geometries first
+7. Use smoothstep() for anti-aliasing
+8. Keep loops under 100 iterations
+9. Use built-in GLSL functions
+10. Remember to set fragColor in all code paths
+
+LEVERAGE GLSL ADVANTAGES:
+- Use dynamic array indexing fearlessly
+- Complex control flow is supported
+- Mathematical patterns work naturally
+- This is where LLMs excel with their training data
+
+This is the web's most common shader format. Your knowledge of Shadertoy patterns will shine here.
+
+═════════════════════════════════════════════════════════════════════════════

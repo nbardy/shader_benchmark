@@ -1,0 +1,290 @@
+🔒 WGSL FORMAT LOCK - STRICT ABI CONTRACT
+============================================
+
+You MUST generate ONLY valid WGSL code. This is NOT a negotiable suggestion—it is the mandatory format.
+
+REFERENCE EXAMPLES (Study these working shaders):
+==================================================
+
+Example 1: SIMPLE GEOMETRY - Rotating Cube
+---------------------------------------------
+This example demonstrates basic 3D geometry with simple rotation animation.
+Study how it handles coordinate transformation and basic shading.
+
+<shader file="example_cube.wgsl">
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+@group(0) @binding(0) var<uniform> Params: Params;
+
+struct Params {
+    resolution: vec2<f32>,
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = pos.xy / Params.resolution;
+    let centered = (uv - vec2<f32>(0.5, 0.5)) * 2.0;
+    let aspect = Params.resolution.x / Params.resolution.y;
+
+    // Project 3D cube onto 2D plane
+    let x = centered.x * aspect;
+    let y = centered.y;
+
+    // Simple cube edges
+    let edge_x = abs(x);
+    let edge_y = abs(y);
+    let max_edge = max(edge_x, edge_y);
+
+    // Color based on position
+    let r = edge_x;
+    let g = edge_y;
+    let b = 1.0 - max_edge;
+
+    return vec4<f32>(r, g, b, 1.0);
+}
+</shader>
+
+KEY PATTERNS FROM EXAMPLE 1:
+- Full-screen triangle vertex shader (standard boilerplate)
+- UV normalization: pos.xy / Params.resolution
+- Centering: (uv - 0.5) * 2.0 for [-1, 1] range
+- Aspect ratio correction: x * aspect
+- Simple geometric calculation (edges, distances)
+
+
+Example 2: MATHEMATICAL ITERATION - Mandelbrot Set
+---------------------------------------------
+This example demonstrates complex mathematical iteration and loop control.
+Study how it handles convergence testing and iteration counting.
+
+<shader file="example_mandelbrot.wgsl">
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+@group(0) @binding(0) var<uniform> Params: Params;
+
+struct Params {
+    resolution: vec2<f32>,
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = pos.xy / Params.resolution;
+
+    // Map to complex plane
+    let c_real = (uv.x - 0.5) * 3.5;
+    let c_imag = (uv.y - 0.5) * 2.0;
+
+    // Mandelbrot iteration: z = z^2 + c
+    var z_real = 0.0;
+    var z_imag = 0.0;
+    var iterations = 0u;
+    let max_iterations = 100u;
+
+    for (var i = 0u; i < max_iterations; i = i + 1u) {
+        // Check if escaped (|z| > 2)
+        let mag_sq = z_real * z_real + z_imag * z_imag;
+        if (mag_sq > 4.0) {
+            break;
+        }
+
+        // Complex multiplication: z = z * z
+        let temp_real = z_real * z_real - z_imag * z_imag;
+        let temp_imag = 2.0 * z_real * z_imag;
+
+        // Add c
+        z_real = temp_real + c_real;
+        z_imag = temp_imag + c_imag;
+
+        iterations = i;
+    }
+
+    // Color based on iteration count
+    let normalized = f32(iterations) / f32(max_iterations);
+    let color = vec3<f32>(normalized, normalized * 0.5, 1.0 - normalized);
+
+    return vec4<f32>(color, 1.0);
+}
+</shader>
+
+KEY PATTERNS FROM EXAMPLE 2:
+- Complex number representation (real + imaginary as separate floats)
+- Iteration with early exit (break when condition met)
+- Magnitude squared test (avoid sqrt for performance)
+- Iteration counter for coloring
+- Normalized values for smooth gradients
+
+
+Example 3: RAYMARCHING - Sphere SDF
+---------------------------------------------
+This example demonstrates 3D raymarching with signed distance functions.
+Study how it handles ray generation, distance marching, and 3D rendering.
+
+<shader file="example_sphere_sdf.wgsl">
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+@group(0) @binding(0) var<uniform> Params: Params;
+
+struct Params {
+    resolution: vec2<f32>,
+}
+
+// Signed distance function for sphere
+fn sdf_sphere(p: vec3<f32>, radius: f32) -> f32 {
+    return length(p) - radius;
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = (pos.xy / Params.resolution - vec2<f32>(0.5, 0.5)) * 2.0;
+    let aspect = Params.resolution.x / Params.resolution.y;
+
+    // Camera setup
+    let camera_pos = vec3<f32>(0.0, 0.0, -3.0);
+    let ray_dir = normalize(vec3<f32>(uv.x * aspect, uv.y, 1.0));
+
+    // Raymarching
+    var t = 0.0;
+    let max_steps = 64u;
+    let max_distance = 10.0;
+    let hit_threshold = 0.01;
+
+    for (var i = 0u; i < max_steps; i = i + 1u) {
+        let ray_pos = camera_pos + ray_dir * t;
+        let distance = sdf_sphere(ray_pos, 1.0);
+
+        if (distance < hit_threshold) {
+            // Hit! Calculate simple shading
+            let normal = normalize(ray_pos);  // For sphere centered at origin
+            let light_dir = normalize(vec3<f32>(1.0, 1.0, -1.0));
+            let diffuse = max(dot(normal, light_dir), 0.0);
+
+            let color = vec3<f32>(diffuse, diffuse, diffuse);
+            return vec4<f32>(color, 1.0);
+        }
+
+        t = t + distance;
+
+        if (t > max_distance) {
+            break;
+        }
+    }
+
+    // Miss - return background
+    return vec4<f32>(vec3<f32>(0.1, 0.1, 0.2), 1.0);
+}
+</shader>
+
+KEY PATTERNS FROM EXAMPLE 3:
+- Helper function for SDF (reusable, explicit types)
+- Ray setup: origin + direction
+- Raymarching loop: advance by SDF distance
+- Early exits: hit detection and max distance
+- Normal calculation from SDF gradient
+- Simple diffuse lighting
+- Background color for misses
+
+
+CRITICAL TYPE REQUIREMENTS (ALL EXAMPLES FOLLOW THESE):
+==================================================
+
+- Use explicit types: vec2<f32>, vec3<f32>, vec4<f32>, NOT vec2, vec3, vec4
+- Use i32, u32, f32 for scalars (NOT int, uint, float)
+- NO implicit type conversions
+- Array indexing ONLY with integer expressions: array[u32(expr)]
+- Use var<function> for function-local variables (or let for immutables)
+
+ENTRYPOINT SIGNATURES (DO NOT MODIFY):
+==================================================
+
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    // Standard full-screen triangle (copy from examples)
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    // Your fragment logic here
+}
+
+BIND GROUP CONTRACT:
+==================================================
+
+@group(0) @binding(0) var<uniform> Params: Params;
+
+struct Params {
+    resolution: vec2<f32>,  // Always needed for coordinate normalization
+    // Add other float32 fields as needed
+}
+
+SYNTAX YOU MUST NOT USE:
+==================================================
+
+❌ @vertex, @fragment in function bodies (only as attributes)
+❌ var without address space (e.g., var x: f32; is WRONG, use let or var<function>)
+❌ Implicit casts (e.g., f32(1) where 1 is i32)
+❌ gl_* variables
+❌ #ifdef, #define, or any preprocessor
+❌ uniform keyword (use @group/@binding instead)
+❌ @attribute decorators inside structs
+
+PROBLEM CONTEXT:
+==================================================
+{problem_prompt}
+
+YOUR TASK:
+==================================================
+
+Study the three examples above to understand:
+1. How to structure your shader (follow the vertex shader boilerplate)
+2. How to handle different rendering techniques (geometry, iteration, raymarching)
+3. How to write clean, well-typed WGSL code
+
+Then generate a shader that solves the problem described above.
+
+Choose the appropriate technique:
+- Simple geometry → Use Example 1 pattern (direct UV manipulation)
+- Mathematical iteration → Use Example 2 pattern (loop with early exit)
+- 3D shapes/raymarching → Use Example 3 pattern (SDF + raymarching)
+
+OUTPUT FORMAT:
+==================================================
+
+<shader file="shader.wgsl">
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+@group(0) @binding(0) var<uniform> Params: Params;
+
+struct Params {
+    resolution: vec2<f32>,
+    // Add other fields as needed
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    // Your solution here
+}
+</shader>
