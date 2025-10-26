@@ -45,7 +45,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Tuple
 from error_handler import use_safe, save_subprocess_output
-from shader_parser import ShaderParser, WGSLLinter, WGSLRepair
+from shader_parser import ShaderParser, WGSLRepair
 
 class TestRunner:
     def __init__(self, compile_semaphore=None, render_semaphore=None):
@@ -269,6 +269,8 @@ class TestRunner:
                 run_cmd = f"{self.shader_bench_binary} --shader {main_shader_absolute} --output {output_path}"
 
                 loop = asyncio.get_event_loop()
+
+                # First attempt: try to run as-is
                 result = await loop.run_in_executor(
                     None,
                     lambda: subprocess.run(
@@ -283,7 +285,33 @@ class TestRunner:
                 save_subprocess_output(test_folder, "render", result, run_cmd)
 
                 if result.returncode != 0:
-                    raise RuntimeError(f"Shader execution failed: {result.stderr[:500]}")
+                    # COMPILE FAILED: Try to repair based on actual compiler error
+                    error_output = result.stderr + result.stdout
+                    print(f"\n  ⚠️ Shader execution failed, attempting repair...")
+                    print(f"  Error: {error_output[:200]}")
+
+                    # Try repair if we detect a compilable error
+                    if self._attempt_repair_and_retry(
+                        test_folder, main_shader, error_output, run_cmd
+                    ):
+                        # Retry after repair
+                        result = await loop.run_in_executor(
+                            None,
+                            lambda: subprocess.run(
+                                ["bash", "-c", run_cmd],
+                                capture_output=True,
+                                text=True,
+                                timeout=60
+                            )
+                        )
+                        save_subprocess_output(test_folder, "render_retry", result, run_cmd)
+
+                        if result.returncode != 0:
+                            raise RuntimeError(
+                                f"Shader execution still failing after repair: {result.stderr[:500]}"
+                            )
+                    else:
+                        raise RuntimeError(f"Shader execution failed: {result.stderr[:500]}")
 
                 # Check output was generated
                 if not output_path.exists():
@@ -294,6 +322,23 @@ class TestRunner:
 
             finally:
                 os.chdir(original_cwd)
+
+    def _attempt_repair_and_retry(
+        self, test_folder: Path, main_shader: Path, error_output: str, run_cmd: str
+    ) -> bool:
+        """Repair shader from compiler error and retry."""
+        shader_path = test_folder / main_shader
+        with open(shader_path) as f:
+            code = f.read()
+
+        repaired = WGSLRepair().repair_from_error(code, error_output)
+        if repaired == code:
+            return False
+
+        with open(shader_path, 'w') as f:
+            f.write(repaired)
+        print(f"  ✅ Applied repair")
+        return True
 
     async def run_test(self, test_folder: Path) -> Path:
         """
