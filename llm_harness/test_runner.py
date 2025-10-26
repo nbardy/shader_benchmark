@@ -45,7 +45,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Tuple
 from error_handler import use_safe, save_subprocess_output
-from shader_parser import ShaderParser
+from shader_parser import ShaderParser, WGSLLinter, WGSLRepair
 
 class TestRunner:
     def __init__(self, compile_semaphore=None, render_semaphore=None):
@@ -154,14 +154,36 @@ class TestRunner:
         # Create shaders subdirectory
         (test_folder / "shaders").mkdir(exist_ok=True)
 
-        # Initialize parser for cleanup
+        # Initialize parser and linting/repair tools
         parser = ShaderParser()
+        linter = WGSLLinter()
+        repairman = WGSLRepair()
+
+        # Track repairs applied for diagnostics
+        all_repairs = {}
 
         # Write shader files (these will be executed by pre-built binary)
         for filename, content in shaders.items():
-            # Apply WGSL cleanup if it's a WGSL shader
+            # Apply WGSL lint+repair if it's a WGSL shader
             if filename.endswith('.wgsl'):
-                content = parser.cleanup_wgsl_shader(content)
+                # LINT PHASE: Detect compilation issues
+                lint_errors = linter.lint(content)
+
+                # REPAIR PHASE: Fix detected issues
+                if lint_errors:
+                    original_content = content
+                    content, repairs = repairman.repair_all(content, lint_errors)
+                    all_repairs[filename] = {
+                        'errors_found': len(lint_errors),
+                        'repairs_applied': repairs,
+                        'error_list': [(e.error_type, e.message) for e in lint_errors]
+                    }
+
+                    # Log repairs for debugging
+                    if repairs:
+                        print(f"\n  {filename}: Repairs applied:")
+                        for error_type, count in repairs.items():
+                            print(f"    - {error_type}: {count} fix(es)")
 
             with open(test_folder / "shaders" / filename, 'w') as f:
                 f.write(content)
@@ -171,8 +193,16 @@ class TestRunner:
         with open(test_folder / "llm_generated_main_rs_reference.txt", 'w') as f:
             f.write(main_rs)
 
+        # Save lint+repair report
+        if all_repairs:
+            import json
+            with open(test_folder / "lint_repair_report.json", 'w') as f:
+                json.dump(all_repairs, f, indent=2)
+
         print(f"Setup test files in {test_folder}")
         print(f"Created {len(shaders)} shader files: {list(shaders.keys())}")
+        if all_repairs:
+            print(f"Applied lint+repair fixes to {len(all_repairs)} shader(s)")
         print(f"Saved LLM-generated main.rs as reference (not compiled)")
     
     async def compile_shader(self, test_folder: Path) -> Tuple[bool, str]:
