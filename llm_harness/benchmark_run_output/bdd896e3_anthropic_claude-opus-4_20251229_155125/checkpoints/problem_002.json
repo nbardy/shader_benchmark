@@ -1,0 +1,30 @@
+{
+  "problem_index": 2,
+  "problem_name": "apollonian_gasket",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T15:57:51.536545",
+      "data": {
+        "shaders": [
+          "apollonian_gasket.wgsl"
+        ],
+        "llm_response_len": 6002
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T15:57:51.540039",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/bdd896e3_anthropic_claude-opus-4_20251229_155125/results/002_apollonian_gasket"
+      }
+    },
+    "render": {
+      "status": "in_progress",
+      "timestamp": "2025-12-29T15:57:51.540626",
+      "data": {}
+    }
+  },
+  "created": "2025-12-29T15:56:16.768970",
+  "last_updated": "2025-12-29T15:57:51.540628"
+}

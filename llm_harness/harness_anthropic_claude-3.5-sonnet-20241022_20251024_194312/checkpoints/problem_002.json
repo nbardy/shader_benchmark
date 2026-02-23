@@ -1,0 +1,15 @@
+{
+  "problem_index": 2,
+  "problem_name": "apollonian_gasket",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-10-24T19:44:25.616709",
+      "data": {
+        "error": "No main.rs content found in LLM response"
+      }
+    }
+  },
+  "created": "2025-10-24T19:44:04.635662",
+  "last_updated": "2025-10-24T19:44:25.616716"
+}

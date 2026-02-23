@@ -1,0 +1,25 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-23T23:09:30.509181",
+      "data": {
+        "shaders": [
+          "ackermann.wgsl"
+        ],
+        "llm_response_len": 10227
+      }
+    },
+    "compile": {
+      "status": "in_progress",
+      "timestamp": "2025-10-23T23:09:30.516336",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251023_230930_02bc47f5-acaf-4df7-9468-af0e52960968_results"
+      }
+    }
+  },
+  "created": "2025-10-23T23:08:38.664469",
+  "last_updated": "2025-10-23T23:09:30.516352"
+}

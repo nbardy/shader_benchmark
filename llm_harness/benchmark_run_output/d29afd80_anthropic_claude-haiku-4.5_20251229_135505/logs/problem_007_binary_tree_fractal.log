@@ -1,0 +1,68 @@
+2025-12-29 13:58:25.892 [INFO] Logger initialized for problem 7: binary_tree_fractal
+2025-12-29 13:58:25.892 [INFO] ========== PROBLEM START ==========
+2025-12-29 13:58:25.892 [INFO] Index: 7
+2025-12-29 13:58:25.892 [INFO] Name: binary_tree_fractal
+2025-12-29 13:58:25.892 [INFO] ---------- STAGE START: GENERATE ----------
+2025-12-29 13:58:25.892 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-12-29 13:58:25.893 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/checkpoints/problem_007.json
+2025-12-29 13:58:25.893 [INFO] Loading request prompt
+2025-12-29 13:58:25.893 [INFO] API call: LLM generation model=anthropic/claude-haiku-4.5, language=wgsl
+2025-12-29 13:58:56.000 [ERROR] EXCEPTION in generate stage:
+2025-12-29 13:58:56.001 [ERROR]   Type: ChunkedEncodingError
+2025-12-29 13:58:56.001 [ERROR]   Message: Response ended prematurely
+2025-12-29 13:58:56.001 [ERROR]   Traceback:
+2025-12-29 13:58:56.008 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 313, in run_single_problem
+    llm_response = await llm_client.generate_shaders(self.model, request_prompt)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-12-29 13:58:56.008 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/llm_client.py", line 58, in generate_shaders
+    response = requests.post(
+        f"{self.base_url}/chat/completions",
+    ...<2 lines>...
+        timeout=300  # 5 minute timeout for complex requests
+    )
+2025-12-29 13:58:56.008 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/venv/lib/python3.13/site-packages/requests/api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+2025-12-29 13:58:56.008 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/venv/lib/python3.13/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-12-29 13:58:56.008 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/venv/lib/python3.13/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+2025-12-29 13:58:56.008 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/venv/lib/python3.13/site-packages/requests/sessions.py", line 746, in send
+    r.content
+2025-12-29 13:58:56.008 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/venv/lib/python3.13/site-packages/requests/models.py", line 902, in content
+    self._content = b"".join(self.iter_content(CONTENT_CHUNK_SIZE)) or b""
+                    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-12-29 13:58:56.008 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/venv/lib/python3.13/site-packages/requests/models.py", line 822, in generate
+    raise ChunkedEncodingError(e)
+2025-12-29 13:58:56.008 [INFO] Attempting to save checkpoint: stage=generate, status=failed
+2025-12-29 13:58:56.010 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/checkpoints/problem_007.json
+2025-12-29 13:58:56.010 [INFO] ---------- STAGE END: GENERATE - FAILED ----------
+2025-12-29 13:58:56.010 [ERROR] EXCEPTION in run_single_problem:
+2025-12-29 13:58:56.010 [ERROR]   Type: ChunkedEncodingError
+2025-12-29 13:58:56.011 [ERROR]   Message: Response ended prematurely
+2025-12-29 13:58:56.011 [ERROR]   Traceback:
+2025-12-29 13:58:56.012 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 313, in run_single_problem
+    llm_response = await llm_client.generate_shaders(self.model, request_prompt)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-12-29 13:58:56.012 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/llm_client.py", line 58, in generate_shaders
+    response = requests.post(
+        f"{self.base_url}/chat/completions",
+    ...<2 lines>...
+        timeout=300  # 5 minute timeout for complex requests
+    )
+2025-12-29 13:58:56.012 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/venv/lib/python3.13/site-packages/requests/api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+2025-12-29 13:58:56.012 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/venv/lib/python3.13/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-12-29 13:58:56.012 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/venv/lib/python3.13/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+2025-12-29 13:58:56.012 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/venv/lib/python3.13/site-packages/requests/sessions.py", line 746, in send
+    r.content
+2025-12-29 13:58:56.012 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/venv/lib/python3.13/site-packages/requests/models.py", line 902, in content
+    self._content = b"".join(self.iter_content(CONTENT_CHUNK_SIZE)) or b""
+                    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-12-29 13:58:56.012 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/venv/lib/python3.13/site-packages/requests/models.py", line 822, in generate
+    raise ChunkedEncodingError(e)
+2025-12-29 13:58:56.012 [INFO] ========== PROBLEM END: FAILED ==========
+2025-12-29 13:58:56.012 [INFO] Execution time: 30.12s

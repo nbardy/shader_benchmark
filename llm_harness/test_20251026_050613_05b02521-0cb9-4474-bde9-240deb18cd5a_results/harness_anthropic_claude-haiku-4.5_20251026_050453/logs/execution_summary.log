@@ -1,0 +1,103 @@
+[2025-10-26 05:06:13.698936] START problem_003: apollonius_conic_sections
+[2025-10-26 05:45:51.933053] EXCEPTION in problem_004 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: numeric literal not representable by target type: `0x9e3779b97f4a7c15u`
+   ┌─ wgsl:31:20
+   │
+31 │     return a ^ b ^ 0x9e3779b97f4a7c15u;
+   │                    ^^^^^^^^^^^^^^^^^^^ numeric literal not
+[2025-10-26 05:45:51.933224] END problem_004: archimedean_spiral_galaxy - FAILED (2359.01s)
+[2025-10-26 05:45:51.952693] EXCEPTION in problem_007 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: declaration of `sd_tree_branch` is recursive
+    ┌─ wgsl:97:4
+    │
+ 97 │ fn sd_tree_branch(
+    │    ^^^^^^^^^^^^^^
+    ·
+115 │         d = min(d, sd_tree_branch(p, p_end, left_dir, next_len, next_rad,
+[2025-10-26 05:45:51.952755] END problem_007: binary_tree_fractal - FAILED (2258.92s)
+[2025-10-26 05:45:52.149436] EXCEPTION in problem_015 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: name `final` is a reserved keyword
+    ┌─ wgsl:214:9
+    │
+214 │     let final = mix(result, vec4<f32>(0.2, 0.15, 0.1, 1.0), border * 0.3);
+    │         ^^^^^ definition of `final`
+
+
+    name `final` i
+[2025-10-26 05:45:52.149505] END problem_015: chinese_remainder_sunzi - FAILED (2075.40s)
+[2025-10-26 05:45:52.437799] END problem_023: cycloid_wave_patterns - SUCCESS (1900.95s)
+[2025-10-26 05:45:52.467216] EXCEPTION in problem_027 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader validation error: 
+   ┌─ user_shader:87:21
+   │
+87 │         let theta = cusp_offsets[cusp_idx];
+   │                     ^^^^^^^^^^^^^^^^^^^^^^ naga::Expression [98]
+
+
+    Entry point fs_main at Fragment is invalid
+    Expression 
+[2025-10-26 05:45:52.467291] END problem_027: epicycloids - FAILED (1807.02s)
+[2025-10-26 05:45:52.629482] EXCEPTION in problem_033 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: invalid switch value
+   ┌─ wgsl:49:18
+   │
+49 │             case 1u: { return vec2<f32>(0.45, 0.0); }
+   │                  ^^ expected signed integer
+   │
+   = note: remove the `u` suffix: '1'
+
+
+    in
+[2025-10-26 05:45:52.629542] END problem_033: fourier_epicycles_drawing - FAILED (1675.99s)
+[2025-10-26 05:45:52.665702] EXCEPTION in problem_035 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: declaration of `tree_recursive` is recursive
+   ┌─ wgsl:41:4
+   │
+41 │ fn tree_recursive(
+   │    ^^^^^^^^^^^^^^
+   ·
+65 │         result = result + tree_recursive(
+   │                           ^^^^^^
+[2025-10-26 05:45:52.665781] END problem_035: fractal_tree_2d - FAILED (1632.27s)

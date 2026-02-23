@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_051720_9763e614-c4b0-421e-ac72-c7b8cf2c206a_results/shaders/fermat_spiral.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_051720_9763e614-c4b0-421e-ac72-c7b8cf2c206a_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 3.335 ms   | CPU 94.385 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_051720_9763e614-c4b0-421e-ac72-c7b8cf2c206a_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

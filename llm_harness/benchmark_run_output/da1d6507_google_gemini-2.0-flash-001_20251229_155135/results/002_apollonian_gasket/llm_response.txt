@@ -1,0 +1,88 @@
+```xml
+<shader file="shader.wgsl">
+@group(0) @binding(0) var<uniform> params: Params;
+
+struct Params {
+    resolution: vec2<f32>,
+    time: f32,
+};
+
+const iterations: u32 = 3000000u;
+const discard_start: u32 = 12u;
+const plot_count: u32 = 9u;
+const subpixel_radius: f32 = 0.6;
+const aspect: f32 = 1.0;
+const padding: f32 = 120.0;
+const red: vec4<f32> = vec4<f32>(1.0, 0.2, 0.333, 0.02);
+const green: vec4<f32> = vec4<f32>(0.2, 1.0, 0.333, 0.02);
+const bloom_opacity: f32 = 0.4;
+
+fn mobius1(z: vec2<f32>) -> vec2<f32> {
+    let num = vec2<f32>(2.0 * z.x + 1.0, 2.0 * z.y);
+    let den = vec2<f32>(z.x + 1.0, z.y);
+    let norm = den.x * den.x + den.y * den.y;
+    return vec2<f32>((num.x * den.x + num.y * den.y) / norm, (num.y * den.x - num.x * den.y) / norm);
+}
+
+fn mobius2(z: vec2<f32>) -> vec2<f32> {
+    let num = vec2<f32>(2.0 * z.x - 1.0, 2.0 * z.y);
+    let den = vec2<f32>(z.x - 1.0, z.y);
+    let norm = den.x * den.x + den.y * den.y;
+    return vec2<f32>((num.x * den.x + num.y * den.y) / norm, (num.y * den.x - num.x * den.y) / norm);
+}
+
+fn stereographic_projection(z: vec2<f32>) -> vec2<f32> {
+    let x = z.x;
+    let y = z.y;
+    let norm = x * x + y * y + 1.0;
+    return vec2<f32>(2.0 * x / norm, 2.0 * y / norm);
+}
+
+fn get_color(parity: i32) -> vec4<f32> {
+    return select(red, green, parity % 2 == 0);
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    var z: vec2<f32> = vec2<f32>(0.0, 0.0);
+    var parity: i32 = 0;
+
+    var rand_state: u32 = u32(pos.x + pos.y * params.time * 100.0);
+
+    for (var i: u32 = 0u; i < iterations; i = i + 1u) {
+        rand_state = rand_state * 1664525u + 1013904223u;
+        let choice = rand_state % 2u;
+
+        if (choice == 0u) {
+            z = mobius1(z);
+            parity = parity + 1;
+        } else {
+            z = mobius2(z);
+            parity = parity - 1;
+        }
+
+        if (i >= discard_start && (i - discard_start) < plot_count) {
+            let projected = stereographic_projection(z);
+
+            let scale = min(params.resolution.x, params.resolution.y) / 2.0 - padding;
+            let offset = params.resolution / 2.0;
+            let p = projected * scale + offset;
+            let dist = distance(pos.xy, p);
+
+            if (dist < subpixel_radius) {
+                return get_color(parity);
+            }
+        }
+    }
+    return vec4<f32>(0.0, 0.0, 0.0, 1.0);  // Black background
+}
+
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+</shader>
+```

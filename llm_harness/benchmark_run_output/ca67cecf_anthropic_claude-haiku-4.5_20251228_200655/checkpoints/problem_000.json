@@ -1,0 +1,32 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-28T20:07:11.160055",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 5581
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-28T20:07:11.163114",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/ca67cecf_anthropic_claude-haiku-4.5_20251228_200655/results/000_ackermann_function_growth"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-12-28T20:07:16.376026",
+      "data": {
+        "error": "Shader execution failed: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader 'user_shader' parsing error: expected global item ('struct', 'const', 'var', 'alias', ';', 'fn') or the end of the file, found 'let'\n   \u250c\u2500 wgsl:26:1\n   \u2502\n26 \u2502 let log10_ackermann = array<f32, 11>(\n   \u2502 ^^^ "
+      }
+    }
+  },
+  "created": "2025-12-28T20:06:55.347244",
+  "last_updated": "2025-12-28T20:07:16.376031"
+}

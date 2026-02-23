@@ -1,0 +1,15 @@
+{
+  "problem_index": 8,
+  "problem_name": "brahmagupta_cyclic_quadrilaterals",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-12-29T16:43:40.744879",
+      "data": {
+        "error": "Failed after 3 retries: Response ended prematurely (hit token limit)"
+      }
+    }
+  },
+  "created": "2025-12-29T16:39:26.422602",
+  "last_updated": "2025-12-29T16:43:40.744889"
+}

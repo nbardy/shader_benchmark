@@ -1,0 +1,22 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: harness_anthropic_claude-3.5-sonnet-20241022_20251025_211903
+Started: 2025-10-25T21:19:03.294318
+============================================================
+
+[2025-10-25 21:19:03.294424] HARNESS INITIALIZED
+  Model: anthropic/claude-3.5-sonnet-20241022
+  Problems: 10
+  Max parallel: 1
+  Problem list:
+    000: archimedes_spiral
+    001: barbell_dumbbell_shape
+    002: binary_tree_fractal
+    003: brahmagupta_cyclic_quadrilaterals
+    004: braided_rope
+    005: butterfly_curve
+    006: calabi_yau_manifold
+    007: capsule_shape
+    008: cardioid_limacon_collection
+    009: catenoid_helicoid_minimal
+
+[2025-10-25 21:19:03.546771] START problem_000: archimedes_spiral

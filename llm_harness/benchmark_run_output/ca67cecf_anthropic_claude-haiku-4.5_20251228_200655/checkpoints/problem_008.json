@@ -1,0 +1,15 @@
+{
+  "problem_index": 8,
+  "problem_name": "brahmagupta_cyclic_quadrilaterals",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-12-28T20:07:15.769622",
+      "data": {
+        "error": "OpenRouter API error: 403 - {\"error\":{\"message\":\"Key limit exceeded (total limit). Manage it using https://openrouter.ai/settings/keys\",\"code\":403}}"
+      }
+    }
+  },
+  "created": "2025-12-28T20:07:15.376537",
+  "last_updated": "2025-12-28T20:07:15.769630"
+}

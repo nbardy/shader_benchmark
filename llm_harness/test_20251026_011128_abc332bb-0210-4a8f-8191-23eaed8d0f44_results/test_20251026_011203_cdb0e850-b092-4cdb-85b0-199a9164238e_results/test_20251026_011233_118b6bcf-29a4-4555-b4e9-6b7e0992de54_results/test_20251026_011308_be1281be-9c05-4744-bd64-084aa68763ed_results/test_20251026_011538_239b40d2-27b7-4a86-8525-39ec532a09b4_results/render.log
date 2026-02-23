@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_011128_abc332bb-0210-4a8f-8191-23eaed8d0f44_results/test_20251026_011203_cdb0e850-b092-4cdb-85b0-199a9164238e_results/test_20251026_011233_118b6bcf-29a4-4555-b4e9-6b7e0992de54_results/test_20251026_011308_be1281be-9c05-4744-bd64-084aa68763ed_results/test_20251026_011538_239b40d2-27b7-4a86-8525-39ec532a09b4_results/shaders/braided_rope.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_011128_abc332bb-0210-4a8f-8191-23eaed8d0f44_results/test_20251026_011203_cdb0e850-b092-4cdb-85b0-199a9164238e_results/test_20251026_011233_118b6bcf-29a4-4555-b4e9-6b7e0992de54_results/test_20251026_011308_be1281be-9c05-4744-bd64-084aa68763ed_results/test_20251026_011538_239b40d2-27b7-4a86-8525-39ec532a09b4_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 34.253 ms   | CPU 384.726 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_011128_abc332bb-0210-4a8f-8191-23eaed8d0f44_results/test_20251026_011203_cdb0e850-b092-4cdb-85b0-199a9164238e_results/test_20251026_011233_118b6bcf-29a4-4555-b4e9-6b7e0992de54_results/test_20251026_011308_be1281be-9c05-4744-bd64-084aa68763ed_results/test_20251026_011538_239b40d2-27b7-4a86-8525-39ec532a09b4_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

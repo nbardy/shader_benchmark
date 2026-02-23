@@ -1,0 +1,35 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: harness_anthropic_claude-haiku-4.5_20251026_124900
+Started: 2025-10-26T12:49:00.369901
+============================================================
+
+[2025-10-26 12:49:00.369969] HARNESS INITIALIZED
+  Model: anthropic/claude-haiku-4.5
+  Problems: 1
+  Max parallel: 1
+  Problem list:
+    000: geometric_cube
+
+[2025-10-26 12:49:00.602841] START problem_000: geometric_cube
+[2025-10-26 12:49:14.669698] EXCEPTION in problem_000 (run_single_problem): RuntimeError: Shader execution still failing after repair: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader validation error: 
+   ┌─ user_shader:65:17
+   │
+65 │         let v = vertices[i];
+   │                 ^^^^^^^^^^^ naga::Expression [64]
+
+
+    Entry point fs_main at Fragment is invalid
+    Expression [64] is invalid
+    The expres
+[2025-10-26 12:49:14.669791] END problem_000: geometric_cube - FAILED (14.07s)
+
+============================================================
+Run completed: 2025-10-26T12:49:14.670428

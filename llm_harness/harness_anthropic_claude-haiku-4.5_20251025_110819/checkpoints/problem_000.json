@@ -1,0 +1,32 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-25T11:08:34.381002",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 4933
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-25T11:08:34.382630",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251025_110834_7ef200be-8c61-4711-b782-0b62bc369c1c_results"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-10-25T11:10:52.652779",
+      "data": {
+        "error": "Shader execution failed: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader 'user_shader' parsing error: redefinition of `Params`\n   \u250c\u2500 wgsl:9:36\n   \u2502\n 9 \u2502 @group(0) @binding(0) var<uniform> Params: Params;\n   \u2502                                    ^^^^^^ previous definition of `Para"
+      }
+    }
+  },
+  "created": "2025-10-25T11:08:19.560717",
+  "last_updated": "2025-10-25T11:10:52.652783"
+}

@@ -1,0 +1,38 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: harness_anthropic_claude-3.5-sonnet-20241022_20251023_232237
+Started: 2025-10-23T23:22:37.650906
+============================================================
+
+[2025-10-23 23:22:37.650973] HARNESS INITIALIZED
+  Model: anthropic/claude-3.5-sonnet-20241022
+  Problems: 3
+  Max parallel: 3
+  Problem list:
+    000: ackermann_function_growth
+    001: al_khwarizmi_geometric_algebra
+    002: apollonian_gasket
+
+[2025-10-23 23:22:37.659333] START problem_000: ackermann_function_growth
+[2025-10-23 23:24:20.894405] EXCEPTION in problem_000 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `ackermann`
+    
+Shader 'ackermann' parsing error: name `final` is a reserved keyword
+   ┌─ wgsl:98:9
+   │
+98 │     let final = mix(color, barColor, barAlpha);
+   │         ^^^^^ definition of `final`
+
+
+    name `final` is a reserved keyword
+
+
+note: run wit
+[2025-10-23 23:24:20.894596] END problem_000: ackermann_function_growth - FAILED (103.23s)
+
+============================================================
+Run completed: 2025-10-23T23:24:20.895193

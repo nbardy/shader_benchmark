@@ -1,0 +1,32 @@
+2025-12-28 20:05:53.959 [INFO] Logger initialized for problem 1: al_khwarizmi_geometric_algebra
+2025-12-28 20:05:53.959 [INFO] ========== PROBLEM START ==========
+2025-12-28 20:05:53.959 [INFO] Index: 1
+2025-12-28 20:05:53.959 [INFO] Name: al_khwarizmi_geometric_algebra
+2025-12-28 20:05:53.959 [INFO] ---------- STAGE START: GENERATE ----------
+2025-12-28 20:05:53.959 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-12-28 20:05:53.959 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6df99ea8_anthropic_claude-haiku-4.5_20251228_200551/checkpoints/problem_001.json
+2025-12-28 20:05:53.960 [INFO] Loading request prompt
+2025-12-28 20:05:53.960 [INFO] API call: LLM generation model=anthropic/claude-haiku-4.5, language=wgsl
+2025-12-28 20:05:58.073 [ERROR] EXCEPTION in generate stage:
+2025-12-28 20:05:58.073 [ERROR]   Type: Exception
+2025-12-28 20:05:58.073 [ERROR]   Message: OpenRouter API error: 402 - {"error":{"message":"This request requires more credits, or fewer max_tokens. You requested up to 64000 tokens, but can only afford 41131. To increase, visit https://openrouter.ai/settings/keys and create a key with a higher total limit","code":402,"metadata":{"provider_name":null}},"user_id":"user_2vi2bRGZbu6aVy8mqhR6MLGwDAO"}
+2025-12-28 20:05:58.073 [ERROR]   Traceback:
+2025-12-28 20:05:58.073 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 313, in run_single_problem
+    llm_response = await llm_client.generate_shaders(self.model, request_prompt)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-12-28 20:05:58.073 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/llm_client.py", line 65, in generate_shaders
+    raise Exception(f"OpenRouter API error: {response.status_code} - {response.text}")
+2025-12-28 20:05:58.074 [INFO] Attempting to save checkpoint: stage=generate, status=failed
+2025-12-28 20:05:58.075 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6df99ea8_anthropic_claude-haiku-4.5_20251228_200551/checkpoints/problem_001.json
+2025-12-28 20:05:58.075 [INFO] ---------- STAGE END: GENERATE - FAILED ----------
+2025-12-28 20:05:58.075 [ERROR] EXCEPTION in run_single_problem:
+2025-12-28 20:05:58.075 [ERROR]   Type: Exception
+2025-12-28 20:05:58.075 [ERROR]   Message: OpenRouter API error: 402 - {"error":{"message":"This request requires more credits, or fewer max_tokens. You requested up to 64000 tokens, but can only afford 41131. To increase, visit https://openrouter.ai/settings/keys and create a key with a higher total limit","code":402,"metadata":{"provider_name":null}},"user_id":"user_2vi2bRGZbu6aVy8mqhR6MLGwDAO"}
+2025-12-28 20:05:58.075 [ERROR]   Traceback:
+2025-12-28 20:05:58.075 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 313, in run_single_problem
+    llm_response = await llm_client.generate_shaders(self.model, request_prompt)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-12-28 20:05:58.075 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/llm_client.py", line 65, in generate_shaders
+    raise Exception(f"OpenRouter API error: {response.status_code} - {response.text}")
+2025-12-28 20:05:58.075 [INFO] ========== PROBLEM END: FAILED ==========
+2025-12-28 20:05:58.075 [INFO] Execution time: 4.12s

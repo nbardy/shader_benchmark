@@ -1,0 +1,9 @@
+=== RENDER_RETRY LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/97fe1f08_anthropic_claude-haiku-4.5_20251026_154624/results/000_geometric_cube/shaders/shader_0.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/97fe1f08_anthropic_claude-haiku-4.5_20251026_154624/results/000_geometric_cube/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 19.005 ms   | CPU 120.441 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/97fe1f08_anthropic_claude-haiku-4.5_20251026_154624/results/000_geometric_cube/artifacts/result.png"
+
+=== STDERR ===
+(empty)

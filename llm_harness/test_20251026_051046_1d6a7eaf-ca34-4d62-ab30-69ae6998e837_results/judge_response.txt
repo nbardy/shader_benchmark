@@ -1,0 +1,179 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Geometric Form Verification:
+- Cylindrical body must be exactly 3.0 units tall with consistent radius
+- Hemispherical caps with radius of 0.8 units matching cylinder radius
+- Total height calculation: cylinder height plus two radii (4.6 total)
+- Perfect spherical curvature for both hemispherical end caps
+- Vertical orientation axis alignment maintained throughout
+
+Dimensional Precision:
+- Consistent radius of 0.8 throughout entire cylinder section
+- Seamless mathematical transition from cylinder to hemisphere
+- No geometric distortion or scaling errors
+- Precise parametric surface construction
+- Accurate proportional relationships between components
+
+**S4: Visual Implementation Section**  
+Material and Surface Quality:
+- Porcelain white base color with semi-glossy finish
+- Subtle blue undertones visible in shadows and indirect lighting
+- Specular highlights appropriate for ceramic material properties
+- Surface continuity with no visible seams or discontinuities
+- No polygonal artifacts, faceting, or rendering imperfections
+
+Lighting and Rendering Standards:
+- Three-point lighting setup with clear key, fill, and rim lighting
+- Rim light creates proper edge definition against dark background
+- Dark gradient background provides appropriate contrast
+- Low camera angle emphasizes vertical height and proportions
+- Professional anti-aliasing on all edges and curves
+
+**S5: Completeness & Specifications Section**
+Required Geometric Elements:
+- Complete capsule shape with cylinder body and hemispherical caps
+- Vertical orientation as specified in requirements
+- Proper surface smoothness throughout entire form
+- No missing geometric components or incomplete sections
+- Consistent curvature maintaining capsule shape definition
+
+Technical and Visual Standards:
+- Clean, professional rendering quality without noise or artifacts
+- Shadows that enhance three-dimensional form perception
+- Overall elegant, sculptural appearance meeting aesthetic requirements
+- Proper form modeling through lighting to show dimensional depth
+- Complete adherence to capsule shape specifications
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+Create a 3D capsule shape (cylinder with hemispherical caps) with height 3.0 and radius 0.8, oriented vertically. Material: semi-glossy porcelain white with subtle blue undertones. Lighting: three-point setup with rim light. Background: dark gradient. Camera: slight low angle to emphasize height.
+
+Outputs a single image.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Evaluation
+
+## Detailed Assessment
+
+### S1: Problem Accuracy (Generic)
+**Analysis:** The image fails to deliver the core requirement - a 3D capsule shape visualization. Instead, it displays abstract vertical striations or pleated surfaces on either side of a dark gradient background. There is no recognizable capsule geometry (cylinder with hemispherical caps), no vertical capsule orientation, and no cylindrical body with hemispheric end caps. The fundamental mathematical object is completely absent from the visualization.
+
+**Score Reasoning:** The visualization does not match the specified mathematical requirements at all. A capsule shape is entirely absent.
+
+---
+
+### S2: Visual Quality (Generic)
+**Analysis:** While the image possesses technical polish with clean rendering, smooth gradients, and anti-aliased edges on the striations, these qualities are irrelevant to the task. The visual composition shows:
+- Repetitive vertical line patterns with consistent spacing
+- Smooth dark purple gradient background
+- Professional rendering without noise or artifacts
+- However, none of these elements contribute to visualizing the required mathematical form
+
+The technical execution is competent, but it's applied to the wrong subject matter entirely.
+
+**Score Reasoning:** Good technical quality cannot compensate for complete absence of required content. The visual polish applied to an incorrect visualization yields minimal value.
+
+---
+
+### S3: Mathematical Accuracy Section
+**Critical Failures:**
+
+*Geometric Form Verification:*
+- ❌ No cylindrical body present (should be 3.0 units tall)
+- ❌ No hemispherical caps visible (should be 0.8 radius)
+- ❌ Total height (4.6 units) cannot be verified - capsule is absent
+- ❌ No spherical curvature for end caps
+- ❌ Vertical orientation cannot be assessed as the object doesn't exist
+
+*Dimensional Precision:*
+- ❌ No radius consistency (no cylinder exists)
+- ❌ No cylinder-to-hemisphere transition visible
+- ❌ No parametric surface construction evident
+- ❌ Proportional relationships between components: undefined
+
+**Score Reasoning:** Complete geometric failure. The required mathematical form is entirely absent from the visualization.
+
+---
+
+### S4: Visual Implementation Section
+**Analysis:**
+
+*Material and Surface Quality:*
+- ❌ No porcelain white base color (image is gray and purple)
+- ❌ No semi-glossy ceramic finish
+- ❌ No blue undertones in shadow regions (irrelevant as no object exists)
+- ❌ No specular highlights for ceramic properties
+- ❌ Surface continuity cannot be assessed
+
+*Lighting and Rendering Standards:*
+- ❌ No three-point lighting setup visible
+- ❌ No key, fill, or rim lighting for a capsule object
+- ❌ Dark gradient background exists but serves no purpose (no capsule to illuminate)
+- ❌ Low camera angle requirement not applicable (no capsule to emphasize height)
+- ❌ Anti-aliasing present but on wrong subject matter
+
+**Score Reasoning:** All material and lighting specifications are inapplicable to a visualization that doesn't contain the required object.
+
+---
+
+### S5: Completeness & Specifications Section
+**Critical Assessment:**
+
+*Required Geometric Elements:*
+- ❌ No capsule shape present
+- ❌ No cylinder body component
+- ❌ No hemispherical caps
+- ❌ No vertical orientation demonstrated
+- ❌ Incompleteness is total
+
+*Technical and Visual Standards:*
+- ✓ Clean rendering without noise (irrelevant)
+- ✗ Shadows don't enhance form perception (no form to perceive)
+- ✗ No sculptural capsule appearance
+- ✗ No form modeling through lighting
+- ✗ Complete failure to meet capsule shape specifications
+
+**Score Reasoning:** The visualization fails every requirement in the Completeness & Specifications section. The essential geometric form is entirely absent.
+
+---
+
+## Summary
+
+This image represents a fundamental failure to deliver the requested mathematical visualization. While the rendering demonstrates technical competence in terms of smoothness and anti-aliasing, it applies these qualities to an entirely incorrect subject. The abstract striped pattern bears no relationship to a capsule shape, which requires a vertical cylinder (3.0 units tall, 0.8 radius) with hemispherical caps (0.8 radius) at both ends.
+
+The visualization fails on:
+- Mathematical accuracy (no capsule present)
+- Specification compliance (all requirements unmet)
+- Problem understanding (wrong subject rendered)
+- Purpose (mathematical form visualization absent)
+
+<scores><S1>5</S1><S2>35</S2><S3>2</S3><S4>8</S4><S5>3</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[5, 35, 2, 8, 3]
+

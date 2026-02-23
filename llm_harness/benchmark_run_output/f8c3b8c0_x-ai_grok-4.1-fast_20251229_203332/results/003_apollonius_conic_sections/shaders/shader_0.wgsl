@@ -1,0 +1,261 @@
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+};
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+fn sd_segment(p: vec2<f32>, a: vec2<f32>, b: vec2<f32>) -> f32 {
+    let pa = p - a;
+    let ba = b - a;
+    let h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
+
+fn cross2d(a: vec2<f32>, b: vec2<f32>) -> f32 {
+    return a.x * b.y - a.y * b.x;
+}
+
+fn is_inside_quad(uv: vec2<f32>, corners: array<vec2<f32>, 4>) -> bool {
+    for (var i: u32 = 0u; i < 4u; i = i + 1u) {
+        let ni: u32 = (i + 1u) % 4u;
+        let edge: vec2<f32> = corners[ni] - corners[i];
+        let to_p: vec2<f32> = uv - corners[i];
+        let cr: f32 = cross2d(to_p, edge);
+        if (cr < 0.0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let screen_uv: vec2<f32> = (pos.xy / params.resolution) * 2.0 - 1.0;
+
+    // Constants
+    let PI: f32 = 3.141592653589793;
+    let ALPHA_RAD: f32 = 30.0 * PI / 180.0;
+    let TAN_ALPHA: f32 = tan(ALPHA_RAD);
+    let Z_MAX: f32 = 3.0;
+    let N_PHI: u32 = 42u;
+    let PHI_STEP: f32 = 2.0 * PI / f32(N_PHI);
+    let SCALE: f32 = 0.28;
+    let ROT_X: f32 = 0.436;  // ~25 degrees
+    let ROT_Y: f32 = 0.785;  // 45 degrees
+    let parchment: vec3<f32> = vec3<f32>(0.9569, 0.9098, 0.8157);
+
+    // Rotation matrices
+    let cos_rx: f32 = cos(ROT_X);
+    let sin_rx: f32 = sin(ROT_X);
+    let cos_ry: f32 = cos(ROT_Y);
+    let sin_ry: f32 = sin(ROT_Y);
+    let rot_x_mat: mat3x3<f32> = mat3x3<f32>(
+        vec3<f32>(1.0, 0.0, 0.0),
+        vec3<f32>(0.0, cos_rx, -sin_rx),
+        vec3<f32>(0.0, sin_rx, cos_rx)
+    );
+    let rot_y_mat: mat3x3<f32> = mat3x3<f32>(
+        vec3<f32>(cos_ry, 0.0, sin_ry),
+        vec3<f32>(0.0, 1.0, 0.0),
+        vec3<f32>(-sin_ry, 0.0, cos_ry)
+    );
+    let view_rot: mat3x3<f32> = rot_y_mat * rot_x_mat;
+
+    // Project function
+    let proj_p1: vec2<f32> = (view_rot * vec3<f32>(-Z_MAX, 0.0, 0.0)).xy * SCALE;
+    let proj_p2: vec2<f32> = (view_rot * vec3<f32>(Z_MAX, 0.0, 0.0)).xy * SCALE;
+    let proj_p3: vec2<f32> = (view_rot * vec3<f32>(0.0, 0.0, Z_MAX)).xy * SCALE;  // Adjust scale based on fit
+
+    fn project(p: vec3<f32>) -> vec2<f32> {
+        return (view_rot * p).xy * SCALE;
+    }
+
+    // Cone wireframe (generators + latitudes)
+    var min_dist_cone: f32 = 10000.0;
+    // Generators
+    for (var i: u32 = 0u; i < N_PHI; i = i + 1u) {
+        let phi: f32 = f32(i) * PHI_STEP;
+        let cphi: f32 = cos(phi);
+        let sphi: f32 = sin(phi);
+        let dir: vec3<f32> = vec3<f32>(TAN_ALPHA * cphi, TAN_ALPHA * sphi, 1.0);
+        let p1: vec3<f32> = -Z_MAX * dir;
+        let p2: vec3<f32> = Z_MAX * dir;
+        let pr1: vec2<f32> = project(p1);
+        let pr2: vec2<f32> = project(p2);
+        let d: f32 = sd_segment(screen_uv, pr1, pr2);
+        min_dist_cone = min(min_dist_cone, d);
+    }
+    // Latitudes
+    let z_levels: array<f32, 8> = array<f32, 8>(
+        -2.5, -2.0, -1.5, -1.0,
+        1.0, 1.5, 2.0, 2.5
+    );
+    for (var iz: u32 = 0u; iz < 8u; iz = iz + 1u) {
+        let zlev: f32 = z_levels[iz];
+        let r: f32 = abs(zlev) * TAN_ALPHA;
+        var prev_proj: vec2<f32> = vec2<f32>(0.0);
+        var has_first: bool = false;
+        for (var i: u32 = 0u; i <= N_PHI; i = i + 1u) {
+            let phi: f32 = f32(i % N_PHI) * PHI_STEP;
+            let px: f32 = r * cos(phi);
+            let py: f32 = r * sin(phi);
+            let p3d: vec3<f32> = vec3<f32>(px, py, zlev);
+            let pr: vec2<f32> = project(p3d);
+            if (has_first) {
+                let d: f32 = sd_segment(screen_uv, prev_proj, pr);
+                min_dist_cone = min(min_dist_cone, d);
+            }
+            prev_proj = pr;
+            has_first = true;
+        }
+    }
+
+    // Plane definitions
+    let plane_deltas: array<f32, 3> = array<f32, 3>(
+        45.0 * PI / 180.0,
+        30.0 * PI / 180.0,
+        15.0 * PI / 180.0
+    );
+    let plane_offsets: array<f32, 3> = array<f32, 3>(1.5, 1.5, 1.5);
+    let curve_colors: array<vec3<f32>, 3> = array<vec3<f32>, 3>(
+        vec3<f32>(0.1, 0.2, 0.8),  // ellipse blue
+        vec3<f32>(0.2, 0.8, 0.2),  // parabola green
+        vec3<f32>(0.8, 0.2, 0.2)   // hyperbola red
+    );
+    let plane_fill_colors: array<vec3<f32>, 3> = array<vec3<f32>, 3>(
+        vec3<f32>(0.6, 0.7, 1.0),
+        vec3<f32>(0.6, 1.0, 0.6),
+        vec3<f32>(1.0, 0.6, 0.6)
+    );
+
+    // Curve distances (intersection curves)
+    var curve_dists: array<f32, 3> = array<f32, 3>(10000.0, 10000.0, 10000.0);
+    // Plane inside and edge dists
+    var plane_insides: array<f32, 3> = array<f32, 3>(0.0, 0.0, 0.0);
+    var plane_edge_dists: array<f32, 3> = array<f32, 3>(10000.0, 10000.0, 10000.0);
+
+    for (var ip: u32 = 0u; ip < 3u; ip = ip + 1u) {
+        let delta: f32 = plane_deltas[ip];
+        let n: vec3<f32> = vec3<f32>(0.0, cos(delta), -sin(delta));
+        let offset: f32 = plane_offsets[ip];
+
+        // Intersection curves
+        var prev_pr: vec2<f32> = vec2<f32>(0.0);
+        var has_pt: bool = false;
+        for (var i: u32 = 0u; i <= N_PHI; i = i + 1u) {
+            let phi: f32 = f32(i % N_PHI) * PHI_STEP;
+            let cphi: f32 = cos(phi);
+            let sphi: f32 = sin(phi);
+            let dir: vec3<f32> = vec3<f32>(TAN_ALPHA * cphi, TAN_ALPHA * sphi, 1.0);
+            let denom: f32 = dot(n, dir);
+            if (abs(denom) > 0.001) {
+                let t: f32 = offset / denom;
+                if (abs(t) <= Z_MAX) {
+                    let p: vec3<f32> = t * dir;
+                    let pr: vec2<f32> = project(p);
+                    if (has_pt) {
+                        let d: f32 = sd_segment(screen_uv, prev_pr, pr);
+                        curve_dists[ip] = min(curve_dists[ip], d);
+                    }
+                    prev_pr = pr;
+                    has_pt = true;
+                } else {
+                    has_pt = false;
+                }
+            } else {
+                has_pt = false;
+            }
+        }
+
+        // Plane quad
+        let u_dir: vec3<f32> = vec3<f32>(1.0, 0.0, 0.0);
+        let v_dir: vec3<f32> = vec3<f32>(0.0, n.z, -n.y);
+        let v_len: f32 = length(v_dir);
+        let v: vec3<f32> = select(vec3<f32>(0.0), v_dir / v_len, v_len > 0.001);
+        let center: vec3<f32> = offset * n;
+        let hx: f32 = 2.2;
+        let hw: f32 = 1.4;
+        var corners_3d: array<vec3<f32>, 4>;
+        corners_3d[0u] = center - hx * u_dir - hw * v;
+        corners_3d[1u] = center + hx * u_dir - hw * v;
+        corners_3d[2u] = center + hx * u_dir + hw * v;
+        corners_3d[3u] = center - hx * u_dir + hw * v;
+        var proj_corners: array<vec2<f32>, 4>;
+        for (var j: u32 = 0u; j < 4u; j = j + 1u) {
+            proj_corners[j] = project(corners_3d[j]);
+        }
+        if (is_inside_quad(screen_uv, proj_corners)) {
+            plane_insides[ip] = 1.0;
+        }
+        for (var j: u32 = 0u; j < 4u; j = j + 1u) {
+            let nj: u32 = (j + 1u) % 4u;
+            let d: f32 = sd_segment(screen_uv, proj_corners[j], proj_corners[nj]);
+            plane_edge_dists[ip] = min(plane_edge_dists[ip], d);
+        }
+    }
+
+    // Axis
+    let axis_p1: vec2<f32> = project(vec3<f32>(0.0, 0.0, -Z_MAX));
+    let axis_p2: vec2<f32> = project(vec3<f32>(0.0, 0.0, Z_MAX));
+    let axis_dist: f32 = sd_segment(screen_uv, axis_p1, axis_p2);
+
+    // Normal vectors
+    var min_norm_dist: f32 = 10000.0;
+    for (var ip: u32 = 0u; ip < 3u; ip = ip + 1u) {
+        let delta: f32 = plane_deltas[ip];
+        let n: vec3<f32> = vec3<f32>(0.0, cos(delta), -sin(delta));
+        let offset: f32 = plane_offsets[ip];
+        let foot_proj: vec2<f32> = project(offset * n);
+        let d: f32 = sd_segment(screen_uv, vec2<f32>(0.0, 0.0), foot_proj);
+        min_norm_dist = min(min_norm_dist, d);
+    }
+
+    // Accumulate color
+    var col: vec3<f32> = parchment;
+
+    // Planes (back to front: hyper, para, ellipse)
+    for (var ip: u32 = 0u; ip < 3u; ip = ip + 1u) {
+        let fill_opac: f32 = plane_insides[ip] * 0.22;
+        let edge_opac: f32 = (1.0 - smoothstep(0.0, 0.012, plane_edge_dists[ip])) * 0.35;
+        let total_opac: f32 = fill_opac + edge_opac;
+        let pcol: vec3<f32> = plane_fill_colors[ip];
+        col = mix(col, pcol, total_opac);
+    }
+
+    // Cone wireframe (translucent)
+    let cone_thick: f32 = 0.011;
+    let cone_mask: f32 = (1.0 - smoothstep(0.0, cone_thick, min_dist_cone)) * 0.7;
+    let cone_col: vec3<f32> = vec3<f32>(0.35, 0.35, 0.45);
+    col = mix(col, cone_col, cone_mask);
+
+    // Axis (thicker gray)
+    let axis_mask: f32 = (1.0 - smoothstep(0.0, 0.016, axis_dist)) * 0.85;
+    let axis_col: vec3<f32> = vec3<f32>(0.25);
+    col = mix(col, axis_col, axis_mask);
+
+    // Plane normals (thin)
+    let norm_mask: f32 = (1.0 - smoothstep(0.0, 0.007, min_norm_dist)) * 0.55;
+    let norm_col: vec3<f32> = vec3<f32>(0.4);
+    col = mix(col, norm_col, norm_mask);
+
+    // Bold intersection curves (over top)
+    for (var ip: u32 = 0u; ip < 3u; ip = ip + 1u) {
+        let curve_mask: f32 = 1.0 - smoothstep(0.0, 0.022, curve_dists[ip]);
+        col = mix(col, curve_colors[ip], curve_mask);
+    }
+
+    // Vignette
+    let uv_len: f32 = length(screen_uv * 0.5);
+    let vignette: f32 = 1.0 - uv_len * 0.35;
+    col = mix(vec3<f32>(0.92, 0.88, 0.80), col, vignette);
+
+    return vec4<f32>(col, 1.0);
+}

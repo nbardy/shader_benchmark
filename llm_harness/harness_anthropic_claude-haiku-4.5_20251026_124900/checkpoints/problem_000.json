@@ -1,0 +1,32 @@
+{
+  "problem_index": 0,
+  "problem_name": "geometric_cube",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-26T12:49:14.423013",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 5793
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-26T12:49:14.427814",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_124914_9600abdc-04d8-494b-b0d9-766e23a19ae2_results"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-10-26T12:49:14.667747",
+      "data": {
+        "error": "Shader execution still failing after repair: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader validation error: \n   \u250c\u2500 user_shader:65:17\n   \u2502\n65 \u2502         let v = vertices[i];\n   \u2502                 ^^^^^^^^^^^ naga::Expression [64]\n\n\n    Entry point fs_main at Fragment is invalid\n"
+      }
+    }
+  },
+  "created": "2025-10-26T12:49:00.602980",
+  "last_updated": "2025-10-26T12:49:14.667754"
+}

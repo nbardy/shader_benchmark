@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052222_c3758f39-3f25-4301-8f9a-14f073ba38d5_results/shaders/twisted_helix_cube.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052222_c3758f39-3f25-4301-8f9a-14f073ba38d5_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 2.279 ms   | CPU 124.171 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052222_c3758f39-3f25-4301-8f9a-14f073ba38d5_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

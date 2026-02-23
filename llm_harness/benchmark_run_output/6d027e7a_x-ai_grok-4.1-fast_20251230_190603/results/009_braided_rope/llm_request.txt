@@ -1,0 +1,10 @@
+**Objective**
+Create a three-strand braided rope using helical geometry with proper phase relationships.
+
+**Geometry**
+Three helices on cylinder radius 0.6, pitch 1.8, phase offsets 0, 120°, 240°. Tube radius 0.15. 
+
+**Styling**
+Colour strands #c96, #6c9, #96c. Cylinder core hidden. Camera (3,2,2). 2000×1800 PNG.
+
+**Deliverable** PNG.

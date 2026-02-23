@@ -1,0 +1,42 @@
+2025-10-25 14:08:07.005 [INFO] Logger initialized for problem 0: ackermann_function_growth
+2025-10-25 14:08:07.005 [INFO] ========== PROBLEM START ==========
+2025-10-25 14:08:07.005 [INFO] Index: 0
+2025-10-25 14:08:07.005 [INFO] Name: ackermann_function_growth
+2025-10-25 14:08:07.005 [INFO] ---------- STAGE START: GENERATE ----------
+2025-10-25 14:08:07.005 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-10-25 14:08:07.005 [INFO] Checkpoint saved successfully: stage=generate, file=harness_anthropic_claude-haiku-4.5_20251025_140806/checkpoints/problem_000.json
+2025-10-25 14:08:07.005 [INFO] Loading request prompt
+2025-10-25 14:08:07.006 [INFO] API call: LLM generation model=anthropic/claude-haiku-4.5
+2025-10-25 14:08:22.642 [INFO] API response: LLM generation - success, size=5262 bytes
+2025-10-25 14:08:22.643 [INFO] Parsing shader response
+2025-10-25 14:08:22.643 [ERROR] EXCEPTION in generate stage:
+2025-10-25 14:08:22.643 [ERROR]   Type: UnboundLocalError
+2025-10-25 14:08:22.643 [ERROR]   Message: cannot access local variable 'content' where it is not associated with a value
+2025-10-25 14:08:22.643 [ERROR]   Traceback:
+2025-10-25 14:08:22.644 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 262, in run_single_problem
+    shaders, main_rs = shader_parser.parse_response(llm_response)
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+2025-10-25 14:08:22.644 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/shader_parser.py", line 46, in parse_response
+    shaders[filename] = self._cleanup_shader_code(shader_content.strip())
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-25 14:08:22.644 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/shader_parser.py", line 64, in _cleanup_shader_code
+    content,
+    ^^^^^^^
+2025-10-25 14:08:22.645 [INFO] Attempting to save checkpoint: stage=generate, status=failed
+2025-10-25 14:08:22.645 [INFO] Checkpoint saved successfully: stage=generate, file=harness_anthropic_claude-haiku-4.5_20251025_140806/checkpoints/problem_000.json
+2025-10-25 14:08:22.645 [INFO] ---------- STAGE END: GENERATE - FAILED ----------
+2025-10-25 14:08:22.645 [ERROR] EXCEPTION in run_single_problem:
+2025-10-25 14:08:22.645 [ERROR]   Type: UnboundLocalError
+2025-10-25 14:08:22.645 [ERROR]   Message: cannot access local variable 'content' where it is not associated with a value
+2025-10-25 14:08:22.645 [ERROR]   Traceback:
+2025-10-25 14:08:22.646 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 262, in run_single_problem
+    shaders, main_rs = shader_parser.parse_response(llm_response)
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+2025-10-25 14:08:22.646 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/shader_parser.py", line 46, in parse_response
+    shaders[filename] = self._cleanup_shader_code(shader_content.strip())
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-25 14:08:22.646 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/shader_parser.py", line 64, in _cleanup_shader_code
+    content,
+    ^^^^^^^
+2025-10-25 14:08:22.646 [INFO] ========== PROBLEM END: FAILED ==========
+2025-10-25 14:08:22.646 [INFO] Execution time: 15.64s

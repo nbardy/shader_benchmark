@@ -1,0 +1,32 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-25T14:16:52.767525",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 3700
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-25T14:16:52.769020",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251025_141652_4dcc3925-ebed-4b41-8a11-002e07ae57ab_results"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-10-25T14:19:28.036916",
+      "data": {
+        "error": "Shader execution failed: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader 'user_shader' parsing error: declaration of `Params` is recursive\n  \u250c\u2500 wgsl:9:36\n  \u2502\n9 \u2502 @group(0) @binding(0) var<uniform> Params: Params;\n  \u2502                                    ^^^^^^  ^^^^^^ uses itself "
+      }
+    }
+  },
+  "created": "2025-10-25T14:16:41.223009",
+  "last_updated": "2025-10-25T14:19:28.036919"
+}

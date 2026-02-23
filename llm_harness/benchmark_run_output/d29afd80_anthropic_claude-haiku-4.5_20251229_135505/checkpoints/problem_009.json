@@ -1,0 +1,45 @@
+{
+  "problem_index": 9,
+  "problem_name": "braided_rope",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T13:59:46.017135",
+      "data": {
+        "shaders": [
+          "braided_rope.wgsl"
+        ],
+        "llm_response_len": 8635
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T13:59:46.020187",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/results/009_braided_rope"
+      }
+    },
+    "render": {
+      "status": "complete",
+      "timestamp": "2025-12-29T13:59:47.016429",
+      "data": {
+        "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/results/009_braided_rope/artifacts/result.png"
+      }
+    },
+    "judge": {
+      "status": "complete",
+      "timestamp": "2025-12-29T14:00:01.607045",
+      "data": {
+        "scores": [
+          60,
+          55,
+          45,
+          50,
+          40
+        ]
+      }
+    }
+  },
+  "created": "2025-12-29T13:59:26.244204",
+  "last_updated": "2025-12-29T14:00:01.607054"
+}

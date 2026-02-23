@@ -1,0 +1,13 @@
+{
+  "scores": [
+    85,
+    75,
+    70,
+    65,
+    60
+  ],
+  "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/results/004_archimedean_spiral_galaxy",
+  "status": "completed",
+  "execution_success": true,
+  "has_image": true
+}

@@ -1,0 +1,15 @@
+{
+  "problem_index": 6,
+  "problem_name": "barbell_dumbbell_shape",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-12-29T19:47:22.474228",
+      "data": {
+        "error": "No shader files found"
+      }
+    }
+  },
+  "created": "2025-12-29T19:27:49.137626",
+  "last_updated": "2025-12-29T19:47:22.474237"
+}

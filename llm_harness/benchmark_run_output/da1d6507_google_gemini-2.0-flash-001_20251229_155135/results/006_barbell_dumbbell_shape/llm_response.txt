@@ -1,0 +1,148 @@
+```xml
+<shader file="shader.wgsl">
+@group(0) @binding(0) var<uniform> params: Params;
+
+struct Params {
+    time: f32,
+    resolution: vec2<f32>,
+};
+
+fn smin(d1: f32, d2: f32, k: f32) -> f32 {
+    let a = exp(-k * d1);
+    let b = exp(-k * d2);
+    return -log(a + b) / k;
+}
+
+fn sphere_dist(pos: vec3<f32>, center: vec3<f32>, radius: f32) -> f32 {
+    return length(pos - center) - radius;
+}
+
+fn cylinder_dist(pos: vec3<f32>, height: f32, radius: f32) -> f32 {
+    let d = vec2<f32>(length(pos.yz), pos.x);
+    let q = vec2<f32>(d.x - radius, abs(d.y) - height);
+    return min(max(q.x, q.y), 0.0) + length(max(q, vec2<f32>(0.0)));
+}
+
+fn get_normal(pos: vec3<f32>) -> vec3<f32> {
+    let e = vec2<f32>(0.001, 0.0);
+    return normalize(vec3<f32>(
+        dist(pos + e.xyy) - dist(pos - e.xyy),
+        dist(pos + e.yxy) - dist(pos - e.yxy),
+        dist(pos + e.yyx) - dist(pos - e.yyx)
+    ));
+}
+
+fn dist(pos: vec3<f32>) -> f32 {
+    let sphere1_center = vec3<f32>(-2.5, 0.0, 0.0);
+    let sphere2_center = vec3<f32>(2.5, 0.0, 0.0);
+    let sphere_radius = 0.8;
+    let cylinder_height = 1.7;
+    let cylinder_radius = 0.3;
+    let k = 2.0;
+
+    let sphere1 = sphere_dist(pos, sphere1_center, sphere_radius);
+    let sphere2 = sphere_dist(pos, sphere2_center, sphere_radius);
+    let cylinder = cylinder_dist(pos, cylinder_height, cylinder_radius);
+
+    let blended1 = smin(cylinder, sphere1, k);
+    let final_dist = smin(blended1, sphere2, k);
+
+    return final_dist;
+}
+
+fn rotateY(pos: vec3<f32>, angle: f32) -> vec3<f32> {
+    let c = cos(angle);
+    let s = sin(angle);
+    return vec3<f32>(
+        c * pos.x + s * pos.z,
+        pos.y,
+        -s * pos.x + c * pos.z
+    );
+}
+
+fn rotateZ(pos: vec3<f32>, angle: f32) -> vec3<f32> {
+    let c = cos(angle);
+    let s = sin(angle);
+    return vec3<f32>(
+        c * pos.x - s * pos.y,
+        s * pos.x + c * pos.y,
+        pos.z
+    );
+}
+
+fn pbr_lighting(normal: vec3<f32>, view_dir: vec3<f32>) -> vec3<f32> {
+    let light_dir = normalize(vec3<f32>(1.0, 2.0, 1.0));
+    let fill_light_pos = vec3<f32>(-3.0, 1.0, 2.0);
+    let rim_light_dir = normalize(vec3<f32>(-1.0, 0.0, -1.0));
+    let light_intensity = 0.8;
+    let fill_light_intensity = 0.4;
+    let rim_light_intensity = 0.3;
+    let base_color = vec3<f32>(0.7, 0.7, 0.8);
+    let metalness = 0.9;
+    let roughness = 0.2;
+
+    // Ambient
+    let ambient = 0.05 * base_color;
+
+    // Diffuse
+    let n_dot_l = max(dot(normal, light_dir), 0.0);
+    let diffuse = light_intensity * base_color * n_dot_l;
+
+    // Specular (Blinn-Phong)
+    let half_angle = normalize(light_dir + view_dir);
+    let n_dot_h = max(dot(normal, half_angle), 0.0);
+    let specular = 0.5 * light_intensity * pow(n_dot_h, 16.0);
+
+    // Fill Light
+    let fill_light_vector = fill_light_pos - pos;
+    let fill_light_distance = length(fill_light_vector);
+    let fill_light_direction = normalize(fill_light_vector);
+    let fill_n_dot_l = max(dot(normal, fill_light_direction), 0.0);
+    let fill_diffuse = fill_light_intensity * base_color * fill_n_dot_l / (fill_light_distance * fill_light_distance);
+
+    // Rim Light
+    let rim_dot = 1.0 - max(dot(normal, -rim_light_dir), 0.0);
+    let rim_lighting = rim_light_intensity * pow(rim_dot, 3.0) * base_color;
+
+    let color = ambient + (1.0 - metalness) * diffuse + metalness * specular + fill_diffuse + rim_lighting;
+    return color;
+}
+
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = (pos.xy / params.resolution) * 2.0 - 1.0;
+    let aspect = params.resolution.x / params.resolution.y;
+    let uv_corrected = vec3<f32>(uv.x * aspect, uv.y, 0.0);
+
+    let time = params.time;
+    let rotation_angle = time * 3.14159265359 / 6.0; // 1 revolution per 6 seconds
+
+    var pos_rotated = rotateY(uv_corrected, rotation_angle);
+    pos_rotated = rotateZ(pos_rotated, 0.261799); // 15 degrees in radians
+
+    let d = dist(pos_rotated);
+    let normal = get_normal(pos_rotated);
+
+    // Camera and View Setup
+    let camera_pos = vec3<f32>(4.0, 3.0, 5.0);
+    let view_dir = normalize(vec3<f32>(0.0, 0.0, 0.0) - camera_pos);
+
+    let light_color = pbr_lighting(normal, view_dir);
+
+    // Background
+    let background_color = mix(vec3<f32>(0.9, 0.9, 0.95), vec3<f32>(1.0, 1.0, 1.0), length(uv) * 0.5);
+
+    let final_color = mix(light_color, background_color, exp(-d * 10.0));
+
+    return vec4<f32>(final_color, 1.0);
+}
+</shader>
+```

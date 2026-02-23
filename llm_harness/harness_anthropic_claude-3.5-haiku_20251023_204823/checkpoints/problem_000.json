@@ -1,0 +1,13 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "in_progress",
+      "timestamp": "2025-10-23T20:48:23.296684",
+      "data": {}
+    }
+  },
+  "created": "2025-10-23T20:48:23.296682",
+  "last_updated": "2025-10-23T20:48:23.296685"
+}

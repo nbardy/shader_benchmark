@@ -1,0 +1,217 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Riemann Surface Topology:
+- Two half-spiral "ramps" rising ±√r as one travels around the origin
+- Correct branch cut alignment along negative x-axis only
+- Sheets continuous everywhere except at the intentional branch cut
+- Both sheets pinch to single point at origin forming proper cone tip
+- Mathematical precision in complex function branch cut implementation
+
+Branch Cut Mathematical Properties:
+- Branch cut positioned exclusively along negative real axis
+- Sheets separate from positive real axis as mathematically required
+- Seamless sheet joining along negative real axis branch cut line
+- No gaps or discontinuities except at intended branch cut location
+- Accurate complex function multi-valued behavior representation
+
+**S4: Visual Implementation Section**  
+Color and Hue Mapping:
+- Hue varies monotonically with arg(z) argument function
+- Complete 360° rotation yields full color cycle as required
+- Upper sheet displays full-bright rainbow color spectrum
+- Lower sheet shows identical hues but with reduced brightness
+- Professional color mapping demonstrating complex argument visualization
+
+Opacity and Visual Contrast:
+- Lower sheet brightness between 25-80% of upper sheet intensity
+- Clear opacity contrast enabling visual distinction between sheets
+- Proper visual cues differentiating upper and lower Riemann sheets
+- Edge outlines visible maintaining geometric structure clarity
+- Professional rendering quality with appropriate visual contrasts
+
+**S5: Completeness & Specifications Section**
+Required Surface Elements:
+- Complete Riemann surface with both sheets properly constructed
+- All topological features correctly implemented
+- Branch cut behavior accurately demonstrated
+- Proper cone point formation at origin
+- No missing triangles or flipped geometric elements
+
+Mesh and Technical Quality:
+- No face inversions maintaining proper surface orientation
+- RMS normal variation ≤ 5° across neighboring mesh elements
+- Clean mesh integrity without geometric artifacts
+- All specified mathematical and visual requirements satisfied
+- Complete adherence to Riemann surface branch cut specifications
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+**Objective**
+Render the two‑sheet Riemann surface of $w=\sqrt{z}$ above the complex plane, using height = $\Re w$ and colour = $\operatorname{arg}w$.
+
+**Construction**
+
+* Domain: $z=re^{i\phi}$ with $r\in[0,4],\;\phi\in(-\pi,\pi]$.
+* Two sheets: choose signs $+\sqrt{r}$ and $-\sqrt{r}$.
+* Introduce **branch cut** along negative real axis: join sheets there.
+* Triangulate with polar grid 800 × 800, map to $(x,y,\Re w)$.
+
+**Styling**
+
+* Colour via HSV: hue = $\phi/2\pi$ (wrap‑around), sat = 1, val = 1; upper sheet full opacity, lower sheet 70 % opacity.
+* Edge outlines 1‑px black; hide underside faces.
+* Camera at $(7,0,5)$ looking at origin; 30° FOV, perspective.
+* Lighting: ambient 0.2 + white directional (−0.3,−0.4,−1).
+* 2200 × 1600 px PNG, white background.
+
+**Deliverable** One PNG.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Evaluation: Riemann Surface of w=√z
+
+## Detailed Analysis
+
+### S1: Problem Accuracy (Generic)
+**Critical Issues Identified:**
+The image shows a flat, 2D color field with no three-dimensional surface structure whatsoever. The specification requires:
+- A 3D Riemann surface with two sheets rising to heights ±√r
+- Polar grid triangulation (800×800)
+- 3D rendering with perspective camera at (7,0,5)
+- Complex geometric structure with cone point at origin
+
+The delivered image is merely a 2D hue map with no height component, no mesh structure, and no 3D geometry. This represents a fundamental failure to implement the core mathematical visualization requirement.
+
+**Score Reasoning:** Complete departure from specifications. The mathematical construction of the Riemann surface is entirely absent.
+
+---
+
+### S2: Visual Quality (Generic)
+**Issues:**
+- No anti-aliasing visible; the color transitions appear posterized
+- Image is essentially a flat 2D gradient with no depth
+- No edge outlines (1-px black lines required)
+- No lighting/shading effects (ambient + directional lighting required)
+- No visible mesh structure or geometric detail
+- Colors are flat blocks rather than smoothly rendered surfaces
+- Resolution appears lower than specified 2200×1600 px
+- No perspective distortion or camera effects
+
+While the color gradient itself is smooth in transitions, it lacks any of the technical sophistication expected from a shader-rendered 3D visualization.
+
+**Score Reasoning:** Severely lacking in visual sophistication and technical polish. This appears to be a simple 2D gradient rather than a professionally rendered 3D scene.
+
+---
+
+### S3: Mathematical Accuracy Section
+
+**Riemann Surface Topology - FAILED:**
+- ❌ No two sheets visible
+- ❌ No half-spiral ramps with ±√r heights
+- ❌ No cone point at origin
+- ❌ No branch cut implementation
+- ❌ No topological sheet structure
+- ❌ No multi-valued function representation
+
+**Branch Cut Mathematical Properties - FAILED:**
+- ❌ No negative real axis branch cut visible
+- ❌ No sheet separation/joining behavior
+- ❌ No discontinuity at branch cut location
+- ❌ Impossible to assess complex function behavior
+
+The image shows only a 2D color mapping (hue by angle) with no height dimension implemented. The core mathematical content—the Riemann surface structure itself—is completely absent.
+
+**Score Reasoning:** Zero implementation of the mathematical surface. This is a fundamental failure of the visualization task.
+
+---
+
+### S4: Visual Implementation Section
+
+**Color and Hue Mapping - PARTIAL:**
+- ✓ Hue varies with angle (φ): colors rotate from green (φ≈0) through cyan, blue, magenta, and back to green as angle increases
+- ✓ Full 360° rotation appears complete in the hue cycle
+- ❌ Cannot assess upper/lower sheet color differentiation (no sheets exist)
+- ❌ Cannot assess brightness reduction on lower sheet (no lower sheet visible)
+- ⚠ Saturation and value appear uniform, consistent with HSV mapping
+
+**Opacity and Visual Contrast - FAILED:**
+- ❌ No lower sheet visible for opacity comparison
+- ❌ No opacity contrast between sheets
+- ❌ No edge outlines (required 1-px black)
+- ❌ No visual distinction mechanism between sheets
+- ❌ Missing all structural visual elements
+
+**Score Reasoning:** While hue mapping shows some correct angular coloration, complete absence of sheet rendering and opacity effects makes this criterion largely non-functional.
+
+---
+
+### S5: Completeness & Specifications Section
+
+**Required Surface Elements - FAILED:**
+- ❌ No Riemann surface constructed
+- ❌ No two sheets present
+- ❌ No branch cut behavior demonstrated
+- ❌ No cone point at origin
+- ❌ No three-dimensional structure whatsoever
+
+**Mesh and Technical Quality - FAILED:**
+- ❌ No mesh triangulation visible
+- ❌ No face orientation (no faces rendered)
+- ❌ Cannot assess normal variation (no normals computed)
+- ❌ No geometric artifacts to assess (no geometry present)
+- ❌ Complete non-adherence to Riemann surface specifications
+
+**Missing Specifications:**
+- ❌ 3D surface geometry entirely absent
+- ❌ Camera positioning (should show perspective from (7,0,5))
+- ❌ Lighting model (ambient 0.2 + directional)
+- ❌ Edge outlines
+- ❌ Back-face culling
+- ❌ Proper resolution (appears much smaller than 2200×1600)
+
+**Score Reasoning:** The deliverable appears to be a simple 2D hue map generator rather than a 3D shader-rendered surface. None of the structural, topological, or geometric requirements are met.
+
+---
+
+## Summary Assessment
+
+This image represents **a 2D complex argument visualization only**, not the required 3D Riemann surface. It captures approximately 30-40% of one component (hue/argument mapping) while completely omitting:
+- The height dimension (real part of √z)
+- The two-sheet structure
+- The branch cut topology
+- The 3D rendering pipeline
+- All lighting and shading
+- Mesh geometry
+- Professional visual polish
+
+This appears to be an incomplete intermediate step rather than the final deliverable.
+
+<scores><S1>8</S1><S2>15</S2><S3>5</S3><S4>28</S4><S5>4</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[8, 15, 5, 28, 4]
+

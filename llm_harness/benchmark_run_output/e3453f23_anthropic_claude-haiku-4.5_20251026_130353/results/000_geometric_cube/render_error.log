@@ -1,0 +1,30 @@
+=== RENDER FAILED ===
+Return code: 101
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e3453f23_anthropic_claude-haiku-4.5_20251026_130353/results/000_geometric_cube/shaders/shader_0.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e3453f23_anthropic_claude-haiku-4.5_20251026_130353/results/000_geometric_cube/artifacts/result.png
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: redefinition of `Params`
+   ┌─ wgsl:9:8
+   │
+ 9 │ struct Params {
+   │        ^^^^^^ previous definition of `Params`
+   ·
+15 │ @group(0) @binding(0) var<uniform> Params: Params;
+   │                                    ^^^^^^ redefinition of `Params`
+
+
+    redefinition of `Params`
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+=== STDOUT ===

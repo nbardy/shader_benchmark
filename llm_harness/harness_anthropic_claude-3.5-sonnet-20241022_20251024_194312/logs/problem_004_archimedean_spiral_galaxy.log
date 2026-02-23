@@ -1,0 +1,34 @@
+2025-10-24 19:45:02.403 [INFO] Logger initialized for problem 4: archimedean_spiral_galaxy
+2025-10-24 19:45:02.403 [INFO] ========== PROBLEM START ==========
+2025-10-24 19:45:02.403 [INFO] Index: 4
+2025-10-24 19:45:02.403 [INFO] Name: archimedean_spiral_galaxy
+2025-10-24 19:45:02.404 [INFO] ---------- STAGE START: GENERATE ----------
+2025-10-24 19:45:02.404 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-10-24 19:45:02.404 [INFO] Checkpoint saved successfully: stage=generate, file=harness_anthropic_claude-3.5-sonnet-20241022_20251024_194312/checkpoints/problem_004.json
+2025-10-24 19:45:02.404 [INFO] Loading request prompt
+2025-10-24 19:45:02.405 [INFO] API call: LLM generation model=anthropic/claude-3.5-sonnet-20241022
+2025-10-24 19:45:24.731 [INFO] API response: LLM generation - success, size=3603 bytes
+2025-10-24 19:45:24.732 [INFO] Parsing shader response
+2025-10-24 19:45:24.732 [ERROR] EXCEPTION in generate stage:
+2025-10-24 19:45:24.732 [ERROR]   Type: ValueError
+2025-10-24 19:45:24.732 [ERROR]   Message: No main.rs content found in LLM response
+2025-10-24 19:45:24.732 [ERROR]   Traceback:
+2025-10-24 19:45:24.732 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 248, in run_single_problem
+    shaders, main_rs = shader_parser.parse_response(llm_response)
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+2025-10-24 19:45:24.732 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/shader_parser.py", line 36, in parse_response
+    raise ValueError("No main.rs content found in LLM response")
+2025-10-24 19:45:24.733 [INFO] Attempting to save checkpoint: stage=generate, status=failed
+2025-10-24 19:45:24.734 [INFO] Checkpoint saved successfully: stage=generate, file=harness_anthropic_claude-3.5-sonnet-20241022_20251024_194312/checkpoints/problem_004.json
+2025-10-24 19:45:24.734 [INFO] ---------- STAGE END: GENERATE - FAILED ----------
+2025-10-24 19:45:24.734 [ERROR] EXCEPTION in run_single_problem:
+2025-10-24 19:45:24.734 [ERROR]   Type: ValueError
+2025-10-24 19:45:24.734 [ERROR]   Message: No main.rs content found in LLM response
+2025-10-24 19:45:24.734 [ERROR]   Traceback:
+2025-10-24 19:45:24.734 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 248, in run_single_problem
+    shaders, main_rs = shader_parser.parse_response(llm_response)
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+2025-10-24 19:45:24.734 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/shader_parser.py", line 36, in parse_response
+    raise ValueError("No main.rs content found in LLM response")
+2025-10-24 19:45:24.734 [INFO] ========== PROBLEM END: FAILED ==========
+2025-10-24 19:45:24.734 [INFO] Execution time: 22.33s

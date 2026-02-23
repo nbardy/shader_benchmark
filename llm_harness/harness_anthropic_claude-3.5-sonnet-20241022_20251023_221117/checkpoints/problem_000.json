@@ -1,0 +1,32 @@
+{
+  "problem_index": 0,
+  "problem_name": "geometric_cube",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-23T22:12:06.206842",
+      "data": {
+        "shaders": [
+          "cube.wgsl"
+        ],
+        "llm_response_len": 9659
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-23T22:12:27.250336",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251023_221206_d71335a2-2942-4fee-8e1c-693725731396_results"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-10-23T22:12:27.251454",
+      "data": {
+        "error": "Compiled binary not found at target/release/shader_harness"
+      }
+    }
+  },
+  "created": "2025-10-23T22:11:17.377216",
+  "last_updated": "2025-10-23T22:12:27.251455"
+}

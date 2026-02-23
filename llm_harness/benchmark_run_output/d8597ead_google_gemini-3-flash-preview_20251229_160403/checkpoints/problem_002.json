@@ -1,0 +1,47 @@
+{
+  "problem_index": 2,
+  "problem_name": "apollonian_gasket",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:04:39.621044",
+      "data": {
+        "shaders": [
+          "shader.wgsl"
+        ],
+        "llm_response_len": 3719
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:04:39.623327",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d8597ead_google_gemini-3-flash-preview_20251229_160403/results/002_apollonian_gasket"
+      }
+    },
+    "render": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:06:14.001239",
+      "data": {
+        "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d8597ead_google_gemini-3-flash-preview_20251229_160403/results/002_apollonian_gasket/artifacts/result.png"
+      }
+    },
+    "judge": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:06:14.014735",
+      "data": {
+        "scores": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "failure_reason": "ALL_BLACK",
+        "judge_skipped": true
+      }
+    }
+  },
+  "created": "2025-12-29T16:04:28.846984",
+  "last_updated": "2025-12-29T16:06:14.014740"
+}

@@ -1,0 +1,260 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Torus Geometric Properties:
+- Major radius R must equal exactly 2.0 units
+- Minor radius r must equal exactly 0.7 units with oscillating variation
+- Proper parametric torus construction using standard equations
+- Smooth surface generation with no geometric discontinuities
+- Correct torus topology with proper hole structure
+
+Parametric Implementation:
+- Accurate parametric equations for torus surface generation
+- Proper (u,v) parameter mapping across surface
+- Minor radius oscillation implemented mathematically
+- Dual rotation mechanics: y-axis and major axis rotation
+- Mathematical precision in all geometric calculations
+
+**S4: Visual Implementation Section**  
+Surface Visualization Standards:
+- HSV coloring system based on (u,v) parametric coordinates
+- Gaussian curvature visualization with red/blue color tints
+- Parametric grid lines visible and properly spaced across surface
+- Glossy ceramic material appearance with appropriate reflections
+- Smooth surface rendering with proper normal calculations
+
+Rendering and Animation Quality:
+- Three-point lighting setup with key, fill, and rim lighting
+- Ambient occlusion effects enhancing surface depth perception
+- Depth of field blur effects for visual sophistication
+- Smooth animation with dual rotation system implementation
+- Professional anti-aliasing throughout all surface elements
+
+**S5: Completeness & Specifications Section**
+Required Mathematical Elements:
+- Complete torus form with proper major and minor radius relationships
+- Oscillating minor radius animation clearly visible
+- All parametric surface details properly implemented
+- Grid line overlay showing parametric coordinate structure
+- Curvature visualization completing mathematical demonstration
+
+Technical Specification Compliance:
+- 1600×1600 resolution with high-quality rendering
+- All animation components functioning smoothly
+- Complete lighting setup as specified
+- Professional rendering quality meeting all technical requirements
+- Full adherence to torus visualization specifications
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+**Objective**
+Create a mathematically precise visualization of a torus (donut shape) with parametric surface coloring and advanced rendering techniques.
+
+**Mathematical Specification**
+
+1. **Parametric Definition**
+   - Torus parameters:
+     * Major radius (R): 2.0 units
+     * Minor radius (r): 0.7 units
+   - Parametric equations (u, v ∈ [0, 2π]):
+     * x = (R + r cos(v)) cos(u)
+     * y = (R + r cos(v)) sin(u)
+     * z = r sin(v)
+
+2. **Surface Properties**
+   - Generate smooth normals from parametric derivatives
+   - Calculate Gaussian curvature K = cos(v) / (r(R + r cos(v)))
+   - Calculate mean curvature H = (R + 2r cos(v)) / (2r(R + r cos(v)))
+
+3. **Coloring Scheme**
+   - Base color mapping using parametric coordinates:
+     * Hue: H = u / (2π) × 360°
+     * Saturation: S = 0.5 + 0.5 × sin(v)
+     * Value: V = 0.7 + 0.3 × cos(v)
+   - Overlay Gaussian curvature visualization:
+     * Positive curvature regions: Subtle red tint
+     * Negative curvature regions: Subtle blue tint
+     * Zero curvature: Neutral
+
+4. **Material and Texture**
+   - Base material: Glossy ceramic
+     * Diffuse: 0.8
+     * Specular: 0.3
+     * Shininess: 64
+   - Surface texture: Subtle parametric grid lines
+     * Grid spacing: π/8 in both u and v directions
+     * Line color: 20% darker than surface color
+     * Line width: 0.5 pixels
+
+5. **Animation and Transformation**
+   - Primary rotation: Around y-axis at 0.1 rad/s
+   - Secondary rotation: Around its own major axis at 0.05 rad/s
+   - Gentle oscillation: Minor radius varies as r = 0.7 + 0.1 × sin(2πt/3)
+
+6. **Lighting and Environment**
+   - Three-point lighting:
+     * Key light: Position (3, 4, 2), warm white, intensity 0.7
+     * Fill light: Position (-2, 1, 3), cool white, intensity 0.4
+     * Back light: Position (0, -2, -4), white, intensity 0.3
+   - Ambient occlusion for enhanced depth
+   - Environment: Subtle gradient (dark blue top to light blue bottom)
+   
+7. **Output Specifications**
+   - Resolution: 1600 × 1600 pixels
+   - Antialiasing: 4× SSAA
+   - Depth of field: Slight blur at edges (focal distance: 5 units)
+   - Camera: Position (4, 3, 5), looking at origin, FOV 40°
+
+Deliverable: Outputs a single image.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Assessment
+
+## Detailed Evaluation
+
+### S1: Problem Accuracy (Generic)
+
+**CRITICAL FAILURE**: The provided image is completely blank - it shows only a gradient background with no torus geometry whatsoever. The image fails to deliver any of the core mathematical requirements:
+- No torus structure is visible
+- No parametric surface generation
+- No geometric implementation
+- The image appears to be either a rendering failure, placeholder, or completely unrelated to the specification
+
+This represents a fundamental failure to meet the basic objective of creating a torus visualization.
+
+**Score Justification**: 2/100 - Only the background gradient loosely matches the specification (dark blue top to light blue bottom), but this is meaningless without the actual subject matter.
+
+---
+
+### S2: Visual Quality (Generic)
+
+**ASSESSMENT**: While the gradient background itself is smooth and technically competent, the complete absence of the intended subject matter makes visual quality assessment moot. The image shows:
+- Clean gradient rendering with good color transitions
+- No anti-aliasing artifacts (because there's nothing to anti-alias)
+- Professional background rendering in isolation
+- Complete absence of the torus, lighting, and complex visual elements specified
+
+The technical competence of what *is* rendered cannot compensate for the catastrophic omission of the primary visualization subject.
+
+**Score Justification**: 5/100 - The background is well-rendered, but represents less than 1% of the required visual content.
+
+---
+
+### S3: Mathematical Accuracy Section
+
+**CRITICAL DEFICIENCY**: All mathematical requirements are absent:
+
+**Torus Geometric Properties:**
+- ✗ No visible torus with R = 2.0
+- ✗ No minor radius r = 0.7
+- ✗ No oscillating variation
+- ✗ No surface generation
+- ✗ No proper torus topology
+
+**Parametric Implementation:**
+- ✗ No parametric equations implemented
+- ✗ No (u,v) parameter mapping
+- ✗ No oscillation mechanics
+- ✗ No dual rotation system
+- ✗ Complete absence of all geometric calculations
+
+The image provides zero evidence of mathematical implementation.
+
+**Score Justification**: 1/100 - Absolute failure across all mathematical criteria.
+
+---
+
+### S4: Visual Implementation Section
+
+**COMPLETE ABSENCE OF REQUIRED ELEMENTS**:
+
+**Surface Visualization Standards:**
+- ✗ No HSV coloring based on parametric coordinates
+- ✗ No Gaussian curvature visualization
+- ✗ No parametric grid lines
+- ✗ No glossy ceramic material
+- ✗ No surface rendering
+
+**Rendering and Animation Quality:**
+- ✗ No three-point lighting system
+- ✗ No ambient occlusion
+- ✗ No depth of field effects
+- ✗ No animation visible
+- ✗ No anti-aliasing on subject matter (no subject to anti-alias)
+
+The image contains none of the specified visual implementation features beyond a basic background gradient.
+
+**Score Justification**: 2/100 - Only the background gradient meets minimal specification; all sophisticated rendering requirements are absent.
+
+---
+
+### S5: Completeness & Specifications Section
+
+**COMPREHENSIVE FAILURE**:
+
+**Required Mathematical Elements:**
+- ✗ No torus form
+- ✗ No oscillating animation
+- ✗ No parametric details
+- ✗ No grid lines
+- ✗ No curvature visualization
+
+**Technical Specification Compliance:**
+- ✗ 1600×1600 resolution met only technically (but with empty content)
+- ✗ No meaningful rendering present
+- ✗ No lighting setup
+- ✗ Professional quality irrelevant without content
+- ✗ Zero adherence to torus visualization specifications
+
+The deliverable is incomplete to the point of being non-functional as a mathematical visualization.
+
+**Score Justification**: 1/100 - The image is essentially a blank canvas with only background gradient present.
+
+---
+
+## Summary
+
+This image represents a **complete failure** to deliver the specified mathematical visualization. It appears to be either:
+1. A rendering error or system failure
+2. A placeholder/test image
+3. A completely unrelated background image
+
+There is no evidence of:
+- Torus geometry
+- Parametric surface generation
+- Mathematical coloring schemes
+- Advanced lighting and rendering
+- Animation systems
+- Any of the sophisticated mathematical visualization requirements
+
+The specification was detailed and comprehensive, yet the deliverable contains essentially none of the required elements.
+
+<scores><S1>2</S1><S2>5</S2><S3>1</S3><S4>2</S4><S5>1</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[2, 5, 1, 2, 1]
+

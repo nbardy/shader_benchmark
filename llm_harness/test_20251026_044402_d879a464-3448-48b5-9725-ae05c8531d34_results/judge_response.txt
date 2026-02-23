@@ -1,0 +1,198 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Cube Geometric Properties:
+- Exactly 12 edges forming complete wireframe cube structure
+- All edges maintaining equal pixel length within ±1% tolerance as required
+- Perfect geometric regularity with all face angles at exactly 90 degrees
+- Proper cube vertex positioning with mathematically accurate coordinates
+- Correct edge connectivity following cube topology requirements
+
+Orthographic Projection Mathematics:
+- Parallel edges remaining perfectly parallel with angular deviation <0.1°
+- No perspective distortion maintaining true orthographic projection properties
+- Accurate projection matrix implementation preserving geometric relationships
+- Mathematical precision in 3D to 2D coordinate transformation
+- Proper orthographic scaling maintaining proportional edge relationships
+
+Hidden Line Calculation Accuracy:
+- Correct visibility determination for all 12 cube edges
+- Accurate depth testing identifying exactly which edges should be hidden
+- Mathematical precision in hidden surface removal calculations
+- Proper z-buffer or analytical visibility computation
+- Correct identification of 7 visible edges and 5 hidden edges
+
+**S4: Visual Implementation Section**  
+Hidden Line Rendering Quality:
+- Hidden edges properly rendered with consistent dashed line pattern
+- Dashed pattern with appropriate dash length and spacing ratios
+- Clear visual distinction between visible solid lines and hidden dashed lines
+- Professional dashed line rendering without gaps or irregularities
+- Consistent dash pattern applied to all hidden edges uniformly
+
+Color and Contrast Implementation:
+- Proper color distinction between visible and hidden edge elements
+- Appropriate contrast levels ensuring clear edge visibility
+- Professional color scheme supporting geometric analysis
+- Consistent color application across all edge categories
+- Visual clarity enabling easy distinction of wireframe structure
+
+Rendering Quality and Precision:
+- Clean line rendering without aliasing artifacts or jagged edges
+- High-quality wireframe presentation suitable for technical analysis
+- Smooth line rendering maintaining geometric precision
+- Professional presentation meeting technical drawing standards
+- Clear visual structure enabling geometric verification
+
+**S5: Completeness & Specifications Section**
+Required Geometric Cube Elements:
+- Complete wireframe cube with all 12 edges properly implemented
+- Hidden-line rendering system fully functional and accurate
+- Orthographic projection correctly applied throughout visualization
+- All geometric constraints satisfied within specified tolerances
+- Perfect cube structure with no missing or incorrect edges
+
+Technical Specification Compliance:
+- Edge count exactly matching mathematical cube requirements
+- Hidden line rendering meeting specified dash pattern requirements
+- Orthographic projection maintaining required parallel edge properties
+- Color and visual distinction meeting professional standards
+- Complete adherence to geometric cube wireframe specifications
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+Axis-aligned cube, side = 2, centred at origin.
+
+Rendering:
+- Wireframe style: edges 3 px midnight-blue (#003366); transparent faces α = 0.1 sky-blue
+- Hidden edges dashed
+- Camera: Elevated view from upper-right, looking down at cube corner (approx 45° elevation, 30° azimuth)
+- Perspective: Orthographic projection. Canvas 1800×1800
+
+Deliverable: Outputs a single image.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Evaluation
+
+## Detailed Assessment
+
+### S1: Problem Accuracy (Generic)
+**Analysis:** The image shows a partial wireframe cube representation with visible edges rendered in solid bright blue and some hidden edges in dashed blue. However, the visualization is severely incomplete - only a small portion of the cube structure is visible, with most edges either missing or not rendered. The cube appears to be truncated or only partially drawn, failing to show the complete 12-edge wireframe structure required. The orthographic projection appears correct for the visible elements, but the incompleteness is a critical failure.
+
+**Issues:**
+- Only ~4-5 edges clearly visible
+- Most of the cube geometry is missing or not rendered
+- Does not meet the fundamental requirement of displaying a complete wireframe cube
+- The visualization fails at the most basic level of mathematical accuracy
+
+### S2: Visual Quality (Generic)
+**Analysis:** While the rendered lines are clean and smooth with good anti-aliasing, the extreme incompleteness of the geometry severely impacts visual quality. The image appears to be either an error state, incomplete rendering, or a severe clipping issue. The bright cyan color is too saturated compared to the specified midnight-blue (#003366), appearing more like a bright cyan rather than the requested deep blue. The transparent face rendering is either invisible or completely absent.
+
+**Issues:**
+- Color is incorrect (bright cyan instead of midnight-blue #003366)
+- Severely incomplete geometry
+- No visible transparent face rendering (α = 0.1 sky-blue faces)
+- Line quality is good, but geometry quality is catastrophic
+
+### S3: Mathematical Accuracy Section
+
+**Cube Geometric Properties:**
+- ❌ Only partial edges visible - cannot verify 12 complete edges
+- ❌ Cannot assess edge length equality due to incomplete structure
+- ❌ Impossible to verify face angles with missing geometry
+- ❌ Vertices not properly positioned - major gaps in cube
+- ❌ Edge connectivity broken due to missing edges
+**Subscore: 8/100** (Only minimal geometric structure is correct for what is rendered)
+
+**Orthographic Projection Mathematics:**
+- ✓ Visible edges appear parallel (correctly orthographic)
+- ✓ No perspective distortion evident in rendered edges
+- ❌ Incomplete geometry prevents full verification
+- ❌ Missing most of the cube prevents proper assessment
+**Subscore: 35/100** (Projection appears correct but incompleteness undermines evaluation)
+
+**Hidden Line Calculation Accuracy:**
+- ❌ Cannot verify if exactly 7 visible and 5 hidden edges exist
+- ❌ Some dashing is visible on lower edges, suggesting hidden line logic exists
+- ❌ Impossible to verify correct visibility determination with incomplete geometry
+- ❌ Depth testing may be working but cannot be properly evaluated
+**Subscore: 15/100** (Hidden line rendering attempted but verification impossible)
+
+### S4: Visual Implementation Section
+
+**Hidden Line Rendering Quality:**
+- ✓ Dashed pattern is visible on some edges
+- ✓ Dashes appear consistent and uniform
+- ❌ Cannot evaluate across all 12 edges (most are missing)
+- ✓ Visual distinction between solid and dashed lines is clear
+**Subscore: 40/100** (Quality appears acceptable but severely limited sample)
+
+**Color and Contrast Implementation:**
+- ❌ Solid line color is bright cyan (#00FFFF or similar), NOT midnight-blue (#003366)
+- ❌ Dashed line color similarly incorrect
+- ❌ No visible sky-blue transparent faces (α = 0.1) - completely absent
+- ❌ Color specification fundamentally violated
+**Subscore: 15/100** (Wrong color palette entirely)
+
+**Rendering Quality and Precision:**
+- ✓ Clean line rendering without aliasing
+- ✓ Smooth edges maintained
+- ❌ Wireframe is incomplete and unprofessional due to missing geometry
+- ❌ Cannot meet technical drawing standards with >80% of geometry missing
+**Subscore: 25/100** (Line quality good but overall result is incomplete)
+
+### S5: Completeness & Specifications Section
+
+**Required Geometric Cube Elements:**
+- ❌ Wireframe is NOT complete - massive portions of cube missing
+- ⚠️ Hidden-line rendering appears partially implemented
+- ✓ Orthographic projection seems correct (for visible parts)
+- ❌ Geometric constraints NOT satisfied - incomplete structure
+- ❌ NOT a proper cube structure
+**Subscore: 5/100** (Fundamental incompleteness)
+
+**Technical Specification Compliance:**
+- ❌ Edge count NOT 12 - only ~4-5 visible edges rendered
+- ⚠️ Dashed pattern present but incomplete
+- ✓ Orthographic projection appears correct
+- ❌ Color specification VIOLATED (wrong blue entirely, no sky-blue faces)
+- ❌ Completely fails specification compliance
+**Subscore: 8/100** (Multiple specification violations)
+
+---
+
+## Summary
+
+This visualization appears to be either a **failed render, incomplete implementation, or severe clipping error**. While the individual line rendering quality is technically sound, the fundamental requirement of displaying a complete axis-aligned cube with 12 edges is catastrophically unmet. Approximately 80% of the required geometry is missing from the image. Additionally, the color specification is completely incorrect - the rendered edges are bright cyan rather than the specified midnight-blue (#003366), and the transparent sky-blue faces are entirely absent.
+
+The implementation shows some competence in line rendering and basic hidden-line logic, but fails at the most fundamental level: displaying the complete cube geometry specified in the requirements.
+
+<scores><S1>8</S1><S2>18</S2><S3>19</S3><S4>27</S4><S5>7</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[8, 18, 19, 27, 7]
+

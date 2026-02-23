@@ -1,0 +1,32 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-23T23:43:16.246805",
+      "data": {
+        "shaders": [
+          "ackermann_plot.wgsl"
+        ],
+        "llm_response_len": 9408
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-23T23:43:38.439751",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251023_234316_936583b8-7fae-4a3b-a0d7-c088d2a0f712_results"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-10-23T23:43:38.625172",
+      "data": {
+        "error": "Shader execution failed: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `ackermann_plot`\n    \nShader 'ackermann_plot' parsing error: Float literal is infinite\n   \u250c\u2500 wgsl:40:20\n   \u2502\n40 \u2502     let h5 = log10(pow(2.0, 65533.0)) / 10.0;  // A(3,5)\n   \u2502                    ^^^ see msg\n\n\n    Float literal is in"
+      }
+    }
+  },
+  "created": "2025-10-23T23:42:29.205868",
+  "last_updated": "2025-10-23T23:43:38.625177"
+}

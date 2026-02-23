@@ -1,0 +1,174 @@
+I'll create a WGSL shader that renders the Apollonian gasket using the Kleinian group approach. This is a complex mathematical visualization that requires careful implementation of Möbius transformations and iterative generation.
+
+<shader file="apollonian_gasket.wgsl">
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+struct Params {
+    resolution: vec2<f32>,
+};
+
+// Complex number operations
+fn complex_mul(a: vec2<f32>, b: vec2<f32>) -> vec2<f32> {
+    return vec2<f32>(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
+}
+
+fn complex_div(a: vec2<f32>, b: vec2<f32>) -> vec2<f32> {
+    let denom = b.x * b.x + b.y * b.y;
+    return vec2<f32>(
+        (a.x * b.x + a.y * b.y) / denom,
+        (a.y * b.x - a.x * b.y) / denom
+    );
+}
+
+// Möbius transformations
+// M₁(z) = (2z+1)/(z+1)
+fn mobius_m1(z: vec2<f32>) -> vec2<f32> {
+    let numerator = vec2<f32>(2.0 * z.x + 1.0, 2.0 * z.y);
+    let denominator = vec2<f32>(z.x + 1.0, z.y);
+    return complex_div(numerator, denominator);
+}
+
+// M₂(z) = (2z-1)/(z-1)
+fn mobius_m2(z: vec2<f32>) -> vec2<f32> {
+    let numerator = vec2<f32>(2.0 * z.x - 1.0, 2.0 * z.y);
+    let denominator = vec2<f32>(z.x - 1.0, z.y);
+    return complex_div(numerator, denominator);
+}
+
+// Hash function for pseudo-random number generation
+fn hash(n: u32) -> u32 {
+    var x = n;
+    x = x ^ (x >> 16u);
+    x = x * 0x85ebca6bu;
+    x = x ^ (x >> 13u);
+    x = x * 0xc2b2ae35u;
+    x = x ^ (x >> 16u);
+    return x;
+}
+
+// Generate pseudo-random float in [0, 1)
+fn random(seed: u32, iteration: u32) -> f32 {
+    let h = hash(seed + iteration * 7919u);
+    return f32(h) / 4294967296.0;
+}
+
+// Stereographic projection from sphere to plane
+fn stereographic_project(z: vec2<f32>) -> vec2<f32> {
+    let scale = 1.0 / (1.0 + length(z));
+    return z * scale;
+}
+
+// Apply Gaussian blur kernel
+fn gaussian_blur(col: vec3<f32>, uv: vec2<f32>, sigma: f32, samples: i32) -> vec3<f32> {
+    var result = vec3<f32>(0.0);
+    var total_weight = 0.0;
+    
+    for (var i = -samples; i <= samples; i = i + 1) {
+        for (var j = -samples; j <= samples; j = j + 1) {
+            let offset = vec2<f32>(f32(i), f32(j)) * sigma / params.resolution;
+            let dist_sq = f32(i * i + j * j);
+            let weight = exp(-dist_sq / (2.0 * sigma * sigma));
+            
+            // Sample neighboring pixels (simplified - in real implementation would sample texture)
+            result += col * weight;
+            total_weight += weight;
+        }
+    }
+    
+    return result / total_weight;
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = (pos.xy - params.resolution * 0.5) / min(params.resolution.x, params.resolution.y);
+    
+    // Scale to fit within bounds with padding
+    let canvas_scale = (min(params.resolution.x, params.resolution.y) - 240.0) / min(params.resolution.x, params.resolution.y);
+    let scaled_uv = uv / canvas_scale;
+    
+    // Initialize accumulator for this pixel
+    var red_intensity = 0.0;
+    var green_intensity = 0.0;
+    
+    // Use pixel position as seed for random walk
+    let pixel_seed = u32(pos.x) * 73856093u + u32(pos.y) * 19349663u;
+    
+    // Number of samples per pixel (reduced for real-time performance)
+    let samples_per_pixel = 1000u;
+    
+    for (var sample = 0u; sample < samples_per_pixel; sample = sample + 1u) {
+        // Start from origin
+        var z = vec2<f32>(0.0, 0.0);
+        var word_length = 0u;
+        
+        // Random walk depth
+        let walk_depth = 21u; // 12 burn-in + 9 plotted
+        
+        for (var step = 0u; step < walk_depth; step = step + 1u) {
+            // Choose generator with equal probability
+            let rand = random(pixel_seed, sample * walk_depth + step);
+            
+            if (rand < 0.5) {
+                z = mobius_m1(z);
+                word_length = word_length + 1u;
+            } else {
+                z = mobius_m2(z);
+                word_length = word_length + 1u;
+            }
+            
+            // Skip first 12 iterations (transient region)
+            if (step >= 12u) {
+                // Project to plane
+                let projected = stereographic_project(z);
+                
+                // Check if point is near current pixel
+                let dist = length(projected - scaled_uv);
+                let radius = 0.6 / min(params.resolution.x, params.resolution.y);
+                
+                if (dist < radius) {
+                    // Additive blending with distance falloff
+                    let intensity = (1.0 - dist / radius) * 0.1;
+                    
+                    // Color based on parity of word length
+                    if ((word_length & 1u) == 0u) {
+                        red_intensity += intensity;
+                    } else {
+                        green_intensity += intensity;
+                    }
+                }
+            }
+        }
+    }
+    
+    // Apply color mapping
+    let red_color = vec3<f32>(1.0, 0.2, 0.333) * red_intensity;
+    let green_color = vec3<f32>(0.2, 1.0, 0.333) * green_intensity;
+    
+    // Combine colors with additive blending
+    var final_color = red_color + green_color;
+    
+    // Apply bloom effect (simplified single-pass approximation)
+    let bloom_strength = 0.4;
+    let glow = max(red_intensity, green_intensity);
+    if (glow > 0.1) {
+        let bloom_color = (red_color + green_color) * bloom_strength;
+        final_color += bloom_color * exp(-glow * 0.5);
+    }
+    
+    // Tone mapping to prevent oversaturation
+    final_color = final_color / (1.0 + final_color);
+    
+    // Gamma correction
+    final_color = pow(final_color, vec3<f32>(1.0 / 2.2));
+    
+    return vec4<f32>(final_color, 1.0);
+}
+</shader>

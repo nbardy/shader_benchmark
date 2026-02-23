@@ -1,0 +1,21 @@
+{
+  "run_id": "6d027e7a_x-ai_grok-4.1-fast_20251230_190603",
+  "model": "x-ai/grok-4.1-fast",
+  "judge_model": "anthropic/claude-3.5-haiku",
+  "language": "wgsl",
+  "problems": [
+    "ackermann_function_growth",
+    "al_khwarizmi_geometric_algebra",
+    "apollonian_gasket",
+    "apollonius_conic_sections",
+    "archimedean_spiral_galaxy",
+    "archimedes_spiral",
+    "barbell_dumbbell_shape",
+    "binary_tree_fractal",
+    "brahmagupta_cyclic_quadrilaterals",
+    "braided_rope"
+  ],
+  "total_problems": 10,
+  "max_parallel": 100,
+  "created": "2026-01-27T15:45:46.052505"
+}

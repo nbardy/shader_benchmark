@@ -1,0 +1,41 @@
+2025-10-26 05:33:32.143 [INFO] Logger initialized for problem 72: README.md
+2025-10-26 05:33:32.143 [INFO] ========== PROBLEM START ==========
+2025-10-26 05:33:32.143 [INFO] Index: 72
+2025-10-26 05:33:32.143 [INFO] Name: README.md
+2025-10-26 05:33:32.143 [INFO] ---------- STAGE START: GENERATE ----------
+2025-10-26 05:33:32.143 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-10-26 05:33:32.143 [ERROR] Checkpoint save FAILED: stage=generate
+2025-10-26 05:33:32.143 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_050453/checkpoints/problem_072.tmp'
+2025-10-26 05:33:32.144 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 05:33:32.144 [INFO] Loading request prompt
+2025-10-26 05:33:32.144 [ERROR] EXCEPTION in generate stage:
+2025-10-26 05:33:32.144 [ERROR]   Type: FileNotFoundError
+2025-10-26 05:33:32.144 [ERROR]   Message: Request prompt file not found: /Users/nicholasbardy/git/shader_benchmark/problems/base_set/README.md/request.txt
+2025-10-26 05:33:32.144 [ERROR]   Traceback:
+2025-10-26 05:33:32.144 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 259, in run_single_problem
+    request_prompt = prompt_loader.load_request_prompt(str(problem_path))
+2025-10-26 05:33:32.144 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/prompt_loader.py", line 13, in load_request_prompt
+    raise FileNotFoundError(f"Request prompt file not found: {request_file}")
+2025-10-26 05:33:32.144 [INFO] Attempting to save checkpoint: stage=generate, status=failed
+2025-10-26 05:33:32.144 [ERROR] Checkpoint save FAILED: stage=generate
+2025-10-26 05:33:32.144 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_050453/checkpoints/problem_072.tmp'
+2025-10-26 05:33:32.144 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 05:33:32.144 [INFO] ---------- STAGE END: GENERATE - FAILED ----------
+2025-10-26 05:33:32.144 [ERROR] EXCEPTION in run_single_problem:
+2025-10-26 05:33:32.145 [ERROR]   Type: FileNotFoundError
+2025-10-26 05:33:32.145 [ERROR]   Message: Request prompt file not found: /Users/nicholasbardy/git/shader_benchmark/problems/base_set/README.md/request.txt
+2025-10-26 05:33:32.145 [ERROR]   Traceback:
+2025-10-26 05:33:32.145 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 259, in run_single_problem
+    request_prompt = prompt_loader.load_request_prompt(str(problem_path))
+2025-10-26 05:33:32.145 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/prompt_loader.py", line 13, in load_request_prompt
+    raise FileNotFoundError(f"Request prompt file not found: {request_file}")
+2025-10-26 05:33:32.145 [INFO] ========== PROBLEM END: FAILED ==========
+2025-10-26 05:33:32.145 [INFO] Execution time: 0.00s

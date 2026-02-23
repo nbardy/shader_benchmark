@@ -1,0 +1,102 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+- Fractal dimension must equal the analytic Hausdorff dimension (high-precision value 1.30568673)
+- Box-count dimension test must achieve slope D̂ with |D̂−1.3057| ≤ 0.03 for full 4 pts (3 pts if ≤ 0.05, 2 pts if ≤ 0.08, 1 pt if ≤ 0.12)
+- Point cloud recovery must accurately threshold image α > 0.1 to binary mask and sample centroids of connected 3×3 blobs
+- Grid analysis must use appropriate scales ε = 2^-8 ... 2^-4 · canvas for log-log fitting of N(ε) vs ε
+- Self-similar fractal structure must demonstrate correct scaling properties at all resolution levels
+- Kleinian group generators must produce mathematically correct limit set geometry
+
+**S4: Visual Implementation Section**  
+- Red/green coloring must represent even/odd word lengths in Kleinian group generators with precise parity-based distribution
+- Cluster-sample analysis of 100,000 pixels must show red:green ratio within 50% ± 3% tolerance (2 pts)
+- High-quality rendering must include appropriate bloom effect with radius σ ≈ 1 ± 0.3 px (+1 pt)
+- Background must be pure black with σ<2 RGB units for rendering hygiene (+1 pt)
+- Crystalline detail must be visible and consistent at all scales within the circular region
+- Visual clarity must effectively demonstrate the intricate fractal pattern structure
+- Color classification by hue must accurately distinguish between even/odd regions
+
+**S5: Completeness & Specifications Section**
+- Apollonian gasket must fill a complete circular region without dropout areas
+- Density uniformity test must show median-to-max ratio ≥ 0.1 across 20 radial annuli (2 pts)
+- All fractal detail must be present with appropriate self-similar characteristics
+- Gemstone-like appearance must be achieved through proper crystalline rendering
+- Classical fractal properties must be demonstrated throughout the visualization
+- Assessment protocol must include point cloud recovery, box-count testing, parity-color balance, density uniformity, and rendering quality checks
+- Limit set must accurately represent the mathematical properties of the Kleinian group structure
+
+Output format:
+Score: S/10
+Rationale: <≤120 words>
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+Craft a high-resolution, jewel-like image of the classical Apollonian gasket that emerges as the limit set of a rank-2 Kleinian group. The red and green "facets" should interlace so finely that the boundary between them looks like crystalline edges under a microscope.
+
+Mathematical engine:
+1. Möbius generators: Work in the Riemann sphere (identify plane C∪{∞}). Let
+   M₁(z) = (2z+1)/(z+1), M₂(z) = (2z-1)/(z-1)
+2. Symbolic address & parity: Every orbit point is encoded by a word in {1, 2}. Mark points whose last generator is even length word in red (#ff3355) and odd length in green (#33ff55).
+3. Sampling:
+   - Begin with seed z₀ = 0
+   - Randomly walk 3,000,000 steps (alias method, equal probability)
+   - Discard first 12 iterates of every walk to bypass transient region; plot the next 9 iterations (depth-limiting to emphasise detail)
+
+Projection & canvas:
+- Use stereographic projection to map sphere to plane; scale so outermost circle fits a 2400 × 2400 px square with 120 px padding
+- Background pure black (#000000)
+- Each orbit point rendered as sub-pixel disk radius 0.6 px; enable additive alpha so high-density regions glow
+- After plotting, apply a single-pass Gaussian bloom σ = 1 px, 40% opacity, to make bright clusters sparkle
+
+File: PNG-24, sRGB
+Deliverable: Outputs a single image.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+Score: 0/10
+Rationale: No image was successfully uploaded or rendered. The submitted image appears to be completely black, preventing any meaningful mathematical visualization analysis.
+
+<scores>
+<S1>0</S1>
+<S2>0</S2>
+<S3>0</S3>
+<S4>0</S4>
+<S5>0</S5>
+</scores>
+
+The submitted file lacks any discernible Apollonian gasket structure, Kleinian group representation, or fractal characteristics specified in the problem context. A pure black image suggests either a rendering error, file corruption, or complete failure of the mathematical visualization process.
+
+To proceed, I recommend:
+1. Verifying the image file integrity
+2. Re-rendering the shader generation
+3. Checking computational pipeline for potential errors
+4. Ensuring all mathematical transformation steps are correctly implemented
+
+==================================================
+
+PARSED SCORES:
+[1, 1, 1, 1, 1]
+
+⚠️ WARNING: Default fallback scores - parsing may have failed!

@@ -1,0 +1,15 @@
+{
+  "problem_index": 2,
+  "problem_name": "apollonian_gasket",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-10-25T14:08:58.527497",
+      "data": {
+        "error": "cannot access local variable 'content' where it is not associated with a value"
+      }
+    }
+  },
+  "created": "2025-10-25T14:08:44.536775",
+  "last_updated": "2025-10-25T14:08:58.527500"
+}

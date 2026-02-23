@@ -1,0 +1,240 @@
+<shader file="al_khwarizmi_quadratic.wgsl">
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+    time: f32,
+    _padding: f32,
+};
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+// Islamic geometric pattern helpers
+fn draw_eight_fold_star(uv: vec2<f32>, center: vec2<f32>, radius: f32) -> f32 {
+    let p = uv - center;
+    let angle = atan2(p.y, p.x);
+    let r = length(p);
+    
+    // 8-fold symmetry
+    let n = 8.0;
+    let a = (angle + 3.14159265359) / (2.0 * 3.14159265359 / n);
+    let sector = floor(a);
+    let local_angle = (a - sector) * 2.0 * 3.14159265359 / n - 3.14159265359 / n;
+    
+    // Star shape
+    let inner_radius = radius * 0.4;
+    let spike_angle = 3.14159265359 / n * 0.3;
+    
+    var star_dist = 1000.0;
+    if abs(local_angle) < spike_angle {
+        star_dist = r - mix(inner_radius, radius, abs(local_angle) / spike_angle);
+    } else {
+        star_dist = r - inner_radius;
+    }
+    
+    return smoothstep(0.01, 0.0, abs(star_dist));
+}
+
+fn draw_arabesque_corner(uv: vec2<f32>, corner: vec2<f32>, size: f32) -> f32 {
+    let p = abs(uv - corner);
+    let spiral = sin(length(p) * 20.0 - atan2(p.y, p.x) * 3.0) * 0.5 + 0.5;
+    let mask = smoothstep(size, size * 0.8, length(p));
+    return spiral * mask * 0.3;
+}
+
+// Geometric construction helpers
+fn draw_square(uv: vec2<f32>, center: vec2<f32>, size: f32) -> f32 {
+    let p = abs(uv - center);
+    let d = max(p.x, p.y) - size * 0.5;
+    return smoothstep(0.01, 0.0, -d);
+}
+
+fn draw_square_outline(uv: vec2<f32>, center: vec2<f32>, size: f32, thickness: f32) -> f32 {
+    let p = abs(uv - center);
+    let d = max(p.x, p.y) - size * 0.5;
+    return smoothstep(0.01, 0.0, abs(d) - thickness);
+}
+
+fn draw_rectangle(uv: vec2<f32>, center: vec2<f32>, width: f32, height: f32) -> f32 {
+    let p = abs(uv - center);
+    let d = max(p.x - width * 0.5, p.y - height * 0.5);
+    return smoothstep(0.01, 0.0, -d);
+}
+
+fn draw_rectangle_outline(uv: vec2<f32>, center: vec2<f32>, width: f32, height: f32, thickness: f32) -> f32 {
+    let p = abs(uv - center);
+    let d = max(p.x - width * 0.5, p.y - height * 0.5);
+    return smoothstep(0.01, 0.0, abs(d) - thickness);
+}
+
+// Arabic numeral rendering (simplified geometric approximations)
+fn draw_number_3(uv: vec2<f32>, center: vec2<f32>, size: f32) -> f32 {
+    let p = (uv - center) / size;
+    var dist = 1000.0;
+    
+    // Top curve
+    let c1 = length(p - vec2<f32>(0.0, 0.3)) - 0.3;
+    dist = min(dist, abs(c1) - 0.05);
+    
+    // Bottom curve
+    let c2 = length(p - vec2<f32>(0.0, -0.3)) - 0.3;
+    dist = min(dist, abs(c2) - 0.05);
+    
+    // Middle notch
+    let notch = max(p.x + 0.2, -p.y);
+    dist = select(dist, 1000.0, notch < 0.0 && abs(p.y) < 0.1);
+    
+    return smoothstep(0.01, 0.0, -dist);
+}
+
+fn draw_text_x(uv: vec2<f32>, center: vec2<f32>, size: f32) -> f32 {
+    let p = abs(uv - center);
+    let d1 = abs(p.x - p.y) - size * 0.1;
+    let d2 = abs(p.x + p.y - size) - size * 0.1;
+    let d = min(d1, d2);
+    let mask = max(p.x, p.y) - size * 0.7;
+    return smoothstep(0.01, 0.0, -d) * smoothstep(0.01, 0.0, -mask);
+}
+
+fn draw_equals(uv: vec2<f32>, center: vec2<f32>, size: f32) -> f32 {
+    let p = uv - center;
+    let d1 = abs(p.y - size * 0.2) - size * 0.05;
+    let d2 = abs(p.y + size * 0.2) - size * 0.05;
+    let d = min(d1, d2);
+    let mask = abs(p.x) - size * 0.4;
+    return smoothstep(0.01, 0.0, -d) * smoothstep(0.01, 0.0, -mask);
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = (pos.xy - params.resolution * 0.5) / min(params.resolution.x, params.resolution.y);
+    
+    // Animation timing (5 seconds total, looping)
+    let t = fract(params.time * 0.2); // 0 to 1 over 5 seconds
+    
+    // Islamic manuscript background color
+    var color = vec3<f32>(254.0/255.0, 243.0/255.0, 199.0/255.0);
+    
+    // Decorative border with Islamic patterns
+    let border_width = 0.9;
+    let in_border = max(abs(uv.x), abs(uv.y)) > border_width;
+    
+    if in_border {
+        // Eight-fold star pattern in corners
+        var pattern = 0.0;
+        pattern += draw_eight_fold_star(uv, vec2<f32>(-0.85, 0.85), 0.12);
+        pattern += draw_eight_fold_star(uv, vec2<f32>(0.85, 0.85), 0.12);
+        pattern += draw_eight_fold_star(uv, vec2<f32>(-0.85, -0.85), 0.12);
+        pattern += draw_eight_fold_star(uv, vec2<f32>(0.85, -0.85), 0.12);
+        
+        // Arabesque patterns
+        pattern += draw_arabesque_corner(uv, vec2<f32>(-0.95, 0.95), 0.2);
+        pattern += draw_arabesque_corner(uv, vec2<f32>(0.95, 0.95), 0.2);
+        pattern += draw_arabesque_corner(uv, vec2<f32>(-0.95, -0.95), 0.2);
+        pattern += draw_arabesque_corner(uv, vec2<f32>(0.95, -0.95), 0.2);
+        
+        color = mix(color, vec3<f32>(30.0/255.0, 58.0/255.0, 138.0/255.0), pattern);
+    }
+    
+    // Main construction area
+    let construction_area = 1.0 - smoothstep(0.85, 0.9, max(abs(uv.x), abs(uv.y)));
+    
+    // Scale and center the construction
+    let scale = 0.15;
+    let offset = vec2<f32>(0.0, 0.0);
+    
+    // Solution value x = 3
+    let x_value = 3.0;
+    let x_size = x_value * scale;
+    
+    // Animation phases
+    let phase1 = smoothstep(0.0, 0.2, t); // Initial square appears
+    let phase2 = smoothstep(0.2, 0.4, t); // Rectangles appear
+    let phase3 = smoothstep(0.4, 0.6, t); // Corner squares appear
+    let phase4 = smoothstep(0.6, 0.8, t); // Labels appear
+    let phase5 = smoothstep(0.8, 1.0, t); // Solution highlights
+    
+    // Step 1: Central square (x²)
+    let central_square_alpha = phase1;
+    let central_square = draw_square(uv, offset, x_size * 2.0) * central_square_alpha;
+    let central_outline = draw_square_outline(uv, offset, x_size * 2.0, 0.005) * central_square_alpha;
+    
+    // Deep blue for x²
+    color = mix(color, vec3<f32>(30.0/255.0, 58.0/255.0, 138.0/255.0), central_square * construction_area);
+    color = mix(color, vec3<f32>(30.0/255.0, 58.0/255.0, 138.0/255.0), central_outline * construction_area);
+    
+    // Step 2: Four rectangles (4 × 2.5x = 10x total)
+    let rect_width = x_size;
+    let rect_height = 2.5 * scale;
+    let rect_alpha = phase2;
+    
+    // Top rectangle
+    let top_rect = draw_rectangle(uv, offset + vec2<f32>(0.0, x_size + rect_height * 0.5), rect_width * 2.0, rect_height) * rect_alpha;
+    let top_rect_outline = draw_rectangle_outline(uv, offset + vec2<f32>(0.0, x_size + rect_height * 0.5), rect_width * 2.0, rect_height, 0.005) * rect_alpha;
+    
+    // Bottom rectangle
+    let bottom_rect = draw_rectangle(uv, offset + vec2<f32>(0.0, -x_size - rect_height * 0.5), rect_width * 2.0, rect_height) * rect_alpha;
+    let bottom_rect_outline = draw_rectangle_outline(uv, offset + vec2<f32>(0.0, -x_size - rect_height * 0.5), rect_width * 2.0, rect_height, 0.005) * rect_alpha;
+    
+    // Left rectangle
+    let left_rect = draw_rectangle(uv, offset + vec2<f32>(-x_size - rect_height * 0.5, 0.0), rect_height, rect_width * 2.0) * rect_alpha;
+    let left_rect_outline = draw_rectangle_outline(uv, offset + vec2<f32>(-x_size - rect_height * 0.5, 0.0), rect_height, rect_width * 2.0, 0.005) * rect_alpha;
+    
+    // Right rectangle
+    let right_rect = draw_rectangle(uv, offset + vec2<f32>(x_size + rect_height * 0.5, 0.0), rect_height, rect_width * 2.0) * rect_alpha;
+    let right_rect_outline = draw_rectangle_outline(uv, offset + vec2<f32>(x_size + rect_height * 0.5, 0.0), rect_height, rect_width * 2.0, 0.005) * rect_alpha;
+    
+    // Gold for rectangles
+    let gold = vec3<f32>(245.0/255.0, 158.0/255.0, 11.0/255.0);
+    color = mix(color, gold, (top_rect + bottom_rect + left_rect + right_rect) * construction_area);
+    color = mix(color, vec3<f32>(30.0/255.0, 58.0/255.0, 138.0/255.0), 
+                (top_rect_outline + bottom_rect_outline + left_rect_outline + right_rect_outline) * construction_area);
+    
+    // Step 3: Four corner squares (4 × 2.5² = 25)
+    let corner_size = rect_height;
+    let corner_alpha = phase3;
+    
+    let corner_offset = x_size + rect_height * 0.5;
+    let tl_corner = draw_square_outline(uv, offset + vec2<f32>(-corner_offset, corner_offset), corner_size * 2.0, 0.005) * corner_alpha;
+    let tr_corner = draw_square_outline(uv, offset + vec2<f32>(corner_offset, corner_offset), corner_size * 2.0, 0.005) * corner_alpha;
+    let bl_corner = draw_square_outline(uv, offset + vec2<f32>(-corner_offset, -corner_offset), corner_size * 2.0, 0.005) * corner_alpha;
+    let br_corner = draw_square_outline(uv, offset + vec2<f32>(corner_offset, -corner_offset), corner_size * 2.0, 0.005) * corner_alpha;
+    
+    color = mix(color, vec3<f32>(30.0/255.0, 58.0/255.0, 138.0/255.0), 
+                (tl_corner + tr_corner + bl_corner + br_corner) * construction_area);
+    
+    // Step 4: Labels
+    let label_alpha = phase4;
+    
+    // x² label in center
+    let x_squared_label = draw_text_x(uv, offset + vec2<f32>(-0.03, 0.0), 0.04) * label_alpha;
+    let squared_2 = draw_number_3(uv, offset + vec2<f32>(0.04, 0.03), 0.02) * label_alpha; // Using 3 as superscript 2
+    color = mix(color, vec3<f32>(1.0, 1.0, 1.0), (x_squared_label + squared_2) * construction_area);
+    
+    // Step 5: Final equation and solution
+    let solution_alpha = phase5;
+    
+    // Equation at top: x² + 10x = 39
+    let eq_y = 0.65;
+    let eq_scale = 0.03;
+    
+    // Solution highlight
+    let solution_text = draw_text_x(uv, vec2<f32>(-0.1, -0.65), 0.05) * solution_alpha;
+    let equals_sign = draw_equals(uv, vec2<f32>(0.0, -0.65), 0.05) * solution_alpha;
+    let solution_3 = draw_number_3(uv, vec2<f32>(0.1, -0.65), 0.05) * solution_alpha;
+    
+    // Ornate frame around solution
+    let frame_outline = draw_rectangle_outline(uv, vec2<f32>(0.0, -0.65), 0.4, 0.15, 0.01) * solution_alpha;
+    
+    color = mix(color, gold, (solution_text + equals_sign + solution_3) * construction_area);
+    color = mix(color, gold, frame_outline * construction_area);
+    
+    return vec4<f32>(color, 1.0);
+}
+</shader>

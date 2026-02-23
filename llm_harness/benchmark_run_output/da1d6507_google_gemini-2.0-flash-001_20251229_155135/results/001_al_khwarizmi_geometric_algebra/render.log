@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/da1d6507_google_gemini-2.0-flash-001_20251229_155135/results/001_al_khwarizmi_geometric_algebra/shaders/shader.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/da1d6507_google_gemini-2.0-flash-001_20251229_155135/results/001_al_khwarizmi_geometric_algebra/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 0.000 ms   | CPU 109.075 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/da1d6507_google_gemini-2.0-flash-001_20251229_155135/results/001_al_khwarizmi_geometric_algebra/artifacts/result.png"
+
+=== STDERR ===
+(empty)

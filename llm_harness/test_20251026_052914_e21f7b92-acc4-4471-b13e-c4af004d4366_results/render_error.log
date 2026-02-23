@@ -1,0 +1,32 @@
+=== RENDER FAILED ===
+Return code: 101
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052914_e21f7b92-acc4-4471-b13e-c4af004d4366_results/shaders/shader_0.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052914_e21f7b92-acc4-4471-b13e-c4af004d4366_results/artifacts/result.png
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader validation error: 
+    ┌─ user_shader:152:62
+    │
+152 │         let is_tonic = select(0.0, 1.0, n_idx % 12u == 0u || is_perfect(f32(n_idx)) > 0.5);
+    │                                                              ^^^^^^^^^^^^^^^^^^^^^^
+    │                                                              │          │
+    │                                                              │          naga::Expression [124]
+    │                                                              invalid function call
+
+
+    Entry point fs_main at Fragment is invalid
+    Call to [6] is invalid
+    Argument 0 value [124] doesn't match the type [1]
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+=== STDOUT ===

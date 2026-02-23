@@ -1,0 +1,42 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: 1b50d645_x-ai_grok-4.1-fast_20260101_122805
+Started: 2026-01-01T12:28:05.260057
+============================================================
+
+[2026-01-01 12:28:05.260093] HARNESS INITIALIZED
+  Model: x-ai/grok-4.1-fast
+  Problems: 3
+  Max parallel: 100
+  Problem list:
+    000: ackermann_function_growth
+    001: apollonius_conic_sections
+    002: binary_tree_fractal
+
+[2026-01-01 12:28:05.545686] START problem_000: ackermann_function_growth
+[2026-01-01 12:34:43.172632] START problem_001: apollonius_conic_sections
+[2026-01-01 12:45:19.865525] EXCEPTION in problem_001 (generate stage): Exception: Failed after 3 retries: Connection error
+[2026-01-01 12:45:19.867250] EXCEPTION in problem_001 (run_single_problem): Exception: Failed after 3 retries: Connection error
+[2026-01-01 12:45:19.867309] END problem_001: apollonius_conic_sections - FAILED (636.69s)
+[2026-01-01 12:45:19.868210] START problem_002: binary_tree_fractal
+[2026-01-01 12:45:25.881229] EXCEPTION in problem_002 (generate stage): Exception: Failed after 3 retries: Connection error
+[2026-01-01 12:45:25.882022] EXCEPTION in problem_002 (run_single_problem): Exception: Failed after 3 retries: Connection error
+[2026-01-01 12:45:25.882071] END problem_002: binary_tree_fractal - FAILED (6.01s)
+[2026-01-01 12:45:25.912049] EXCEPTION in problem_000 (run_single_problem): RuntimeError: Shader execution still failing after repair: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: invalid left-hand side of assignment
+   ┌─ wgsl:61:9
+   │
+61 │         color.rgb = axis_color;
+   │         ^^^^^^^^^ cannot assign to this expression
+   │
+   = note: WGSL does not support assignments t
+[2026-01-01 12:45:25.912117] END problem_000: ackermann_function_growth - FAILED (1040.36s)
+
+============================================================
+Run completed: 2026-01-01T12:45:25.912589

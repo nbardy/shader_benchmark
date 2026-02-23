@@ -1,0 +1,15 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-12-30T19:08:07.821825",
+      "data": {
+        "error": "No shader files found"
+      }
+    }
+  },
+  "created": "2025-12-30T19:06:04.231347",
+  "last_updated": "2025-12-30T19:08:07.821832"
+}

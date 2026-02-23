@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_051545_d62d2cf8-d14a-44fc-a798-5ee990fee08b_results/shaders/dna_helix.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_051545_d62d2cf8-d14a-44fc-a798-5ee990fee08b_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 2.504 ms   | CPU 89.281 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_051545_d62d2cf8-d14a-44fc-a798-5ee990fee08b_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

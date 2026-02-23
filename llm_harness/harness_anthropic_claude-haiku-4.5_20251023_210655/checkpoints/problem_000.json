@@ -1,0 +1,30 @@
+{
+  "problem_index": 0,
+  "problem_name": "geometric_cube",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-23T21:07:23.598024",
+      "data": {
+        "shaders": [
+          "cube.wgsl"
+        ],
+        "llm_response_len": 12428
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-23T21:07:44.373496",
+      "data": {
+        "test_folder": "test_20251023_210723_fe441512-1e0a-4219-886e-6406758587cb_results"
+      }
+    },
+    "render": {
+      "status": "in_progress",
+      "timestamp": "2025-10-23T21:07:44.374089",
+      "data": {}
+    }
+  },
+  "created": "2025-10-23T21:06:55.398223",
+  "last_updated": "2025-10-23T21:07:44.374091"
+}

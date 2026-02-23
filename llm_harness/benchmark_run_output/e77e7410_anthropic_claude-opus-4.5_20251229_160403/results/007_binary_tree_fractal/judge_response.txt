@@ -1,0 +1,106 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+- Binary tree topology must have exactly depth 7 with precisely 127 segments (N=127 ± 0)
+- Branching angles must be accurate: 45° from parent branch with ±35° rotation tolerance
+- Length scaling must follow mathematical rule: branch length of level k = 0.7^k
+- Radius tapering must conform to scaling factor 0.6 per level with end-radius level 7 ≈ 0.08·0.6^7
+- BFS through centreline graph must yield correct binary tree structure
+- Least-squares fit of length vs depth must achieve slope log0.7 ± 0.05 for mathematical precision
+
+**S4: Visual Implementation Section**  
+- 3D fractal tree must appear organic and natural despite mathematical construction
+- Realistic bark texture must be applied consistently across all branch segments
+- Lighting must enhance the three-dimensional tree structure effectively
+- Background gradient must be exact with no deviations from specification
+- No aliasing must be visible on twig tips or branch edges
+- Visual quality must create convincing winter tree silhouette
+- Rendering must balance mathematical precision with natural organic appearance
+
+**S5: Completeness & Specifications Section**
+- All 127 segments must be present and properly connected in binary tree structure
+- Recursive branching pattern must be complete to depth 7
+- Progressive thinning and shortening must be consistent with scaling rules throughout
+- Angle accuracy verification must pass for 200 random branch splits with mean 45° ± 3°
+- Visual realism must be maintained while preserving mathematical accuracy
+- Tree structure must appear convincing as natural winter tree despite fractal construction
+- Assessment must verify topology (3 pts), angle accuracy (2 pts), length scaling (2 pts), radius scaling (1 pt), and render clarity (2 pts)
+
+Output format:
+Score: S/10
+Rationale: <brief narrative (≤120 words) summarising which tests passed/failed>
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+Grow an organic winter tree suspended in empty space—trunk straight upward, two children per branch, no leaves. Lighting should emphasise delicate twig silhouettes.
+
+Recursive geometry:
+- Trunk segment length = 1, radius = 0.08
+- Each branch splits into two at a 45° angle from parent direction, rotated ±35° about parent axis to avoid planar look
+- Length scale factor 0.7; radius factor 0.6
+- Depth 7 (level 0 trunk → level 7 twigs). Expected segments 2⁷-1 = 127
+
+Implementation notes:
+- Represent branches as tapered cylinders; smooth-join with spherically-blended joints
+- Material – dark-bark (#4b3726), roughness 0.7
+
+Scene & camera:
+- Camera (3,-6,2.5) aiming at origin; FOV 40°
+- Three-point lights: key (3,-5,5), fill (-2,-6,4) 40%, rim (0,0,6) 30%
+- Background gradient sky (zenith #d7ecff → horizon #ffffff)
+
+File: 2400×2400
+Deliverable: Outputs a single image.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+Evaluation of Shader-Generated Image:
+
+Score: 5/10
+
+Rationale: The image exhibits partial mathematical compliance but significant deviations from specified requirements. While the basic recursive branching structure is present, critical specifications are not met. The tree lacks the required depth of 7 and appears to have substantially fewer than 127 segments. Branch angles deviate from the precise 45° specification, and the length/radius scaling appears inconsistent. The rendering lacks the specified bark texture, color, and lighting nuances. The background gradient is absent, replaced by a uniform light gray. The organic, natural winter tree silhouette is not achieved, resulting in a sterile, mechanical representation.
+
+Detailed XML Scoring:
+
+<scores>
+<S1>45</S1>
+<S2>35</S2>
+<S3>25</S3>
+<S4>40</S4>
+<S5>30</S5>
+</scores>
+
+Key observations:
+- Minimal compliance with recursive branching concept
+- Significant mathematical accuracy deviations
+- Limited visual implementation of specified parameters
+- Lacks organic, naturalistic tree representation
+
+The visualization requires substantial refinement to meet the original mathematical and visual specifications.
+
+==================================================
+
+PARSED SCORES:
+[45, 35, 25, 40, 30]
+

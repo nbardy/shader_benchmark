@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/results/006_barbell_dumbbell_shape/shaders/shader.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/results/006_barbell_dumbbell_shape/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 0.030 ms   | CPU 186.845 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/results/006_barbell_dumbbell_shape/artifacts/result.png"
+
+=== STDERR ===
+(empty)

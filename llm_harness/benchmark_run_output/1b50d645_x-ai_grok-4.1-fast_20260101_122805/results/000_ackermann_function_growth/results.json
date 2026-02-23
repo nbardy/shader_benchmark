@@ -1,0 +1,13 @@
+{
+  "scores": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/1b50d645_x-ai_grok-4.1-fast_20260101_122805/results/000_ackermann_function_growth",
+  "status": "failed",
+  "execution_success": false,
+  "has_image": false
+}

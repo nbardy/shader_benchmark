@@ -1,0 +1,117 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+* Differential equation variety: Minimum three distinct equation types (wave, heat, Schrödinger) with mathematically appropriate visual signatures
+* Wave equation implementation: Regular oscillatory patterns consistent with hyperbolic PDE solution behavior in clear water regions
+* Heat equation visualization: Smooth, viscous flow patterns reflecting parabolic diffusion equation characteristics in honey-like zones
+* Schrödinger equation representation: Probability-cloud appearance with quantum mechanical uncertainty visualization in violet-tinted regions
+* Boundary condition handling: Correct mathematical treatment of different boundary types (Dirichlet, Neumann, mixed) at shoreline interfaces
+* Solution discontinuity identification: Foam formation accurately positioned at high gradient regions where solutions exhibit discontinuities
+* Layered solution history: Underwater sediment layers representing temporal evolution of differential equation solutions
+
+**S4: Visual Implementation Section**  
+* Water rendering realism: Advanced caustics, accurate reflections, subsurface scattering, and proper transparency effects
+* Golden hour atmospheric lighting: Warm color temperature with appropriate light scattering and atmospheric perspective
+* Equation-specific visual signatures: Distinct visual characteristics clearly differentiating each differential equation type
+* Depth perception quality: Proper underwater perspective with graduated visibility and light attenuation effects
+* Foam and bubble rendering: Realistic foam formation at solution discontinuities with appropriate particle dynamics
+* Mist and atmospheric effects: Volumetric rendering creating proper atmospheric depth and golden hour ambiance
+* Surface interaction visualization: Clear representation of wave-surface interactions and boundary layer phenomena
+
+**S5: Completeness & Specifications Section**
+* Multi-region implementation: All required water regions successfully representing different differential equation types
+* Mathematical visualization fidelity: Visual patterns accurately reflect underlying differential equation solution behaviors
+* Environmental completeness: Golden hour lighting, atmospheric effects, and underwater views fully implemented
+* Interaction detail coverage: Foam at discontinuities, sediment layers, and boundary conditions all visually represented
+* Rendering quality standards: High-resolution output with professional-grade water simulation and lighting effects
+* Output format compliance: Integer score 1-10 with ≤180-word rationale following specified structure
+* Educational effectiveness: Visualization successfully demonstrates relationships between differential equations and physical water phenomena
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+**Objective**
+Render **differential equations** as **living water surfaces**, where solutions manifest as fluid dynamics and wave patterns.
+
+**Mathematical recipe**
+
+1. Base equation: ∂²u/∂t² = c²∇²u - γ∂u/∂t (damped wave equation)
+2. Initial conditions create "equation signature":
+   - Linear DE: straight wave fronts
+   - Nonlinear DE: soliton formations
+   - Chaotic DE: turbulent mixing zones
+3. Boundary conditions as shoreline geometries:
+   - Dirichlet: solid walls (perfect reflection)
+   - Neumann: gradual beaches (partial absorption)
+   - Periodic: infinite ocean illusion
+4. Multiple equations interact as different "water types":
+   - Heat equation: viscous, honey-like flow
+   - Schrödinger: quantum probability mist
+   - Navier-Stokes: realistic water turbulence
+
+**Styling**
+
+* Photorealistic water rendering with caustics and subsurface scattering
+* Height field directly from solution u(x,y,t) at t=2.5
+* Color by equation type: clear (wave), blue-green (heat), violet (quantum)
+* Foam where |∇u| > threshold, indicating solution discontinuities
+* Underwater view showing solution history as sediment layers
+* Golden hour lighting: sun at 15° elevation, warm orange glow
+* Atmospheric perspective with distant mist
+* Camera at (0, 30, -50), looking at origin; FOV 60°
+* Resolution 2400 × 2400 px, ray-traced reflections
+
+**Deliverable** Single PNG showing multiple differential equations as interacting water bodies
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Evaluation
+
+## Detailed Assessment
+
+**S1: Problem Accuracy (Generic)**
+The image demonstrates fundamental failure to meet core specifications. While it displays three colored regions (suggesting attempted equation differentiation), there is zero evidence of actual differential equation implementations. No wave patterns, diffusion signatures, or quantum probability clouds are present. The damped wave equation, heat equation, and Schrödinger equation implementations are completely absent. Height field visualization from mathematical solutions is not evident. The image appears to be simple gradient fills rather than shader-computed PDE solutions.
+
+**S2: Visual Quality (Generic)**
+The image exhibits severe technical deficiency. Resolution appears reduced from specified 2400×2400px, anti-aliasing is poor with visible banding, and there are no caustics, reflections, or subsurface scattering effects. The lighting lacks the specified golden hour warmth (15° elevation sun), instead showing flat, diffuse coloration. No atmospheric perspective, mist, or depth perception is rendered. Visual glitches include harsh color transitions and complete absence of water-like material properties.
+
+**S3: Mathematical Accuracy Section**
+Critically deficient across all subcriteria. No wave equation oscillatory patterns, no heat equation viscous diffusion, no Schrödinger probability clouds. Boundary conditions (Dirichlet/Neumann/periodic) are unimplemented. No foam at gradient discontinuities. No sediment layers representing temporal solution evolution. The visualization contains no mathematical content whatsoever—it's purely aesthetic color gradients without underlying PDE simulation.
+
+**S4: Visual Implementation Section**
+Complete absence of required visual elements. No water rendering realism, no caustics or reflections, no subsurface scattering. Golden hour lighting is missing—colors are flat and desaturated rather than warm orange. No equation-specific visual signatures differentiate regions. Zero depth perception, foam dynamics, or atmospheric volumetric effects. Surface interactions are absent. The three regions lack any visual sophistication distinguishing different mathematical phenomena.
+
+**S5: Completeness & Specifications Section**
+The implementation fails fundamental deliverable requirements. While three color-coded regions exist, they lack mathematical fidelity. No multi-region interaction visualization. Environmental lighting is absent. No foam at discontinuities or sediment layers. Ray-traced reflections, requested resolution, and professional water simulation standards are entirely unmet. Educational effectiveness is zero—viewers cannot discern relationships between differential equations and visualized phenomena.
+
+---
+
+<scores><S1>8</S1><S2>12</S2><S3>5</S3><S4>6</S4><S5>7</S5></scores>
+
+**Rationale (consolidated):** The image presents three color-differentiated vertical regions suggesting attempted equation type separation, but lacks all substantive mathematical and visual implementations. No PDE solutions are computed or visualized. Water dynamics, caustics, reflections, golden hour lighting, foam formation, and atmospheric effects are completely absent. The flat gradient aesthetic fails to demonstrate differential equation behavior or render physically plausible water phenomena. The deliverable is decorative rather than mathematical, missing every technical specification while demonstrating zero educational value regarding differential equations.
+
+==================================================
+
+PARSED SCORES:
+[8, 12, 5, 6, 7]
+

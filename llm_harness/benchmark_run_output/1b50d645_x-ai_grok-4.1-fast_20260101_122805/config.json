@@ -1,0 +1,14 @@
+{
+  "run_id": "1b50d645_x-ai_grok-4.1-fast_20260101_122805",
+  "model": "x-ai/grok-4.1-fast",
+  "judge_model": "anthropic/claude-3.5-haiku",
+  "language": "wgsl",
+  "problems": [
+    "ackermann_function_growth",
+    "apollonius_conic_sections",
+    "binary_tree_fractal"
+  ],
+  "total_problems": 3,
+  "max_parallel": 100,
+  "created": "2026-01-01T12:28:05.259761"
+}

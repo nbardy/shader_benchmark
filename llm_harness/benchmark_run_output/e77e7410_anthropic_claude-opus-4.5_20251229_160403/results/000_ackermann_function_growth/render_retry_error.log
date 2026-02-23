@@ -1,0 +1,38 @@
+=== RENDER_RETRY FAILED ===
+Return code: 101
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/results/000_ackermann_function_growth/shaders/shader.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/results/000_ackermann_function_growth/artifacts/result.png
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader validation error: 
+   ┌─ user_shader:77:1
+   │  
+77 │ ╭ fn draw_digit(p: vec2<f32>, digit: u32) -> f32 {
+78 │ │     let segments = array<u32, 10>(
+79 │ │         0x3Fu, 0x06u, 0x5Bu, 0x4Fu, 0x66u,
+80 │ │         0x6Du, 0x7Du, 0x07u, 0x7Fu, 0x6Fu
+   · │
+83 │ │     let seg = segments[digit];
+   │ │               ^^^^^^^^^^^^^^^ naga::Expression [14]
+   · │
+95 │ │     
+96 │ │     return d;
+   │ ╰─────────────^ naga::Function [4]
+
+
+    Function [4] 'draw_digit' is invalid
+    Expression [14] is invalid
+    The expression [13] may only be indexed by a constant
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+=== STDOUT ===

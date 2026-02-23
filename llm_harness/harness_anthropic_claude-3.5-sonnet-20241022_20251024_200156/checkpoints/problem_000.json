@@ -1,0 +1,25 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-24T20:02:19.396590",
+      "data": {
+        "shaders": [
+          "ackermann_viz.wgsl"
+        ],
+        "llm_response_len": 3527
+      }
+    },
+    "compile": {
+      "status": "failed",
+      "timestamp": "2025-10-24T20:03:52.210238",
+      "data": {
+        "error": "Compilation failed:     Updating crates.io index\n     Locking 154 packages to latest compatible versions\n      Adding pollster v0.3.0 (available: v0.4.0)\n      Adding wgpu v0.20.1 (available: v27.0.1)\n   Compiling proc-macro2 v1.0.103\n   Compiling quote v1.0.41\n   Compiling unicode-ident v1.0.20\n   Compiling libc v0.2.177\n   Compiling cfg-if v1.0.4\n   Compiling autocfg v1.5.0\n   Compiling cfg_aliases v0.1.1\n   Compiling bitflags v2.10.0\n   Compiling parking_lot_core v0.9.12\n   Compiling thiserror v1.0.69\n   Compili"
+      }
+    }
+  },
+  "created": "2025-10-24T20:01:56.325296",
+  "last_updated": "2025-10-24T20:03:52.210256"
+}

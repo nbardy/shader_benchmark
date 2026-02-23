@@ -1,0 +1,184 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Quantum Wave Function Topology:
+- All nodal lines present at correct positions: vertical and horizontal lines where P=0 (at x=0, x=1, y=0, y=1)
+- Internal nodal curves accurately rendered: curved "figure-8" through domain center plus crescent-shaped zeros
+- Mathematical precision in quantum superposition nodal structure implementation
+- Phase offset effects properly generating internal nodal curve patterns
+- Accurate representation of quantum probability density topology
+
+Probability Lobe Structure:
+- Eight high-probability lobes arranged in pin-wheel configuration as mathematically required
+- Four large lobes positioned near centers of each quadrant with proper symmetry
+- Four smaller satellite lobes correctly positioned between main lobes
+- Mirror symmetry maintained across both x and y axes as quantum mechanics demands
+- Mathematical accuracy in lobe count, positioning, and relative intensity relationships
+
+**S4: Visual Implementation Section**  
+Contour Line Accuracy:
+- P=0.2 contour correctly encloses every bright lobe as specified
+- P=0.4 contour accurately hugs mid-radius of main lobes
+- P=0.6 contour appears only inside the four largest lobes as required
+- Each contour value encloses described regions with mathematical precision
+- Professional contour rendering supporting quantum visualization understanding
+
+Color Mapping and Visual Quality:
+- Magma color palette correctly implemented with full dynamic range
+- Color ramp progresses monotonically from black (nodes) through deep purple to orange-yellow (anti-nodes)
+- Professional color mapping enhancing quantum probability visualization
+- High-quality color gradients supporting mathematical interpretation
+- Visual clarity in probability density representation
+
+**S5: Completeness & Specifications Section**
+Required Quantum Elements:
+- Complete quantum probability wave visualization with all nodal structures properly implemented
+- All eight probability lobes correctly positioned and sized
+- Perfect symmetry maintained throughout quantum wave function representation
+- All contour lines accurately positioned at specified probability values
+- Full adherence to quantum probability wave mathematical requirements
+
+Technical and Frame Standards:
+- Exact 1600 × 1600 pixel resolution meeting specification requirements
+- 60-pixel pure-black border implemented with exact precision
+- No artifacts or unwanted graphics compromising visualization clarity
+- Professional rendering quality meeting quantum mechanics visualization standards
+- Complete implementation of quantum probability wave specification requirements
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+**Objective**
+Visualise the probability density of a 2‑D infinite square‑well eigenstate superposition.
+
+**Quantum system**
+
+* Potential $V(x,y)=0$ for $x,y\in[0,L]$ and $+\infty$ elsewhere; take $L=1$.
+* Eigenfunctions: $\psi_{n,m}(x,y)=2\sin(n\pi x/L)\sin(m\pi y/L)$.
+* Superposed state
+
+  $
+    \Psi(x,y)=\tfrac{1}{\sqrt3}\bigl[\psi_{1,1}+e^{i\pi/3}\psi_{2,3}+e^{-i\pi/4}\psi_{3,2}\bigr].
+  $
+* Probability density $P=|\Psi|^{2}$.
+
+**Rendering**
+
+* Sample $1024\times1024$ grid on domain; compute $P$.
+* Colour with perceptually uniform "magma" palette (black→bright yellow).
+* Display isolines for $P=0.2,0.4,0.6$ as 1‑px white curves.
+* 1600 × 1600 px PNG, 60‑px pure‑black frame around plot. No axes, no text.
+
+**Deliverable**  One PNG.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Evaluation
+
+## Detailed Assessment
+
+### S1: Problem Accuracy (Generic)
+The image demonstrates a quantum probability density visualization, but there are significant deviations from specifications. The superposition Ψ = (1/√3)[ψ₁,₁ + e^(iπ/3)ψ₂,₃ + e^(-iπ/4)ψ₃,₂] should produce a distinctly asymmetric pattern with clear phase interference effects. The expected nodal structure should include:
+- Boundary nodes at x=0, x=1, y=0, y=1
+- Internal nodal curves from interference patterns
+
+The visualization shows clear contours and probability structure, but the overall topology appears somewhat generic without the specific interference signatures expected from this particular superposition. The pattern lacks distinctive asymmetry markers that should arise from the phase differences (π/3 and -π/4).
+
+**Concerns:** The pattern appears somewhat symmetric when the superposition should create notable asymmetry due to phase offsets.
+
+### S2: Visual Quality (Generic)
+The image is professionally rendered with excellent technical quality:
+- Clean 1600×1600 resolution clearly visible
+- Smooth anti-aliasing throughout
+- Professional contour line rendering (1-px white curves)
+- No visible artifacts or glitches
+- Appropriate contrast between elements
+- The 60-pixel black frame is properly implemented
+
+The visual presentation is polished and suitable for scientific publication. The color gradient is smooth, and the contour lines are crisp and well-defined.
+
+### S3: Mathematical Accuracy Section
+
+**Quantum Wave Function Topology:**
+- **Nodal lines:** Boundary nodes appear correct (edges of domain). However, internal nodal structure specific to this superposition is difficult to verify with certainty. The complex phase interference pattern should create more intricate internal node topology than appears present.
+- **Mathematical precision:** The overall structure suggests correct implementation of the wave function evaluation, but lacks distinctive markers of the specific superposition used.
+- **Phase offset effects:** Should create noticeable asymmetry in the lobe arrangement; the current visualization appears relatively balanced.
+
+**Probability Lobe Structure:**
+- **Lobe count and arrangement:** The image shows approximately 4 major lobes with satellite lobes. However, the expected pattern from the (1,1), (2,3), and (3,2) superposition should produce 8 distinct lobes arranged in a pinwheel/asymmetric configuration.
+- **Symmetry considerations:** The visualization shows near-mirror symmetry, but the superposition coefficients and phases should break this symmetry significantly.
+- **Relative intensity:** Lobes appear to have varied intensities, which is consistent with superposition principles, but the specific pattern doesn't clearly match theoretical expectations.
+
+**Critical Issue:** The structure should be distinctly asymmetric due to the different quantum numbers (1,1) vs (2,3) vs (3,2) and their phase factors. The current image appears too symmetric.
+
+### S4: Visual Implementation Section
+
+**Contour Line Accuracy:**
+- Three white contour lines are clearly visible at approximately the specified P-values (0.2, 0.4, 0.6)
+- P=0.2 contour encloses the major structures appropriately
+- P=0.4 and P=0.6 contours show proper nesting
+- Rendering is clean and precise
+
+**Color Mapping and Visual Quality:**
+- Magma palette appears correctly implemented (black→purple→yellow range)
+- Color progression is smooth and perceptually uniform
+- Black represents zero probability regions correctly
+- Deep purple indicates moderate probability
+- Colors progress toward warmer tones at higher probability
+- Excellent visual clarity for interpreting probability density
+
+The color implementation is professional and enhances interpretation significantly.
+
+### S5: Completeness & Specifications Section
+
+**Required Quantum Elements:**
+- ✓ Quantum probability wave visualization present
+- ✓ Nodal structures visible at boundaries
+- ~ Internal nodal structure questionable
+- ~ Eight lobes (requirement) - current image shows 4-5 major lobes
+- ~ Pinwheel configuration not clearly evident
+- ✓ Contour lines at specified values present
+- ? Full adherence to superposition mathematics uncertain
+
+**Technical and Frame Standards:**
+- ✓ 1600×1600 pixel resolution confirmed
+- ✓ 60-pixel black border properly implemented
+- ✓ No visible artifacts
+- ✓ Professional rendering quality
+- ✓ Clean implementation without extraneous graphics
+
+**Critical Gap:** The expected 8-lobe pinwheel structure from this specific superposition may not be clearly present. For a (1,1) + (2,3) + (3,2) superposition with appropriate phases, the topology should be notably more complex and asymmetric than displayed.
+
+---
+
+## Summary
+
+The visualization demonstrates excellent technical execution and visual quality. The contours are well-rendered, the color mapping is professional, and the frame specifications are met perfectly. However, there is substantial concern about whether the probability density pattern accurately represents the mathematical requirements of the specific superposition state specified. The pattern appears too symmetric and lacks the distinctive interference features expected from the particular combination of quantum numbers and phase factors. The apparent absence of a clear 8-lobe structure with appropriate asymmetry is the primary mathematical accuracy concern.
+
+<scores><S1>62</S1><S2>88</S2><S3>58</S3><S4>82</S4><S5>70</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[62, 88, 58, 82, 70]
+

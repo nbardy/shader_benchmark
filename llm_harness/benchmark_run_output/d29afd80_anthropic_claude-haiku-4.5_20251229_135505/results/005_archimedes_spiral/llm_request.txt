@@ -1,0 +1,63 @@
+**Objective**
+Create a shader visualization of Archimedes' Spiral with his original geometric properties and applications, including the trisection of angles and squaring of the circle, as discovered in ancient Syracuse circa 225 BCE.
+
+**Historical Context**
+Archimedes of Syracuse (c. 287-212 BCE) discovered this spiral while investigating uniform motion along a rotating ray. His work "On Spirals" contains 28 propositions about this curve, including methods for trisecting angles and finding areas. The spiral r = aθ represents one of the earliest examples of a curve defined by a relationship between radius and angle.
+
+**Mathematical Specification**
+
+1. **The Archimedean Spiral**
+   - Primary spiral: r = θ/π for θ ∈ [0, 8π] (4 complete turns)
+   - Show uniform spacing between turns (key property)
+   - Animate the generation: point moving outward at constant speed while ray rotates uniformly
+
+2. **Historical Applications Visualization**
+   
+   **A. Angle Trisection**
+   - Given angle AOB = 60°
+   - Draw arc from O intersecting OB at point C
+   - Find point P on spiral where OP = (1/3)OC
+   - Show that angle AOP = 20° (exactly 1/3 of 60°)
+   - Highlight construction with golden lines
+
+   **B. Squaring the Circle (First Turn)**
+   - Show that area inside first turn equals πr²/3
+   - Visualize Archimedes' exhaustion method:
+     * Inscribed polygons of 6, 12, 24, 48 sides
+     * Color gradient showing convergence to exact area
+   
+   **C. Tangent Properties**
+   - At point P(r,θ), show tangent line
+   - Display angle ψ between tangent and radius vector
+   - Show Archimedes' result: tan(ψ) = r/a
+
+3. **Ancient Greek Styling**
+   - Background: Aged papyrus texture (#F5E6D3)
+   - Spiral in deep blue ink (#1E3263)
+   - Construction lines in faded red (#8B4513)
+   - Greek annotations: use actual Greek letters (α, β, γ, θ, π)
+   - Add water damage and aging effects to edges
+
+4. **Geometric Annotations**
+   - Label key points with Greek letters
+   - Show measurement marks along spiral
+   - Include Archimedes' original notations where known
+   - Add small diagrams showing:
+     * Uniform motion principle
+     * Area calculation method
+
+5. **Rendering Requirements**
+   - Use compass-and-straightedge construction aesthetic
+   - Show construction marks and compass arc traces
+   - Include Archimedes' portrait medallion in corner
+   - Subtle animation of spiral generation (7 seconds)
+   - Resolution: 1600×1600 pixels
+
+**Educational Goals**
+- Demonstrate Archimedes' genius in discovering spiral properties
+- Show practical applications to classical problems
+- Visualize the exhaustion method preceding calculus by 2000 years
+- Connect ancient Greek mathematics to modern polar coordinates
+
+**Deliverable**
+A shader that brings Archimedes' original spiral investigations to life, showing both the mathematical beauty and practical applications that made this one of antiquity's great mathematical discoveries.

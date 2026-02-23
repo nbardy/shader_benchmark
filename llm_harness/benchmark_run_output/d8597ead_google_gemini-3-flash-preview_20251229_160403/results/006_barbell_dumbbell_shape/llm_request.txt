@@ -1,0 +1,52 @@
+**Objective**
+Generate a high-quality visualization of a barbell (dumbbell) shape consisting of two spheres connected by a cylindrical shaft. The shape should be rendered with realistic materials and lighting.
+
+**Mathematical Specification**
+
+1. **Geometric Components**
+   - Two identical spheres:
+     * Radius: 0.8 units
+     * Centers at: (-2.5, 0, 0) and (2.5, 0, 0)
+   - Connecting cylinder:
+     * Radius: 0.3 units
+     * Axis aligned with x-axis
+     * Extends from x = -1.7 to x = 1.7
+     * Smoothly blended with spheres at junction points
+
+2. **Smooth Blending**
+   - Use smooth minimum (smin) function for seamless transitions:
+     * smin(d1, d2, k) = -log(exp(-k*d1) + exp(-k*d2))/k
+     * Blending factor k = 2.0
+   - Apply blending at cylinder-sphere junctions
+
+3. **Material Properties**
+   - Metallic appearance:
+     * Base color: RGB(0.7, 0.7, 0.8)
+     * Metalness: 0.9
+     * Roughness: 0.2
+   - Different materials for spheres vs cylinder:
+     * Spheres: Polished chrome finish
+     * Cylinder: Brushed metal texture
+
+4. **Scene Setup**
+   - Position: Centered at origin
+   - Rotation: 
+     * Initial tilt: 15° around z-axis
+     * Continuous rotation: 1 revolution per 6 seconds around y-axis
+   - Camera: Positioned at (4, 3, 5) looking at origin
+
+5. **Lighting Configuration**
+   - Primary light: Directional from (1, 2, 1), intensity 0.8
+   - Fill light: Point light at (-3, 1, 2), intensity 0.4
+   - Rim light: Directional from (-1, 0, -1), intensity 0.3
+   - Environment: Simple gradient sky (light grey to white)
+
+6. **Rendering Details**
+   - Use physically based rendering (PBR) model
+   - Enable reflections on metallic surfaces
+   - Soft shadows with penumbra
+   - Output resolution: 1600 × 1600 pixels
+   - Antialiasing: 8× MSAA
+   - Background: Subtle radial gradient (RGB(0.9, 0.9, 0.95) to RGB(1, 1, 1))
+
+Deliverable: Outputs a single image.

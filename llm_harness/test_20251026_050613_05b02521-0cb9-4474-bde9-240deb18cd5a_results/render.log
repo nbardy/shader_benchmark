@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_050613_05b02521-0cb9-4474-bde9-240deb18cd5a_results/shaders/apollonian_gasket.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_050613_05b02521-0cb9-4474-bde9-240deb18cd5a_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 126.595 ms   | CPU 709.655 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_050613_05b02521-0cb9-4474-bde9-240deb18cd5a_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

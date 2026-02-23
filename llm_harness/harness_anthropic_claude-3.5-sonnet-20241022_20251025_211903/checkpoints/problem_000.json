@@ -1,0 +1,37 @@
+{
+  "problem_index": 0,
+  "problem_name": "archimedes_spiral",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-25T21:19:22.710762",
+      "data": {
+        "shaders": [
+          "archimedes_spiral.wgsl"
+        ],
+        "llm_response_len": 3283
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-25T21:19:22.712742",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251025_211922_8080e955-93ab-47aa-8e53-178bcf0be1e9_results"
+      }
+    },
+    "render": {
+      "status": "complete",
+      "timestamp": "2025-10-25T21:24:06.297381",
+      "data": {
+        "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251025_211922_8080e955-93ab-47aa-8e53-178bcf0be1e9_results/artifacts/result.png"
+      }
+    },
+    "judge": {
+      "status": "in_progress",
+      "timestamp": "2025-10-25T21:24:06.299297",
+      "data": {}
+    }
+  },
+  "created": "2025-10-25T21:19:03.547726",
+  "last_updated": "2025-10-25T21:24:06.299302"
+}

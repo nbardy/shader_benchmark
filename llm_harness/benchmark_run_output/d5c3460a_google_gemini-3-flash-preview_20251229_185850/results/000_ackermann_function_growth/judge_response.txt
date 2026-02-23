@@ -1,0 +1,96 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+- Ackermann function values A(3,n) must be mathematically correct for n=0 to 10
+- Logarithmic scaling must accurately accommodate the extreme exponential tower growth from single digits to hundreds of digits
+- Bar heights must correspond precisely to log₁₀ values with errors ≤ 0.5% (6 pts total, -0.5 pt per offending bar)
+- Ground-truth verification against reference values: A(3,0)=1 (log=0), A(3,1)=2 (log=0.30103), A(3,2)=6 (log=0.77815), A(3,3)=14 (log=1.14613), A(3,4)=65534 (log=4.81641), continuing to A(3,10) with log≈308.002
+- Exponential tower notation must be correctly represented for larger values (A(3,5)=2^65535-3, A(3,6)=2^(2^65535-3)-3)
+- Numerical precision must be maintained to 15 significant digits for logarithmic calculations
+
+**S4: Visual Implementation Section**  
+- Color gradient must transition linearly from blue to red across all 11 bars
+- HSV hue mapping must be linear within ±5° tolerance for each bar position (+2 pts)
+- Visual clarity must effectively convey the dramatic exponential growth pattern
+- Bar positioning must accurately reflect logarithmic scale mapping from pixel coordinates
+- Grid system must display exactly 11 horizontal grid lines with equal spacing (+2 pts)
+- Y-axis tick positions must be precisely readable for scale verification
+- Overall rendering quality must clearly illustrate the function's extreme growth characteristics
+
+**S5: Completeness & Specifications Section**
+- All 11 bars must be present representing A(3,n) for n=0 through 10
+- Proper annotations must show tower notation for larger values where applicable
+- Grid system must be complete with correctly positioned horizontal reference lines
+- Color progression must span the full range from blue (smallest values) to red (largest values)
+- Scale indicators and axis labels must be clearly visible and properly positioned
+- Visualization must demonstrate the transition from comprehensible small values to astronomically large numbers
+- Assessment pipeline must extract bar heights, map to log scale, compute errors, and verify grid/color specifications
+
+Output format:
+Score: S/10
+Rationale: <brief narrative (≤120 words) summarising which tests passed/failed>
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+The plot should shock the viewer by how astronomically fast the Ackermann function explodes, even for modest inputs. Use a log₁₀ axis so the bars fit on screen yet their heights still dwarf each other.
+
+Data table:
+A(3,n) values:
+- n=0: 1
+- n=1: 2
+- n=2: 2^2-1 = 3
+- n=3: 2^(2^2)-3 = 13
+- n=4: 2^(2^(2^2))-3 = 65533
+- n=5 through n=10: exponential towers of increasing height
+
+Pre-compute exact integer values using bignum arithmetic; convert to log₁₀ with high-precision (at least 50 digits).
+
+Visual spec:
+- Canvas 1600 × 1200, white background
+- 11 vertical bars, equally spaced 80 px apart
+- Bar widths 40 px; top-cap rounded
+- Fill colour gradient deep-blue (#0033CC) for n=0 to searing-red (#FF3300) for n=10 (linear in n)
+- y-axis log₁₀ scale 0→10, grid-lines every integer decade
+- Annotate each bar with exact exponent-tower notation beneath x-axis
+
+Deliverable: Outputs a single image.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+Score: 4/10
+Rationale: The visualization critically fails multiple key specifications. While the bar chart demonstrates a color gradient transitioning from blue to red, it lacks essential mathematical annotation, grid lines, axis labels, and explicit representation of the Ackermann function's exponential growth. The bars appear uniformly scaled, completely undermining the intent to showcase the function's astronomical expansion. No exponential tower notation is visible, and the logarithmic scaling appears absent. The visual fails to communicate the core mathematical narrative of rapid computational complexity.
+
+<scores>
+<S1>30</S1>
+<S2>50</S2>
+<S3>20</S3>
+<S4>25</S4>
+<S5>15</S5>
+</scores>
+
+==================================================
+
+PARSED SCORES:
+[30, 50, 20, 25, 15]
+

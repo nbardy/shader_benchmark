@@ -1,0 +1,123 @@
+<shader file="shader.wgsl">
+// Archimedes' Spiral: On Spirals (c. 225 BCE)
+// Visualization of ancient geometric properties and constructions
+
+struct Params {
+    resolution: vec2<f32>,
+};
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+// Helper: Distance to line segment for construction marks
+fn sd_segment(p: vec2<f32>, a: vec2<f32>, b: vec2<f32>) -> f32 {
+    let pa = p - a;
+    let ba = b - a;
+    let h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
+
+// Pseudo-random for papyrus texture
+fn hash(p: vec2<f32>) -> f32 {
+    return fract(sin(dot(p, vec2<f32>(12.9898, 78.233))) * 43758.5453);
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let center = params.resolution * 0.5;
+    let uv = (pos.xy - center) / min(params.resolution.x, params.resolution.y);
+    let r = length(uv);
+    let theta = atan2(uv.y, uv.x);
+    
+    // 1. Papyrus Background logic
+    let paper_color = vec3<f32>(0.96, 0.90, 0.82);
+    let grain = hash(pos.xy * 0.01) * 0.05;
+    let fiber = smoothstep(0.4, 0.41, hash(vec2<f32>(pos.x * 0.01, pos.y * 0.8)));
+    var color = paper_color - grain - (fiber * 0.02);
+    
+    // Vignette/Aging
+    let dist_to_edge = length(uv);
+    color = color * (1.1 - smoothstep(0.4, 0.7, dist_to_edge));
+
+    // 2. Archimedean Spiral: r = a * theta
+    // a = 1 / (2 * PI) so r=1 after one full rotation (2PI)
+    let a_coeff = 0.04; 
+    let spiral_dist = r / a_coeff;
+    
+    // Multiple turns (4 turns)
+    var d_spiral = 1e10;
+    for (var i: i32 = 0; i < 5; i = i + 1) {
+        let t_target = theta + f32(i) * 6.283185;
+        if (t_target > 0.0) {
+            d_spiral = min(d_spiral, abs(r - a_coeff * t_target));
+        }
+    }
+    
+    let ink_blue = vec3<f32>(0.117, 0.196, 0.388);
+    let spiral_mask = smoothstep(0.004, 0.002, d_spiral);
+    color = mix(color, ink_blue, spiral_mask * 0.8);
+
+    // 3. Construction: Angle Trisection
+    // Given Angle AOB = 60 degrees (pi/3)
+    let angle_total = 1.047197;
+    let angle_trisect = angle_total / 3.0;
+    
+    // Point C on OB at radius d
+    let dist_c = 0.35;
+    let b_vec = vec2<f32>(cos(angle_total), sin(angle_total)) * dist_c;
+    let a_vec = vec2<f32>(1.0, 0.0) * dist_c;
+    let p_vec = vec2<f32>(cos(angle_trisect), sin(angle_trisect)) * (dist_c / 3.0);
+    
+    let red_ink = vec3<f32>(0.545, 0.27, 0.074);
+    
+    // Draw Rays
+    let d_ray_a = sd_segment(uv, vec2<f32>(0.0), a_vec);
+    let d_ray_b = sd_segment(uv, vec2<f32>(0.0), b_vec);
+    let d_ray_p = sd_segment(uv, vec2<f32>(0.0), p_vec);
+    
+    let rays = min(d_ray_a, min(d_ray_b, d_ray_p));
+    color = mix(color, red_ink, smoothstep(0.002, 0.001, rays) * 0.5);
+
+    // 4. Squaring the Circle (Exhaustion Method)
+    // Draw a visual representation of a 12-sided polygon inscribed in the spiral's first turn
+    var d_poly = 1e10;
+    let sides = 12u;
+    for (var i: u32 = 0u; i < sides; i = i + 1u) {
+        let t0 = f32(i) * (6.283185 / f32(sides));
+        let t1 = f32(i + 1u) * (6.283185 / f32(sides));
+        let p0 = vec2<f32>(cos(t0), sin(t0)) * (a_coeff * t0);
+        let p1 = vec2<f32>(cos(t1), sin(t1)) * (a_coeff * t1);
+        d_poly = min(d_poly, sd_segment(uv, p0, p1));
+    }
+    color = mix(color, red_ink, smoothstep(0.002, 0.001, d_poly) * 0.3);
+
+    // 5. Annotations (Simplified Greek Glyphs using SDF logic)
+    // alpha (α) roughly at the first angle
+    let alpha_pos = vec2<f32>(0.1, 0.02);
+    let d_alpha = length(uv - alpha_pos) - 0.005;
+    color = mix(color, ink_blue, smoothstep(0.01, 0.0, d_alpha));
+
+    // theta (θ)
+    let theta_pos = vec2<f32>(cos(0.5) * 0.15, sin(0.5) * 0.15);
+    let d_theta = abs(length(uv - theta_pos) - 0.008);
+    color = mix(color, ink_blue, smoothstep(0.002, 0.001, d_theta));
+
+    // 6. Tangent visualization at theta = 2*PI
+    let t_tangent = 6.283185;
+    let r_tangent = a_coeff * t_tangent;
+    let p_tangent = vec2<f32>(r_tangent, 0.0);
+    // tan(psi) = r/a => psi is the angle between radius and tangent
+    let tangent_dir = normalize(vec2<f32>(cos(t_tangent) - t_tangent*sin(t_tangent), sin(t_tangent) + t_tangent*cos(t_tangent)));
+    let d_tangent = sd_segment(uv, p_tangent - tangent_dir * 0.1, p_tangent + tangent_dir * 0.1);
+    color = mix(color, red_ink, smoothstep(0.002, 0.001, d_tangent) * 0.6);
+
+    return vec4<f32>(color, 1.0);
+}
+</shader>

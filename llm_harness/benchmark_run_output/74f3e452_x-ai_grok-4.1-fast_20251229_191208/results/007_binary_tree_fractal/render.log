@@ -1,0 +1,30 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/74f3e452_x-ai_grok-4.1-fast_20251229_191208/results/007_binary_tree_fractal/shaders/shader.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/74f3e452_x-ai_grok-4.1-fast_20251229_191208/results/007_binary_tree_fractal/artifacts/result.png
+Return code: 101
+
+=== STDOUT ===
+(empty)
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: declaration of `sdf_subtree` is recursive
+   ┌─ wgsl:36:4
+   │
+36 │ fn sdf_subtree(pos: vec3<f32>, start_pos: vec3<f32>, dir: vec3<f32>, len: f32, rad: f32, level: u32) -> f32 {
+   │    ^^^^^^^^^^^
+   ·
+69 │     let d1 = sdf_subtree(pos, split_pos, child_dir1, child_len, child_rad, level + 1u);
+   │              ^^^^^^^^^^^ uses itself here
+
+
+    declaration of `sdf_subtree` is recursive
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/da1d6507_google_gemini-2.0-flash-001_20251229_155135/results/004_archimedean_spiral_galaxy/shaders/shader.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/da1d6507_google_gemini-2.0-flash-001_20251229_155135/results/004_archimedean_spiral_galaxy/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 15.652 ms   | CPU 5347.711 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/da1d6507_google_gemini-2.0-flash-001_20251229_155135/results/004_archimedean_spiral_galaxy/artifacts/result.png"
+
+=== STDERR ===
+(empty)

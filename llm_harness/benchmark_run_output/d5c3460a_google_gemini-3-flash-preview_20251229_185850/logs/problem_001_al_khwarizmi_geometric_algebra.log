@@ -1,0 +1,28 @@
+2025-12-29 18:59:03.395 [INFO] Logger initialized for problem 1: al_khwarizmi_geometric_algebra
+2025-12-29 18:59:03.397 [INFO] ========== PROBLEM START ==========
+2025-12-29 18:59:03.397 [INFO] Index: 1
+2025-12-29 18:59:03.397 [INFO] Name: al_khwarizmi_geometric_algebra
+2025-12-29 18:59:03.397 [INFO] ---------- STAGE START: GENERATE ----------
+2025-12-29 18:59:03.397 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-12-29 18:59:03.398 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d5c3460a_google_gemini-3-flash-preview_20251229_185850/checkpoints/problem_001.json
+2025-12-29 18:59:03.398 [INFO] Loading request prompt
+2025-12-29 18:59:03.398 [INFO] API call: LLM generation model=google/gemini-3-flash-preview, language=wgsl
+2025-12-29 18:59:16.161 [INFO] API response: LLM generation - success, size=4492 bytes
+2025-12-29 18:59:16.162 [INFO] Parsing shader response
+2025-12-29 18:59:16.162 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2025-12-29 18:59:16.162 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d5c3460a_google_gemini-3-flash-preview_20251229_185850/checkpoints/problem_001.json
+2025-12-29 18:59:16.162 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2025-12-29 18:59:16.163 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2025-12-29 18:59:16.163 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d5c3460a_google_gemini-3-flash-preview_20251229_185850/checkpoints/problem_001.json
+2025-12-29 18:59:16.163 [INFO] Attempting to save checkpoint: stage=compile, status=complete
+2025-12-29 18:59:16.163 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d5c3460a_google_gemini-3-flash-preview_20251229_185850/checkpoints/problem_001.json
+2025-12-29 18:59:16.163 [INFO] Attempting to save checkpoint: stage=render, status=in_progress
+2025-12-29 18:59:16.164 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d5c3460a_google_gemini-3-flash-preview_20251229_185850/checkpoints/problem_001.json
+2025-12-29 19:01:07.512 [INFO] Attempting to save checkpoint: stage=render, status=complete
+2025-12-29 19:01:07.513 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d5c3460a_google_gemini-3-flash-preview_20251229_185850/checkpoints/problem_001.json
+2025-12-29 19:01:07.513 [INFO] Attempting to save checkpoint: stage=judge, status=in_progress
+2025-12-29 19:01:07.513 [INFO] Checkpoint saved successfully: stage=judge, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d5c3460a_google_gemini-3-flash-preview_20251229_185850/checkpoints/problem_001.json
+2025-12-29 19:01:23.298 [INFO] Attempting to save checkpoint: stage=judge, status=complete
+2025-12-29 19:01:23.299 [INFO] Checkpoint saved successfully: stage=judge, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d5c3460a_google_gemini-3-flash-preview_20251229_185850/checkpoints/problem_001.json
+2025-12-29 19:01:23.299 [INFO] ========== PROBLEM END: SUCCESS ==========
+2025-12-29 19:01:23.299 [INFO] Execution time: 139.90s

@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_054353_5550da1d-3f54-49df-89fa-20d5bd8d7908_results/shaders/harmonic_mandala.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_054353_5550da1d-3f54-49df-89fa-20d5bd8d7908_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 0.181 ms   | CPU 98.374 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_054353_5550da1d-3f54-49df-89fa-20d5bd8d7908_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

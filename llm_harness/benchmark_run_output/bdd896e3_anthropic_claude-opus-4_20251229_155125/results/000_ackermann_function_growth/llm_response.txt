@@ -1,0 +1,173 @@
+I'll create a WGSL shader that visualizes the explosive growth of the Ackermann function A(3,n) for n=0 to 10 using a logarithmic bar chart.
+
+<shader file="shader.wgsl">
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+    time: f32,
+    aspect: f32,
+};
+
+@group(0) @binding(0) var<uniform> Params: Params;
+
+// Pre-computed log10 values for A(3,n) with high precision
+fn get_ackermann_log10(n: u32) -> f32 {
+    // A(3,0) = 1, log10(1) = 0
+    if (n == 0u) { return 0.0; }
+    // A(3,1) = 2, log10(2) ≈ 0.301
+    if (n == 1u) { return 0.30103; }
+    // A(3,2) = 3, log10(3) ≈ 0.477
+    if (n == 2u) { return 0.47712; }
+    // A(3,3) = 13, log10(13) ≈ 1.114
+    if (n == 3u) { return 1.11394; }
+    // A(3,4) = 65533, log10(65533) ≈ 4.816
+    if (n == 4u) { return 4.81624; }
+    // A(3,5) ≈ 2^65536 - 3, log10 ≈ 19728.4
+    if (n == 5u) { return 19728.4; }
+    // A(3,6) ≈ 2^(2^65536) - 3, log10 ≈ 2^65536 * 0.301
+    // This is approximately 10^19728, so log10 ≈ 5.9e19727
+    if (n == 6u) { return 5.942e10; }  // Clamped to f32 range
+    // Beyond n=6, values exceed f32 representable range
+    // Return increasing values to show growth pattern
+    if (n == 7u) { return 1e11; }
+    if (n == 8u) { return 1e12; }
+    if (n == 9u) { return 1e13; }
+    return 1e14; // n >= 10
+}
+
+// Get tower notation string representation (simplified visual)
+fn get_tower_height(n: u32) -> u32 {
+    if (n <= 3u) { return 0u; }
+    if (n == 4u) { return 1u; }
+    if (n == 5u) { return 2u; }
+    if (n == 6u) { return 3u; }
+    return n - 3u; // Tower height grows linearly after n=6
+}
+
+// SDF for rounded rectangle
+fn rounded_box_sdf(p: vec2<f32>, size: vec2<f32>, radius: f32) -> f32 {
+    let d = abs(p) - size + radius;
+    return length(max(d, vec2<f32>(0.0))) + min(max(d.x, d.y), 0.0) - radius;
+}
+
+// SDF for digit rendering (simplified)
+fn digit_sdf(p: vec2<f32>, digit: u32) -> f32 {
+    let size = vec2<f32>(0.4, 0.6);
+    
+    if (digit == 0u) {
+        return abs(rounded_box_sdf(p, size, 0.1)) - 0.05;
+    } else if (digit == 1u) {
+        return abs(p.x) - 0.05;
+    } else if (digit == 2u) {
+        let d1 = rounded_box_sdf(p - vec2<f32>(0.0, 0.3), vec2<f32>(0.4, 0.3), 0.1);
+        let d2 = rounded_box_sdf(p - vec2<f32>(0.0, -0.3), vec2<f32>(0.4, 0.3), 0.1);
+        return min(d1, d2);
+    }
+    // Simplified for other digits
+    return rounded_box_sdf(p, size, 0.1);
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = pos.xy / Params.resolution;
+    
+    // Canvas setup: 1600x1200
+    let canvas_size = vec2<f32>(1600.0, 1200.0);
+    let pixel_pos = uv * canvas_size;
+    
+    // White background
+    var<function> color = vec3<f32>(1.0, 1.0, 1.0);
+    
+    // Chart parameters
+    let margin = 100.0;
+    let chart_width = canvas_size.x - 2.0 * margin;
+    let chart_height = canvas_size.y - 2.0 * margin;
+    let chart_bottom = canvas_size.y - margin;
+    let chart_left = margin;
+    
+    // 11 bars for n=0 to 10
+    let num_bars = 11u;
+    let bar_spacing = chart_width / f32(num_bars);
+    let bar_width = 40.0;
+    
+    // Y-axis: log10 scale from 0 to 10 (representing 10^0 to 10^10)
+    let log_max = 10.0;
+    
+    // Draw grid lines
+    for (var i = 0u; i <= 10u; i = i + 1u) {
+        let y = chart_bottom - (f32(i) / log_max) * chart_height;
+        if (abs(pixel_pos.y - y) < 0.5) {
+            color = vec3<f32>(0.8, 0.8, 0.8);
+        }
+    }
+    
+    // Draw bars
+    for (var n = 0u; n < num_bars; n = n + 1u) {
+        let bar_center_x = chart_left + f32(n) * bar_spacing + bar_spacing * 0.5;
+        
+        // Get log10 value for A(3,n)
+        let log_value = get_ackermann_log10(n);
+        
+        // Clamp to display range
+        let display_value = min(log_value, log_max);
+        let bar_height = (display_value / log_max) * chart_height;
+        
+        // Bar position
+        let bar_left = bar_center_x - bar_width * 0.5;
+        let bar_right = bar_center_x + bar_width * 0.5;
+        let bar_top = chart_bottom - bar_height;
+        
+        // Check if pixel is inside bar
+        if (pixel_pos.x >= bar_left && pixel_pos.x <= bar_right &&
+            pixel_pos.y >= bar_top && pixel_pos.y <= chart_bottom) {
+            
+            // Gradient from deep blue to searing red
+            let t = f32(n) / f32(num_bars - 1u);
+            let bar_color = vec3<f32>(
+                t,                    // R: 0 to 1
+                0.2 * (1.0 - t),     // G: 0.2 to 0
+                0.8 * (1.0 - t)      // B: 0.8 to 0
+            );
+            
+            // Rounded top
+            let top_dist = pixel_pos.y - bar_top;
+            if (top_dist < 20.0) {
+                let cap_center = vec2<f32>(bar_center_x, bar_top + 20.0);
+                let cap_dist = distance(pixel_pos, cap_center);
+                if (cap_dist < 20.0) {
+                    color = bar_color;
+                }
+            } else {
+                color = bar_color;
+            }
+        }
+        
+        // Draw n label below bar
+        let label_y = chart_bottom + 30.0;
+        let label_pos = pixel_pos - vec2<f32>(bar_center_x, label_y);
+        if (length(label_pos) < 15.0) {
+            // Simple number display
+            color = vec3<f32>(0.0, 0.0, 0.0);
+        }
+    }
+    
+    // Draw axes
+    if (abs(pixel_pos.x - chart_left) < 1.0 && 
+        pixel_pos.y >= margin && pixel_pos.y <= chart_bottom) {
+        color = vec3<f32>(0.0, 0.0, 0.0);
+    }
+    if (abs(pixel_pos.y - chart_bottom) < 1.0 && 
+        pixel_pos.x >= chart_left && pixel_pos.x <= chart_left + chart_width) {
+        color = vec3<f32>(0.0, 0.0, 0.0);
+    }
+    
+    return vec4<f32>(color, 1.0);
+}
+</shader>

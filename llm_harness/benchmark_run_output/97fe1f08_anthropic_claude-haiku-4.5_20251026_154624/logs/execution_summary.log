@@ -1,0 +1,17 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: 97fe1f08_anthropic_claude-haiku-4.5_20251026_154624
+Started: 2025-10-26T15:46:24.332493
+============================================================
+
+[2025-10-26 15:46:24.332530] HARNESS INITIALIZED
+  Model: anthropic/claude-haiku-4.5
+  Problems: 1
+  Max parallel: 1
+  Problem list:
+    000: geometric_cube
+
+[2025-10-26 15:46:24.603555] START problem_000: geometric_cube
+[2025-10-26 15:46:54.758864] END problem_000: geometric_cube - SUCCESS (30.16s)
+
+============================================================
+Run completed: 2025-10-26T15:46:54.760769

@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052311_d36d0a4f-53ac-4da7-81fe-40e532599efb_results/shaders/hopf_fibration.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052311_d36d0a4f-53ac-4da7-81fe-40e532599efb_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 22.272 ms   | CPU 275.464 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052311_d36d0a4f-53ac-4da7-81fe-40e532599efb_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

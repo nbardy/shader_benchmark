@@ -1,0 +1,209 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+**Helical twist linearity (0-3 pts)**
+- Measure rotation angle at 10 heights across the cube
+- Rotation should vary linearly with height (R² > 0.99)
+- Full 360° rotation from bottom to top
+- Verify consistent angular velocity throughout twist
+
+**Geometric deformation quality (0-2 pts)**
+- No discontinuities in surface parametrization
+- Absence of self-intersections or topology errors
+- Beveled edges maintain consistent radius throughout
+- Proper preservation of cube volume during deformation
+
+##
+
+**S4: Visual Implementation Section**  
+**Material and reflection rendering (0-2 pts)**
+- Metallic surface with physically accurate Fresnel reflections
+- Reflections must be visible at grazing angles
+- Proper index of refraction for metallic materials
+- Surface roughness consistent with specification
+
+**Color gradient implementation (0-2 pts)**
+- Smooth transition from blue at bottom to golden yellow at top
+- Hue variation must be < ±15° from expected values
+- No banding or discontinuities in gradient
+- Color space accuracy and gamma correction
+
+**Lighting and shadow quality (0-1 pts)**
+- Three distinct light sources clearly visible
+- Soft shadows properly rendered and positioned
+- Consistent illumination across twisted surface
+- No harsh lighting artifacts or over-exposure
+
+##
+
+**S5: Completeness & Specifications Section**
+**Output format**
+
+```
+Score: S/10
+Rationale: …
+```
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+**Objective**
+Render a cube undergoing **helical twist deformation** where the amount of rotation varies linearly along the vertical axis, creating a DNA-like twisted structure.
+
+**Mathematical recipe**
+
+1. Start with a unit cube centered at origin with vertices at (±1, ±1, ±1).
+2. Apply helical twist transformation:
+   - For point (x, y, z), twist angle θ = k·z where k = 2π (full rotation over height).
+   - Rotated position: x' = x·cos(θ) - y·sin(θ), y' = x·sin(θ) + y·cos(θ), z' = z.
+3. Use signed distance field for the twisted cube:
+   - Transform ray point inversely through the twist before evaluating cube SDF.
+   - Cube SDF: max(|x|, |y|, |z|) - 1.0.
+4. Add edge beveling (radius 0.05) for visual clarity.
+
+**Styling**
+
+* Material: Metallic surface with Fresnel reflections.
+* Color gradient based on height: deep blue (bottom) to golden yellow (top).
+* Three-point lighting: key light from (2, 3, 1), fill from (-1, 1, 2), rim from (0, -2, -1).
+* Soft shadows using 32 shadow rays per point.
+* Camera at (3, 2, 4), looking at origin; FOV 35°.
+* Dark grey background (0.1, 0.1, 0.12).
+* Resolution 2048 × 2048 px, 4× SSAA.
+
+**Deliverable** Single PNG showing the twisted cube with clear helical deformation.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Evaluation: Helical Twist Cube
+
+## Detailed Assessment
+
+### S1: Problem Accuracy (Generic)
+The image shows significant deviations from the specified mathematical requirements:
+- The helical twist deformation is **not clearly evident**. Rather than a smooth, linearly-varying twist along the z-axis, the geometry exhibits severe fractal-like distortion and fragmentation
+- The cube structure is **not recognizable** as a twisted cube; instead it appears as a highly fragmented surface with chaotic edge artifacts
+- The core transformation (θ = 2π·z for full 360° rotation) cannot be verified visually due to the severe geometric degradation
+- The specification calls for a clear DNA-like twisted structure, but this appears to be a rendering or implementation error resulting in geometric instability
+
+**Score: 15/100** - The fundamental geometry is corrupted; the twist transformation is unrecognizable.
+
+---
+
+### S2: Visual Quality (Generic)
+- **Resolution & Anti-aliasing**: The image shows 2048×2048 rendering, but the quality is severely compromised by geometric artifacts
+- **Visual Glitches**: Extreme fractal-like edges, severe aliasing at discontinuities, and noise throughout the surface indicate algorithmic failure
+- **Lighting/Shading**: Some attempt at three-point lighting is visible on smoother regions (left side), but most of the geometry is too fragmented to properly shade
+- **Color Gradient**: The blue-to-yellow gradient is partially visible but obscured by the geometric chaos; transitions are disrupted by fractal edges
+- **Overall Polish**: The result appears to be a debugging artifact rather than a polished visualization
+
+**Score: 18/100** - Technical rendering issues dominate; severe geometric corruption prevents aesthetic evaluation.
+
+---
+
+### S3: Mathematical Accuracy Section
+
+**Helical twist linearity (0-3 pts): 0.5/3**
+- Cannot verify linear rotation progression due to geometry fragmentation
+- The expected smooth helical pattern is absent
+- No clear evidence of consistent angular velocity; instead, chaotic deformation dominates
+- The 360° rotation specification cannot be validated
+
+**Geometric deformation quality (0-2 pts): 0/2**
+- **Critical failures**:
+  - Severe discontinuities throughout the surface
+  - Fractal-like artifacts suggest self-intersection or topology errors
+  - Edge beveling radius is completely obscured by numerical instability
+  - The geometry exhibits no preserved cube structure
+
+**Subtotal S3: 0.5/5 → normalized to 10/100**
+
+---
+
+### S4: Visual Implementation Section
+
+**Material and reflection rendering (0-2 pts): 0.5/2**
+- Metallic appearance is partially present on smoother regions
+- Fresnel reflections are **not clearly visible** due to surface degradation
+- No evidence of physically accurate reflection behavior
+- Most surfaces are too fragmented to assess material properties properly
+
+**Color gradient implementation (0-2 pts): 1/2**
+- Blue-to-yellow gradient is **partially visible** (bottom-left appears bluish, upper regions have golden tones)
+- Gradient is severely disrupted by fractal boundaries and aliasing
+- Cannot assess hue accuracy (±15° specification) due to noise
+- Significant banding and discontinuities present
+
+**Lighting and shadow quality (0-1 pts): 0.5/1**
+- The left smooth face shows some lighting response suggesting attempted three-point lighting
+- Shadows are **not clearly defined** due to geometric chaos
+- Most surfaces are too fractured to render proper shadow gradients
+- Heavy artifacts prevent evaluation of soft shadow quality (32 shadow rays specification)
+
+**Subtotal S4: 2/5 → normalized to 40/100**
+
+---
+
+### S5: Completeness & Specifications Section
+
+**Output Format**: PNG delivery confirmed ✓
+
+**Critical Specification Failures**:
+1. ❌ Helical twist deformation not clearly visible
+2. ❌ DNA-like structure absent
+3. ❌ Cube geometry not recognizable
+4. ❌ Severe rendering artifacts and numerical instability
+5. ⚠️ Gradient partially present but severely compromised
+6. ⚠️ Lighting attempted but obscured by geometry issues
+
+**Likely Issues**:
+- Possible signed distance field implementation error
+- Inverse twist transformation may have numerical stability problems
+- Ray marching may be stepping through discontinuities
+- Edge beveling computation could be causing fractal artifacts
+
+**Score: 15/100** - Multiple core specifications are not met; fundamental implementation appears to have failed.
+
+---
+
+## Summary
+
+This render represents a **failed implementation** of the helical twist specification. While the infrastructure (resolution, output format, attempted lighting) is in place, the core geometry is severely corrupted with fractal-like artifacts that completely obscure the intended twisted cube structure. The mathematical transformation appears to have numerical stability issues, and the result bears no resemblance to a smooth, linearly-twisted DNA-like cube.
+
+**Primary Recommendation**: Debug the signed distance field evaluation and inverse twist transformation for numerical stability.
+
+---
+
+<scores>
+<S1>15</S1>
+<S2>18</S2>
+<S3>10</S3>
+<S4>40</S4>
+<S5>15</S5>
+</scores>
+
+==================================================
+
+PARSED SCORES:
+[15, 18, 10, 40, 15]
+

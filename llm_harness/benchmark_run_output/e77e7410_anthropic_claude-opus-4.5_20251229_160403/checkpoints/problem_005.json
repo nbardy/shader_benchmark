@@ -1,0 +1,45 @@
+{
+  "problem_index": 5,
+  "problem_name": "archimedes_spiral",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:08:47.622618",
+      "data": {
+        "shaders": [
+          "shader.wgsl"
+        ],
+        "llm_response_len": 14255
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:08:47.625556",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/results/005_archimedes_spiral"
+      }
+    },
+    "render": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:11:56.889925",
+      "data": {
+        "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/results/005_archimedes_spiral/artifacts/result.png"
+      }
+    },
+    "judge": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:12:16.479898",
+      "data": {
+        "scores": [
+          82,
+          75,
+          70,
+          68,
+          65
+        ]
+      }
+    }
+  },
+  "created": "2025-12-29T16:07:43.095872",
+  "last_updated": "2025-12-29T16:12:16.479901"
+}

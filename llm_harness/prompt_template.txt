@@ -35,16 +35,17 @@ struct Params {
     // Optional: Add problem-specific fields as needed
 };
 
-@group(0) @binding(0) var<uniform> Params: Params;
+@group(0) @binding(0) var<uniform> params: Params;
 
+⚠️ CRITICAL: The variable name MUST be lowercase `params` to avoid conflict with struct name `Params`.
 The struct definition MUST come before @group/@binding in your shader code.
 Do NOT change the names, types, or order of the standard three fields.
 You may ONLY add new fields at the end of the struct if your shader needs them.
 
 EXAMPLES:
-- let pixelCoord = uv * Params.resolution;
-- let t = Params.time;
-- let aspectRatio = Params.aspect;
+- let pixelCoord = uv * params.resolution;
+- let t = params.time;
+- let aspectRatio = params.aspect;
 
 WGSL BUILT-IN FUNCTIONS (CRITICAL):
 ---------------------------------------------
@@ -92,17 +93,92 @@ NOTE: The argument order is (false_value, true_value, condition) - different fro
 
 TYPE REQUIREMENTS AND VARIABLE BINDINGS:
 ---------------------------------------------
+WGSL vs GLSL Type Names (WGSL does NOT use GLSL names):
+  WGSL           GLSL equivalent
+  ----           ---------------
+  bool           bool
+  i32            int
+  u32            uint
+  f32            float (NO double in WGSL)
+  vec2<f32>      vec2
+  vec3<f32>      vec3
+  vec4<f32>      vec4
+  vec2<i32>      ivec2
+  vec3<u32>      uvec3
+  mat4x4<f32>    mat4
+  array<f32, N>  float[N]
+
 - Use explicit types: vec2<f32>, vec3<f32>, vec4<f32>, NOT vec2, vec3, vec4
 - Use i32, u32, f32 for scalars (NOT int, uint, float)
 - NO implicit type conversions - ALWAYS cast mixed types explicitly
   - WRONG: pos.x * 73856093u  (mixing f32 and u32)
   - RIGHT: u32(pos.x) * 73856093u  (explicit cast)
 - Array indexing ONLY with integer expressions: array[u32(expr)]
+
+⚠️ CRITICAL: let vs const vs var SCOPE RULES:
+---------------------------------------------
+**MODULE/GLOBAL scope** (outside functions):
+- Use `const` for compile-time constants
+- Use `var<private>` for mutable module-scope variables
+- Do NOT use `let` at global scope
+
+**INSIDE functions** (local scope):
+- Use `let` for immutable locals
+- Use `var` for mutable locals
+- Do NOT use `const` inside functions!
+
+WRONG (let at global scope):
+let my_array = array<f32, 5>(1.0, 2.0, 3.0, 4.0, 5.0);  // ❌ Error!
+let PI = 3.14159;  // ❌ Error!
+
+WRONG (const inside function):
+fn my_func() {
+    const values = array<f32, 3>(1.0, 2.0, 3.0);  // ❌ Error! const not allowed here
+}
+
+RIGHT (const at module scope, let inside functions):
+const PI: f32 = 3.14159;  // ✅ Module-scope constant
+const my_array = array<f32, 5>(1.0, 2.0, 3.0, 4.0, 5.0);  // ✅ Module-scope array
+
+fn my_func() {
+    let x = 5.0;  // ✅ Immutable local
+    let values = array<f32, 3>(1.0, 2.0, 3.0);  // ✅ Local array
+    var y: f32 = 0.0;  // ✅ Mutable local
+}
+
+⚠️ CRITICAL: ARRAY SYNTAX - Comma placement matters!
+---------------------------------------------
+WRONG (comma outside angle brackets):
+var stack = array<f32>, 128>();     // ❌ Error! Comma after >
+var data = array<vec3<f32>>, 10>(); // ❌ Error! Comma after >
+
+RIGHT (comma INSIDE angle brackets):
+var stack = array<f32, 128>();       // ✅ Type and size inside <>
+var data = array<vec3<f32>, 10>();   // ✅ Nested generics work correctly
+
+⚠️ INTEGER TYPE CONSTRAINTS:
+---------------------------------------------
+- WGSL only supports 32-bit integers: `i32` and `u32`
+- NO 64-bit integers: `i64` and `u64` DO NOT EXIST in WGSL
+- Maximum u32 value: 4294967295u (2³²-1)
+- Maximum i32 value: 2147483647
+
+WRONG (u64 doesn't exist):
+var x: u64 = 0u;  // ❌ Error! u64 not supported
+let big: i64 = 100;  // ❌ Error! i64 not supported
+
+WRONG (u32 overflow):
+let modulus = 4294967296u;  // ❌ Error! Exceeds max u32 (2³²)
+
+RIGHT (use u32/i32 only):
+var x: u32 = 0u;  // ✅ 32-bit unsigned
+let max_val: u32 = 4294967295u;  // ✅ Max u32 value
+// For modulo 2³², just let it wrap naturally or use bitwise AND
 - For arithmetic with vector components, cast to appropriate type:
   - WRONG: let hash = pos.x * 19349663u;  (f32 * u32 = error)
   - RIGHT: let hash = u32(pos.x * 1000.0) * 19349663u;
 
-⚠️ CRITICAL: let vs var<function> - IMMUTABLE vs MUTABLE BINDINGS:
+⚠️ CRITICAL: let vs var - IMMUTABLE vs MUTABLE BINDINGS:
 ---------------------------------------------
 In WGSL, you MUST use the correct binding type for your use case.
 
@@ -111,16 +187,21 @@ USE let FOR IMMUTABLE (READ-ONLY) VALUES:
 - let result = my_value * 2.0;               // OK - no mutation
 - WRONG: my_value = other_vector;            // Error: invalid left-hand side
 
-USE var<function> FOR MUTABLE (CHANGEABLE) VARIABLES:
-- var<function> accumulator = 0.0;           // Can change value
+USE var FOR MUTABLE (CHANGEABLE) VARIABLES INSIDE FUNCTIONS:
+- var accumulator: f32 = 0.0;                // Can change value
 - accumulator = accumulator + 1.0;           // OK - mutation allowed
 - accumulator += some_value;                 // OK - accumulation
+
+⚠️ IMPORTANT: Inside functions, just use `var` NOT `var<function>`.
+The `<function>` address space is the default and must NOT be specified.
+- WRONG: var<function> x: f32 = 0.0;  // Syntax error!
+- RIGHT: var x: f32 = 0.0;            // Correct for function-local mutable
 
 CRITICAL PATTERN - LOOP ACCUMULATION:
 This is a very common pattern in shaders:
 ```wgsl
-var<function> result = vec3<f32>(0.0);  // MUST use var<function>!
-for (var i = 0u; i < iterations; i = i + 1u) {
+var result: vec3<f32> = vec3<f32>(0.0);  // MUST use var for mutation!
+for (var i: u32 = 0u; i < iterations; i = i + 1u) {
     result = result + some_contribution(i);  // Mutation requires var
 }
 return result;
@@ -132,16 +213,16 @@ let color = vec3<f32>(0.0);  // WRONG - you can't mutate a let binding
 color = color + more_color;  // Error: invalid left-hand side of assignment
 ```
 
-RIGHT (Using var<function> for mutable accumulator):
+RIGHT (Using var for mutable accumulator):
 ```wgsl
-var<function> color = vec3<f32>(0.0);  // RIGHT - var allows mutation
-color = color + more_color;            // OK - valid mutation
+var color: vec3<f32> = vec3<f32>(0.0);  // RIGHT - var allows mutation
+color = color + more_color;              // OK - valid mutation
 ```
 
 SUMMARY:
 - **let** = Read-only, assign once at declaration
-- **var<function>** = Can be changed multiple times in the function
-- If you plan to mutate a variable, ALWAYS use var<function>, NOT let
+- **var** = Can be changed multiple times in the function (do NOT write var<function>)
+- If you plan to mutate a variable, ALWAYS use var, NOT let
 
 NUMERIC LITERAL CONSTRAINTS (CRITICAL):
 ---------------------------------------------
@@ -169,6 +250,76 @@ GUIDANCE:
 - Cast integer results to f32 explicitly: f32(large_integer)
 - For very large numbers, divide instead: (big / 1.0) works better than 1.0e100
 
+⚠️ FUNCTION SYNTAX:
+---------------------------------------------
+WGSL function syntax (NOT Rust, NOT GLSL):
+
+fn my_function(param1: f32, param2: vec3<f32>) -> f32 {
+    return param1 + param2.x;
+}
+
+- Parameters use `name: Type` (like Rust)
+- Return type uses `-> Type` (like Rust)
+- BUT: No `pub`, no generics, no `impl`, no `self`
+- Every non-void function MUST have explicit `return`
+
+WRONG (Rust-isms):
+fn foo<T>(x: T) -> T { x }     // ❌ No generics
+impl MyStruct { fn bar() {} }  // ❌ No impl blocks
+|x| x * 2.0                    // ❌ No closures/lambdas
+self.field                     // ❌ No self
+
+WRONG (Nested functions - NOT allowed in WGSL):
+fn fs_main() {
+    fn helper() { }  // ❌ Cannot define functions inside functions!
+}
+
+RIGHT (All functions at module scope):
+fn helper() -> f32 { return 1.0; }  // ✅ Define at top level
+fn fs_main() {
+    let x = helper();  // ✅ Call from inside
+}
+
+RIGHT:
+fn foo(x: f32) -> f32 { return x; }  // ✅ Explicit return, concrete types
+
+⚠️ FUNCTION TYPE REQUIREMENTS (clamp, pow, min, max, etc.):
+---------------------------------------------
+Many WGSL functions require ALL arguments to have the SAME type!
+
+CLAMP - all args same type:
+WRONG: clamp(col, 0.0, 1.0);           // ❌ col is vec3, 0.0/1.0 are f32
+RIGHT: clamp(col, vec3<f32>(0.0), vec3<f32>(1.0));  // ✅ All vec3<f32>
+
+POW - both args same type:
+WRONG: pow(x, vec3<f32>(2.0));         // ❌ x is f32, exponent is vec3
+WRONG: pow(max(v, 0.0), vec3(2.0));    // ❌ max returns f32, exponent is vec3
+RIGHT: pow(x, 2.0);                     // ✅ Both f32
+RIGHT: pow(col, vec3<f32>(2.2));        // ✅ Both vec3<f32>
+
+MIN/MAX - both args same type:
+WRONG: max(col.r, vec3<f32>(0.0));     // ❌ f32 vs vec3
+RIGHT: max(col, vec3<f32>(0.0));        // ✅ Both vec3
+
+⚠️ NO RECURSIVE FUNCTIONS:
+---------------------------------------------
+WGSL does NOT allow functions to call themselves!
+
+WRONG (recursive):
+fn tree(depth: u32) -> f32 {
+    if (depth == 0u) { return 1.0; }
+    return tree(depth - 1u);  // ❌ Error! Recursive call not allowed
+}
+
+RIGHT (use loops instead):
+fn tree(max_depth: u32) -> f32 {
+    var result: f32 = 1.0;
+    for (var d: u32 = 0u; d < max_depth; d = d + 1u) {
+        result = result * 0.7;  // ✅ Iterative approach
+    }
+    return result;
+}
+
 SYNTAX YOU MUST NOT USE:
 ---------------------------------------------
 ❌ @vertex, @fragment in function bodies (only as attributes)
@@ -179,16 +330,86 @@ SYNTAX YOU MUST NOT USE:
 ❌ uniform keyword (use @group/@binding instead)
 ❌ @attribute decorators inside structs (decoration goes on struct field)
 ❌ Swizzle assignment: vec.xy = value (GLSL pattern, INVALID in WGSL)
-❌ Reserved keywords: target, sampler, buffer, storage, atomic, etc.
+   - WRONG: color.rgb = other_color;     // ❌ Cannot assign to swizzle
+   - WRONG: pos.xy = new_pos;            // ❌ Cannot assign to swizzle
+   - RIGHT: color = vec4<f32>(other_color, color.a);  // ✅ Construct new vector
+   - RIGHT: var c = color; c = vec4<f32>(r, g, b, c.a);  // ✅ Build component-wise
+❌ Reserved keywords: target, sampler, buffer, storage, atomic, ref, ptr, etc.
+   - WRONG: let ref = reflect(...);  // 'ref' is reserved!
+   - RIGHT: let refl = reflect(...); // Use different name
 ❌ Vector member assignment on expressions: (vec1 + vec2).x = value (INVALID)
 ❌ Implicit vector operations: pos.x * 73856093u (may cause type inference issues)
 ❌ Ternary operator: condition ? true_val : false_val (GLSL syntax, INVALID in WGSL)
    - Use instead: let result = select(false_val, true_val, condition);
+❌ Rust match syntax in switch statements:
+   - WRONG: case 0u => { return 0.0; }  // Rust-style arrow (INVALID)
+   - RIGHT: case 0u: { return 0.0; }    // WGSL uses colon, not arrow
+
+⚠️ WGSL SWITCH STATEMENT SYNTAX:
+---------------------------------------------
+WGSL uses colon `:` for case labels, NOT Rust-style `=>` arrows.
+
+WRONG (Rust-like syntax):
+switch(x) {
+    case 0u => { return 0.0; }  // ❌ Error! => is not valid
+    case 1u => { return 1.0; }
+    default => { return -1.0; }
+}
+
+RIGHT (WGSL syntax):
+switch(x) {
+    case 0u: { return 0.0; }    // ✅ Use colon
+    case 1u: { return 1.0; }
+    default: { return -1.0; }
+}
+
+⚠️ CONTROL FLOW SYNTAX:
+---------------------------------------------
+WGSL does NOT have `++`, `--`, or C-style increment operators!
+
+FOR LOOP:
+WRONG: for (var i = 0; i < 10; i++) { }        // ❌ No i++
+WRONG: for (i in 0..10) { }                     // ❌ No range syntax
+RIGHT: for (var i: u32 = 0u; i < 10u; i = i + 1u) { }  // ✅ Explicit increment
+
+WHILE LOOP:
+var i: u32 = 0u;
+while (i < 10u) {
+    // body
+    i = i + 1u;  // Must increment explicitly
+}
+
+LOOP WITH BREAK (infinite loop):
+var i: u32 = 0u;
+loop {
+    if (i >= 10u) { break; }
+    // body
+    i = i + 1u;
+}
+
+IF/ELSE (no ternary operator):
+if (condition) {
+    // true branch
+} else {
+    // false branch
+}
+// For inline conditionals, use select():
+let result = select(false_val, true_val, condition);
+
+CONTINUE AND BREAK:
+for (var i: u32 = 0u; i < 10u; i = i + 1u) {
+    if (i == 5u) { continue; }  // Skip iteration
+    if (i == 8u) { break; }     // Exit loop
+}
+
+❌ Dynamic array indexing on let-bound arrays:
+   - WRONG: let arr = array<f32, 4>(1.0, 2.0, 3.0, 4.0); val = arr[i];  // i is loop var
+   - RIGHT: Use if/else chain or switch for small arrays, or use var for the array
 ❌ DO NOT include Params struct or binding twice in your code
    - If you define struct Params { ... } in your shader, you CANNOT also use the binding
    - You MUST define the struct EXACTLY ONCE with exactly the fields shown in BIND GROUP CONTRACT
    - WRONG: Defining Params twice (once at top, once in fragment function)
-   - RIGHT: Define struct Params once, then use @group(0) @binding(0) var<uniform> Params: Params; once
+   - RIGHT: Define struct Params once, then use @group(0) @binding(0) var<uniform> params: Params; once
 
 EXAMPLE MINIMAL SHADER:
 ---------------------------------------------
@@ -206,11 +427,11 @@ struct Params {
     aspect: f32,
 };
 
-@group(0) @binding(0) var<uniform> Params: Params;
+@group(0) @binding(0) var<uniform> params: Params;
 
 @fragment
 fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
-    let uv = pos.xy / Params.resolution;
+    let uv = pos.xy / params.resolution;
     return vec4<f32>(uv, 0.5, 1.0);
 }
 
@@ -240,11 +461,11 @@ struct Params {
     // Add problem-specific fields here
 };
 
-@group(0) @binding(0) var<uniform> Params: Params;
+@group(0) @binding(0) var<uniform> params: Params;
 
 @fragment
 fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
     // Your fragment code here
-    // Standard uniforms available: Params.resolution, Params.time, Params.aspect
+    // Standard uniforms available: params.resolution, params.time, params.aspect
 }
 </shader>

@@ -1,0 +1,35 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: harness_anthropic_claude-haiku-4.5_20251025_140951
+Started: 2025-10-25T14:09:51.706949
+============================================================
+
+[2025-10-25 14:09:51.707010] HARNESS INITIALIZED
+  Model: anthropic/claude-haiku-4.5
+  Problems: 5
+  Max parallel: 1
+  Problem list:
+    000: ackermann_function_growth
+    001: al_khwarizmi_geometric_algebra
+    002: apollonian_gasket
+    003: apollonius_conic_sections
+    004: archimedean_spiral_galaxy
+
+[2025-10-25 14:09:51.917366] START problem_000: ackermann_function_growth
+[2025-10-25 14:12:02.467796] EXCEPTION in problem_000 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader validation error: 
+   ┌─ user_shader:79:27
+   │
+79 │             let log_val = log_values[bar_index];
+   │                           ^^^^^^^^^^^^^^^^^^^^^ naga::Expression [69]
+
+
+    Entry point fs_main at Fragment is invalid
+    E
+[2025-10-25 14:12:02.468122] END problem_000: ackermann_function_growth - FAILED (130.55s)

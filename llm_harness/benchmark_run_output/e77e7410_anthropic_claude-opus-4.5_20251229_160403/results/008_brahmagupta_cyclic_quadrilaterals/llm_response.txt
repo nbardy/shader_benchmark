@@ -1,0 +1,316 @@
+<shader file="shader.wgsl">
+// Brahmagupta's Cyclic Quadrilaterals Visualization
+// Demonstrates the area formula: Area = √[(s-a)(s-b)(s-c)(s-d)]
+
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+}
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+const PI: f32 = 3.14159265359;
+const TAU: f32 = 6.28318530718;
+
+// Distance from point to line segment
+fn dist_to_segment(p: vec2<f32>, a: vec2<f32>, b: vec2<f32>) -> f32 {
+    let pa = p - a;
+    let ba = b - a;
+    let h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
+
+// Distance to circle
+fn dist_to_circle(p: vec2<f32>, center: vec2<f32>, radius: f32) -> f32 {
+    return abs(length(p - center) - radius);
+}
+
+// Smooth line drawing
+fn draw_line(d: f32, width: f32) -> f32 {
+    return 1.0 - smoothstep(0.0, width, d);
+}
+
+// Draw filled circle (point marker)
+fn draw_point(p: vec2<f32>, center: vec2<f32>, radius: f32) -> f32 {
+    return 1.0 - smoothstep(radius - 0.003, radius + 0.003, length(p - center));
+}
+
+// Hash function for pseudo-random
+fn hash(n: f32) -> f32 {
+    return fract(sin(n) * 43758.5453123);
+}
+
+// Smooth interpolation for animation
+fn smooth_time(t: f32, speed: f32) -> f32 {
+    return t * speed;
+}
+
+// Calculate side length between two points
+fn side_length(a: vec2<f32>, b: vec2<f32>) -> f32 {
+    return length(b - a);
+}
+
+// Brahmagupta's formula for cyclic quadrilateral area
+fn brahmagupta_area(a: f32, b: f32, c: f32, d: f32) -> f32 {
+    let s = (a + b + c + d) * 0.5;
+    let product = (s - a) * (s - b) * (s - c) * (s - d);
+    return select(0.0, sqrt(product), product > 0.0);
+}
+
+// Draw a digit at position
+fn draw_digit(uv: vec2<f32>, pos: vec2<f32>, digit: i32, scale: f32) -> f32 {
+    let local_uv = (uv - pos) / scale;
+    
+    if (local_uv.x < 0.0 || local_uv.x > 0.6 || local_uv.y < 0.0 || local_uv.y > 1.0) {
+        return 0.0;
+    }
+    
+    var result: f32 = 0.0;
+    let lw: f32 = 0.15;
+    
+    // Segment positions for 7-segment display
+    let top = smoothstep(lw, 0.0, abs(local_uv.y - 1.0)) * smoothstep(lw, 0.0, abs(local_uv.x - 0.3));
+    let mid = smoothstep(lw, 0.0, abs(local_uv.y - 0.5)) * smoothstep(lw, 0.0, abs(local_uv.x - 0.3));
+    let bot = smoothstep(lw, 0.0, abs(local_uv.y - 0.0)) * smoothstep(lw, 0.0, abs(local_uv.x - 0.3));
+    let tl = smoothstep(lw, 0.0, abs(local_uv.x - 0.0)) * smoothstep(lw, 0.0, abs(local_uv.y - 0.75));
+    let tr = smoothstep(lw, 0.0, abs(local_uv.x - 0.6)) * smoothstep(lw, 0.0, abs(local_uv.y - 0.75));
+    let bl = smoothstep(lw, 0.0, abs(local_uv.x - 0.0)) * smoothstep(lw, 0.0, abs(local_uv.y - 0.25));
+    let br = smoothstep(lw, 0.0, abs(local_uv.x - 0.6)) * smoothstep(lw, 0.0, abs(local_uv.y - 0.25));
+    
+    // Digit patterns
+    if (digit == 0) { result = top + bot + tl + tr + bl + br; }
+    else if (digit == 1) { result = tr + br; }
+    else if (digit == 2) { result = top + mid + bot + tr + bl; }
+    else if (digit == 3) { result = top + mid + bot + tr + br; }
+    else if (digit == 4) { result = mid + tl + tr + br; }
+    else if (digit == 5) { result = top + mid + bot + tl + br; }
+    else if (digit == 6) { result = top + mid + bot + tl + bl + br; }
+    else if (digit == 7) { result = top + tr + br; }
+    else if (digit == 8) { result = top + mid + bot + tl + tr + bl + br; }
+    else if (digit == 9) { result = top + mid + bot + tl + tr + br; }
+    
+    return clamp(result, 0.0, 1.0);
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = pos.xy / params.resolution;
+    let aspect = params.resolution.x / params.resolution.y;
+    
+    // Center and scale coordinates
+    var p = (uv - 0.5) * 2.0;
+    p.x *= aspect;
+    
+    // Animation time based on position for static render
+    let time = length(p) * 2.0 + atan2(p.y, p.x) * 0.5;
+    
+    // Circle parameters
+    let circle_center = vec2<f32>(-0.3, 0.1);
+    let circle_radius = 0.55;
+    
+    // Animated vertex angles on the circle
+    // Create smooth, varying cyclic quadrilateral
+    let base_angle = time * 0.3;
+    let angle0 = base_angle + 0.0;
+    let angle1 = base_angle + 1.2 + sin(time * 0.7) * 0.3;
+    let angle2 = base_angle + 2.5 + cos(time * 0.5) * 0.4;
+    let angle3 = base_angle + 4.2 + sin(time * 0.9) * 0.25;
+    
+    // Vertices on the circumscribed circle
+    let v0 = circle_center + circle_radius * vec2<f32>(cos(angle0), sin(angle0));
+    let v1 = circle_center + circle_radius * vec2<f32>(cos(angle1), sin(angle1));
+    let v2 = circle_center + circle_radius * vec2<f32>(cos(angle2), sin(angle2));
+    let v3 = circle_center + circle_radius * vec2<f32>(cos(angle3), sin(angle3));
+    
+    // Calculate side lengths
+    let side_a = side_length(v0, v1);
+    let side_b = side_length(v1, v2);
+    let side_c = side_length(v2, v3);
+    let side_d = side_length(v3, v0);
+    
+    // Diagonals for Ptolemy's theorem
+    let diag_e = side_length(v0, v2);
+    let diag_f = side_length(v1, v3);
+    
+    // Semiperimeter and area
+    let semi = (side_a + side_b + side_c + side_d) * 0.5;
+    let area = brahmagupta_area(side_a, side_b, side_c, side_d);
+    
+    // Ptolemy's theorem: ac + bd = ef (for cyclic quadrilateral)
+    let ptolemy_lhs = side_a * side_c + side_b * side_d;
+    let ptolemy_rhs = diag_e * diag_f;
+    
+    // Background gradient
+    let bg_grad = 0.08 + 0.04 * length(p);
+    var color = vec3<f32>(bg_grad * 0.7, bg_grad * 0.8, bg_grad * 1.0);
+    
+    // Draw circumscribed circle
+    let circle_dist = dist_to_circle(p, circle_center, circle_radius);
+    let circle_line = draw_line(circle_dist, 0.008);
+    color = mix(color, vec3<f32>(0.3, 0.5, 0.7), circle_line * 0.7);
+    
+    // Draw quadrilateral sides with different colors
+    let line_width = 0.012;
+    
+    // Side a (red)
+    let dist_a = dist_to_segment(p, v0, v1);
+    let line_a = draw_line(dist_a, line_width);
+    color = mix(color, vec3<f32>(1.0, 0.3, 0.3), line_a);
+    
+    // Side b (green)
+    let dist_b = dist_to_segment(p, v1, v2);
+    let line_b = draw_line(dist_b, line_width);
+    color = mix(color, vec3<f32>(0.3, 1.0, 0.4), line_b);
+    
+    // Side c (blue)
+    let dist_c = dist_to_segment(p, v2, v3);
+    let line_c = draw_line(dist_c, line_width);
+    color = mix(color, vec3<f32>(0.3, 0.5, 1.0), line_c);
+    
+    // Side d (yellow)
+    let dist_d = dist_to_segment(p, v3, v0);
+    let line_d = draw_line(dist_d, line_width);
+    color = mix(color, vec3<f32>(1.0, 0.9, 0.2), line_d);
+    
+    // Draw diagonals (dashed effect via pattern)
+    let diag_width = 0.006;
+    
+    // Diagonal e
+    let dist_e = dist_to_segment(p, v0, v2);
+    let diag_pattern_e = smoothstep(0.3, 0.5, fract(dist_to_segment(p, v0, v2) * 50.0 + length(p - v0) * 30.0));
+    let line_e = draw_line(dist_e, diag_width) * diag_pattern_e;
+    color = mix(color, vec3<f32>(0.8, 0.4, 0.9), line_e * 0.8);
+    
+    // Diagonal f
+    let dist_f = dist_to_segment(p, v1, v3);
+    let diag_pattern_f = smoothstep(0.3, 0.5, fract(dist_to_segment(p, v1, v3) * 50.0 + length(p - v1) * 30.0));
+    let line_f = draw_line(dist_f, diag_width) * diag_pattern_f;
+    color = mix(color, vec3<f32>(0.9, 0.6, 0.3), line_f * 0.8);
+    
+    // Draw vertices
+    let point_radius = 0.025;
+    color = mix(color, vec3<f32>(1.0, 1.0, 1.0), draw_point(p, v0, point_radius));
+    color = mix(color, vec3<f32>(1.0, 1.0, 1.0), draw_point(p, v1, point_radius));
+    color = mix(color, vec3<f32>(1.0, 1.0, 1.0), draw_point(p, v2, point_radius));
+    color = mix(color, vec3<f32>(1.0, 1.0, 1.0), draw_point(p, v3, point_radius));
+    
+    // Draw center of circle
+    color = mix(color, vec3<f32>(0.5, 0.7, 1.0), draw_point(p, circle_center, 0.015));
+    
+    // Fill quadrilateral with semi-transparent color based on area
+    // Check if point is inside quadrilateral using cross product method
+    let cross0 = (v1.x - v0.x) * (p.y - v0.y) - (v1.y - v0.y) * (p.x - v0.x);
+    let cross1 = (v2.x - v1.x) * (p.y - v1.y) - (v2.y - v1.y) * (p.x - v1.x);
+    let cross2 = (v3.x - v2.x) * (p.y - v2.y) - (v3.y - v2.y) * (p.x - v2.x);
+    let cross3 = (v0.x - v3.x) * (p.y - v3.y) - (v0.y - v3.y) * (p.x - v3.x);
+    
+    let inside = (cross0 >= 0.0 && cross1 >= 0.0 && cross2 >= 0.0 && cross3 >= 0.0) ||
+                 (cross0 <= 0.0 && cross1 <= 0.0 && cross2 <= 0.0 && cross3 <= 0.0);
+    
+    if (inside) {
+        let fill_color = vec3<f32>(0.2, 0.4, 0.6);
+        color = mix(color, fill_color, 0.25);
+    }
+    
+    // Info panel background
+    let panel_x = p.x > 0.5;
+    let panel_region = select(0.0, 1.0, panel_x && p.y > -0.8 && p.y < 0.8);
+    color = mix(color, vec3<f32>(0.05, 0.08, 0.12), panel_region * 0.85);
+    
+    // Draw formula visualization bars
+    let bar_x = 0.65;
+    let bar_width = 0.25;
+    let bar_height = 0.04;
+    let bar_spacing = 0.12;
+    
+    // Side length bars
+    let bar_scale = 0.4;
+    
+    // Bar for side a
+    let bar_a_y = 0.5;
+    let in_bar_a = p.x > bar_x && p.x < bar_x + side_a * bar_scale && 
+                  p.y > bar_a_y - bar_height && p.y < bar_a_y + bar_height;
+    color = mix(color, vec3<f32>(1.0, 0.3, 0.3), select(0.0, 0.9, in_bar_a && panel_x));
+    
+    // Bar for side b
+    let bar_b_y = bar_a_y - bar_spacing;
+    let in_bar_b = p.x > bar_x && p.x < bar_x + side_b * bar_scale && 
+                  p.y > bar_b_y - bar_height && p.y < bar_b_y + bar_height;
+    color = mix(color, vec3<f32>(0.3, 1.0, 0.4), select(0.0, 0.9, in_bar_b && panel_x));
+    
+    // Bar for side c
+    let bar_c_y = bar_b_y - bar_spacing;
+    let in_bar_c = p.x > bar_x && p.x < bar_x + side_c * bar_scale && 
+                  p.y > bar_c_y - bar_height && p.y < bar_c_y + bar_height;
+    color = mix(color, vec3<f32>(0.3, 0.5, 1.0), select(0.0, 0.9, in_bar_c && panel_x));
+    
+    // Bar for side d
+    let bar_d_y = bar_c_y - bar_spacing;
+    let in_bar_d = p.x > bar_x && p.x < bar_x + side_d * bar_scale && 
+                  p.y > bar_d_y - bar_height && p.y < bar_d_y + bar_height;
+    color = mix(color, vec3<f32>(1.0, 0.9, 0.2), select(0.0, 0.9, in_bar_d && panel_x));
+    
+    // Area bar (scaled differently)
+    let bar_area_y = bar_d_y - bar_spacing * 2.0;
+    let area_bar_scale = 0.3;
+    let in_bar_area = p.x > bar_x && p.x < bar_x + area * area_bar_scale && 
+                     p.y > bar_area_y - bar_height * 1.5 && p.y < bar_area_y + bar_height * 1.5;
+    color = mix(color, vec3<f32>(0.9, 0.6, 0.9), select(0.0, 0.9, in_bar_area && panel_x));
+    
+    // Ptolemy's theorem visualization
+    let ptolemy_y = -0.5;
+    let ptolemy_scale = 0.15;
+    
+    // LHS bar (ac + bd)
+    let in_ptolemy_lhs = p.x > bar_x && p.x < bar_x + ptolemy_lhs * ptolemy_scale && 
+                        p.y > ptolemy_y - bar_height && p.y < ptolemy_y + bar_height;
+    color = mix(color, vec3<f32>(0.8, 0.4, 0.9), select(0.0, 0.9, in_ptolemy_lhs && panel_x));
+    
+    // RHS bar (ef)
+    let ptolemy_rhs_y = ptolemy_y - bar_spacing;
+    let in_ptolemy_rhs = p.x > bar_x && p.x < bar_x + ptolemy_rhs * ptolemy_scale && 
+                        p.y > ptolemy_rhs_y - bar_height && p.y < ptolemy_rhs_y + bar_height;
+    color = mix(color, vec3<f32>(0.9, 0.6, 0.3), select(0.0, 0.9, in_ptolemy_rhs && panel_x));
+    
+    // Add radial lines from center to vertices (showing it's cyclic)
+    let radial_width = 0.004;
+    let dist_r0 = dist_to_segment(p, circle_center, v0);
+    let dist_r1 = dist_to_segment(p, circle_center, v1);
+    let dist_r2 = dist_to_segment(p, circle_center, v2);
+    let dist_r3 = dist_to_segment(p, circle_center, v3);
+    
+    let radial_pattern = 0.5 + 0.5 * sin(length(p - circle_center) * 80.0);
+    color = mix(color, vec3<f32>(0.4, 0.6, 0.8), draw_line(dist_r0, radial_width) * radial_pattern * 0.4);
+    color = mix(color, vec3<f32>(0.4, 0.6, 0.8), draw_line(dist_r1, radial_width) * radial_pattern * 0.4);
+    color = mix(color, vec3<f32>(0.4, 0.6, 0.8), draw_line(dist_r2, radial_width) * radial_pattern * 0.4);
+    color = mix(color, vec3<f32>(0.4, 0.6, 0.8), draw_line(dist_r3, radial_width) * radial_pattern * 0.4);
+    
+    // Add decorative arc patterns showing the cyclic nature
+    let arc_count = 12.0;
+    let arc_angle = atan2(p.y - circle_center.y, p.x - circle_center.x);
+    let arc_pattern = sin(arc_angle * arc_count) * 0.5 + 0.5;
+    let arc_ring = smoothstep(0.02, 0.0, abs(length(p - circle_center) - circle_radius * 1.1));
+    color = mix(color, vec3<f32>(0.3, 0.4, 0.6), arc_ring * arc_pattern * 0.3);
+    
+    // Title area glow
+    let title_y = 0.85;
+    let title_glow = exp(-pow((p.y - title_y) * 3.0, 2.0)) * exp(-pow(p.x * 0.5, 2.0));
+    color += vec3<f32>(0.1, 0.15, 0.25) * title_glow;
+    
+    // Vignette effect
+    let vignette = 1.0 - length(uv - 0.5) * 0.8;
+    color *= vignette;
+    
+    // Gamma correction
+    color = pow(color, vec3<f32>(0.9));
+    
+    return vec4<f32>(color, 1.0);
+}
+</shader>

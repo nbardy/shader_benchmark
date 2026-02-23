@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d5c3460a_google_gemini-3-flash-preview_20251229_185850/results/006_barbell_dumbbell_shape/shaders/shader.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d5c3460a_google_gemini-3-flash-preview_20251229_185850/results/006_barbell_dumbbell_shape/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 3.599 ms   | CPU 98.709 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d5c3460a_google_gemini-3-flash-preview_20251229_185850/results/006_barbell_dumbbell_shape/artifacts/result.png"
+
+=== STDERR ===
+(empty)

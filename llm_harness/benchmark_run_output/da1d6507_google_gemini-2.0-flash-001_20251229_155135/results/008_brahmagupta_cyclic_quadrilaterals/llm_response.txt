@@ -1,0 +1,317 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Brahmagupta's Cyclic Quadrilateral</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #222;
+            color: #eee;
+            font-family: sans-serif;
+        }
+
+        canvas {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
+
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            z-index: 10;
+        }
+
+        .formula {
+            font-family: monospace;
+        }
+
+        .value {
+            font-weight: bold;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="info">
+        <h1>Brahmagupta's Formula</h1>
+        <p>Area = √[(s - a)(s - b)(s - c)(s - d)]</p>
+        <p>a: <span class="value" id="a"></span></p>
+        <p>b: <span class="value" id="b"></span></p>
+        <p>c: <span class="value" id="c"></span></p>
+        <p>d: <span class="value" id="d"></span></p>
+        <p>s (semiperimeter): <span class="value" id="s"></span></p>
+        <p>Area: <span class="value" id="area"></span></p>
+
+		<h2>Ptolemy's Theorem</h2>
+		<p>ac + bd = ef</p>
+		<p>ac + bd Value: <span class="value" id="ptolemyLHS"></span></p>
+		<p>ef Value: <span class="value" id="ptolemyRHS"></span></p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        canvas.width = 2000;
+        canvas.height = 2000;
+        const adapter = await navigator.gpu.requestAdapter();
+        const device = await adapter.requestDevice();
+		const context = canvas.getContext('webgpu');
+
+        const presentationFormat = navigator.gpu.getPreferredCanvasFormat();
+        context.configure({
+            device: device,
+            format: presentationFormat,
+            alphaMode: 'premultiplied',
+        });
+        const wgsl = `
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    time: f32,
+    aspect: f32,
+    resolution: vec2<f32>,
+    a_x: f32,
+    a_y: f32,
+    b_x: f32,
+    b_y: f32,
+    c_x: f32,
+    c_y: f32,
+    d_x: f32,
+    d_y: f32,
+};
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+
+fn dist(a: vec2<f32>, b: vec2<f32>) -> f32 {
+    return distance(a, b);
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = pos.xy / params.resolution;
+    let center = vec2<f32>(0.5, 0.5);
+    let radius = 0.4;
+
+    let a = vec2<f32>(params.a_x, params.a_y);
+    let b = vec2<f32>(params.b_x, params.b_y);
+    let c = vec2<f32>(params.c_x, params.c_y);
+    let d = vec2<f32>(params.d_x, params.d_y);
+
+    let side_a = dist(a, b);
+    let side_b = dist(b, c);
+    let side_c = dist(c, d);
+    let side_d = dist(d, a);
+
+    let s = (side_a + side_b + side_c + side_d) / 2.0;
+    let area_squared = (s - side_a) * (s - side_b) * (s - side_c) * (s - side_d);
+    let area = sqrt(abs(area_squared));
+
+	// Ptolemy's Theorem sides
+	let diagonal_e = dist(a,c);
+	let diagonal_f = dist(b,d);
+
+	//Ptolemy's Theorem Test
+	let ptolemyLHS_calc = (side_a * side_c) + (side_b * side_d);
+	let ptolemyRHS_calc = (diagonal_e * diagonal_f);
+
+    let dist_to_circle = distance(uv, center);
+    var color = vec3<f32>(0.0, 0.0, 0.0);
+
+    if (dist_to_circle > radius) {
+        color = vec3<f32>(0.1,0.1,0.1);
+    } else {
+
+
+        let line_width = 0.005;
+        // Draw the quadrilateral sides
+        if (distance(uv, mix(a, b, clamp(dot(uv - a, b - a) / dot(b - a, b - a), 0.0, 1.0))) < line_width) {
+            color = vec3<f32>(1.0, 0.2, 0.2); // Side a (red-ish)
+        } else if (distance(uv, mix(b, c, clamp(dot(uv - b, c - b) / dot(c - b, c - b), 0.0, 1.0))) < line_width) {
+            color = vec3<f32>(0.2, 1.0, 0.2); // Side b (green-ish)
+        } else if (distance(uv, mix(c, d, clamp(dot(uv - c, d - c) / dot(d - c, d - c), 0.0, 1.0))) < line_width) {
+            color = vec3<f32>(0.2, 0.2, 1.0); // Side c (blue-ish)
+        } else if (distance(uv, mix(d, a, clamp(dot(uv - d, a - d) / dot(a - d, a - d), 0.0, 1.0))) < line_width) {
+            color = vec3<f32>(1.0, 1.0, 0.2); // Side d (yellow-ish)
+        
+		// Diagonals for Ptolemy's Theorem
+		} else if (distance(uv, mix(a, c, clamp(dot(uv - a, c - a) / dot(c - a, c - a), 0.0, 1.0))) < line_width){
+			color = vec3<f32>(1.0, 0.5, 0.0);// Orange Diagonal
+		} else if (distance(uv, mix(b, d, clamp(dot(uv - b, d - b) / dot(d - b, d - b), 0.0, 1.0))) < line_width){
+			color = vec3<f32>(0.5,0.0,1.0);//Purple Diagonal
+		}
+		
+		else{
+            color = vec3<f32>(0.5, 0.5, 0.5); // Default color
+        }
+    }
+
+    return vec4<f32>(color, 1.0);
+}
+`;
+
+        const shaderModule = device.createShaderModule({
+            code: wgsl,
+        });
+
+        const pipeline = device.createRenderPipeline({
+            layout: 'auto',
+            vertex: {
+                module: shaderModule,
+                entryPoint: 'vs_main',
+            },
+            fragment: {
+                module: shaderModule,
+                entryPoint: 'fs_main',
+                targets: [{ format: presentationFormat }],
+            },
+            primitive: {
+                topology: 'triangle-list',
+            },
+        });
+
+        const uniformBufferSize = 12 * 4; // time, aspect, resolution (vec2), a/b/c/d (vec2 each)
+		const uniformBuffer = device.createBuffer({
+			size: uniformBufferSize,
+			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+		});
+
+        const bindGroup = device.createBindGroup({
+            layout: pipeline.getBindGroupLayout(0),
+            entries: [
+                {
+                    binding: 0,
+                    resource: {
+                        buffer: uniformBuffer,
+                    },
+                },
+            ],
+        });
+
+        function render() {
+            const now = Date.now() / 1000;
+            const time = now;
+            const aspect = canvas.width / canvas.height;
+
+            // Animate the vertices along the circle
+            const radius = 0.4;
+            const centerX = 0.5;
+            const centerY = 0.5;
+            const speed = 0.2;
+
+            const a_angle = time * speed;
+            const a_x = centerX + radius * Math.cos(a_angle);
+            const a_y = centerY + radius * Math.sin(a_angle);
+
+            const b_angle = time * speed + 2.1;
+            const b_x = centerX + radius * Math.cos(b_angle);
+            const b_y = centerY + radius * Math.sin(b_angle);
+
+            const c_angle = time * speed + 4.2;
+            const c_x = centerX + radius * Math.cos(c_angle);
+            const c_y = centerY + radius * Math.sin(c_angle);
+
+            const d_angle = time * speed + 1.0;
+            const d_x = centerX + radius * Math.cos(d_angle);
+            const d_y = centerY + radius * Math.sin(d_angle);
+
+            // Calculate Side Lengths
+            const side_a = Math.sqrt((a_x - b_x) ** 2 + (a_y - b_y) ** 2);
+            const side_b = Math.sqrt((b_x - c_x) ** 2 + (b_y - c_y) ** 2);
+            const side_c = Math.sqrt((c_x - d_x) ** 2 + (c_y - d_y) ** 2);
+            const side_d = Math.sqrt((d_x - a_x) ** 2 + (d_y - a_y) ** 2);
+
+            // Calculate Semiperimeter
+            const s = (side_a + side_b + side_c + side_d) / 2;
+
+            // Calculate Area using Brahmagupta's formula
+            const area_squared = (s - side_a) * (s - side_b) * (s - side_c) * (s - side_d);
+            const area = Math.sqrt(Math.abs(area_squared));
+
+			//Ptolemy's Theorem calculations
+			const diagonal_e = Math.sqrt((a_x - c_x)**2 + (a_y - c_y)**2);
+			const diagonal_f = Math.sqrt((b_x - d_x)**2 + (b_y - d_y)**2);
+			const ptolemyLHS_calc = (side_a * side_c) + (side_b * side_d);
+			const ptolemyRHS_calc = (diagonal_e * diagonal_f);
+
+
+
+            // Update HTML elements
+            document.getElementById('a').textContent = side_a.toFixed(3);
+            document.getElementById('b').textContent = side_b.toFixed(3);
+            document.getElementById('c').textContent = side_c.toFixed(3);
+            document.getElementById('d').textContent = side_d.toFixed(3);
+            document.getElementById('s').textContent = s.toFixed(3);
+            document.getElementById('area').textContent = area.toFixed(3);
+
+			document.getElementById('ptolemyLHS').textContent = ptolemyLHS_calc.toFixed(3);
+			document.getElementById('ptolemyRHS').textContent = ptolemyRHS_calc.toFixed(3);
+
+            // Create a buffer for the updated uniform values
+            const uniformValues = new Float32Array([
+                time,
+                aspect,
+                canvas.width,
+                canvas.height,
+                a_x,
+                a_y,
+                b_x,
+                b_y,
+                c_x,
+                c_y,
+                d_x,
+                d_y,
+            ]);
+            device.queue.writeBuffer(
+                uniformBuffer,
+                0,
+                uniformValues.buffer,
+                uniformValues.byteOffset,
+                uniformValues.byteLength
+            );
+
+            const commandEncoder = device.createCommandEncoder();
+            const textureView = context.getCurrentTexture().createView();
+            const renderPassDescriptor = {
+                colorAttachments: [
+                    {
+                        view: textureView,
+                        clearValue: [0, 0, 0, 1],
+                        loadOp: 'clear',
+                        storeOp: 'store',
+                    },
+                ],
+            };
+
+            const renderPass = commandEncoder.beginRenderPass(renderPassDescriptor);
+            renderPass.setPipeline(pipeline);
+            renderPass.setBindGroup(0, bindGroup);
+            renderPass.draw(3, 1, 0, 0);
+            renderPass.end();
+
+            device.queue.submit([commandEncoder.finish()]);
+
+            requestAnimationFrame(render);
+        }
+
+        requestAnimationFrame(render);
+    </script>
+</body>
+</html>
+```

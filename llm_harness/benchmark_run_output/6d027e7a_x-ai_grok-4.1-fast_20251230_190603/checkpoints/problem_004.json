@@ -1,0 +1,45 @@
+{
+  "problem_index": 4,
+  "problem_name": "archimedean_spiral_galaxy",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-30T19:16:42.244180",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 4491
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-30T19:16:42.250229",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/results/004_archimedean_spiral_galaxy"
+      }
+    },
+    "render": {
+      "status": "complete",
+      "timestamp": "2025-12-30T19:27:24.293186",
+      "data": {
+        "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/results/004_archimedean_spiral_galaxy/artifacts/result.png"
+      }
+    },
+    "judge": {
+      "status": "complete",
+      "timestamp": "2025-12-30T19:27:40.194623",
+      "data": {
+        "scores": [
+          85,
+          75,
+          70,
+          65,
+          60
+        ]
+      }
+    }
+  },
+  "created": "2025-12-30T19:14:10.134480",
+  "last_updated": "2025-12-30T19:27:40.194633"
+}

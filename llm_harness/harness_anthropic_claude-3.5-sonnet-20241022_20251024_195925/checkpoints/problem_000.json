@@ -1,0 +1,15 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-10-24T19:59:48.731931",
+      "data": {
+        "error": "No main.rs content found in LLM response"
+      }
+    }
+  },
+  "created": "2025-10-24T19:59:25.581007",
+  "last_updated": "2025-10-24T19:59:48.731944"
+}

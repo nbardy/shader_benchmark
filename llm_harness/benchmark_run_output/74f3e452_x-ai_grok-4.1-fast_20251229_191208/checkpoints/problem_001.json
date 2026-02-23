@@ -1,0 +1,32 @@
+{
+  "problem_index": 1,
+  "problem_name": "al_khwarizmi_geometric_algebra",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T19:16:45.945332",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 10146
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T19:16:45.949306",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/74f3e452_x-ai_grok-4.1-fast_20251229_191208/results/001_al_khwarizmi_geometric_algebra"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-12-29T19:35:27.428777",
+      "data": {
+        "error": "Shader execution failed: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader 'user_shader' parsing error: expected assignment or increment/decrement, found 'BG_COLOR'\n   \u250c\u2500 wgsl:35:11\n   \u2502\n35 \u2502     const BG_COLOR: vec3<f32> = vec3<f32>(0.996, 0.953, 0.780);\n   \u2502           ^^^^^^^^ e"
+      }
+    }
+  },
+  "created": "2025-12-29T19:14:37.177184",
+  "last_updated": "2025-12-29T19:35:27.428778"
+}

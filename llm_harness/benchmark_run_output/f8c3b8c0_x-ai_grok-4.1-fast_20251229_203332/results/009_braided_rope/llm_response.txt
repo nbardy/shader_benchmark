@@ -1,0 +1,115 @@
+```wgsl
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+struct Params {
+    resolution: vec2<f32>,
+};
+
+fn pmod(x: f32, p: f32) -> f32 {
+    let res = x % p;
+    return select(res + p, res, res < 0.0);
+}
+
+fn helix_core(p: vec3<f32>, phase: f32) -> f32 {
+    let PI: f32 = 3.14159265359;
+    let PI2: f32 = PI * 2.0;
+    let R: f32 = 0.6;
+    let pitch: f32 = 1.8;
+    let freq: f32 = PI2 / pitch;
+    let rz: f32 = length(vec2<f32>(p.x, p.y)) - R;
+    let theta: f32 = atan2(p.y, p.x);
+    let twist: f32 = freq * p.z + phase;
+    let dtheta: f32 = theta - twist;
+    let q: f32 = pmod(dtheta + PI, PI2) - PI;
+    let cdist: f32 = R * q;
+    return length(vec2<f32>(rz, cdist));
+}
+
+fn scene_sdf(p: vec3<f32>) -> f32 {
+    let d0: f32 = helix_core(p, 0.0);
+    let d1: f32 = helix_core(p, 2.09439510239);
+    let d2: f32 = helix_core(p, 4.18879020479);
+    let core_d: f32 = min(min(d0, d1), d2);
+    return core_d - 0.15;
+}
+
+fn raymarch(ro: vec3<f32>, rd: vec3<f32>) -> f32 {
+    var t: f32 = 0.01;
+    let max_t: f32 = 20.0;
+    let max_iter: u32 = 300u;
+    let eps: f32 = 0.0005;
+    for (var i: u32 = 0u; i < max_iter; i = i + 1u) {
+        let p: vec3<f32> = ro + t * rd;
+        let d: f32 = scene_sdf(p);
+        if (d < eps) {
+            break;
+        }
+        t += d;
+        if (t > max_t) {
+            break;
+        }
+    }
+    return t;
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let res: vec2<f32> = params.resolution;
+    let aspect: f32 = res.x / res.y;
+    let uv: vec2<f32> = (pos.xy / res - 0.5) * 2.0;
+    let cam_pos: vec3<f32> = vec3<f32>(3.0, 2.0, 2.0);
+    let cam_fwd: vec3<f32> = normalize(-cam_pos);
+    let cam_rt: vec3<f32> = normalize(cross(vec3<f32>(0.0, 1.0, 0.0), cam_fwd));
+    let cam_up: vec3<f32> = cross(cam_fwd, cam_rt);
+    let fov_scale: f32 = 0.577;
+    let rd: vec3<f32> = normalize(cam_rt * (uv.x * aspect * fov_scale) + cam_up * (uv.y * fov_scale) + cam_fwd);
+
+    let t: f32 = raymarch(cam_pos, rd);
+    var color: vec3<f32> = vec3<f32>(0.05, 0.05, 0.1);
+
+    if (t < 19.5) {
+        let p: vec3<f32> = cam_pos + t * rd;
+        let eps_n: f32 = 0.001;
+        let nx: f32 = scene_sdf(p + vec3<f32>(eps_n, 0.0, 0.0)) - scene_sdf(p - vec3<f32>(eps_n, 0.0, 0.0));
+        let ny: f32 = scene_sdf(p + vec3<f32>(0.0, eps_n, 0.0)) - scene_sdf(p - vec3<f32>(0.0, eps_n, 0.0));
+        let nz: f32 = scene_sdf(p + vec3<f32>(0.0, 0.0, eps_n)) - scene_sdf(p - vec3<f32>(0.0, 0.0, eps_n));
+        let n: vec3<f32> = normalize(vec3<f32>(nx, ny, nz));
+
+        let cd0: f32 = helix_core(p, 0.0);
+        let cd1: f32 = helix_core(p, 2.09439510239);
+        let cd2: f32 = helix_core(p, 4.18879020479);
+
+        let col0: vec3<f32> = vec3<f32>(204.0 / 255.0, 153.0 / 255.0, 102.0 / 255.0);
+        let col1: vec3<f32> = vec3<f32>(102.0 / 255.0, 204.0 / 255.0, 153.0 / 255.0);
+        let col2: vec3<f32> = vec3<f32>(153.0 / 255.0, 102.0 / 255.0, 204.0 / 255.0);
+
+        let closer_01: bool = cd0 < cd1;
+        let dmin01: f32 = select(cd1, cd0, closer_01);
+        let col01: vec3<f32> = select(col1, col0, closer_01);
+
+        let closer_012: bool = dmin01 < cd2;
+        let closest_col: vec3<f32> = select(col2, col01, closer_012);
+
+        let ldir: vec3<f32> = normalize(vec3<f32>(1.0, 1.2, 0.8));
+        let ndotl: f32 = max(dot(n, ldir), 0.0);
+        let vdir: vec3<f32> = -rd;
+        let h: vec3<f32> = normalize(ldir + vdir);
+        let specular: f32 = pow(max(dot(n, h), 0.0), 16.0);
+
+        color = closest_col * (0.2 + 0.8 * ndotl) + vec3<f32>(0.9, 0.9, 1.0) * specular * 0.4;
+    }
+
+    let fog: f32 = 1.0 - exp(-t * 0.02);
+    color = mix(color, vec3<f32>(0.02, 0.02, 0.05), fog);
+
+    return vec4<f32>(color, 1.0);
+}
+```

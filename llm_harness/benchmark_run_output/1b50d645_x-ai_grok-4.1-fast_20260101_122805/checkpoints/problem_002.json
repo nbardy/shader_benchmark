@@ -1,0 +1,15 @@
+{
+  "problem_index": 2,
+  "problem_name": "binary_tree_fractal",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2026-01-01T12:45:25.881374",
+      "data": {
+        "error": "Failed after 3 retries: Connection error"
+      }
+    }
+  },
+  "created": "2026-01-01T12:45:19.868308",
+  "last_updated": "2026-01-01T12:45:25.881377"
+}

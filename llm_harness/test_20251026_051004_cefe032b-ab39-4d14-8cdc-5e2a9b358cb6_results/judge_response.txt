@@ -1,0 +1,164 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Parametric Equation Implementation:
+- Exact x equation: x = sin(t) * (e^cos(t) - 2*cos(4*t) - sin(t/12)^5)
+- Exact y equation: y = cos(t) * (e^cos(t) - 2*cos(4*t) - sin(t/12)^5)
+- Parameter t ranging correctly from 0 to 12π for complete curve
+- Proper exponential term computation: e^cos(t)
+- Accurate trigonometric function calculations throughout
+
+Mathematical Precision:
+- All parametric equation components implemented with numerical accuracy
+- Correct evaluation of complex trigonometric expressions
+- Proper handling of exponential and power functions
+- Mathematical consistency in curve generation algorithm
+- Accurate parametric form producing recognizable butterfly shape
+
+**S4: Visual Implementation Section**  
+Butterfly Curve Visualization:
+- Clear, recognizable butterfly silhouette with distinctive wing shapes
+- Intricate wing patterns showing mathematical complexity
+- Symmetrical butterfly wings demonstrating parametric precision
+- Natural butterfly coloring with appropriate gradient schemes
+- Fine detail resolution in wing pattern structures
+
+Animation and Flight Motion:
+- Smooth animated flight motion suggesting realistic butterfly movement
+- Convincing flight realism with appropriate motion dynamics
+- Seamless animation loop continuity without jumps or artifacts
+- Professional animation quality enhancing visual appeal
+- Smooth parameter progression creating fluid motion effects
+
+**S5: Completeness & Specifications Section**
+Required Butterfly Elements:
+- Complete parametric butterfly curve implementation
+- All mathematical equation components properly rendered
+- Full parameter range coverage producing complete butterfly shape
+- Intricate wing patterns as specified in requirements
+- Animated flight motion completing the visualization
+
+Technical and Visual Standards:
+- High-quality rendering with proper numerical stability
+- Professional visual presentation meeting aesthetic requirements
+- Efficient shader implementation with clean code structure
+- Complete adherence to butterfly curve specification requirements
+- All technical and artistic elements properly integrated
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+# Butterfly Curve
+
+Create an animated WebGL visualization of the transcendental butterfly curve with color gradients that emphasize its wing-like structure.
+
+## Requirements:
+
+1. Implement the butterfly curve equation:
+   - x = sin(t) * (e^cos(t) - 2*cos(4t) - sin(t/12)^5)
+   - y = cos(t) * (e^cos(t) - 2*cos(4t) - sin(t/12)^5)
+2. Animate the curve drawing from t=0 to t=12π
+3. Apply a color gradient that changes based on:
+   - The angle from center
+   - The distance from center
+   - Creating a butterfly wing effect
+4. Add particle effects that follow the curve path
+5. Implement a subtle glow effect on the curve
+6. Include smooth camera zoom that reveals the full pattern
+7. Add a complementary animated background
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Butterfly Curve Shader Evaluation
+
+## Detailed Assessment
+
+### S1: Problem Accuracy (Generic)
+The image shows a particle/point cloud visualization with smooth color gradients and glow effects, but **does not clearly demonstrate the butterfly curve equation implementation**. While the requirements specify visualization of a specific transcendental parametric equation, this image appears to be more of an abstract particle effect or gradient visualization rather than a clear rendering of the butterfly curve's distinctive shape. The mathematical requirements call for implementing the exact parametric equations with t ranging from 0 to 12π, which would produce a recognizable butterfly silhouette. This result does not convincingly demonstrate that the core mathematical requirement has been met.
+
+**Score Justification:** The image lacks clear evidence of the parametric butterfly curve implementation. No recognizable butterfly shape is visible, and there's no obvious curve structure following the specified equations.
+
+### S2: Visual Quality (Generic)
+The image demonstrates **excellent visual polish and aesthetic appeal**. The color gradients are smooth and well-executed, transitioning beautifully from red through magenta, cyan, blue, and yellow. The particle/point effects have proper anti-aliasing, the glow effects are well-implemented with appropriate bloom characteristics, and the overall composition is visually appealing. The resolution appears adequate, and there are no obvious visual glitches or artifacts. The background gradient complements the foreground elements effectively.
+
+**Score Justification:** Professional rendering quality, smooth gradients, proper glow implementation, no visual artifacts, and aesthetically pleasing color schemes.
+
+### S3: Mathematical Accuracy Section
+This is the most critical criterion, and the visualization **fails to demonstrate implementation of the specified butterfly curve equations**. The image does not show:
+- A recognizable butterfly silhouette with distinctive wing shapes
+- The characteristic pinched "body" at the center with symmetrical wings
+- The intricate wing patterns that emerge from the butterfly equation
+- Clear parametric curve tracing along the mathematical path
+- Evidence of accurate exponential term (e^cos(t)) computation
+- The specific mathematical structure that defines this famous transcendental curve
+
+Instead, the image presents a diffuse particle cloud, which could represent particle effects "following" the curve, but the curve itself is not visually evident.
+
+**Score Justification:** No clear evidence of the parametric butterfly curve's characteristic shape. The mathematical visualization requirement is not convincingly met.
+
+### S4: Visual Implementation Section
+**Particle Effects:** The image shows well-executed particle effects with appropriate glowing and color gradients. The particles appear to be distributed in a semi-symmetrical pattern, suggesting intentional design. ✓
+
+**Butterfly Curve Visualization:** The distinctive butterfly silhouette is not clearly visible. A proper butterfly curve rendering should show two symmetrical wing sections with characteristic mathematical complexity visible in the wing patterns. ✗
+
+**Animation & Flight Motion:** While the requirement calls for animated flight motion, this static image cannot demonstrate animation quality. However, there are no indicators of successful animation implementation visible. ✗
+
+**Color Gradient Implementation:** The gradient scheme is excellent (red→magenta→blue→cyan→yellow) and does emphasize directional flow, though it's unclear if this is specifically based on angle/distance from center as specified. Partial ✓
+
+**Glow Effects:** Subtle and well-implemented, meeting the requirement for a glow effect. ✓
+
+**Score Justification:** While technical execution of particles and effects is good, the core butterfly curve visualization is missing or obscured, failing the primary requirement.
+
+### S5: Completeness & Specifications Section
+
+**Parametric Butterfly Curve Implementation:** Not visibly demonstrated. The curve structure is not recognizable. ✗
+
+**Parameter Range Coverage (0 to 12π):** Cannot be verified from this image. ✗
+
+**Intricate Wing Patterns:** Not visible as mathematical patterns from the butterfly equation. ✗
+
+**Animation Implementation:** Cannot be assessed from static image, but no evidence of implementation. ✗
+
+**Color Gradient by Angle/Distance:** Implemented, but effectiveness is undermined by lack of visible curve. Partial ✓
+
+**Particle Effects:** Present and well-executed. ✓
+
+**Background Animation:** Background is present, though static in this frame. Partial ✓
+
+**Technical Standards:** Render quality is high, but mathematical accuracy and specification adherence are questionable. Partial ✓
+
+**Score Justification:** Multiple core requirements are missing or unverifiable. The visualization appears to be a particle effect visualization rather than a complete butterfly curve implementation.
+
+## Summary
+
+The image demonstrates **excellent technical rendering and visual polish** but **fails to convincingly implement the core mathematical requirement**: the transcendental butterfly curve visualization. The image appears to be particle effects or a gradient background rather than a clear mathematical visualization of the specified parametric equations. A successful implementation should show a recognizable butterfly shape with symmetrical wings and mathematical intricacy characteristic of this famous curve.
+
+The disconnect between visual quality (high) and mathematical accuracy (low) is significant. This appears to be either an incomplete implementation or a demonstration of supporting visual effects without the core mathematical curve being prominently featured.
+
+<scores><S1>28</S1><S2>82</S2><S3>22</S3><S4>45</S4><S5>35</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[28, 82, 22, 45, 35]
+

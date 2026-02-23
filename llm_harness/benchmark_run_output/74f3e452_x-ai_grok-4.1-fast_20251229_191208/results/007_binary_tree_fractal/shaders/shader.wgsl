@@ -1,0 +1,179 @@
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+};
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+fn smin(a: f32, b: f32, k: f32) -> f32 {
+    let h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
+    return mix(b, a, h) - k * h * (1.0 - h);
+}
+
+fn tapered_capsule(pos: vec3<f32>, a: vec3<f32>, b: vec3<f32>, ra: f32, rb: f32) -> f32 {
+    let pa = pos - a;
+    let ba = b - a;
+    let h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h) - mix(ra, rb, h);
+}
+
+fn rotate_around_axis(v: vec3<f32>, axis: vec3<f32>, angle: f32) -> vec3<f32> {
+    let c = cos(angle);
+    let s = sin(angle);
+    let t = 1.0 - c;
+    let cross_part = cross(axis, v) * s;
+    let dot_part = axis * dot(axis, v) * t;
+    return v * c + cross_part + dot_part;
+}
+
+fn sdf_subtree(pos: vec3<f32>, start_pos: vec3<f32>, dir: vec3<f32>, len: f32, rad: f32, level: u32) -> f32 {
+    var d = tapered_capsule(pos, start_pos, start_pos + dir * len, rad, rad * 0.6);
+
+    if (level >= 7u) {
+        return d;
+    }
+
+    let split_pos = start_pos + dir * len * 0.85;
+    let dist_to_joint = length(pos - split_pos) - rad * 1.2;
+    if (dist_to_joint >= d) {
+        return d;
+    }
+
+    let joint_pos = start_pos + dir * len * 0.9;
+    let joint_d = length(pos - joint_pos) - rad * 0.75;
+    d = smin(d, joint_d, 0.05);
+
+    let world_up = vec3<f32>(0.0, 1.0, 0.0);
+    var ref_perp = cross(world_up, dir);
+    let perp_len_sq = dot(ref_perp, ref_perp);
+    if (perp_len_sq < 1e-5) {
+        ref_perp = vec3<f32>(1.0, 0.0, 0.0);
+    } else {
+        ref_perp = normalize(ref_perp);
+    }
+    let twist = GOLDEN_ANGLE * f32(level);
+    let perp = rotate_around_axis(ref_perp, dir, twist);
+    let bend = 0.7853981634;
+    let child_dir1 = normalize(rotate_around_axis(dir, perp, bend));
+    let child_dir2 = normalize(rotate_around_axis(dir, perp, -bend));
+    let child_len = len * 0.7;
+    let child_rad = rad * 0.6;
+
+    let d1 = sdf_subtree(pos, split_pos, child_dir1, child_len, child_rad, level + 1u);
+    d = min(d, d1);
+    let d2 = sdf_subtree(pos, split_pos, child_dir2, child_len, child_rad, level + 1u);
+    d = min(d, d2);
+
+    return d;
+}
+
+fn scene_sdf(pos: vec3<f32>) -> f32 {
+    let trunk_start = vec3<f32>(0.0, -0.3, 0.0);
+    let trunk_dir = vec3<f32>(0.0, 1.0, 0.0);
+    return sdf_subtree(pos, trunk_start, trunk_dir, 1.0, 0.08, 0u);
+}
+
+fn get_normal(pos: vec3<f32>) -> vec3<f32> {
+    let e = 0.0005;
+    return normalize(vec3<f32>(
+        scene_sdf(pos + vec3<f32>(e, 0.0, 0.0)) - scene_sdf(pos - vec3<f32>(e, 0.0, 0.0)),
+        scene_sdf(pos + vec3<f32>(0.0, e, 0.0)) - scene_sdf(pos - vec3<f32>(0.0, e, 0.0)),
+        scene_sdf(pos + vec3<f32>(0.0, 0.0, e)) - scene_sdf(pos - vec3<f32>(0.0, 0.0, e))
+    ) / (2.0 * e));
+}
+
+const cam_pos: vec3<f32> = vec3<f32>(3.0, -6.0, 2.5);
+const GOLDEN_ANGLE: f32 = 2.399963;
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let res = params.resolution;
+    let aspect = res.x / res.y;
+    let vfov = 0.6981317008; // radians(40.0)
+    let tan_vfov = tan(vfov * 0.5);
+    let tan_hfov = tan_vfov * aspect;
+
+    let ndc_x = (2.0 * pos.x / res.x) - 1.0;
+    let ndc_y = 1.0 - (2.0 * pos.y / res.y);
+
+    let forward = normalize(-cam_pos);
+    let ref_up = vec3<f32>(0.0, 1.0, 0.0);
+    let right = normalize(cross(ref_up, forward));
+    let true_up = cross(forward, right);
+
+    var ray_dir = forward;
+    ray_dir += right * (ndc_x * tan_hfov);
+    ray_dir += true_up * (ndc_y * tan_vfov);
+    ray_dir = normalize(ray_dir);
+
+    var t = 0.02;
+    let t_max = 30.0;
+    var steps = 0u;
+    loop {
+        if (steps >= 180u || t > t_max) { break; }
+        let current_pos = cam_pos + ray_dir * t;
+        let dist = scene_sdf(current_pos);
+        if (dist < 0.001) { break; }
+        t += dist * 0.9;
+        steps = steps + 1u;
+    }
+
+    if (t < t_max) {
+        let hit_pos = cam_pos + ray_dir * t;
+        let normal = get_normal(hit_pos);
+        let view_dir = normalize(cam_pos - hit_pos);
+
+        var lighting: f32 = 0.04;
+
+        // Key light
+        {
+            let l_pos = vec3<f32>(3.0, -5.0, 5.0);
+            let l_vec = normalize(l_pos - hit_pos);
+            let l_dist = length(l_pos - hit_pos);
+            let atten = 1.0 / (1.0 + 0.045 * l_dist + 0.025 * l_dist * l_dist);
+            lighting += 1.0 * atten * saturate(dot(normal, l_vec));
+        }
+
+        // Fill light
+        {
+            let l_pos = vec3<f32>(-2.0, -6.0, 4.0);
+            let l_vec = normalize(l_pos - hit_pos);
+            let l_dist = length(l_pos - hit_pos);
+            let atten = 1.0 / (1.0 + 0.045 * l_dist + 0.025 * l_dist * l_dist);
+            lighting += 0.4 * atten * saturate(dot(normal, l_vec));
+        }
+
+        // Rim light
+        {
+            let l_pos = vec3<f32>(0.0, 0.0, 6.0);
+            let l_vec = normalize(l_pos - hit_pos);
+            let l_dist = length(l_pos - hit_pos);
+            let atten = 1.0 / (1.0 + 0.045 * l_dist + 0.025 * l_dist * l_dist);
+            lighting += 0.3 * atten * saturate(dot(normal, l_vec));
+        }
+
+        let albedo = vec3<f32>(0.2941, 0.2157, 0.1490);
+        var col = albedo * (0.08 + 0.92 * lighting);
+
+        // Subtle rim effect for twigs
+        let ndv = saturate(dot(normal, view_dir));
+        let rim = pow(1.0 - ndv, 2.0) * 0.15;
+        col += rim * vec3<f32>(0.4, 0.35, 0.3);
+
+        return vec4<f32>(col, 1.0);
+    } else {
+        let world_up = vec3<f32>(0.0, 1.0, 0.0);
+        let sky_t = saturate(dot(ray_dir, world_up));
+        let zenith_col = vec3<f32>(0.8431, 0.9255, 1.0);
+        let horizon_col = vec3<f32>(1.0, 1.0, 1.0);
+        let sky_col = mix(horizon_col, zenith_col, sky_t * sky_t);
+        return vec4<f32>(sky_col, 1.0);
+    }
+}

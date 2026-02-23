@@ -1,0 +1,189 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Probability Distribution Weather Mapping:
+- Normal distributions accurately rendered as circular pressure systems with spiral patterns
+- Exponential distribution rain demonstrating correct sudden intensity changes
+- Cauchy distribution extreme events positioned at mathematical tail locations
+- Beta distribution cloud formations showing mathematically appropriate varied density
+- Each distribution type maintains distinct weather signature matching mathematical properties
+
+Statistical Weather Pattern Implementation:
+- Tornadoes and lightning generated at appropriate Cauchy tail positions
+- Weather patterns mathematically consistent with underlying probability distributions
+- Proper statistical behavior in weather phenomena intensity and positioning
+- Mathematical accuracy in distribution-to-weather mapping relationships
+- Correct implementation of statistical weather pattern generation
+
+**S4: Visual Implementation Section**  
+Atmospheric Realism and Volumetric Effects:
+- Volumetric clouds with realistic light scattering throughout atmosphere
+- Proper atmospheric haze and perspective enhancing depth perception
+- Crepuscular rays through clouds creating dramatic lighting effects
+- Professional atmospheric rendering meeting meteorological visualization standards
+- High-quality volumetric effects supporting weather pattern visibility
+
+Weather System Integration:
+- Weather fronts clearly visible where different distributions meet
+- Wind flow lines colored by velocity gradient showing atmospheric dynamics
+- Weather systems interact naturally demonstrating proper meteorological behavior
+- Ground terrain with realistic weather shadows enhancing three-dimensional presentation
+- Professional weather visualization supporting scientific understanding
+
+**S5: Completeness & Specifications Section**
+Required Distribution Elements:
+- Complete probability weather patterns with all distribution types properly implemented
+- All weather phenomena (pressure systems, rain, tornadoes, clouds) correctly positioned
+- Proper interaction between different statistical weather systems
+- Perfect integration of mathematical distributions with meteorological visualization
+- Full adherence to probability weather pattern specification requirements
+
+Technical and Rendering Standards:
+- HDR lighting enhancing atmospheric effects and weather system visibility
+- Motion blur effects on clouds adding realism to atmospheric dynamics
+- Professional rendering quality meeting scientific visualization standards
+- All distribution mapping and atmospheric realism tests satisfied
+- Complete implementation of probability-based weather pattern visualization
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+**Objective**
+Transform **probability distributions** into **dynamic weather systems**, where statistical properties manifest as atmospheric phenomena.
+
+**Mathematical recipe**
+
+1. Normal distribution N(μ,σ²): stable high-pressure systems
+   - Mean μ determines center location
+   - Variance σ² creates pressure gradient (storm size)
+   - Multiple normals create weather fronts
+2. Exponential distribution: rain intensity patterns
+   - λ parameter controls precipitation rate
+   - Memoryless property creates sudden downpours
+3. Cauchy distribution: extreme weather events
+   - Heavy tails generate tornadoes at outliers
+   - Undefined variance causes chaotic wind patterns
+4. Beta distribution: cloud coverage
+   - α,β parameters shape cloud density gradients
+   - Bimodal beta creates cumulonimbus formations
+5. Multivariate correlations: jet streams connecting systems
+
+**Styling**
+
+* Volumetric cloud rendering with multiple scattering
+* Pressure systems as swirling atmospheric spirals
+* Rain rendered as refractive droplet sheets
+* Lightning bolts at Cauchy tail events (>3σ)
+* Wind flow lines colored by velocity (blue=calm, red=hurricane)
+* Ground view: rolling hills with weather shadows
+* Time-lapse feel: blurred cloud movement trails
+* Atmospheric perspective with realistic haze
+* Crepuscular rays through cloud breaks
+* Camera at (0, 5, -100), tilted up 10°; FOV 70°
+* Resolution 2400 × 2400 px, HDR lighting
+
+**Deliverable** Single PNG showing probability distributions as weather map
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Evaluation
+
+## Detailed Assessment
+
+### S1: Problem Accuracy (Generic)
+The image shows minimal adherence to the mathematical requirements. While a single wavy line is visible, there is no evidence of:
+- Normal distributions rendered as pressure systems
+- Exponential distribution rain patterns
+- Cauchy distribution extreme events
+- Beta distribution cloud formations
+- Multivariate correlation jet streams
+
+The visualization fails to implement the core mathematical weather mapping recipe. The single undulating line does not correspond to any specified probability distribution transformation.
+
+**Score: 8/100** - Virtually no mathematical recipe implementation
+
+### S2: Visual Quality (Generic)
+The image exhibits poor visual quality:
+- Extremely minimal content (essentially blank with one line)
+- No anti-aliasing or professional polish
+- Flat, featureless appearance
+- Resolution appears inadequate despite 2400×2400px specification claim
+- No lighting, shading, or color sophistication
+- Lacks any atmospheric or meteorological visual elements
+
+The aesthetic presentation is severely underdeveloped.
+
+**Score: 12/100** - Minimal visual content, poor technical execution
+
+### S3: Mathematical Accuracy Section
+Critical failures across all distribution requirements:
+- **Normal distributions**: No pressure systems, spirals, or circular formations visible
+- **Exponential distribution**: No rain or precipitation patterns
+- **Cauchy distribution**: No extreme events, tornadoes, or tail phenomena
+- **Beta distribution**: No cloud density gradients or cumulonimbus formations
+- **Statistical weather patterns**: Completely absent
+
+The single wavy line bears no mathematical relationship to any specified probability distribution. There is no statistical weather pattern generation whatsoever.
+
+**Score: 5/100** - Fundamental failure to implement mathematical requirements
+
+### S4: Visual Implementation Section
+Atmospheric and meteorological elements are entirely absent:
+- No volumetric clouds or light scattering
+- No atmospheric haze or perspective
+- No crepuscular rays or dramatic lighting
+- No weather fronts or system integration
+- No wind flow visualization
+- No terrain or ground rendering
+- No atmospheric dynamics
+
+The image completely lacks the professional atmospheric rendering and weather system integration specified.
+
+**Score: 6/100** - No atmospheric or weather visualization present
+
+### S5: Completeness & Specifications Section
+Multiple specification failures:
+- Missing all probability distribution elements
+- No weather phenomena (pressure, rain, tornadoes, clouds)
+- No distribution-meteorology interactions
+- No terrain integration
+- No HDR lighting
+- No motion blur or dynamic effects
+- No scientific visualization standards met
+
+The implementation is approximately 2% complete relative to specifications.
+
+**Score: 3/100** - Near-complete absence of required elements
+
+---
+
+## Summary
+This image represents a failed attempt at the mathematical visualization. It appears to be either an incomplete shader test, a placeholder, or a fundamental misunderstanding of the requirements. The single wavy line has no connection to probability distributions, weather systems, or the specified mathematical recipe. None of the five distribution types are represented, and no meteorological phenomena are visualized.
+
+<scores><S1>8</S1><S2>12</S2><S3>5</S3><S4>6</S4><S5>3</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[8, 12, 5, 6, 3]
+

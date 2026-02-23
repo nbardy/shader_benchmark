@@ -1,0 +1,38 @@
+=== RENDER FAILED ===
+Return code: 101
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/results/001_al_khwarizmi_geometric_algebra/shaders/shader.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/results/001_al_khwarizmi_geometric_algebra/artifacts/result.png
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader validation error: 
+    ┌─ user_shader:292:1
+    │  
+292 │ ╭ fn drawAreaMarkers(uv: vec2<f32>, phase: f32) -> vec4<f32> {
+293 │ │     let scale = 0.08;
+294 │ │     let center = vec2<f32>(0.0, 0.05);
+295 │ │     let p = (uv - center) / scale;
+    · │
+322 │ │             let d = length(p - corners[i]);
+    │ │                                ^^^^^^^^^^ naga::Expression [94]
+    · │
+328 │ │     
+329 │ │     return color;
+    │ ╰─────────────────^ naga::Function [11]
+
+
+    Function [11] 'drawAreaMarkers' is invalid
+    Expression [94] is invalid
+    The expression [87] may only be indexed by a constant
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+=== STDOUT ===

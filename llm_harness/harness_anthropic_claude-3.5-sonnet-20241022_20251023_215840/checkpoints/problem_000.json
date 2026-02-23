@@ -1,0 +1,30 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-23T21:59:22.984081",
+      "data": {
+        "shaders": [
+          "ackermann_plot.wgsl"
+        ],
+        "llm_response_len": 8682
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-23T21:59:44.175910",
+      "data": {
+        "test_folder": "test_20251023_215922_6798a10f-ba28-448a-8387-dbee3a1bd3fd_results"
+      }
+    },
+    "render": {
+      "status": "in_progress",
+      "timestamp": "2025-10-23T21:59:44.176514",
+      "data": {}
+    }
+  },
+  "created": "2025-10-23T21:58:40.631960",
+  "last_updated": "2025-10-23T21:59:44.176516"
+}

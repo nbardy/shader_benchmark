@@ -1,0 +1,191 @@
+// Apollonian Gasket - Kleinian Group Limit Set
+// Möbius generators M₁(z) = (2z+1)/(z+1), M₂(z) = (2z-1)/(z-1)
+// Red (#ff3355) for even-length words, Green (#33ff55) for odd-length words
+// Monte Carlo orbit sampling with stereographic projection and Gaussian bloom
+
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+    time: f32,
+    seed: f32,
+};
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+// LCG random number generator
+fn lcg(seed: u32) -> u32 {
+    return (1664525u * seed + 1013904223u) % 4294967296u;
+}
+
+fn random_f32(seed_ref: ptr<function, u32>) -> f32 {
+    *seed_ref = lcg(*seed_ref);
+    return f32(*seed_ref) / 4294967296.0;
+}
+
+// Möbius transformation M₁(z) = (2z+1)/(z+1)
+fn mobius1(z: vec2<f32>) -> vec2<f32> {
+    let num_real = 2.0 * z.x + 1.0;
+    let num_imag = 2.0 * z.y;
+    let den_real = z.x + 1.0;
+    let den_imag = z.y;
+    
+    let den_sq = den_real * den_real + den_imag * den_imag;
+    let eps = 1e-6;
+    
+    return select(
+        vec2<f32>(0.0),
+        vec2<f32>(
+            (num_real * den_real + num_imag * den_imag) / den_sq,
+            (num_imag * den_real - num_real * den_imag) / den_sq
+        ),
+        den_sq > eps
+    );
+}
+
+// Möbius transformation M₂(z) = (2z-1)/(z-1)
+fn mobius2(z: vec2<f32>) -> vec2<f32> {
+    let num_real = 2.0 * z.x - 1.0;
+    let num_imag = 2.0 * z.y;
+    let den_real = z.x - 1.0;
+    let den_imag = z.y;
+    
+    let den_sq = den_real * den_real + den_imag * den_imag;
+    let eps = 1e-6;
+    
+    return select(
+        vec2<f32>(0.0),
+        vec2<f32>(
+            (num_real * den_real + num_imag * den_imag) / den_sq,
+            (num_imag * den_real - num_real * den_imag) / den_sq
+        ),
+        den_sq > eps
+    );
+}
+
+// Stereographic projection: map from complex plane to sphere, then to plane
+fn stereographic_project(z: vec2<f32>) -> vec2<f32> {
+    let r_sq = z.x * z.x + z.y * z.y;
+    let denom = 1.0 + r_sq;
+    let eps = 1e-8;
+    
+    return select(
+        vec2<f32>(0.0),
+        (2.0 * z) / denom,
+        denom > eps
+    );
+}
+
+// Gaussian blur accumulation kernel (simplified single-pass approximation)
+fn gaussian_bloom(center: vec2<f32>, sigma: f32) -> f32 {
+    let inv_sigma_sq = 1.0 / (2.0 * sigma * sigma);
+    return exp(-inv_sigma_sq);
+}
+
+// Orbit sampling: compute color contribution from single random walk
+fn sample_orbit(seed_ref: ptr<function, u32>, parity: ptr<function, u32>) -> vec2<f32> {
+    var z = vec2<f32>(0.0, 0.0);
+    
+    // Discard first 12 iterates (transient)
+    for (var i = 0u; i < 12u; i = i + 1u) {
+        let r = random_f32(seed_ref);
+        z = select(mobius2(z), mobius1(z), r < 0.5);
+    }
+    
+    // Accumulate next 9 iterations with parity tracking
+    var accumulated_z = vec2<f32>(0.0, 0.0);
+    for (var depth = 0u; depth < 9u; depth = depth + 1u) {
+        let r = random_f32(seed_ref);
+        let is_m1 = r < 0.5;
+        z = select(mobius2(z), mobius1(z), is_m1);
+        
+        // Track parity (odd/even generator sequence length)
+        *parity = (*parity + 1u) % 2u;
+        accumulated_z = accumulated_z + z;
+    }
+    
+    // Return average position and parity
+    return accumulated_z / 9.0;
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let resolution = params.resolution;
+    let canvas_size = 2400.0;
+    let padding = 120.0;
+    
+    // Map pixel to canvas coordinates (with padding)
+    let px = (pos.x / resolution.x) * canvas_size + padding;
+    let py = (pos.y / resolution.y) * canvas_size + padding;
+    
+    // Center coordinates
+    let center_x = canvas_size * 0.5 + padding;
+    let center_y = canvas_size * 0.5 + padding;
+    
+    // Normalize to centered [-1, 1] square
+    let uv = vec2<f32>(
+        (px - center_x) / (canvas_size * 0.5),
+        (py - center_y) / (canvas_size * 0.5)
+    );
+    
+    // Initialize accumulator for Monte Carlo sampling
+    var red_accum = 0.0;
+    var green_accum = 0.0;
+    var sample_count = 0u;
+    
+    // Initialize RNG seed
+    var seed = u32(params.time * 1000.0 + length(uv) * 100.0);
+    seed = seed ^ u32(pos.x + pos.y * 7919.0);
+    
+    // Monte Carlo loop: sample 256 random walks per pixel
+    for (var walk = 0u; walk < 256u; walk = walk + 1u) {
+        var parity = 0u;
+        let orbit_point = sample_orbit(&seed, &parity);
+        let proj_point = stereographic_project(orbit_point);
+        
+        // Compute distance from current pixel
+        let delta = proj_point - uv;
+        let dist_sq = delta.x * delta.x + delta.y * delta.y;
+        
+        // Disk radius 0.6 px, map to normalized units
+        let pixel_radius = 0.6 / (canvas_size * 0.5);
+        let pixel_radius_sq = pixel_radius * pixel_radius;
+        
+        // Additive alpha blending for high-density glow
+        if (dist_sq < pixel_radius_sq) {
+            let intensity = 1.0 - sqrt(dist_sq / pixel_radius_sq);
+            if (parity == 0u) {
+                // Even-length word → red #ff3355
+                red_accum = red_accum + intensity * 1.0;
+                green_accum = green_accum + intensity * 0.2;
+            } else {
+                // Odd-length word → green #33ff55
+                red_accum = red_accum + intensity * 0.2;
+                green_accum = green_accum + intensity * 1.0;
+            }
+            sample_count = sample_count + 1u;
+        }
+    }
+    
+    // Normalize accumulator and apply Gaussian bloom
+    var r = red_accum / 256.0;
+    var g = green_accum / 256.0;
+    let b = 0.0;
+    
+    // Gaussian bloom: σ = 1 px with 40% opacity
+    let bloom_intensity = select(0.0, gaussian_bloom(vec2<f32>(0.0), 1.0) * 0.4, sample_count > 0u);
+    r = r + bloom_intensity * r;
+    g = g + bloom_intensity * g;
+    
+    // Clamp to valid range [0, 1]
+    r = clamp(r, 0.0, 1.0);
+    g = clamp(g, 0.0, 1.0);
+    
+    return vec4<f32>(r, g, b, 1.0);
+}

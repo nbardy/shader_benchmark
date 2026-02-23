@@ -1,0 +1,146 @@
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+    time: f32,
+    aspect: f32,
+};
+
+@group(0) @binding(0) var<uniform> Params: Params;
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    // Canvas: 1600 × 1200
+    let canvas_width = 1600.0;
+    let canvas_height = 1200.0;
+    
+    // White background
+    var pixel_color = vec3<f32>(1.0, 1.0, 1.0);
+    
+    // 11 bars: n = 0 to 10
+    // Bar spacing: 80 px apart, starting at x = 160
+    // Bar width: 40 px
+    // Y-axis: log₁₀ scale from 0 to 10
+    
+    let uv = pos.xy;
+    let bar_start_x = 160.0;
+    let bar_spacing = 80.0;
+    let bar_width = 40.0;
+    let bar_height_max = 1000.0; // Pixels for y-axis height
+    let y_axis_bottom = 100.0;
+    let y_axis_top = 1100.0;
+    
+    // Ackermann A(3,n) log₁₀ values (precomputed with high precision)
+    // A(3,0) = 1 → log₁₀(1) = 0
+    // A(3,1) = 2 → log₁₀(2) ≈ 0.30103
+    // A(3,2) = 3 → log₁₀(3) ≈ 0.47712
+    // A(3,3) = 13 → log₁₀(13) ≈ 1.11394
+    // A(3,4) = 65533 → log₁₀(65533) ≈ 4.81647
+    // A(3,5) = 2^65536 - 3 → log₁₀ ≈ 19728.09
+    // A(3,6) = 2^(2^65536) - 3 → log₁₀ ≈ 5.94865e19728
+    // A(3,7+) = tower of exponentials
+    
+    // Normalized to fit on screen (clamped at log₁₀ = 10 for visualization)
+    const log_values = array<f32, 11>(
+        0.0,          // n=0: log₁₀(1) = 0
+        0.30103,      // n=1: log₁₀(2)
+        0.47712,      // n=2: log₁₀(3)
+        1.11394,      // n=3: log₁₀(13)
+        4.81647,      // n=4: log₁₀(65533)
+        9.99999,      // n=5: clamped (actual ≈ 19728)
+        9.99999,      // n=6: clamped (actual ≈ 5.95e19728)
+        9.99999,      // n=7: clamped
+        9.99999,      // n=8: clamped
+        9.99999,      // n=9: clamped
+        9.99999       // n=10: clamped
+    );
+    
+    // Grid lines for log₁₀ scale: every integer decade (0, 1, 2, ..., 10)
+    let grid_line_thickness = 1.0;
+    let grid_color = vec3<f32>(0.85, 0.85, 0.85);
+    
+    // Check if on a grid line
+    var grid_alpha = 0.0;
+    for (var decade: i32 = 0; decade <= 10; decade = decade + 1) {
+        let grid_y = y_axis_bottom + f32(decade) * (bar_height_max / 10.0);
+        let dist_to_grid = abs(uv.y - grid_y);
+        if (dist_to_grid < grid_line_thickness) {
+            grid_alpha = 1.0;
+            break;
+        }
+    }
+    
+    // Blend grid
+    if (grid_alpha > 0.0) {
+        pixel_color = mix(pixel_color, grid_color, 0.3);
+    }
+    
+    // Draw bars
+    var bar_color_rgb = vec3<f32>(1.0, 1.0, 1.0);
+    var bar_hit = false;
+    
+    for (var n: u32 = 0u; n < 11u; n = n + 1u) {
+        let bar_x_center = bar_start_x + f32(n) * bar_spacing;
+        let bar_left = bar_x_center - bar_width / 2.0;
+        let bar_right = bar_x_center + bar_width / 2.0;
+        
+        // Check if pixel is within bar horizontal range
+        if (uv.x >= bar_left && uv.x <= bar_right) {
+            let log_value = log_values[n];
+            let bar_top_y = y_axis_bottom + log_value * (bar_height_max / 10.0);
+            
+            // Check if pixel is within bar vertical range
+            if (uv.y >= y_axis_bottom && uv.y <= bar_top_y) {
+                // Color gradient: deep-blue (#0033CC) at n=0 to searing-red (#FF3300) at n=10
+                let t_color = f32(n) / 10.0;
+                let blue_color = vec3<f32>(0.0, 0.2, 0.8);      // #0033CC normalized
+                let red_color = vec3<f32>(1.0, 0.2, 0.0);        // #FF3300 normalized
+                bar_color_rgb = mix(blue_color, red_color, t_color);
+                bar_hit = true;
+                break;
+            }
+        }
+    }
+    
+    if (bar_hit) {
+        // Add rounded cap at top of bar (simple antialiasing)
+        pixel_color = bar_color_rgb;
+    }
+    
+    // Draw Y-axis labels and tick marks
+    let tick_size = 5.0;
+    let tick_color = vec3<f32>(0.0, 0.0, 0.0);
+    let axis_x = 130.0;
+    
+    for (var decade: i32 = 0; decade <= 10; decade = decade + 1) {
+        let tick_y = y_axis_bottom + f32(decade) * (bar_height_max / 10.0);
+        
+        // Draw tick mark
+        if (uv.y >= tick_y - 1.0 && uv.y <= tick_y + 1.0 &&
+            uv.x >= axis_x - tick_size && uv.x <= axis_x) {
+            pixel_color = tick_color;
+        }
+    }
+    
+    // Draw X-axis
+    let x_axis_thickness = 2.0;
+    if (uv.y >= y_axis_bottom - x_axis_thickness && uv.y <= y_axis_bottom) {
+        pixel_color = vec3<f32>(0.0, 0.0, 0.0);
+    }
+    
+    // Draw Y-axis
+    let y_axis_thickness = 2.0;
+    if (uv.x >= axis_x - y_axis_thickness && uv.x <= axis_x) {
+        if (uv.y >= y_axis_bottom && uv.y <= y_axis_top) {
+            pixel_color = vec3<f32>(0.0, 0.0, 0.0);
+        }
+    }
+    
+    return vec4<f32>(pixel_color, 1.0);
+}

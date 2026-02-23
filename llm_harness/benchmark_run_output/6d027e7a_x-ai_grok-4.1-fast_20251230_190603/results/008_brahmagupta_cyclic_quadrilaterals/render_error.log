@@ -1,0 +1,38 @@
+=== RENDER FAILED ===
+Return code: 101
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/results/008_brahmagupta_cyclic_quadrilaterals/shaders/shader_0.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/results/008_brahmagupta_cyclic_quadrilaterals/artifacts/result.png
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader validation error: 
+   ┌─ user_shader:14:1
+   │  
+14 │ ╭ fn digit_dist(luv: vec2<f32>, dig: u32) -> f32 {
+15 │ │     let patterns: array<u32,10> = array<u32,10>(
+16 │ │         0x3Fu, 0x06u, 0x5Bu, 0x4Fu,
+17 │ │         0x66u, 0x6Du, 0x7Du, 0x07u,
+   · │
+20 │ │     let bits: u32 = patterns[dig];
+   │ │                     ^^^^^^^^^^^^^ naga::Expression [14]
+   · │
+45 │ │     }
+46 │ │     return min_dist;
+   │ ╰────────────────────^ naga::Function [2]
+
+
+    Function [2] 'digit_dist' is invalid
+    Expression [14] is invalid
+    The expression [13] may only be indexed by a constant
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+=== STDOUT ===

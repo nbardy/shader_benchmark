@@ -1,0 +1,35 @@
+2025-12-29 15:52:58.431 [INFO] Logger initialized for problem 8: brahmagupta_cyclic_quadrilaterals
+2025-12-29 15:52:58.431 [INFO] ========== PROBLEM START ==========
+2025-12-29 15:52:58.431 [INFO] Index: 8
+2025-12-29 15:52:58.431 [INFO] Name: brahmagupta_cyclic_quadrilaterals
+2025-12-29 15:52:58.431 [INFO] ---------- STAGE START: GENERATE ----------
+2025-12-29 15:52:58.431 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-12-29 15:52:58.433 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/da1d6507_google_gemini-2.0-flash-001_20251229_155135/checkpoints/problem_008.json
+2025-12-29 15:52:58.433 [INFO] Loading request prompt
+2025-12-29 15:52:58.433 [INFO] API call: LLM generation model=google/gemini-2.0-flash-001, language=wgsl
+2025-12-29 15:53:18.784 [INFO] API response: LLM generation - success, size=10328 bytes
+2025-12-29 15:53:18.784 [INFO] Parsing shader response
+2025-12-29 15:53:18.784 [ERROR] EXCEPTION in generate stage:
+2025-12-29 15:53:18.784 [ERROR]   Type: ValueError
+2025-12-29 15:53:18.784 [ERROR]   Message: No shader files found
+2025-12-29 15:53:18.784 [ERROR]   Traceback:
+2025-12-29 15:53:18.789 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 318, in run_single_problem
+    shaders, main_rs = shader_parser.parse_response(llm_response)
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+2025-12-29 15:53:18.789 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/shader_parser.py", line 213, in parse_response
+    raise ValueError("No shader files found")
+2025-12-29 15:53:18.791 [INFO] Saved failed LLM response to /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/da1d6507_google_gemini-2.0-flash-001_20251229_155135/results/008_brahmagupta_cyclic_quadrilaterals/llm_response.txt
+2025-12-29 15:53:18.791 [INFO] Attempting to save checkpoint: stage=generate, status=failed
+2025-12-29 15:53:18.793 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/da1d6507_google_gemini-2.0-flash-001_20251229_155135/checkpoints/problem_008.json
+2025-12-29 15:53:18.793 [INFO] ---------- STAGE END: GENERATE - FAILED ----------
+2025-12-29 15:53:18.793 [ERROR] EXCEPTION in run_single_problem:
+2025-12-29 15:53:18.793 [ERROR]   Type: ValueError
+2025-12-29 15:53:18.793 [ERROR]   Message: No shader files found
+2025-12-29 15:53:18.793 [ERROR]   Traceback:
+2025-12-29 15:53:18.794 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 318, in run_single_problem
+    shaders, main_rs = shader_parser.parse_response(llm_response)
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+2025-12-29 15:53:18.794 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/shader_parser.py", line 213, in parse_response
+    raise ValueError("No shader files found")
+2025-12-29 15:53:18.794 [INFO] ========== PROBLEM END: FAILED ==========
+2025-12-29 15:53:18.794 [INFO] Execution time: 20.36s

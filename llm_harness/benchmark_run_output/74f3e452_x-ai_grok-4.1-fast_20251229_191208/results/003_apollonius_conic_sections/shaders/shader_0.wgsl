@@ -1,0 +1,225 @@
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+struct Params {
+    resolution: vec2<f32>,
+};
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = (pos.xy / params.resolution - 0.5) * 2.0;
+    let proj_scale: f32 = 2.1;
+    let proj_uv = uv * proj_scale;
+
+    // Parchment background
+    let parchment: vec3<f32> = vec3<f32>(0.9569, 0.9098, 0.8157);
+    var final_color: vec3<f32> = parchment;
+
+    // Constants
+    let PI: f32 = 3.14159265359;
+    let ALPHA: f32 = 0.5235987756;  // 30 deg
+    let TAN_ALPHA: f32 = 0.5773502692;
+    let SIN_ALPHA: f32 = 0.5;
+    let COS_ALPHA: f32 = 0.8660254038;
+
+    // Plane definitions
+    let phi_ell: f32 = 0.7853981634;  // 45 deg
+    let sin_ell: f32 = 0.7071067812;
+    let cos_ell_x: f32 = 0.7071067812;
+    let n_ell: vec3<f32> = vec3<f32>(cos_ell_x, 0.0, sin_ell);
+    let d_ell: f32 = 1.1;
+    let yoff_ell: f32 = 0.0;
+    let col_ell: vec3<f32> = vec3<f32>(0.12, 0.23, 0.54);
+
+    let n_par: vec3<f32> = vec3<f32>(COS_ALPHA, 0.0, -SIN_ALPHA);
+    let d_par: f32 = 1.4;
+    let yoff_par: f32 = 1.5;
+    let col_par: vec3<f32> = vec3<f32>(0.08, 0.50, 0.24);
+
+    let phi_hyp: f32 = 0.2617993878;  // 15 deg
+    let sin_hyp: f32 = 0.2588190451;
+    let cos_hyp_x: f32 = 0.9659258263;
+    let n_hyp: vec3<f32> = vec3<f32>(cos_hyp_x, 0.0, sin_hyp);
+    let d_hyp: f32 = 0.9;
+    let yoff_hyp: f32 = -1.5;
+    let col_hyp: vec3<f32> = vec3<f32>(0.86, 0.13, 0.15);
+
+    // Vertex highlight
+    let d_vertex: f32 = length(proj_uv) - 0.018;
+    let vertex_mask: f32 = 1.0 - smoothstep(0.0, 0.008, d_vertex);
+    final_color = mix(final_color, vec3<f32>(0.0), vertex_mask * 0.8);
+
+    // Cone wireframe
+    let d_cone: f32 = cone_wireframe(proj_uv);
+    let cone_width: f32 = 0.016;
+    let cone_mask: f32 = 1.0 - smoothstep(0.0, cone_width, d_cone);
+    let cone_alpha: f32 = 0.5;
+    let cone_c: vec3<f32> = vec3<f32>(0.35, 0.25, 0.15);
+    final_color = mix(final_color, cone_c, cone_mask * cone_alpha);
+
+    // Plane ellipse grid
+    let d_plane_ell: f32 = plane_grid(proj_uv, n_ell.x, n_ell.z, d_ell, yoff_ell);
+    let plane_width: f32 = 0.011;
+    let plane_mask_ell: f32 = 1.0 - smoothstep(0.0, plane_width, d_plane_ell);
+    let plane_alpha: f32 = 0.45;
+    final_color = mix(final_color, col_ell, plane_mask_ell * plane_alpha);
+
+    // Plane parabola grid
+    let d_plane_par: f32 = plane_grid(proj_uv, n_par.x, n_par.z, d_par, yoff_par);
+    let plane_mask_par: f32 = 1.0 - smoothstep(0.0, plane_width, d_plane_par);
+    final_color = mix(final_color, col_par, plane_mask_par * plane_alpha);
+
+    // Plane hyperbola grid
+    let d_plane_hyp: f32 = plane_grid(proj_uv, n_hyp.x, n_hyp.z, d_hyp, yoff_hyp);
+    let plane_mask_hyp: f32 = 1.0 - smoothstep(0.0, plane_width, d_plane_hyp);
+    final_color = mix(final_color, col_hyp, plane_mask_hyp * plane_alpha);
+
+    // Ellipse curve bold
+    let d_curve_ell: f32 = curve_segments(proj_uv, n_ell.x, n_ell.z, d_ell, yoff_ell);
+    let curve_width: f32 = 0.028;
+    let curve_mask_ell: f32 = 1.0 - smoothstep(0.0, curve_width, d_curve_ell);
+    final_color = mix(final_color, col_ell * 1.3, curve_mask_ell);
+
+    // Parabola curve bold
+    let d_curve_par: f32 = curve_segments(proj_uv, n_par.x, n_par.z, d_par, yoff_par);
+    let curve_mask_par: f32 = 1.0 - smoothstep(0.0, curve_width, d_curve_par);
+    final_color = mix(final_color, col_par * 1.3, curve_mask_par);
+
+    // Hyperbola curve bold
+    let d_curve_hyp: f32 = curve_segments(proj_uv, n_hyp.x, n_hyp.z, d_hyp, yoff_hyp);
+    let curve_mask_hyp: f32 = 1.0 - smoothstep(0.0, curve_width, d_curve_hyp);
+    final_color = mix(final_color, col_hyp * 1.3, curve_mask_hyp);
+
+    return vec4<f32>(final_color, 1.0);
+}
+
+fn project(p: vec3<f32>) -> vec2<f32> {
+    var q: vec3<f32> = p;
+    // Rotate Y 45 deg
+    let ry: f32 = 0.7853981634;
+    let cyr: f32 = 0.7071067812;
+    let syr: f32 = 0.7071067812;
+    let x1: f32 = q.x * cyr - q.z * syr;
+    let z1: f32 = q.x * syr + q.z * cyr;
+    q.x = x1;
+    q.z = z1;
+    // Rotate X 25 deg
+    let rx: f32 = 0.436332312998;
+    let cxr: f32 = 0.9063077870;
+    let sxr: f32 = 0.4226182617;
+    let y1: f32 = q.y * cxr - q.z * sxr;
+    q.y = y1;
+    // Project and scale
+    let scale_proj: f32 = 0.68;
+    return vec2<f32>(q.x, q.y) * scale_proj;
+}
+
+fn sd_segment(p: vec2<f32>, a: vec2<f32>, b: vec2<f32>) -> f32 {
+    let pa: vec2<f32> = p - a;
+    let ba: vec2<f32> = b - a;
+    let proj: f32 = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * proj);
+}
+
+fn cone_wireframe(uv: vec2<f32>) -> f32 {
+    var min_d: f32 = 1e20;
+    let num_gens: u32 = 48u;
+    let z_max: f32 = 3.0;
+    for (var i: u32 = 0u; i < num_gens; i = i + 1u) {
+        let theta: f32 = 2.0 * 3.14159265359 * f32(i) / f32(num_gens);
+        let ct: f32 = cos(theta);
+        let st: f32 = sin(theta);
+        let p1: vec3<f32> = vec3<f32>(-z_max * TAN_ALPHA * ct, -z_max * TAN_ALPHA * st, -z_max);
+        let p2: vec3<f32> = vec3<f32>(z_max * TAN_ALPHA * ct, z_max * TAN_ALPHA * st, z_max);
+        let proj1: vec2<f32> = project(p1);
+        let proj2: vec2<f32> = project(p2);
+        let dd: f32 = sd_segment(uv, proj1, proj2);
+        min_d = min(min_d, dd);
+    }
+    return min_d;
+}
+
+fn plane_grid(uv: vec2<f32>, nx: f32, nz: f32, dd: f32, yoff: f32) -> f32 {
+    var min_d: f32 = 1e20;
+
+    // Horizontal lines (fixed z slices)
+    let num_h: u32 = 42u;
+    let z_min: f32 = -2.6;
+    let z_max: f32 = 2.6;
+    let y_ext: f32 = 1.9;
+    for (var i: u32 = 0u; i < num_h; i = i + 1u) {
+        let frac: f32 = f32(i) / f32(num_h - 1u);
+        let z: f32 = z_min + (z_max - z_min) * frac;
+        let x: f32 = (dd - nz * z) / nx;
+        let py1: vec3<f32> = vec3<f32>(x, yoff - y_ext, z);
+        let py2: vec3<f32> = vec3<f32>(x, yoff + y_ext, z);
+        let proj1: vec2<f32> = project(py1);
+        let proj2: vec2<f32> = project(py2);
+        let dline: f32 = sd_segment(uv, proj1, proj2);
+        min_d = min(min_d, dline);
+    }
+
+    // Vertical lines (fixed y slices)
+    let num_v: u32 = 18u;
+    let y_min: f32 = yoff - 1.9;
+    let y_max: f32 = yoff + 1.9;
+    for (var j: u32 = 0u; j < num_v; j = j + 1u) {
+        let frac: f32 = f32(j) / f32(num_v - 1u);
+        let yy: f32 = y_min + (y_max - y_min) * frac;
+        let z1: f32 = -2.6;
+        let z2: f32 = 2.6;
+        let x1: f32 = (dd - nz * z1) / nx;
+        let x2: f32 = (dd - nz * z2) / nx;
+        let pv1: vec3<f32> = vec3<f32>(x1, yy, z1);
+        let pv2: vec3<f32> = vec3<f32>(x2, yy, z2);
+        let proj1: vec2<f32> = project(pv1);
+        let proj2: vec2<f32> = project(pv2);
+        let dline: f32 = sd_segment(uv, proj1, proj2);
+        min_d = min(min_d, dline);
+    }
+
+    return min_d;
+}
+
+fn curve_segments(uv: vec2<f32>, nx: f32, nz: f32, dd: f32, yoff: f32) -> f32 {
+    var min_d: f32 = 1e20;
+    let num_steps: u32 = 140u;
+    var prev1: vec2<f32> = vec2<f32>(0.0);
+    var prev2: vec2<f32> = vec2<f32>(0.0);
+    var first: bool = true;
+    let z_min: f32 = -3.2;
+    let z_max: f32 = 3.2;
+    for (var i: u32 = 0u; i <= num_steps; i = i + 1u) {
+        let frac: f32 = f32(i) / f32(num_steps);
+        let z: f32 = z_min + (z_max - z_min) * frac;
+        let x: f32 = (dd - nz * z) / nx;
+        let r_sq: f32 = (z * TAN_ALPHA) * (z * TAN_ALPHA);
+        let x_sq: f32 = x * x;
+        let dy_sq: f32 = r_sq - x_sq;
+        if (dy_sq > 0.001) {
+            let dy: f32 = sqrt(dy_sq);
+            let curr1: vec3<f32> = vec3<f32>(x, yoff + dy, z);
+            let curr2: vec3<f32> = vec3<f32>(x, yoff - dy, z);
+            let proj1: vec2<f32> = project(curr1);
+            let proj2: vec2<f32> = project(curr2);
+            if (!first) {
+                let d1: f32 = sd_segment(uv, prev1, proj1);
+                let d2: f32 = sd_segment(uv, prev2, proj2);
+                min_d = min(min_d, min(d1, d2));
+            }
+            prev1 = proj1;
+            prev2 = proj2;
+            first = false;
+        } else {
+            first = true;
+        }
+    }
+    return min_d;
+}

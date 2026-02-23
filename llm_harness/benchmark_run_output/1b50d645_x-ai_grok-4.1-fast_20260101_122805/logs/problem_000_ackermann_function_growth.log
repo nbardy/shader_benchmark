@@ -1,0 +1,52 @@
+2026-01-01 12:28:05.545 [INFO] Logger initialized for problem 0: ackermann_function_growth
+2026-01-01 12:28:05.545 [INFO] ========== PROBLEM START ==========
+2026-01-01 12:28:05.545 [INFO] Index: 0
+2026-01-01 12:28:05.545 [INFO] Name: ackermann_function_growth
+2026-01-01 12:28:05.545 [INFO] ---------- STAGE START: GENERATE ----------
+2026-01-01 12:28:05.545 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2026-01-01 12:28:05.546 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/1b50d645_x-ai_grok-4.1-fast_20260101_122805/checkpoints/problem_000.json
+2026-01-01 12:28:05.546 [INFO] Loading request prompt
+2026-01-01 12:28:05.546 [INFO] API call: LLM generation model=x-ai/grok-4.1-fast, language=wgsl
+2026-01-01 12:34:43.151 [INFO] API response: LLM generation - success, size=3983 bytes
+2026-01-01 12:34:43.152 [INFO] Parsing shader response
+2026-01-01 12:34:43.153 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2026-01-01 12:34:43.157 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/1b50d645_x-ai_grok-4.1-fast_20260101_122805/checkpoints/problem_000.json
+2026-01-01 12:34:43.157 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2026-01-01 12:34:43.159 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2026-01-01 12:34:43.161 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/1b50d645_x-ai_grok-4.1-fast_20260101_122805/checkpoints/problem_000.json
+2026-01-01 12:34:43.161 [INFO] Attempting to save checkpoint: stage=compile, status=complete
+2026-01-01 12:34:43.163 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/1b50d645_x-ai_grok-4.1-fast_20260101_122805/checkpoints/problem_000.json
+2026-01-01 12:34:43.163 [INFO] Attempting to save checkpoint: stage=render, status=in_progress
+2026-01-01 12:34:43.164 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/1b50d645_x-ai_grok-4.1-fast_20260101_122805/checkpoints/problem_000.json
+2026-01-01 12:45:25.909 [INFO] Attempting to save checkpoint: stage=render, status=failed
+2026-01-01 12:45:25.910 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/1b50d645_x-ai_grok-4.1-fast_20260101_122805/checkpoints/problem_000.json
+2026-01-01 12:45:25.910 [ERROR] EXCEPTION in run_single_problem:
+2026-01-01 12:45:25.910 [ERROR]   Type: RuntimeError
+2026-01-01 12:45:25.910 [ERROR]   Message: Shader execution still failing after repair: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: invalid left-hand side of assignment
+   ┌─ wgsl:61:9
+   │
+61 │         color.rgb = axis_color;
+   │         ^^^^^^^^^ cannot assign to this expression
+   │
+   = note: WGSL does not support assignments t
+2026-01-01 12:45:25.910 [ERROR]   Traceback:
+2026-01-01 12:45:25.911 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 386, in run_single_problem
+    result_image = await test_runner.render_shader(test_folder)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-01-01 12:45:25.911 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_runner.py", line 277, in render_shader
+    return await self.render_shader_wgpu(test_folder)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-01-01 12:45:25.912 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_runner.py", line 369, in render_shader_wgpu
+    raise RuntimeError(
+        f"Shader execution still failing after repair: {result.stderr[:500]}"
+    )
+2026-01-01 12:45:25.912 [INFO] ========== PROBLEM END: FAILED ==========
+2026-01-01 12:45:25.912 [INFO] Execution time: 1040.36s

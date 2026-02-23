@@ -1,0 +1,32 @@
+{
+  "problem_index": 4,
+  "problem_name": "archimedean_spiral_galaxy",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T13:57:38.580722",
+      "data": {
+        "shaders": [
+          "spiral_galaxy.wgsl"
+        ],
+        "llm_response_len": 11213
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T13:57:38.583611",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/results/004_archimedean_spiral_galaxy"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-12-29T13:59:46.878978",
+      "data": {
+        "error": "Shader execution failed: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader validation error: \n\n\n    Type [6] '' is invalid\n    Using `u64` values requires the `naga::valid::Capabilities::SHADER_INT64` flag\n\n\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backt"
+      }
+    }
+  },
+  "created": "2025-12-29T13:57:10.672572",
+  "last_updated": "2025-12-29T13:59:46.878984"
+}

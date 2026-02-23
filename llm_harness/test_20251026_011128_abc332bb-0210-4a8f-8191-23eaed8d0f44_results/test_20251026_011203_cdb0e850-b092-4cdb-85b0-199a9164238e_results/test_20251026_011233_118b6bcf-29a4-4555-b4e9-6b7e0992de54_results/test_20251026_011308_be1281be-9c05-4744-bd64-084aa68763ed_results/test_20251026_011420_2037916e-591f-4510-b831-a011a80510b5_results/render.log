@@ -1,0 +1,27 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_011128_abc332bb-0210-4a8f-8191-23eaed8d0f44_results/test_20251026_011203_cdb0e850-b092-4cdb-85b0-199a9164238e_results/test_20251026_011233_118b6bcf-29a4-4555-b4e9-6b7e0992de54_results/test_20251026_011308_be1281be-9c05-4744-bd64-084aa68763ed_results/test_20251026_011420_2037916e-591f-4510-b831-a011a80510b5_results/shaders/barbell.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_011128_abc332bb-0210-4a8f-8191-23eaed8d0f44_results/test_20251026_011203_cdb0e850-b092-4cdb-85b0-199a9164238e_results/test_20251026_011233_118b6bcf-29a4-4555-b4e9-6b7e0992de54_results/test_20251026_011308_be1281be-9c05-4744-bd64-084aa68763ed_results/test_20251026_011420_2037916e-591f-4510-b831-a011a80510b5_results/artifacts/result.png
+Return code: 101
+
+=== STDOUT ===
+(empty)
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: name `target` is a reserved keyword
+    ┌─ wgsl:113:9
+    │
+113 │     let target = rotate_z(rotate_y(vec3<f32>(0.0, 0.0, 0.0), cam_angle_y), cam_angle_z);
+    │         ^^^^^^ definition of `target`
+
+
+    name `target` is a reserved keyword
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

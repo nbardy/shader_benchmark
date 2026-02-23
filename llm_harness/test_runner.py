@@ -46,16 +46,25 @@ from pathlib import Path
 from typing import Dict, Tuple
 from error_handler import use_safe, save_subprocess_output
 from shader_parser import ShaderParser, WGSLRepair
+from language_specs import ShaderLanguageSpec, ShadertoySpec
 
 class TestRunner:
-    def __init__(self, compile_semaphore=None, render_semaphore=None):
+    def __init__(self, compile_semaphore=None, render_semaphore=None, language_spec: ShaderLanguageSpec = None):
         # CRITICAL FIX: Use absolute path based on script location, not relative to CWD
         # This ensures shader_harness directory is found regardless of where the script is invoked from
         script_dir = Path(__file__).parent.absolute()
         self.shader_harness_path = script_dir.parent / "shader_harness"
+
+        # INFINITE LOOP FIX: Store base directory for test folders to prevent nesting
+        # Test folders should always be created in llm_harness/, not relative to CWD
+        self.test_base_dir = script_dir
+
         # Pipeline stage semaphores for resource management
         self.compile_semaphore = compile_semaphore or asyncio.Semaphore(os.cpu_count() or 8)
         self.render_semaphore = render_semaphore or asyncio.Semaphore(4)
+
+        # Language specification (determines rendering backend)
+        self.language_spec = language_spec
 
         # PRE-BUILD FIX: Store path to pre-built shader-bench binary
         # This binary is built ONCE at initialization, not per-problem
@@ -120,10 +129,18 @@ class TestRunner:
                 os.chdir(original_cwd)
 
     def create_test_folder(self) -> Path:
-        """Create a unique test folder with timestamp and UUID for this run"""
+        """
+        Create a unique test folder with timestamp and UUID for this run.
+
+        INFINITE LOOP FIX: Test folders are always created in self.test_base_dir
+        (the llm_harness directory), not relative to the current working directory.
+        This prevents nested test directories when render_shader_wgpu() does os.chdir().
+        """
         test_uuid = str(uuid.uuid4())
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        test_folder = Path(f"test_{timestamp}_{test_uuid}_results").resolve()  # Always return absolute path
+
+        # CRITICAL: Create test folder in fixed base directory, not CWD
+        test_folder = (self.test_base_dir / f"test_{timestamp}_{test_uuid}_results").resolve()
         test_folder.mkdir(exist_ok=True)
 
         # Create artifacts subfolder for preserving all outputs
@@ -140,8 +157,8 @@ class TestRunner:
         PRE-BUILD FIX: No longer copies Cargo.toml or main.rs since we use pre-built binary.
         We only need to write the LLM-generated shader files to the test folder.
 
-        CLEANUP FIX: Automatically remove duplicate Params struct definitions from WGSL shaders
-        to prevent "redefinition of Params" compilation errors.
+        COMPILER-ERROR-DRIVEN REPAIR: Error repairs are now applied during render phase
+        based on actual compiler output, not predictive linting.
 
         Args:
             test_folder: Path to test results folder
@@ -154,37 +171,9 @@ class TestRunner:
         # Create shaders subdirectory
         (test_folder / "shaders").mkdir(exist_ok=True)
 
-        # Initialize parser and linting/repair tools
-        parser = ShaderParser()
-        linter = WGSLLinter()
-        repairman = WGSLRepair()
-
-        # Track repairs applied for diagnostics
-        all_repairs = {}
-
         # Write shader files (these will be executed by pre-built binary)
+        # Repairs are applied during render phase based on actual compiler errors
         for filename, content in shaders.items():
-            # Apply WGSL lint+repair if it's a WGSL shader
-            if filename.endswith('.wgsl'):
-                # LINT PHASE: Detect compilation issues
-                lint_errors = linter.lint(content)
-
-                # REPAIR PHASE: Fix detected issues
-                if lint_errors:
-                    original_content = content
-                    content, repairs = repairman.repair_all(content, lint_errors)
-                    all_repairs[filename] = {
-                        'errors_found': len(lint_errors),
-                        'repairs_applied': repairs,
-                        'error_list': [(e.error_type, e.message) for e in lint_errors]
-                    }
-
-                    # Log repairs for debugging
-                    if repairs:
-                        print(f"\n  {filename}: Repairs applied:")
-                        for error_type, count in repairs.items():
-                            print(f"    - {error_type}: {count} fix(es)")
-
             with open(test_folder / "shaders" / filename, 'w') as f:
                 f.write(content)
 
@@ -193,16 +182,8 @@ class TestRunner:
         with open(test_folder / "llm_generated_main_rs_reference.txt", 'w') as f:
             f.write(main_rs)
 
-        # Save lint+repair report
-        if all_repairs:
-            import json
-            with open(test_folder / "lint_repair_report.json", 'w') as f:
-                json.dump(all_repairs, f, indent=2)
-
         print(f"Setup test files in {test_folder}")
         print(f"Created {len(shaders)} shader files: {list(shaders.keys())}")
-        if all_repairs:
-            print(f"Applied lint+repair fixes to {len(all_repairs)} shader(s)")
         print(f"Saved LLM-generated main.rs as reference (not compiled)")
     
     async def compile_shader(self, test_folder: Path) -> Tuple[bool, str]:
@@ -217,9 +198,87 @@ class TestRunner:
         # No compilation needed - using pre-built binary
         return True, "Using pre-built binary"
 
+    async def render_shader_shadertoy(self, test_folder: Path) -> Path:
+        """
+        Stage 2 (Shadertoy): Execute Shadertoy shader using WebGL runtime.
+
+        Uses Playwright-based WebGL execution for Shadertoy-format shaders.
+        This bypasses the WGPU/Rust shader_harness and runs directly in browser.
+
+        Args:
+            test_folder: Path to test folder containing shaders/ subdirectory
+
+        Returns: Absolute path to generated result.png
+        """
+        async with self.render_semaphore:
+            try:
+                # Import Shadertoy runtime
+                from shadertoy_runtime import ShadertoyRuntime
+
+                # Ensure artifacts directory exists
+                artifacts_dir = test_folder / "artifacts"
+                artifacts_dir.mkdir(exist_ok=True)
+
+                # Find the main shader file
+                shader_files = list((test_folder / "shaders").glob("*.glsl"))
+                if not shader_files:
+                    raise FileNotFoundError("No .glsl shader files found in shaders/ directory")
+
+                main_shader_path = shader_files[0]
+
+                # Read shader code
+                with open(main_shader_path, 'r') as f:
+                    shader_code = f.read()
+
+                # Render using Shadertoy runtime
+                output_path = artifacts_dir / "result.png"
+                async with ShadertoyRuntime() as runtime:
+                    success, error = await runtime.render_shader(
+                        shader_code,
+                        output_path,
+                        time=0.0,  # Static frame at t=0
+                        resolution=(1600, 1600)
+                    )
+
+                    if not success:
+                        raise RuntimeError(f"Shadertoy rendering failed: {error}")
+
+                # Check output was generated
+                if not output_path.exists():
+                    raise FileNotFoundError(f"{output_path} not found - Shadertoy rendering failed")
+
+                # Return absolute path
+                return output_path.resolve()
+
+            except ImportError:
+                raise RuntimeError(
+                    "Shadertoy runtime requires Playwright. Install with: "
+                    "pip install playwright && python -m playwright install chromium"
+                )
+
     async def render_shader(self, test_folder: Path) -> Path:
         """
-        Stage 2: Execute pre-built shader binary (GPU-bound).
+        Stage 2: Execute shader (routing to appropriate backend).
+
+        Routes to either:
+        - render_shader_shadertoy() for Shadertoy spec
+        - render_shader_wgpu() for WGSL/standard shaders
+
+        Args:
+            test_folder: Path to test folder containing shaders/ subdirectory
+
+        Returns: Absolute path to generated result.png
+        """
+        # Route to Shadertoy runtime if using Shadertoy spec
+        if self.language_spec and isinstance(self.language_spec, ShadertoySpec):
+            return await self.render_shader_shadertoy(test_folder)
+
+        # Default to WGPU rendering
+        return await self.render_shader_wgpu(test_folder)
+
+    async def render_shader_wgpu(self, test_folder: Path) -> Path:
+        """
+        Stage 2 (WGPU): Execute pre-built shader binary (GPU-bound).
 
         PRE-BUILD FIX: Uses self.shader_bench_binary (pre-built at initialization)
         instead of looking for a binary in the test folder.
@@ -288,7 +347,7 @@ class TestRunner:
                     # COMPILE FAILED: Try to repair based on actual compiler error
                     error_output = result.stderr + result.stdout
                     print(f"\n  ⚠️ Shader execution failed, attempting repair...")
-                    print(f"  Error: {error_output[:200]}")
+                    print(f"  Error message (first 200 chars): {error_output[:200]}")
 
                     # Try repair if we detect a compilable error
                     if self._attempt_repair_and_retry(
@@ -333,11 +392,13 @@ class TestRunner:
 
         repaired = WGSLRepair().repair_from_error(code, error_output)
         if repaired == code:
+            # No repair was possible - error doesn't match known patterns
             return False
 
+        # Repair was successful - write back to file
         with open(shader_path, 'w') as f:
             f.write(repaired)
-        print(f"  ✅ Applied repair")
+        print(f"  ✅ Applied repair - removed duplicate definitions")
         return True
 
     async def run_test(self, test_folder: Path) -> Path:
@@ -364,26 +425,56 @@ class TestRunner:
         result_image = await self.render_shader(test_folder)
         return result_image
     
-    def save_results(self, test_folder: Path, scores: list, execution_success: bool = True):
-        """Save the evaluation results"""
-        # Check for any PNG files, not just result.png
-        png_files = list(test_folder.glob("*.png"))
+    def save_results(self, test_folder: Path, scores: list, execution_success: bool = True,
+                     generation_usage: dict = None, judge_usage: dict = None):
+        """Save the evaluation results including cost data.
+
+        Args:
+            test_folder: Path to test folder
+            scores: List of 5 scores
+            execution_success: Whether execution succeeded
+            generation_usage: Cost data from LLM generation (prompt_tokens, completion_tokens, cost, etc.)
+            judge_usage: Cost data from LLM judging (prompt_tokens, completion_tokens, cost, etc.)
+        """
+        # CRITICAL: Check for PNG files in BOTH root and artifacts/ subdirectory
+        # Why both locations?
+        # - Legacy single-problem runs: result.png in root directory
+        # - New multi-problem runs: result.png in artifacts/ subdirectory
+        # If directory structure changes, update BOTH glob patterns here
+        # This flag is used by report_renderer.py to determine if image embedding should occur
+        png_files = list(test_folder.glob("*.png")) + list(test_folder.glob("artifacts/*.png"))
         has_image = len(png_files) > 0
-        
+
+        # Calculate total cost
+        gen_cost = generation_usage.get('cost', 0) if generation_usage else 0
+        judge_cost = judge_usage.get('cost', 0) if judge_usage else 0
+        total_cost = gen_cost + judge_cost
+
         results = {
             "scores": scores,
             "test_folder": str(test_folder),
             "status": "completed" if execution_success else "failed",
             "execution_success": execution_success,
-            "has_image": has_image
+            "has_image": has_image,
+            "cost": {
+                "generation": gen_cost,
+                "judge": judge_cost,
+                "total": total_cost
+            }
         }
-        
+
+        # Add detailed usage if available
+        if generation_usage:
+            results["generation_usage"] = generation_usage
+        if judge_usage:
+            results["judge_usage"] = judge_usage
+
         results_file = test_folder / "results.json"
         import json
         with open(results_file, 'w') as f:
             json.dump(results, f, indent=2)
-        
-        print(f"Results saved to {results_file}")
+
+        print(f"Results saved to {results_file} (cost: ${total_cost:.4f})")
     
     def cleanup_test_folder(self, test_folder: Path):
         """Clean up the test folder (optional)"""

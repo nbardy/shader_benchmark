@@ -1,0 +1,32 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2026-01-01T12:34:43.154862",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 3983
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2026-01-01T12:34:43.161422",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/1b50d645_x-ai_grok-4.1-fast_20260101_122805/results/000_ackermann_function_growth"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2026-01-01T12:45:25.910190",
+      "data": {
+        "error": "Shader execution still failing after repair: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader 'user_shader' parsing error: invalid left-hand side of assignment\n   \u250c\u2500 wgsl:61:9\n   \u2502\n61 \u2502         color.rgb = axis_color;\n   \u2502         ^^^^^^^^^ cannot assign to this expression\n   \u2502\n "
+      }
+    }
+  },
+  "created": "2026-01-01T12:28:05.545808",
+  "last_updated": "2026-01-01T12:45:25.910195"
+}

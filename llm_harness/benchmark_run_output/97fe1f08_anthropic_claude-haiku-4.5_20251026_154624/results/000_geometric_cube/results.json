@@ -1,0 +1,13 @@
+{
+  "scores": [
+    28,
+    78,
+    33,
+    62,
+    32
+  ],
+  "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/97fe1f08_anthropic_claude-haiku-4.5_20251026_154624/results/000_geometric_cube",
+  "status": "completed",
+  "execution_success": true,
+  "has_image": true
+}

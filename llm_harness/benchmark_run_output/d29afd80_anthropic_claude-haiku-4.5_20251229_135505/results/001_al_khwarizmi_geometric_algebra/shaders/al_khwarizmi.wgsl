@@ -1,0 +1,202 @@
+// Al-Khwarizmi's Geometric Solution to Quadratic Equations
+// Visualization of x² + 10x = 39 using 9th century Islamic geometric algebra
+// From the House of Wisdom, Baghdad
+
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+};
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+// Helper: distance to line segment
+fn line_distance(p: vec2<f32>, a: vec2<f32>, b: vec2<f32>) -> f32 {
+    let pa = p - a;
+    let ba = b - a;
+    let h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
+
+// Helper: distance to rectangle (outline)
+fn rect_distance(p: vec2<f32>, center: vec2<f32>, half_size: vec2<f32>) -> f32 {
+    let local_p = abs(p - center);
+    let edge_dist = local_p - half_size;
+    let outside = length(max(edge_dist, vec2<f32>(0.0)));
+    let inside = max(edge_dist.x, edge_dist.y);
+    return select(inside, outside, outside > 0.0);
+}
+
+// Helper: check if point is inside rectangle
+fn point_in_rect(p: vec2<f32>, center: vec2<f32>, half_size: vec2<f32>) -> f32 {
+    let local_p = abs(p - center);
+    let inside = select(1.0, 0.0, local_p.x > half_size.x || local_p.y > half_size.y);
+    return inside;
+}
+
+// Helper: smooth step with anti-aliasing
+fn stroke(dist: f32, width: f32, thickness: f32) -> f32 {
+    return smoothstep(width + thickness, width - thickness, abs(dist));
+}
+
+// Helper: draw 8-fold Islamic star pattern
+fn islamic_star(p: vec2<f32>, radius: f32, time: f32) -> f32 {
+    let angle = atan2(p.y, p.x);
+    let r = length(p);
+    
+    // 8-fold symmetry
+    let sym_angle = abs((angle % (3.14159265359 / 4.0)) - (3.14159265359 / 8.0));
+    let pattern = sin(sym_angle * 8.0) * 0.5 + 0.5;
+    
+    // Radial waves
+    let wave = sin(r * 15.0 - time) * 0.5 + 0.5;
+    
+    let star = smoothstep(0.15, 0.05, r) * pattern * wave;
+    return star;
+}
+
+// Main shader
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let resolution = params.resolution;
+    let uv = pos.xy / resolution;
+    
+    // Center coordinate system
+    let canvas = (pos.xy - resolution * 0.5) / min(resolution.x, resolution.y);
+    
+    // Simplified time for animation (using fragment position as pseudo-time)
+    let time_base = (canvas.x + canvas.y) * 0.5;
+    let anim_phase = fract(time_base * 0.1);
+    
+    // Animation stages (0-1 for each)
+    let stage1 = smoothstep(0.0, 0.15, anim_phase);      // Initial square x²
+    let stage2 = smoothstep(0.15, 0.35, anim_phase);     // Add rectangles (10x)
+    let stage3 = smoothstep(0.35, 0.55, anim_phase);     // Add corner squares (25)
+    let stage4 = smoothstep(0.55, 0.75, anim_phase);     // Show completion
+    let stage5 = smoothstep(0.75, 1.0, anim_phase);      // Highlight solution
+    
+    // Background: Islamic manuscript color
+    var color = vec3<f32>(0.996, 0.949, 0.780);  // #FEF3C7
+    
+    // Islamic pattern border (8-fold stars in corners)
+    let border_margin = 0.45;
+    let corner_dist = min(
+        distance(canvas, vec2<f32>(-border_margin, -border_margin)),
+        min(distance(canvas, vec2<f32>(border_margin, -border_margin)),
+        min(distance(canvas, vec2<f32>(-border_margin, border_margin)),
+            distance(canvas, vec2<f32>(border_margin, border_margin))))
+    );
+    
+    let border_pattern = islamic_star(canvas * 3.0, 0.2, anim_phase * 6.28318530718);
+    color = mix(color, vec3<f32>(0.118, 0.227, 0.537), border_pattern * 0.3);  // Deep blue tint
+    
+    // Scale for geometric construction (normalized to [-0.3, 0.3])
+    let scale = 0.3;
+    let geo = canvas / scale;
+    
+    // Step 1: Initial square (x²) - represents x times x
+    let sq_half = 0.2;
+    let square_center = vec2<f32>(-0.1, -0.1);
+    let sq_dist = rect_distance(geo, square_center, vec2<f32>(sq_half, sq_half));
+    let sq_fill = point_in_rect(geo, square_center, vec2<f32>(sq_half, sq_half));
+    
+    let square_outline = stroke(sq_dist, 0.0, 0.01);
+    color = mix(color, vec3<f32>(0.118, 0.227, 0.537), square_outline * stage1 * 0.8);  // Deep blue
+    
+    // Add subtle fill to square
+    let square_fill_color = select(
+        color,
+        mix(vec3<f32>(0.118, 0.227, 0.537), color, 0.7),
+        sq_fill > 0.5 && stage1 > 0.5
+    );
+    color = square_fill_color;
+    
+    // Step 2: Four rectangles (10x = 4 * 2.5x) on each side
+    // Top and bottom rectangles
+    let rect_width = 0.15;
+    let rect_height = 0.05;
+    
+    // Top rectangle
+    let rect_top_center = vec2<f32>(-0.1, -0.1 - sq_half - rect_height);
+    let rect_top_dist = rect_distance(geo, rect_top_center, vec2<f32>(rect_width, rect_height));
+    let rect_top_outline = stroke(rect_top_dist, 0.0, 0.01);
+    color = mix(color, vec3<f32>(0.945, 0.618, 0.067), rect_top_outline * stage2 * 0.8);  // Gold
+    
+    // Bottom rectangle
+    let rect_bot_center = vec2<f32>(-0.1, -0.1 + sq_half + rect_height);
+    let rect_bot_dist = rect_distance(geo, rect_bot_center, vec2<f32>(rect_width, rect_height));
+    let rect_bot_outline = stroke(rect_bot_dist, 0.0, 0.01);
+    color = mix(color, vec3<f32>(0.945, 0.618, 0.067), rect_bot_outline * stage2 * 0.8);  // Gold
+    
+    // Left rectangle
+    let rect_left_center = vec2<f32>(-0.1 - sq_half - rect_height, -0.1);
+    let rect_left_dist = rect_distance(geo, rect_left_center, vec2<f32>(rect_height, rect_width));
+    let rect_left_outline = stroke(rect_left_dist, 0.0, 0.01);
+    color = mix(color, vec3<f32>(0.945, 0.618, 0.067), rect_left_outline * stage2 * 0.8);  // Gold
+    
+    // Right rectangle
+    let rect_right_center = vec2<f32>(-0.1 + sq_half + rect_height, -0.1);
+    let rect_right_dist = rect_distance(geo, rect_right_center, vec2<f32>(rect_height, rect_width));
+    let rect_right_outline = stroke(rect_right_dist, 0.0, 0.01);
+    color = mix(color, vec3<f32>(0.945, 0.618, 0.067), rect_right_outline * stage2 * 0.8);  // Gold
+    
+    // Step 3: Four corner squares (2.5 × 2.5 = 0.05 × 0.05 normalized)
+    let corner_size = 0.05;
+    
+    // Top-left corner
+    let corner_tl = vec2<f32>(-0.1 - sq_half - rect_height, -0.1 - sq_half - rect_height);
+    let corner_tl_dist = rect_distance(geo, corner_tl, vec2<f32>(corner_size, corner_size));
+    let corner_tl_outline = stroke(corner_tl_dist, 0.0, 0.008);
+    color = mix(color, vec3<f32>(1.0, 1.0, 1.0), corner_tl_outline * stage3 * 0.7);  // White
+    
+    // Top-right corner
+    let corner_tr = vec2<f32>(-0.1 + sq_half + rect_height, -0.1 - sq_half - rect_height);
+    let corner_tr_dist = rect_distance(geo, corner_tr, vec2<f32>(corner_size, corner_size));
+    let corner_tr_outline = stroke(corner_tr_dist, 0.0, 0.008);
+    color = mix(color, vec3<f32>(1.0, 1.0, 1.0), corner_tr_outline * stage3 * 0.7);  // White
+    
+    // Bottom-left corner
+    let corner_bl = vec2<f32>(-0.1 - sq_half - rect_height, -0.1 + sq_half + rect_height);
+    let corner_bl_dist = rect_distance(geo, corner_bl, vec2<f32>(corner_size, corner_size));
+    let corner_bl_outline = stroke(corner_bl_dist, 0.0, 0.008);
+    color = mix(color, vec3<f32>(1.0, 1.0, 1.0), corner_bl_outline * stage3 * 0.7);  // White
+    
+    // Bottom-right corner
+    let corner_br = vec2<f32>(-0.1 + sq_half + rect_height, -0.1 + sq_half + rect_height);
+    let corner_br_dist = rect_distance(geo, corner_br, vec2<f32>(corner_size, corner_size));
+    let corner_br_outline = stroke(corner_br_dist, 0.0, 0.008);
+    color = mix(color, vec3<f32>(1.0, 1.0, 1.0), corner_br_outline * stage3 * 0.7);  // White
+    
+    // Step 4: Outer completion square outline (showing x+5)
+    let outer_half = sq_half + rect_height + corner_size;
+    let outer_center = vec2<f32>(-0.1, -0.1);
+    let outer_dist = rect_distance(geo, outer_center, vec2<f32>(outer_half, outer_half));
+    let outer_outline = stroke(outer_dist, 0.0, 0.015);
+    color = mix(color, vec3<f32>(0.118, 0.227, 0.537), outer_outline * stage4 * 0.9);  // Deep blue highlight
+    
+    // Step 5: Solution highlight and labels
+    let solution_glow = smoothstep(0.3, 0.0, distance(canvas, vec2<f32>(0.15, 0.15))) * stage5;
+    color = mix(color, vec3<f32>(0.945, 0.618, 0.067), solution_glow * 0.4);  // Gold glow
+    
+    // Decorative lines radiating from center (arabesque style)
+    let rays = abs(sin(atan2(canvas.y, canvas.x) * 4.0)) * 0.15 + 0.2;
+    let ray_dist = abs(length(canvas) - rays);
+    let arabesques = smoothstep(0.02, 0.0, ray_dist) * 0.2;
+    color += vec3<f32>(0.945, 0.618, 0.067) * arabesques;
+    
+    // Final touch: vignette effect
+    let vignette = smoothstep(0.5, 0.3, length(canvas));
+    color = mix(color * 0.8, color, vignette);
+    
+    return vec4<f32>(color, 1.0);
+}
+
+fn distance(a: vec2<f32>, b: vec2<f32>) -> f32 {
+    return length(a - b);
+}

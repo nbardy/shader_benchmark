@@ -1,0 +1,15 @@
+{
+  "problem_index": 1,
+  "problem_name": "al_khwarizmi_geometric_algebra",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-10-25T14:08:44.534107",
+      "data": {
+        "error": "cannot access local variable 'content' where it is not associated with a value"
+      }
+    }
+  },
+  "created": "2025-10-25T14:08:22.646889",
+  "last_updated": "2025-10-25T14:08:44.534111"
+}

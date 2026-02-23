@@ -122,7 +122,7 @@ class ExperimentRunner:
 
     def __init__(self,
                  model: str = "anthropic/claude-3.5-sonnet-20241022",
-                 judge_model: str = "anthropic/claude-3.5-haiku",
+                 judge_model: str = "anthropic/claude-opus-4.5",
                  max_parallel: int = 2,
                  results_dir: str = "experiment_results"):
         """Initialize experiment runner
@@ -489,7 +489,7 @@ async def main():
     parser.add_argument("--experiment-dir", type=str, help="Directory containing all experiment configs")
     parser.add_argument("--model", type=str, default="anthropic/claude-3.5-sonnet-20241022",
                        help="LLM model for shader generation")
-    parser.add_argument("--judge-model", type=str, default="anthropic/claude-3.5-haiku",
+    parser.add_argument("--judge-model", type=str, default="anthropic/claude-opus-4.5",
                        help="LLM model for evaluation")
     parser.add_argument("--max-parallel", type=int, default=2,
                        help="Maximum parallel problem executions")

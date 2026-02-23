@@ -1,0 +1,224 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Domain Coloring Implementation:
+- Correct domain coloring with continuous hue based on complex argument
+- Accurate opacity mapping from complex magnitude |f(z)|
+- Proper representation of singularities with appropriate mathematical symmetry
+- Branch cuts visible and correctly positioned as special glass arrangements
+- Mathematical precision in complex function visualization and analysis
+
+Complex Function Visualization:
+- Singularities represented as decorative rose windows with correct symmetry
+- Lead came positioned at complex magnitude contour lines |f(z)| = 2ⁿ
+- Accurate mathematical representation of complex analysis concepts
+- Proper handling of complex function discontinuities and special points
+- All mathematical elements correctly integrated into visual presentation
+
+**S4: Visual Implementation Section**  
+Glass Craftsmanship and Materials:
+- Realistic glass materials with varying thickness and authentic color depth
+- Lead came properly separating glass sections at mathematical contour lines
+- Glass imperfections (bubbles, waves) strategically placed near singular points
+- Professional stained glass craftsmanship with authentic structural details
+- Realistic material properties enhancing mathematical visualization
+
+Lighting and Atmospheric Effects:
+- Caustic light patterns projected onto cathedral floor with physical accuracy
+- Residue-based light intensity variation corresponding to mathematical properties
+- Proper transparency behavior showing complex function characteristics
+- Dust motes in light beams creating authentic cathedral atmosphere
+- Professional lighting setup with window as primary illumination source
+
+**S5: Completeness & Specifications Section**
+Required Architectural Elements:
+- Gothic pointed arch window frame constructed in authentic stone materials
+- Dark cathedral interior setting with appropriate atmospheric mood
+- Stone textures and architectural details meeting Gothic style requirements
+- Cathedral atmosphere with proper scale and architectural proportions
+- Complete architectural context supporting mathematical visualization
+
+Integration and Artistic Quality:
+- Mathematical and aesthetic elements blend seamlessly throughout composition
+- Complex analysis concepts clearly visualized through stained glass metaphor
+- All specified visual elements properly implemented and integrated
+- Professional artistic quality meeting both mathematical and aesthetic standards
+- Complete adherence to complex analysis stained glass visualization requirements
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+**Objective**
+Render **complex analysis** concepts as **illuminated stained glass windows**, where analytic functions create light patterns and singularities form glass structures.
+
+**Mathematical recipe**
+
+1. Base function: f(z) = (z² - 1)/(z² + 1) with branch cuts
+2. Domain coloring enhanced for stained glass:
+   - Magnitude |f(z)| determines glass opacity (dark → transparent)
+   - Argument arg(f(z)) sets hue via continuous color wheel
+   - Add lead came at |f(z)| = 2ⁿ contours (n integer)
+3. Singularities become ornate rose windows:
+   - Simple poles: radial symmetry with n petals for order n
+   - Essential singularities: fractal Celtic knot patterns
+   - Branch points: spiral glass arrangements
+4. Conformal mapping properties:
+   - Right angles preserved in lead came intersections
+   - Circles → circles visible in glass piece boundaries
+5. Residue theorem: light intensity at poles proportional to residue
+
+**Styling**
+
+* Gothic cathedral window framework (pointed arch)
+* Realistic glass materials: varying thickness creates color depth
+* Lead came with aged patina and structural bolts
+* Sunlight from behind: caustics project function onto floor
+* Glass imperfections: bubbles, waves near singularities
+* Dust motes visible in light beams
+* Stone window frame with carved mathematical symbols
+* View from inside cathedral, darkened interior
+* Camera at (0, 0, -10), looking straight at window; FOV 40°
+* Resolution 2400 × 2400 px, ray-traced lighting
+
+**Deliverable** Single PNG showing complex function as stained glass masterpiece
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Detailed Assessment of Shader-Generated Image
+
+## Examination Against Requirements
+
+This image presents a smooth color gradient with curved lead came lines, but falls significantly short of the comprehensive mathematical visualization requirements specified in the problem.
+
+---
+
+## S1: Problem Accuracy (Generic)
+
+**Score Reasoning:**
+The image shows domain coloring with hue variation and some lead came lines, but lacks critical mathematical elements:
+- No visible singularities or rose window structures for poles/branch points at z = ±i
+- Missing branch cut visualization for the specified function f(z) = (z² - 1)/(z² + 1)
+- Lead came lines present but not clearly positioned at |f(z)| = 2ⁿ contours
+- No evidence of conformal mapping properties or residue theorem implementation
+- The mathematical structure of the function is not discernible from the visualization
+
+The visualization captures only the most basic aspect (hue-based domain coloring) while omitting most mathematical requirements.
+
+---
+
+## S2: Visual Quality (Generic)
+
+**Score Reasoning:**
+- **Positive aspects:** Smooth gradients, clean anti-aliasing, pleasing color transitions
+- **Negative aspects:** 
+  - Lacks structural detail and complexity expected at 2400×2400 resolution
+  - No glass material properties, no realistic reflections or refraction
+  - No atmospheric effects (caustics, dust motes, light dispersion)
+  - Minimal visual complexity; appears simplified/abstracted
+  - No architectural framing or cathedral context
+  - The presentation is more graphic design than photorealistic rendering
+
+The image is technically smooth but aesthetically fails to deliver the "masterpiece" quality promised.
+
+---
+
+## S3: Mathematical Accuracy Section
+
+### Domain Coloring Implementation:
+- ✓ Hue varies continuously (appears to follow a color wheel)
+- ✗ Opacity/magnitude mapping not evident or incorrect
+- ✗ No visible singularities at z = ±i with appropriate symmetry
+- ✗ Branch cuts not clearly visible or distinguished
+- **Rating: 25/100** - Only basic hue mapping present; missing all sophisticated mathematical elements
+
+### Complex Function Visualization:
+- ✗ No rose windows at singularities
+- ✗ No visible spiral arrangements at branch points
+- ✗ Lead came lines present but not mathematically positioned
+- ✗ No demonstration of conformal mapping preservation
+- ✗ No residue-based intensity variations
+- **Rating: 15/100** - Function characteristics completely absent from visualization
+
+---
+
+## S4: Visual Implementation Section
+
+### Glass Craftsmanship and Materials:
+- ✗ No realistic glass materials or thickness variation
+- ✗ No color depth from material properties
+- ✗ Lead came visible but lacks aged patina, bolts, structural details
+- ✗ No glass imperfections (bubbles, waves)
+- ✗ Appears as flat digital rendering, not stained glass
+- **Rating: 20/100** - Minimal material realism
+
+### Lighting and Atmospheric Effects:
+- ✗ No caustic patterns on cathedral floor
+- ✗ No residue-based light intensity variation
+- ✗ No transparency behavior showing function characteristics
+- ✗ No dust motes or atmospheric depth
+- ✗ Appears evenly lit with no directional light from behind
+- ✗ No cathedral atmosphere or environmental context
+- **Rating: 10/100** - Essentially no atmospheric effects implemented
+
+---
+
+## S5: Completeness & Specifications Section
+
+### Required Architectural Elements:
+- ✗ No Gothic pointed arch window frame
+- ✗ No dark cathedral interior
+- ✗ No stone textures or architectural details
+- ✗ No sense of scale or proper proportions
+- ✗ No cathedral context whatsoever
+- **Rating: 5/100** - Completely absent
+
+### Integration and Artistic Quality:
+- ✗ Mathematical and aesthetic elements not blended
+- ✗ Complex analysis concepts not visualized through stained glass metaphor
+- ✗ Most specified visual elements missing
+- ✗ Quality does not meet mathematical requirements
+- ✗ Only partial adherence (basic domain coloring) to specifications
+- **Rating: 10/100** - Severely incomplete
+
+---
+
+## Summary
+
+This image represents an early-stage or simplified interpretation that captures only the most basic domain coloring concept. It entirely omits:
+- Architectural framing and cathedral setting
+- Singularity visualization (rose windows)
+- Branch point/cut representation
+- Realistic glass and material properties
+- Lighting and atmospheric effects
+- Mathematical rigor in contour placement
+- Conformal mapping visualization
+
+The work appears to be a proof-of-concept for hue-based domain coloring rather than a complete stained glass masterpiece visualization.
+
+<scores><S1>22</S1><S2>35</S2><S3>18</S3><S4>15</S4><S5>8</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[22, 35, 18, 15, 8]
+

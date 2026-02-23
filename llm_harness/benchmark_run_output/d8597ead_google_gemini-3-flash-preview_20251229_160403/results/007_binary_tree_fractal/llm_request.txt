@@ -1,0 +1,19 @@
+Grow an organic winter tree suspended in empty space—trunk straight upward, two children per branch, no leaves. Lighting should emphasise delicate twig silhouettes.
+
+Recursive geometry:
+- Trunk segment length = 1, radius = 0.08
+- Each branch splits into two at a 45° angle from parent direction, rotated ±35° about parent axis to avoid planar look
+- Length scale factor 0.7; radius factor 0.6
+- Depth 7 (level 0 trunk → level 7 twigs). Expected segments 2⁷-1 = 127
+
+Implementation notes:
+- Represent branches as tapered cylinders; smooth-join with spherically-blended joints
+- Material – dark-bark (#4b3726), roughness 0.7
+
+Scene & camera:
+- Camera (3,-6,2.5) aiming at origin; FOV 40°
+- Three-point lights: key (3,-5,5), fill (-2,-6,4) 40%, rim (0,0,6) 30%
+- Background gradient sky (zenith #d7ecff → horizon #ffffff)
+
+File: 2400×2400
+Deliverable: Outputs a single image.

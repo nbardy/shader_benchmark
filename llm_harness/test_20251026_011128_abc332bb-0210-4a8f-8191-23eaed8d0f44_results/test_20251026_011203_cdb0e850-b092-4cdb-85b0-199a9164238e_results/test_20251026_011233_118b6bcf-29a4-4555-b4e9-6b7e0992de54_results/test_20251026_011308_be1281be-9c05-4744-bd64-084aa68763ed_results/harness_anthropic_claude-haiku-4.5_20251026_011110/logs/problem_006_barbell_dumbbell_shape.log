@@ -1,0 +1,87 @@
+2025-10-26 01:13:53.363 [INFO] Logger initialized for problem 6: barbell_dumbbell_shape
+2025-10-26 01:13:53.364 [INFO] ========== PROBLEM START ==========
+2025-10-26 01:13:53.364 [INFO] Index: 6
+2025-10-26 01:13:53.364 [INFO] Name: barbell_dumbbell_shape
+2025-10-26 01:13:53.364 [INFO] ---------- STAGE START: GENERATE ----------
+2025-10-26 01:13:53.364 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-10-26 01:13:53.364 [ERROR] Checkpoint save FAILED: stage=generate
+2025-10-26 01:13:53.364 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_011110/checkpoints/problem_006.tmp'
+2025-10-26 01:13:53.364 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 01:13:53.364 [INFO] Loading request prompt
+2025-10-26 01:13:53.364 [INFO] API call: LLM generation model=anthropic/claude-haiku-4.5, language=wgsl
+2025-10-26 01:14:20.824 [INFO] API response: LLM generation - success, size=10155 bytes
+2025-10-26 01:14:20.824 [INFO] Parsing shader response
+2025-10-26 01:14:20.824 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2025-10-26 01:14:20.824 [ERROR] Checkpoint save FAILED: stage=generate
+2025-10-26 01:14:20.824 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_011110/checkpoints/problem_006.tmp'
+2025-10-26 01:14:20.824 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 01:14:20.824 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2025-10-26 01:14:20.825 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2025-10-26 01:14:20.825 [ERROR] Checkpoint save FAILED: stage=compile
+2025-10-26 01:14:20.825 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_011110/checkpoints/problem_006.tmp'
+2025-10-26 01:14:20.825 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 01:14:20.825 [INFO] Attempting to save checkpoint: stage=compile, status=complete
+2025-10-26 01:14:20.825 [ERROR] Checkpoint save FAILED: stage=compile
+2025-10-26 01:14:20.825 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_011110/checkpoints/problem_006.tmp'
+2025-10-26 01:14:20.825 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 01:14:20.825 [INFO] Attempting to save checkpoint: stage=render, status=in_progress
+2025-10-26 01:14:20.825 [ERROR] Checkpoint save FAILED: stage=render
+2025-10-26 01:14:20.825 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_011110/checkpoints/problem_006.tmp'
+2025-10-26 01:14:20.826 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 01:15:38.951 [INFO] Attempting to save checkpoint: stage=render, status=failed
+2025-10-26 01:15:38.952 [ERROR] Checkpoint save FAILED: stage=render
+2025-10-26 01:15:38.952 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_011110/checkpoints/problem_006.tmp'
+2025-10-26 01:15:38.952 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 01:15:38.953 [ERROR] EXCEPTION in run_single_problem:
+2025-10-26 01:15:38.953 [ERROR]   Type: RuntimeError
+2025-10-26 01:15:38.953 [ERROR]   Message: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: name `target` is a reserved keyword
+    ┌─ wgsl:113:9
+    │
+113 │     let target = rotate_z(rotate_y(vec3<f32>(0.0, 0.0, 0.0), cam_angle_y), cam_angle_z);
+    │         ^^^^^^ definition of `target`
+
+
+ 
+2025-10-26 01:15:38.953 [ERROR]   Traceback:
+2025-10-26 01:15:38.954 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 305, in run_single_problem
+    result_image = await test_runner.render_shader(test_folder)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-26 01:15:38.954 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_runner.py", line 264, in render_shader
+    return await self.render_shader_wgpu(test_folder)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-26 01:15:38.954 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_runner.py", line 360, in render_shader_wgpu
+    raise RuntimeError(f"Shader execution failed: {result.stderr[:500]}")
+2025-10-26 01:15:38.954 [INFO] ========== PROBLEM END: FAILED ==========
+2025-10-26 01:15:38.954 [INFO] Execution time: 105.59s

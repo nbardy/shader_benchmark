@@ -1,0 +1,35 @@
+2025-12-30 19:06:04.231 [INFO] Logger initialized for problem 0: ackermann_function_growth
+2025-12-30 19:06:04.231 [INFO] ========== PROBLEM START ==========
+2025-12-30 19:06:04.231 [INFO] Index: 0
+2025-12-30 19:06:04.231 [INFO] Name: ackermann_function_growth
+2025-12-30 19:06:04.231 [INFO] ---------- STAGE START: GENERATE ----------
+2025-12-30 19:06:04.231 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-12-30 19:06:04.231 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/checkpoints/problem_000.json
+2025-12-30 19:06:04.231 [INFO] Loading request prompt
+2025-12-30 19:06:04.232 [INFO] API call: LLM generation model=x-ai/grok-4.1-fast, language=wgsl
+2025-12-30 19:08:07.815 [INFO] API response: LLM generation - success, size=184 bytes
+2025-12-30 19:08:07.816 [INFO] Parsing shader response
+2025-12-30 19:08:07.816 [ERROR] EXCEPTION in generate stage:
+2025-12-30 19:08:07.817 [ERROR]   Type: ValueError
+2025-12-30 19:08:07.817 [ERROR]   Message: No shader files found
+2025-12-30 19:08:07.817 [ERROR]   Traceback:
+2025-12-30 19:08:07.820 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 318, in run_single_problem
+    shaders, main_rs = shader_parser.parse_response(llm_response)
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+2025-12-30 19:08:07.820 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/shader_parser.py", line 222, in parse_response
+    raise ValueError("No shader files found")
+2025-12-30 19:08:07.821 [INFO] Saved failed LLM response to /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/results/000_ackermann_function_growth/llm_response.txt
+2025-12-30 19:08:07.821 [INFO] Attempting to save checkpoint: stage=generate, status=failed
+2025-12-30 19:08:07.823 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/checkpoints/problem_000.json
+2025-12-30 19:08:07.823 [INFO] ---------- STAGE END: GENERATE - FAILED ----------
+2025-12-30 19:08:07.823 [ERROR] EXCEPTION in run_single_problem:
+2025-12-30 19:08:07.823 [ERROR]   Type: ValueError
+2025-12-30 19:08:07.823 [ERROR]   Message: No shader files found
+2025-12-30 19:08:07.823 [ERROR]   Traceback:
+2025-12-30 19:08:07.823 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 318, in run_single_problem
+    shaders, main_rs = shader_parser.parse_response(llm_response)
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+2025-12-30 19:08:07.823 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/shader_parser.py", line 222, in parse_response
+    raise ValueError("No shader files found")
+2025-12-30 19:08:07.824 [INFO] ========== PROBLEM END: FAILED ==========
+2025-12-30 19:08:07.824 [INFO] Execution time: 123.59s

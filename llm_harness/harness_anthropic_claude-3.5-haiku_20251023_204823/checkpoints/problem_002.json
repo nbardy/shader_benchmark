@@ -1,0 +1,25 @@
+{
+  "problem_index": 2,
+  "problem_name": "apollonian_gasket",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-23T20:49:39.789307",
+      "data": {
+        "shaders": [
+          "apollonian_gasket.wgsl"
+        ],
+        "llm_response_len": 4080
+      }
+    },
+    "compile": {
+      "status": "failed",
+      "timestamp": "2025-10-23T20:50:01.057814",
+      "data": {
+        "error": "Compilation failed:     Updating crates.io index\n     Locking 154 packages to latest compatible versions\n      Adding pollster v0.3.0 (available: v0.4.0)\n      Adding wgpu v0.20.1 (available: v27.0.1)\n Downloading crates ...\n  Downloaded proc-macro2 v1.0.103\n   Compiling proc-macro2 v1.0.103\n   Compiling quote v1.0.41\n   Compiling unicode-ident v1.0.20\n   Compiling libc v0.2.177\n   Compiling cfg-if v1.0.4\n   Compiling autocfg v1.5.0\n   Compiling cfg_aliases v0.1.1\n   Compiling bitflags v2.10.0\n   Compiling parking_lot_core v0.9.12\n   Compiling scopeguard v1.2.0\n   Compiling smallvec v1.15.1\n   Compiling thiserror v1.0.69\n   Compiling paste v1.0.15\n   Compiling core-foundation-sys v0.8.7\n   Compiling lock_api v0.4.14\n   Compiling foreign-types-shared v0.3.1\n   Compiling log v0.4.28\n   Compiling equivalent v1.0.2\n   Compiling num-traits v0.2.19\n   Compiling crc32fast v1.5.0\n   Compiling bitflags v1.3.2\n   Compiling simd-adler32 v0.3.7\n   Compiling termcolor v1.4.1\n   Compiling hashbrown v0.16.0\n   Compiling bit-vec v0.6.3\n   Compiling unicode-width v0.1.14\n   Compiling bit-set v0.5.3\n   Compiling codespan-reporting v0.11.1\n   Compiling indexmap v2.12.0\n   Compiling wgpu-hal v0.21.1\n   Compiling hexf-parse v0.2.1\n   Compiling block v0.1.6\n   Compiling rustc-hash v1.1.0\n   Compiling adler2 v2.0.1\n   Compiling unicode-xid v0.2.6\n   Compiling utf8parse v0.2.2\n   Compiling arrayvec v0.7.6\n   Compiling miniz_oxide v0.8.9\n   Compiling anstyle-parse v0.2.7\n   Compiling syn v2.0.108\n   Compiling wgpu-types v0.20.0\n   Compiling wgpu-core v0.21.1\n   Compiling libloading v0.8.9\n   Compiling once_cell v1.21.3\n   Compiling core-foundation v0.9.4\n   Compiling malloc_buf v0.0.6\n   Compiling litrs v0.4.2\n   Compiling objc v0.2.7\n   Compiling anstyle v1.0.13\n   Compiling core-graphics-types v0.1.3\n   Compiling parking_lot v0.12.5\n   Compiling raw-window-handle v0.6.2\n   Compiling colorchoice v1.0.4\n   Compiling profiling v1.0.17\n   Compiling is_terminal_polyfill v1.70.2\n   Compiling anstyle-query v1.1.4\n   Compiling pxfm v0.1.25\n   Compiling document-features v0.2.11\n   Compiling anstream v0.6.21\n   Compiling flate2 v1.1.4\n   Compiling fdeflate v0.3.7\n   Compiling wgpu v0.20.1\n   Compiling clap_lex v0.7.6\n   Compiling strsim v0.11.1\n   Compiling heck v0.5.0\n   Compiling png v0.18.0\n   Compiling clap_builder v4.5.50\n   Compiling futures-core v0.3.31\n   Compiling byteorder-lite v0.1.0\n   Compiling static_assertions v1.1.0\n   Compiling bytemuck v1.24.0\n   Compiling futures-intrusive v0.5.0\n   Compiling pollster v0.3.0\n   Compiling foreign-types-macros v0.2.3\n   Compiling thiserror-impl v1.0.69\n   Compiling clap_derive v4.5.49\n   Compiling foreign-types v0.5.0\n   Compiling moxcms v0.7.7\n   Compiling metal v0.28.0\n   Compiling naga v0.20.0\n   Compiling clap v4.5.50\n   Compiling image v0.25.8\n   Compiling shader-bench v0.1.0 (/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251023_204939_fa8fbbe5-e1fa-499e-97a5-f49901456700_results)\nerror: unknown start of token: `\n --> src/main.rs:1:1\n  |\n1 | ```rust\n  | ^^^\n  |\n  = note: character appears 2 more times\nhelp: Unicode character '`' (Grave Accent) looks like ''' (Single Quote), but it is not\n  |\n1 - ```rust\n1 + '''rust\n  |\n\nerror: unknown start of token: `\n  --> src/main.rs:42:1\n   |\n42 | ```\n   | ^^^\n   |\n   = note: character appears 2 more times\nhelp: Unicode character '`' (Grave Accent) looks like ''' (Single Quote), but it is not\n   |\n42 - ```\n42 + '''\n   |\n\nerror: expected one of `!` or `::`, found keyword `use`\n --> src/main.rs:2:1\n  |\n1 | ```rust\n  |        - expected one of `!` or `::`\n2 | use std::{path::PathBuf, borrow::Cow};\n  | ^^^ unexpected token\n\nerror: could not compile `shader-bench` (bin \"shader-bench\") due to 3 previous errors\n"
+      }
+    }
+  },
+  "created": "2025-10-23T20:49:13.513700",
+  "last_updated": "2025-10-23T20:50:01.057841"
+}

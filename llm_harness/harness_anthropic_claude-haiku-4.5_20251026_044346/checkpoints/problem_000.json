@@ -1,0 +1,45 @@
+{
+  "problem_index": 0,
+  "problem_name": "geometric_cube",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-26T04:44:02.045741",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 5745
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-26T04:44:02.048970",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_044402_d879a464-3448-48b5-9725-ae05c8531d34_results"
+      }
+    },
+    "render": {
+      "status": "complete",
+      "timestamp": "2025-10-26T04:44:02.389277",
+      "data": {
+        "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_044402_d879a464-3448-48b5-9725-ae05c8531d34_results/artifacts/result.png"
+      }
+    },
+    "judge": {
+      "status": "complete",
+      "timestamp": "2025-10-26T04:44:19.778205",
+      "data": {
+        "scores": [
+          8,
+          18,
+          19,
+          27,
+          7
+        ]
+      }
+    }
+  },
+  "created": "2025-10-26T04:43:47.105975",
+  "last_updated": "2025-10-26T04:44:19.778211"
+}

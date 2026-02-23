@@ -1,0 +1,62 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: 5d32bf26_google_gemini-3-pro-preview_20251229_160403
+Started: 2025-12-29T16:04:03.268683
+============================================================
+
+[2025-12-29 16:04:03.268721] HARNESS INITIALIZED
+  Model: google/gemini-3-pro-preview
+  Problems: 10
+  Max parallel: 5
+  Problem list:
+    000: ackermann_function_growth
+    001: al_khwarizmi_geometric_algebra
+    002: apollonian_gasket
+    003: apollonius_conic_sections
+    004: archimedean_spiral_galaxy
+    005: archimedes_spiral
+    006: barbell_dumbbell_shape
+    007: binary_tree_fractal
+    008: brahmagupta_cyclic_quadrilaterals
+    009: braided_rope
+
+[2025-12-29 16:04:03.545798] START problem_000: ackermann_function_growth
+[2025-12-29 16:08:26.783517] EXCEPTION in problem_000 (generate stage): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:08:26.786211] EXCEPTION in problem_000 (run_single_problem): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:08:26.786354] END problem_000: ackermann_function_growth - FAILED (263.24s)
+[2025-12-29 16:08:26.788091] START problem_001: al_khwarizmi_geometric_algebra
+[2025-12-29 16:12:37.258782] START problem_002: apollonian_gasket
+[2025-12-29 16:17:12.805803] EXCEPTION in problem_002 (generate stage): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:17:12.807551] EXCEPTION in problem_002 (run_single_problem): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:17:12.807630] END problem_002: apollonian_gasket - FAILED (275.55s)
+[2025-12-29 16:17:12.809035] START problem_003: apollonius_conic_sections
+[2025-12-29 16:21:31.393129] EXCEPTION in problem_003 (generate stage): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:21:31.395469] EXCEPTION in problem_003 (run_single_problem): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:21:31.395584] END problem_003: apollonius_conic_sections - FAILED (258.59s)
+[2025-12-29 16:21:31.397778] START problem_004: archimedean_spiral_galaxy
+[2025-12-29 16:26:05.629752] EXCEPTION in problem_004 (generate stage): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:26:05.632404] EXCEPTION in problem_004 (run_single_problem): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:26:05.632513] END problem_004: archimedean_spiral_galaxy - FAILED (274.23s)
+[2025-12-29 16:26:05.634507] START problem_005: archimedes_spiral
+[2025-12-29 16:30:25.033796] EXCEPTION in problem_005 (generate stage): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:30:25.037133] EXCEPTION in problem_005 (run_single_problem): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:30:25.037371] END problem_005: archimedes_spiral - FAILED (259.40s)
+[2025-12-29 16:30:25.041252] START problem_006: barbell_dumbbell_shape
+[2025-12-29 16:34:47.007594] EXCEPTION in problem_006 (generate stage): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:34:47.011198] EXCEPTION in problem_006 (run_single_problem): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:34:47.011539] END problem_006: barbell_dumbbell_shape - FAILED (261.97s)
+[2025-12-29 16:34:47.014818] START problem_007: binary_tree_fractal
+[2025-12-29 16:39:26.413841] EXCEPTION in problem_007 (generate stage): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:39:26.417986] EXCEPTION in problem_007 (run_single_problem): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:39:26.418292] END problem_007: binary_tree_fractal - FAILED (279.40s)
+[2025-12-29 16:39:26.422159] START problem_008: brahmagupta_cyclic_quadrilaterals
+[2025-12-29 16:43:40.743539] EXCEPTION in problem_008 (generate stage): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:43:40.747347] EXCEPTION in problem_008 (run_single_problem): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:43:40.747567] END problem_008: brahmagupta_cyclic_quadrilaterals - FAILED (254.32s)
+[2025-12-29 16:43:40.751297] START problem_009: braided_rope
+[2025-12-29 16:48:31.026843] EXCEPTION in problem_009 (generate stage): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:48:31.029973] EXCEPTION in problem_009 (run_single_problem): Exception: Failed after 3 retries: Response ended prematurely (hit token limit)
+[2025-12-29 16:48:31.030202] END problem_009: braided_rope - FAILED (290.28s)
+[2025-12-29 16:48:45.684089] END problem_001: al_khwarizmi_geometric_algebra - SUCCESS (2418.90s)
+
+============================================================
+Run completed: 2025-12-29T16:48:45.684925

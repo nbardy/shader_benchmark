@@ -1,0 +1,32 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-24T03:00:34.750803",
+      "data": {
+        "shaders": [
+          "ackermann_bars.wgsl"
+        ],
+        "llm_response_len": 13067
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-24T03:14:36.251162",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251024_030034_3cf7760e-344b-4832-beda-66dff2e61b19_results"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-10-24T03:14:36.454227",
+      "data": {
+        "error": "Shader execution failed: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `ackermann_shader`\n    \nShader validation error: \n   \u250c\u2500 ackermann_shader:87:24\n   \u2502\n87 \u2502         let logValue = logValues[i];\n   \u2502                        ^^^^^^^^^^^^ naga::Expression [36]\n\n\n    Entry point main_fs at Fragment is in"
+      }
+    }
+  },
+  "created": "2025-10-24T03:00:01.549499",
+  "last_updated": "2025-10-24T03:14:36.454241"
+}

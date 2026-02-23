@@ -1,0 +1,32 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-23T22:17:32.399135",
+      "data": {
+        "shaders": [
+          "ackermann.wgsl"
+        ],
+        "llm_response_len": 8837
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-23T22:17:55.455580",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251023_221732_e189b3f9-8505-49bf-bb97-b277fc9698af_results"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-10-23T22:17:55.631879",
+      "data": {
+        "error": "Shader execution failed: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `ackermann_shader`\n    \nShader validation error: \n   \u250c\u2500 ackermann_shader:39:26\n   \u2502\n39 \u2502         let height = min(values[i] * 0.05, 0.8);  // Scale and clamp height\n   \u2502                          ^^^^^^^^^ naga::Expression [39]\n\n\n   "
+      }
+    }
+  },
+  "created": "2025-10-23T22:16:51.927991",
+  "last_updated": "2025-10-23T22:17:55.631906"
+}

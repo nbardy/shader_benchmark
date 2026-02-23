@@ -1,0 +1,30 @@
+{
+  "problem_index": 3,
+  "problem_name": "apollonius_conic_sections",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:00:09.445220",
+      "data": {
+        "shaders": [
+          "apollonius_conics.wgsl"
+        ],
+        "llm_response_len": 8378
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:00:09.451879",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/bdd896e3_anthropic_claude-opus-4_20251229_155125/results/003_apollonius_conic_sections"
+      }
+    },
+    "render": {
+      "status": "in_progress",
+      "timestamp": "2025-12-29T16:00:09.452925",
+      "data": {}
+    }
+  },
+  "created": "2025-12-29T15:57:51.545485",
+  "last_updated": "2025-12-29T16:00:09.452929"
+}

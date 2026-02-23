@@ -1,0 +1,30 @@
+{
+  "run_id": "harness_anthropic_claude-haiku-4.5_20251026_021216",
+  "model": "anthropic/claude-haiku-4.5",
+  "judge_model": "anthropic/claude-haiku-4.5",
+  "total_problems": 20,
+  "problems": [
+    "ackermann_function_growth",
+    "al_khwarizmi_geometric_algebra",
+    "apollonian_gasket",
+    "apollonius_conic_sections",
+    "archimedean_spiral_galaxy",
+    "archimedes_spiral",
+    "barbell_dumbbell_shape",
+    "binary_tree_fractal",
+    "brahmagupta_cyclic_quadrilaterals",
+    "braided_rope",
+    "butterfly_curve",
+    "calabi_yau_manifold",
+    "capsule_shape",
+    "cardioid_limacon_collection",
+    "catenoid_helicoid_minimal",
+    "chinese_remainder_sunzi",
+    "chinese_remainder_theorem",
+    "chladni_patterns",
+    "complex_analysis_stained_glass",
+    "compound_polyhedra_stella_octangula"
+  ],
+  "created": "2025-10-26T02:12:17.030407",
+  "last_updated": "2025-10-26T02:22:10.584937"
+}

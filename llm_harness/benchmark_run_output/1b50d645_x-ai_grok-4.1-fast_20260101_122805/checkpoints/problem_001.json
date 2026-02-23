@@ -1,0 +1,15 @@
+{
+  "problem_index": 1,
+  "problem_name": "apollonius_conic_sections",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2026-01-01T12:45:19.865879",
+      "data": {
+        "error": "Failed after 3 retries: Connection error"
+      }
+    }
+  },
+  "created": "2026-01-01T12:34:43.173469",
+  "last_updated": "2026-01-01T12:45:19.865882"
+}

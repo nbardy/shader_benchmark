@@ -1,0 +1,38 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_050948_3d21249c-1fc4-4734-af0c-553c6451a70c_results/shaders/braid.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_050948_3d21249c-1fc4-4734-af0c-553c6451a70c_results/artifacts/result.png
+Return code: 101
+
+=== STDOUT ===
+(empty)
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader validation error: 
+    ┌─ user_shader:29:1
+    │  
+ 29 │ ╭ fn render_scene(uv: vec2<f32>) -> vec3<f32> {
+ 30 │ │     let aspect = params.resolution.x / params.resolution.y;
+ 31 │ │     let screen_pos = vec3<f32>(uv.x * aspect, uv.y, -3.5);
+ 32 │ │     
+    · │
+ 98 │ │         let color = strand_colors[closest_strand];
+    │ │                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ naga::Expression [115]
+    · │
+102 │ │     
+103 │ │     return final_color;
+    │ ╰───────────────────────^ naga::Function [1]
+
+
+    Function [1] 'render_scene' is invalid
+    Expression [115] is invalid
+    The expression [113] may only be indexed by a constant
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

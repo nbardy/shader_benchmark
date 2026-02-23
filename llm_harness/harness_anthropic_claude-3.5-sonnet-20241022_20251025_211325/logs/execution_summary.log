@@ -1,0 +1,30 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: harness_anthropic_claude-3.5-sonnet-20241022_20251025_211325
+Started: 2025-10-25T21:13:25.697060
+============================================================
+
+[2025-10-25 21:13:25.697482] HARNESS INITIALIZED
+  Model: anthropic/claude-3.5-sonnet-20241022
+  Problems: 5
+  Max parallel: 1
+  Problem list:
+    000: ackermann_function_growth
+    001: al_khwarizmi_geometric_algebra
+    002: apollonian_gasket
+    003: apollonius_conic_sections
+    004: archimedean_spiral_galaxy
+
+[2025-10-25 21:13:26.338079] START problem_000: ackermann_function_growth
+[2025-10-25 21:15:29.985515] EXCEPTION in problem_000 (run_single_problem): RuntimeError: Shader execution still failing after repair: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: failed to convert expression to a concrete type: Cannot cast scalar components of expression `[31] Binary { op: Multiply, left: [29], right: [30] }` to type `f32`
+   ┌─ wgsl:49:17
+   │
+49 │         let 
+[2025-10-25 21:15:29.985971] END problem_000: ackermann_function_growth - FAILED (123.65s)

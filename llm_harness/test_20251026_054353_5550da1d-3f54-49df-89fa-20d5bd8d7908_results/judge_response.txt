@@ -1,0 +1,213 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Harmonic Symmetry Properties:
+- Overall 6-fold primary symmetry derived from lowest harmonic frequency
+- Autocorrelation peaks positioned precisely at 60-degree intervals
+- Minor petals visible between main lobes from 12 and 18 harmonics
+- Harmonic frequency relationships mathematically correct throughout
+- Proper trigonometric function implementation creating mandala patterns
+- Angular symmetry maintained with mathematical precision
+
+Radial Measurement Specifications:
+- Radial range r_min = 0.74, r_max = 1.25 within ±2% tolerance
+- Measured minimum and maximum radii conforming to specification
+- Consistent radial scaling across all symmetric elements
+- Proper mathematical scaling relationships between inner and outer structures
+- Accurate implementation of trigonometric radius calculations
+
+**S4: Visual Implementation Section**  
+Mandala Structure and Duplication:
+- Inner mandala exactly scaled 0.7 and properly centered
+- Scale factor 0.70 ± 0.02 tolerance maintained precisely
+- Concentric arrangement with perfect alignment between inner and outer forms
+- Duplicate mandala structure preserving all geometric relationships
+- Professional mandala aesthetic with traditional symmetry principles
+
+Color and Gradient Standards:
+- Gradient mapping monotone from center to edge without discontinuities
+- Inner fill color #ff66cc with opacity 0.3 as specified
+- Smooth color transitions enhancing mandala visual depth
+- Proper color saturation and luminance gradients
+- Professional color harmony suitable for decorative and mathematical visualization
+
+**S5: Completeness & Specifications Section**
+Required Mandala Elements:
+- Complete trigonometric mandala with all harmonic components
+- Both outer and inner mandala structures fully implemented
+- All symmetry elements and minor petals properly rendered
+- Radial measurements conforming to all specified tolerances
+- Mathematical accuracy verified across all trigonometric calculations
+
+Technical Specification Compliance:
+- Outline integrity maintained with continuous 3-pixel lines
+- No gaps or discontinuities in mandala boundary structures
+- All color and gradient requirements satisfied
+- Professional rendering quality meeting visualization standards
+- Full adherence to trigonometric mandala specifications
+EOF < /dev/null
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+**Objective** – Create a "harmonic mandala" defined by radial modulation
+
+$
+  r(θ)=1+0.15\sin(6θ)+0.10\sin(12θ)+0.06\sin(18θ),\qquad θ∈[0,2π].
+$
+
+**Rendering directives**
+
+* Plot polar curve with 10 000 samples; convert to Cartesian.
+* Fill interior with gradient: centre #001133 → edge #55ffee (radial linear gamma 2.2).
+* Outline 3‑px #ffffff.
+* Add semi‑transparent (α 0.3) duplicate of the curve scaled 0.7×, filled #ff66cc.
+* Canvas 1800 × 1800 px black.
+
+**Deliverable** – PNG.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Evaluation
+
+## Detailed Analysis
+
+### S1: Problem Accuracy (Generic)
+
+**Strengths:**
+- The image correctly implements a polar curve with 6-fold primary symmetry as derived from the lowest harmonic (6θ)
+- The overall mathematical structure follows the specified formula: r(θ) = 1 + 0.15sin(6θ) + 0.10sin(12θ) + 0.06sin(18θ)
+- Canvas dimensions appear correct at 1800×1800 px with black background
+- The general shape matches harmonic mandala expectations
+
+**Weaknesses:**
+- No visible white 3-pixel outline on the outer boundary (critical specification violation)
+- The inner scaled mandala is not clearly distinguishable; its presence is ambiguous
+- Cannot verify exact radial measurements due to lack of outline clarity
+- Missing the secondary mandala visual layer expected at 0.7× scale
+
+**Score Reasoning:** The core mathematical formula is implemented, but significant specification elements are missing or unclear.
+
+---
+
+### S2: Visual Quality (Generic)
+
+**Strengths:**
+- High resolution rendering (1800×1800 px) is crisp and well-sampled
+- Smooth gradient from dark center to cyan edge shows good anti-aliasing
+- No visible pixelation or rendering artifacts
+- Black background provides good contrast
+- Overall aesthetic is clean and professional
+
+**Weaknesses:**
+- Missing white outline boundary completely undermines visual definition
+- Lack of outline makes the shape edges blurry and imprecise
+- No clear visual separation between outer and inner mandalas
+- The form appears somewhat flat without boundary definition
+- Gradient alone cannot substitute for structural outline clarity
+
+**Score Reasoning:** While technically rendered smoothly, the missing outline is a critical visual deficiency that impacts overall polishment.
+
+---
+
+### S3: Mathematical Accuracy Section
+
+**Harmonic Symmetry Properties:**
+- ✓ 6-fold primary symmetry is clearly visible and mathematically correct
+- ✓ Six main petals are properly positioned at 60-degree intervals
+- ⚠ Minor petals from 12θ and 18θ harmonics are present but subtle—difficult to verify precision without outline
+- ✓ Trigonometric function implementation appears correct based on shape
+- ⚠ Cannot confirm precision of harmonic relationships without quantitative verification
+
+**Radial Measurement Specifications:**
+- ⚠ r_min and r_max cannot be accurately measured from the image without a clear outline
+- Expected approximate range: r_min ≈ 0.79 (at troughs), r_max ≈ 1.31 (at peaks)
+- ✗ No visible boundary to verify the ±2% tolerance requirement (0.72-0.76 for minimum)
+- ⚠ Radial scaling appears consistent but unverifiable without precise measurements
+- ⚠ Trigonometric radius calculations appear implemented but cannot be quantified
+
+**Score Reasoning:** Mathematical structure is correct in principle, but lack of clear boundary makes verification impossible. The specification requires precise radial measurements which are unattainable from this visualization.
+
+---
+
+### S4: Visual Implementation Section
+
+**Mandala Structure and Duplication:**
+- ✓ Overall mandala structure is recognizable
+- ✗ Inner mandala at 0.7× scale is NOT clearly visible as a separate, distinct layer
+- ✗ The 0.70 scale factor cannot be verified; there's no visual evidence of two separate structures
+- ⚠ Concentric arrangement unclear; the semi-transparent pink inner mandala should be distinctly visible
+- ✗ Missing the required visual hierarchy between outer and inner mandalas
+
+**Color and Gradient Standards:**
+- ✗ Primary gradient does NOT correctly show #001133 (very dark blue) to #55ffee (cyan)
+- The center appears more blue-gray than deep navy (#001133)
+- ✓ Cyan outer color approximately matches #55ffee
+- ✗ No visible semi-transparent #ff66cc (pink) inner mandala fill
+- ⚠ Gradient appears linear rather than with gamma 2.2 correction applied
+- ✗ Missing the pink color entirely means one major visual element is absent
+
+**Score Reasoning:** Critical failures in both structural duplication visibility and color implementation. The pink inner mandala should be prominent and semi-transparent but is not visible.
+
+---
+
+### S5: Completeness & Specifications Section
+
+**Required Mandala Elements:**
+- ✓ Trigonometric mandala with harmonic components is present
+- ✗ Inner mandala structure is not visible/present
+- ✓ Primary 6-fold symmetry and main petals rendered
+- ⚠ Minor petals present but cannot be confirmed due to lack of outline
+- ⚠ Radial measurements cannot be verified
+
+**Technical Specification Compliance:**
+- ✗ 3-pixel white outline is completely missing (critical failure)
+- ✗ Outline integrity cannot be assessed because outline doesn't exist
+- ✗ Inner mandala color #ff66cc and opacity 0.3 not visible in output
+- ✗ Outer mandala gradient colors not precisely matching specification
+- ✗ Missing white boundary lines create discontinuity in specification adherence
+- ✗ Semi-transparent duplicate layer appears absent or completely invisible
+
+**Score Reasoning:** Multiple critical specifications are not met. The missing white outline, invisible inner mandala, and incorrect gradient starting color represent major deviations from requirements.
+
+---
+
+## Summary
+
+The image demonstrates correct understanding of the harmonic mandala's mathematical foundation and produces a visually smooth, high-resolution rendering. However, it **fails to implement several critical specifications**:
+
+1. **No white 3-pixel outline** - severely impacts visual definition
+2. **Inner 0.7× scaled mandala not visible** - entire layer appears missing
+3. **Incorrect or missing pink (#ff66cc) color** - color scheme incomplete
+4. **Gradient starting color questionable** - #001133 not clearly evident
+5. **Radial measurements unverifiable** - boundary imprecision prevents validation
+
+The result is approximately 50-60% specification-compliant with good mathematical structure but poor execution of visual specifications.
+
+<scores><S1>58</S1><S2>62</S2><S3>55</S3><S4>35</S4><S5>42</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[58, 62, 55, 35, 42]
+

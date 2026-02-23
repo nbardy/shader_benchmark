@@ -1,0 +1,32 @@
+2026-01-01 12:34:43.171 [INFO] Logger initialized for problem 1: apollonius_conic_sections
+2026-01-01 12:34:43.172 [INFO] ========== PROBLEM START ==========
+2026-01-01 12:34:43.172 [INFO] Index: 1
+2026-01-01 12:34:43.172 [INFO] Name: apollonius_conic_sections
+2026-01-01 12:34:43.173 [INFO] ---------- STAGE START: GENERATE ----------
+2026-01-01 12:34:43.173 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2026-01-01 12:34:43.175 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/1b50d645_x-ai_grok-4.1-fast_20260101_122805/checkpoints/problem_001.json
+2026-01-01 12:34:43.175 [INFO] Loading request prompt
+2026-01-01 12:34:43.175 [INFO] API call: LLM generation model=x-ai/grok-4.1-fast, language=wgsl
+2026-01-01 12:45:19.862 [ERROR] EXCEPTION in generate stage:
+2026-01-01 12:45:19.863 [ERROR]   Type: Exception
+2026-01-01 12:45:19.863 [ERROR]   Message: Failed after 3 retries: Connection error
+2026-01-01 12:45:19.863 [ERROR]   Traceback:
+2026-01-01 12:45:19.865 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 313, in run_single_problem
+    llm_response = await llm_client.generate_shaders(self.model, request_prompt)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-01-01 12:45:19.865 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/llm_client.py", line 120, in generate_shaders
+    raise Exception(f"Failed after {MAX_RETRIES} retries: {last_error}")
+2026-01-01 12:45:19.865 [INFO] Attempting to save checkpoint: stage=generate, status=failed
+2026-01-01 12:45:19.866 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/1b50d645_x-ai_grok-4.1-fast_20260101_122805/checkpoints/problem_001.json
+2026-01-01 12:45:19.866 [INFO] ---------- STAGE END: GENERATE - FAILED ----------
+2026-01-01 12:45:19.867 [ERROR] EXCEPTION in run_single_problem:
+2026-01-01 12:45:19.867 [ERROR]   Type: Exception
+2026-01-01 12:45:19.867 [ERROR]   Message: Failed after 3 retries: Connection error
+2026-01-01 12:45:19.867 [ERROR]   Traceback:
+2026-01-01 12:45:19.867 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 313, in run_single_problem
+    llm_response = await llm_client.generate_shaders(self.model, request_prompt)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-01-01 12:45:19.867 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/llm_client.py", line 120, in generate_shaders
+    raise Exception(f"Failed after {MAX_RETRIES} retries: {last_error}")
+2026-01-01 12:45:19.867 [INFO] ========== PROBLEM END: FAILED ==========
+2026-01-01 12:45:19.867 [INFO] Execution time: 636.69s

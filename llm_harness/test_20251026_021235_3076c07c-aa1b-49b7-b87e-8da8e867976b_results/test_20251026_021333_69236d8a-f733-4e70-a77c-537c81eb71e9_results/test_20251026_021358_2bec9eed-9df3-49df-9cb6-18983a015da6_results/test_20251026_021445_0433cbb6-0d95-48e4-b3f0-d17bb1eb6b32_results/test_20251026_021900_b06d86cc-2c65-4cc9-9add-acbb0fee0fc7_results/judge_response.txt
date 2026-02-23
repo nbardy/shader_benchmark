@@ -1,0 +1,171 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Geometric Form Verification:
+- Cylindrical body must be exactly 3.0 units tall with consistent radius
+- Hemispherical caps with radius of 0.8 units matching cylinder radius
+- Total height calculation: cylinder height plus two radii (4.6 total)
+- Perfect spherical curvature for both hemispherical end caps
+- Vertical orientation axis alignment maintained throughout
+
+Dimensional Precision:
+- Consistent radius of 0.8 throughout entire cylinder section
+- Seamless mathematical transition from cylinder to hemisphere
+- No geometric distortion or scaling errors
+- Precise parametric surface construction
+- Accurate proportional relationships between components
+
+**S4: Visual Implementation Section**  
+Material and Surface Quality:
+- Porcelain white base color with semi-glossy finish
+- Subtle blue undertones visible in shadows and indirect lighting
+- Specular highlights appropriate for ceramic material properties
+- Surface continuity with no visible seams or discontinuities
+- No polygonal artifacts, faceting, or rendering imperfections
+
+Lighting and Rendering Standards:
+- Three-point lighting setup with clear key, fill, and rim lighting
+- Rim light creates proper edge definition against dark background
+- Dark gradient background provides appropriate contrast
+- Low camera angle emphasizes vertical height and proportions
+- Professional anti-aliasing on all edges and curves
+
+**S5: Completeness & Specifications Section**
+Required Geometric Elements:
+- Complete capsule shape with cylinder body and hemispherical caps
+- Vertical orientation as specified in requirements
+- Proper surface smoothness throughout entire form
+- No missing geometric components or incomplete sections
+- Consistent curvature maintaining capsule shape definition
+
+Technical and Visual Standards:
+- Clean, professional rendering quality without noise or artifacts
+- Shadows that enhance three-dimensional form perception
+- Overall elegant, sculptural appearance meeting aesthetic requirements
+- Proper form modeling through lighting to show dimensional depth
+- Complete adherence to capsule shape specifications
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+Create a 3D capsule shape (cylinder with hemispherical caps) with height 3.0 and radius 0.8, oriented vertically. Material: semi-glossy porcelain white with subtle blue undertones. Lighting: three-point setup with rim light. Background: dark gradient. Camera: slight low angle to emphasize height.
+
+Outputs a single image.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Evaluation
+
+## Detailed Assessment
+
+### S1: Problem Accuracy (Generic)
+The image successfully displays a vertically-oriented capsule shape with the required specifications. The overall form matches the conceptual requirement of a cylinder with hemispherical caps. However, without explicit dimensional verification tools, precise confirmation of the 3.0-unit cylinder height and 0.8-unit radius cannot be definitively established from visual inspection alone. The implementation appears mathematically sound based on visual proportions.
+
+**Score Reasoning:** The core geometric requirement (capsule with vertical orientation) is met. The shape is recognizable and proportionally appears correct, though mathematical precision cannot be fully verified visually.
+
+### S2: Visual Quality (Generic)
+The image demonstrates excellent visual polish:
+- Clean, artifact-free rendering with high resolution
+- Smooth anti-aliasing on all edges and curves
+- Professional presentation with no visible glitches
+- Color palette is elegant and appropriate
+- Composition is centered and well-framed
+- No noise or rendering imperfections visible
+
+**Score Reasoning:** This is a professionally rendered image with excellent technical quality. The visual presentation is clean, polished, and aesthetically pleasing throughout.
+
+### S3: Mathematical Accuracy Section
+
+**Geometric Form Verification:**
+- Cylindrical body appears consistent in radius throughout its vertical extent
+- Hemispherical caps are present on both ends with smooth curvature
+- Vertical orientation is properly maintained
+- Proportions suggest cylinder height to radius ratio is appropriate (approximately 3.75:1, consistent with 3.0:0.8)
+- No visible geometric distortion
+
+**Dimensional Precision:**
+- Radius consistency: The cylinder maintains uniform diameter throughout
+- Transition zones: Smooth mathematical blending at cylinder-hemisphere junctions
+- No scaling errors detected
+- Proportional relationships appear mathematically sound
+- Surface parametrization appears accurate
+
+**Score Reasoning:** The mathematical implementation appears highly accurate. The capsule geometry is properly constructed with correct proportions between components, smooth transitions, and proper hemispherical curvature at both ends.
+
+### S4: Visual Implementation Section
+
+**Material and Surface Quality:**
+- Base color is porcelain white with excellent accuracy
+- Semi-glossy finish is appropriately rendered
+- Blue undertones are subtly visible throughout, particularly in the shadowed regions (especially visible on the left side)
+- Specular highlights reflect ceramic material properties correctly
+- Surface continuity is perfect with no visible seams
+- No polygonal artifacts or faceting present
+
+**Lighting and Rendering Standards:**
+- Three-point lighting is effectively implemented:
+  - Key light creates bright illumination on the right side
+  - Rim light provides subtle edge definition against the dark background (visible on right edge)
+  - Fill light prevents harsh shadows on the left side
+- Dark gradient background (blue-gray) provides excellent contrast enhancement
+- Low camera angle effectively emphasizes vertical height and proportions
+- Anti-aliasing is professional grade throughout
+
+**Score Reasoning:** The visual implementation is exemplary. Lighting setup is sophisticated with proper three-point arrangement, material properties are accurately conveyed, and the rendering is technically excellent.
+
+### S5: Completeness & Specifications Section
+
+**Required Geometric Elements:**
+- Complete capsule shape with both hemispherical caps present and properly formed
+- Vertical orientation maintained throughout
+- Surface smoothness is excellent across entire form
+- No missing components
+- Consistent curvature defining perfect capsule geometry
+
+**Technical and Visual Standards:**
+- Clean professional rendering without noise or artifacts
+- Shadows effectively enhance three-dimensional perception
+- Overall appearance is elegant and sculptural
+- Form modeling through lighting is sophisticated and effective
+- Complete adherence to all capsule specifications
+
+**Score Reasoning:** All required elements are present and properly implemented. The visualization is complete, professionally executed, and fully meets the specified requirements.
+
+## Summary
+
+This shader-generated image successfully delivers a high-quality mathematical visualization of a capsule geometry. The rendering demonstrates:
+- Accurate geometric construction
+- Excellent visual quality and polish
+- Sophisticated lighting implementation
+- Professional material representation
+- Complete adherence to specifications
+
+The primary strength is the combination of mathematical accuracy with professional visual presentation. The lighting is particularly well-executed, creating visual depth and emphasizing the sculptural quality of the form.
+
+<scores><S1>92</S1><S2>95</S2><S3>94</S3><S4>96</S4><S5>95</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[92, 95, 94, 96, 95]
+

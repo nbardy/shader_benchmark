@@ -1,0 +1,35 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_053027_9afca5d2-5b7e-4426-af0a-ac5c82bdf2e8_results/shaders/seashell.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_053027_9afca5d2-5b7e-4426-af0a-ac5c82bdf2e8_results/artifacts/result.png
+Return code: 101
+
+=== STDOUT ===
+(empty)
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader validation error: 
+    ┌─ user_shader:85:1
+    │  
+ 85 │ ╭ fn compute_lighting(pos: vec3<f32>, normal: vec3<f32>, view_dir: vec3<f32>, time: f32) -> vec3<f32> {
+ 86 │ │     // Dynamic light source - orbiting around the seashell
+ 87 │ │     let light_angle = time * 0.5;
+ 88 │ │     let light_dist = 2.5;
+    · │
+111 │ │     
+112 │ │     return (diffuse + specular) * ao + sss * 0.4;
+    │ │            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ naga::Expression [49]
+    │ ╰─────────────────────────────────────────────────^ naga::Function [5]
+
+
+    Function [5] 'compute_lighting' is invalid
+    The `return` value Some([49]) does not match the function return value
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

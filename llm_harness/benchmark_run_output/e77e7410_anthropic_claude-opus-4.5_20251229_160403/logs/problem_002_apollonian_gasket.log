@@ -1,0 +1,28 @@
+2025-12-29 16:05:48.017 [INFO] Logger initialized for problem 2: apollonian_gasket
+2025-12-29 16:05:48.017 [INFO] ========== PROBLEM START ==========
+2025-12-29 16:05:48.017 [INFO] Index: 2
+2025-12-29 16:05:48.018 [INFO] Name: apollonian_gasket
+2025-12-29 16:05:48.018 [INFO] ---------- STAGE START: GENERATE ----------
+2025-12-29 16:05:48.019 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-12-29 16:05:48.021 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/checkpoints/problem_002.json
+2025-12-29 16:05:48.021 [INFO] Loading request prompt
+2025-12-29 16:05:48.021 [INFO] API call: LLM generation model=anthropic/claude-opus-4.5, language=wgsl
+2025-12-29 16:06:21.743 [INFO] API response: LLM generation - success, size=7797 bytes
+2025-12-29 16:06:21.743 [INFO] Parsing shader response
+2025-12-29 16:06:21.743 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2025-12-29 16:06:21.744 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/checkpoints/problem_002.json
+2025-12-29 16:06:21.744 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2025-12-29 16:06:21.745 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2025-12-29 16:06:21.748 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/checkpoints/problem_002.json
+2025-12-29 16:06:21.748 [INFO] Attempting to save checkpoint: stage=compile, status=complete
+2025-12-29 16:06:21.749 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/checkpoints/problem_002.json
+2025-12-29 16:06:21.749 [INFO] Attempting to save checkpoint: stage=render, status=in_progress
+2025-12-29 16:06:21.749 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/checkpoints/problem_002.json
+2025-12-29 16:11:56.593 [INFO] Attempting to save checkpoint: stage=render, status=complete
+2025-12-29 16:11:56.594 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/checkpoints/problem_002.json
+2025-12-29 16:11:56.594 [INFO] Attempting to save checkpoint: stage=judge, status=in_progress
+2025-12-29 16:11:56.595 [INFO] Checkpoint saved successfully: stage=judge, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/checkpoints/problem_002.json
+2025-12-29 16:11:56.623 [INFO] Attempting to save checkpoint: stage=judge, status=complete
+2025-12-29 16:11:56.623 [INFO] Checkpoint saved successfully: stage=judge, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/checkpoints/problem_002.json
+2025-12-29 16:11:56.623 [INFO] ========== PROBLEM END: SUCCESS ==========
+2025-12-29 16:11:56.624 [INFO] Execution time: 368.61s

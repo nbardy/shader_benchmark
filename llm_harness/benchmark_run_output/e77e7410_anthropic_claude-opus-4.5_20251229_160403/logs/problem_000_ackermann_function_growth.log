@@ -1,0 +1,52 @@
+2025-12-29 16:04:03.554 [INFO] Logger initialized for problem 0: ackermann_function_growth
+2025-12-29 16:04:03.554 [INFO] ========== PROBLEM START ==========
+2025-12-29 16:04:03.554 [INFO] Index: 0
+2025-12-29 16:04:03.554 [INFO] Name: ackermann_function_growth
+2025-12-29 16:04:03.554 [INFO] ---------- STAGE START: GENERATE ----------
+2025-12-29 16:04:03.554 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-12-29 16:04:03.555 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/checkpoints/problem_000.json
+2025-12-29 16:04:03.555 [INFO] Loading request prompt
+2025-12-29 16:04:03.555 [INFO] API call: LLM generation model=anthropic/claude-opus-4.5, language=wgsl
+2025-12-29 16:04:46.653 [INFO] API response: LLM generation - success, size=8825 bytes
+2025-12-29 16:04:46.654 [INFO] Parsing shader response
+2025-12-29 16:04:46.655 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2025-12-29 16:04:46.658 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/checkpoints/problem_000.json
+2025-12-29 16:04:46.658 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2025-12-29 16:04:46.660 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2025-12-29 16:04:46.663 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/checkpoints/problem_000.json
+2025-12-29 16:04:46.663 [INFO] Attempting to save checkpoint: stage=compile, status=complete
+2025-12-29 16:04:46.666 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/checkpoints/problem_000.json
+2025-12-29 16:04:46.666 [INFO] Attempting to save checkpoint: stage=render, status=in_progress
+2025-12-29 16:04:46.667 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/checkpoints/problem_000.json
+2025-12-29 16:11:56.670 [INFO] Attempting to save checkpoint: stage=render, status=failed
+2025-12-29 16:11:56.672 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/checkpoints/problem_000.json
+2025-12-29 16:11:56.672 [ERROR] EXCEPTION in run_single_problem:
+2025-12-29 16:11:56.672 [ERROR]   Type: RuntimeError
+2025-12-29 16:11:56.672 [ERROR]   Message: Shader execution still failing after repair: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader validation error: 
+   ┌─ user_shader:77:1
+   │  
+77 │ ╭ fn draw_digit(p: vec2<f32>, digit: u32) -> f32 {
+78 │ │     let segments = array<u32, 10>(
+79 │ │         0x3Fu, 0x06u, 0x5Bu, 0x4Fu, 0x66u,
+80 │ │         0x6Du, 0x7Du, 0x07u
+2025-12-29 16:11:56.672 [ERROR]   Traceback:
+2025-12-29 16:11:56.674 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 386, in run_single_problem
+    result_image = await test_runner.render_shader(test_folder)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-12-29 16:11:56.674 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_runner.py", line 277, in render_shader
+    return await self.render_shader_wgpu(test_folder)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-12-29 16:11:56.674 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_runner.py", line 369, in render_shader_wgpu
+    raise RuntimeError(
+        f"Shader execution still failing after repair: {result.stderr[:500]}"
+    )
+2025-12-29 16:11:56.674 [INFO] ========== PROBLEM END: FAILED ==========
+2025-12-29 16:11:56.674 [INFO] Execution time: 473.12s

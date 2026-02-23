@@ -1,0 +1,89 @@
+@group(0) @binding(0) var<uniform> params: Params;
+
+struct Params {
+    time: f32,
+    aspect: f32,
+    resolution: vec2<f32>,
+};
+
+const islamic_manuscript_color: vec3<f32> = vec3<f32>(254.0/255.0, 243.0/255.0, 199.0/255.0);
+const deep_blue: vec3<f32> = vec3<f32>(30.0/255.0, 58.0/255.0, 138.0/255.0);
+const gold: vec3<f32> = vec3<f32>(245.0/255.0, 158.0/255.0, 11.0/255.0);
+
+fn draw_square(uv: vec2<f32>, center: vec2<f32>, size: f32, color: vec3<f32>) -> f32 {
+  let d = max(abs(uv.x - center.x), abs(uv.y - center.y)) - size * 0.5;
+  return smoothstep(0.01, 0.0, d);
+}
+
+fn draw_rectangle(uv: vec2<f32>, center: vec2<f32>, width: f32, height: f32, color: vec3<f32>) -> f32 {
+  let d = max(abs(uv.x - center.x) / width, abs(uv.y - center.y) / height) - 0.5;
+  return smoothstep(0.01, 0.0, d);
+}
+
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = pos.xy / params.resolution;
+    let aspect_ratio = params.resolution.x / params.resolution.y;
+
+    // Animation time
+    let animation_duration: f32 = 5.0;
+    let t = (params.time % animation_duration) / animation_duration;
+
+    // Stage 1: Initial square (x^2)
+    let x_val: f32 = 0.3;   // Relative size of initial square
+
+
+    // Background
+    var color: vec3<f32> = islamic_manuscript_color;
+
+    if (t > 0.0) {
+        let initial_square_alpha = draw_square(uv, vec2<f32>(0.5, 0.5), x_val, deep_blue);
+        color = mix(color, deep_blue, initial_square_alpha);
+    }
+
+    // Stage 2: Add rectangles (10x = 4 * 2.5x)
+    let rectangle_width: f32 = x_val;
+    let rectangle_height: f32 = x_val * 2.5; //2.5;
+
+    if (t > 0.2 && t <= 1.0) {
+        let anim_t = smoothstep(0.2, 0.4, t);
+
+
+        let rect_top_alpha = draw_rectangle(uv, vec2<f32>(0.5, 0.5 + x_val * 0.5 + rectangle_height * 0.5) , rectangle_width, rectangle_height * anim_t, gold);
+        let rect_bottom_alpha = draw_rectangle(uv, vec2<f32>(0.5, 0.5 - x_val * 0.5 - rectangle_height * 0.5), rectangle_width, rectangle_height * anim_t, gold);
+        let rect_left_alpha = draw_rectangle(uv, vec2<f32>(0.5 - x_val * 0.5 - rectangle_height * 0.5 * aspect_ratio, 0.5), rectangle_height * anim_t * aspect_ratio, rectangle_width, gold);
+        let rect_right_alpha = draw_rectangle(uv, vec2<f32>(0.5 + x_val * 0.5 + rectangle_height * 0.5 * aspect_ratio, 0.5), rectangle_height * anim_t * aspect_ratio, rectangle_width, gold);
+
+        color = mix(color, gold, rect_top_alpha);
+        color = mix(color, gold, rect_bottom_alpha);
+        color = mix(color, gold, rect_left_alpha);
+        color = mix(color, gold, rect_right_alpha);
+    }
+
+    // Stage 3: Add four corners
+    let corner_size: f32 = x_val * 2.5; //2.5;
+
+    if (t > 0.4 && t <= 1.0) {
+       let anim_t = smoothstep(0.4, 0.6, t);
+
+       let corner_top_left_alpha = draw_square(uv, vec2<f32>(0.5 - x_val * 0.5 - corner_size * 0.5 * aspect_ratio, 0.5 + x_val * 0.5 + corner_size * 0.5), corner_size * anim_t, vec3<f32>(1.0, 1.0, 1.0));
+       let corner_top_right_alpha = draw_square(uv, vec2<f32>(0.5 + x_val * 0.5 + corner_size * 0.5 * aspect_ratio, 0.5 + x_val * 0.5 + corner_size * 0.5), corner_size * anim_t, vec3<f32>(1.0, 1.0, 1.0));
+       let corner_bottom_left_alpha = draw_square(uv, vec2<f32>(0.5 - x_val * 0.5 - corner_size * 0.5 * aspect_ratio, 0.5 - x_val * 0.5 - corner_size * 0.5), corner_size * anim_t, vec3<f32>(1.0, 1.0, 1.0));
+       let corner_bottom_right_alpha = draw_square(uv, vec2<f32>(0.5 + x_val * 0.5 + corner_size * 0.5 * aspect_ratio, 0.5 - x_val * 0.5 - corner_size * 0.5), corner_size * anim_t, vec3<f32>(1.0, 1.0, 1.0));
+
+       color = mix(color, vec3<f32>(1.0, 1.0, 1.0), corner_top_left_alpha);
+       color = mix(color, vec3<f32>(1.0, 1.0, 1.0), corner_top_right_alpha);
+       color = mix(color, vec3<f32>(1.0, 1.0, 1.0), corner_bottom_left_alpha);
+       color = mix(color, vec3<f32>(1.0, 1.0, 1.0), corner_bottom_right_alpha);
+   }
+
+    return vec4<f32>(color, 1.0);
+}

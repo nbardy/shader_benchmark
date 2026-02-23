@@ -1,0 +1,13 @@
+{
+  "scores": [
+    42,
+    72,
+    48,
+    65,
+    35
+  ],
+  "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_051756_7005166f-9ac5-432f-b476-20c1f9c5bd46_results",
+  "status": "completed",
+  "execution_success": true,
+  "has_image": false
+}

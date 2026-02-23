@@ -1,0 +1,29 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_053705_4f270511-a6e2-4893-88a7-fac6ac471985_results/shaders/tesseract.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_053705_4f270511-a6e2-4893-88a7-fac6ac471985_results/artifacts/result.png
+Return code: 101
+
+=== STDOUT ===
+(empty)
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader validation error: 
+    ┌─ user_shader:126:19
+    │
+126 │         let e_x = edge_x[i];
+    │                   ^^^^^^^^^ naga::Expression [260]
+
+
+    Entry point fs_main at Fragment is invalid
+    Expression [260] is invalid
+    The expression [178] may only be indexed by a constant
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

@@ -1,0 +1,15 @@
+{
+  "problem_index": 3,
+  "problem_name": "apollonius_conic_sections",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-10-24T20:01:15.263123",
+      "data": {
+        "error": "No main.rs content found in LLM response"
+      }
+    }
+  },
+  "created": "2025-10-24T20:00:45.428908",
+  "last_updated": "2025-10-24T20:01:15.263133"
+}

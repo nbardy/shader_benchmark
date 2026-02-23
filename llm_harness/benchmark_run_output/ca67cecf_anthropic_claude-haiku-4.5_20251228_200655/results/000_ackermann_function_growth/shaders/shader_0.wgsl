@@ -1,0 +1,124 @@
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+    time: f32,
+    aspect: f32,
+};
+
+@group(0) @binding(0) var<uniform> Params: Params;
+
+// Pre-computed A(3,n) values as log₁₀
+// n=0: log₁₀(1) = 0.0
+// n=1: log₁₀(2) ≈ 0.301
+// n=2: log₁₀(3) ≈ 0.477
+// n=3: log₁₀(13) ≈ 1.114
+// n=4: log₁₀(65533) ≈ 4.816
+// n=5: log₁₀(2^65536-3) ≈ 19728.090
+// n=6: tower of 2's height 5, log₁₀ ≈ 5.932e19728
+// n=7-10: exponentially larger towers
+let log10_ackermann = array<f32, 11>(
+    0.0,           // n=0: A(3,0) = 1
+    0.301,         // n=1: A(3,1) = 2
+    0.477,         // n=2: A(3,2) = 3
+    1.114,         // n=3: A(3,3) = 13
+    4.816,         // n=4: A(3,4) = 65533
+    19728.09,      // n=5: 2^65536 - 3
+    5.932e4,       // n=6: tower height 5 (approximate, clamped for display)
+    5.932e5,       // n=7: tower height 6 (scaled)
+    5.932e6,       // n=8: tower height 7 (scaled)
+    5.932e7,       // n=9: tower height 8 (scaled)
+    5.932e8        // n=10: tower height 9 (scaled)
+);
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let canvas_width = 1600.0;
+    let canvas_height = 1200.0;
+    let uv = pos.xy / Params.resolution;
+    let pixel_x = uv.x * canvas_width;
+    let pixel_y = uv.y * canvas_height;
+    
+    // White background
+    var color = vec3<f32>(1.0, 1.0, 1.0);
+    
+    // Grid lines and axis labels (y-axis: log₁₀ scale 0 to 10)
+    let margin_left = 100.0;
+    let margin_bottom = 120.0;
+    let plot_width = canvas_width - margin_left - 80.0;
+    let plot_height = canvas_height - margin_bottom - 80.0;
+    
+    let norm_x = (pixel_x - margin_left) / plot_width;
+    let norm_y = (pixel_y - margin_bottom) / plot_height;
+    
+    // Draw grid lines (log₁₀ scale)
+    for (var decade = 0u; decade <= 10u; decade = decade + 1u) {
+        let y_grid = f32(decade) / 10.0;
+        let grid_pixel_y = margin_bottom + y_grid * plot_height;
+        let dist_to_grid = abs(pixel_y - grid_pixel_y);
+        if (dist_to_grid < 2.0) {
+            color = mix(color, vec3<f32>(0.9, 0.9, 0.9), 0.5);
+        }
+    }
+    
+    // Bar parameters
+    let bar_spacing = 80.0;
+    let bar_width = 40.0;
+    let bar_count = 11u;
+    
+    // Draw bars
+    for (var n = 0u; n < bar_count; n = n + 1u) {
+        let bar_center_x = margin_left + 60.0 + f32(n) * bar_spacing;
+        let bar_left = bar_center_x - bar_width * 0.5;
+        let bar_right = bar_center_x + bar_width * 0.5;
+        
+        // Check if pixel is in bar x-range
+        if (pixel_x >= bar_left && pixel_x <= bar_right && norm_y >= 0.0 && norm_y <= 1.0) {
+            // Get log₁₀ value for this bar (clamped to 0-10 for display)
+            let log_val = log10_ackermann[n];
+            let clamped_log = min(log_val, 10.0);
+            let bar_height = clamped_log / 10.0; // Normalize to 0-1
+            
+            if (norm_y <= bar_height) {
+                // Color gradient: deep blue (#0033CC) for n=0 to searing red (#FF3300) for n=10
+                let t = f32(n) / 10.0;
+                let bar_color = mix(
+                    vec3<f32>(0.0, 0.2, 0.8),      // Deep blue
+                    vec3<f32>(1.0, 0.2, 0.0),      // Searing red
+                    t
+                );
+                
+                // Rounded top cap (simple approximation)
+                let dist_from_top = bar_height - norm_y;
+                if (dist_from_top < 0.02 && dist_from_top > 0.0) {
+                    // Anti-alias top edge
+                    let alpha = 1.0 - (dist_from_top / 0.02);
+                    color = mix(color, bar_color, alpha);
+                } else {
+                    color = bar_color;
+                }
+            }
+        }
+    }
+    
+    // Draw axis lines
+    let axis_thickness = 3.0;
+    if (pixel_x >= margin_left - axis_thickness && pixel_x <= margin_left + axis_thickness) {
+        if (pixel_y >= margin_bottom && pixel_y <= margin_bottom + plot_height) {
+            color = vec3<f32>(0.0, 0.0, 0.0);
+        }
+    }
+    if (pixel_y >= margin_bottom - axis_thickness && pixel_y <= margin_bottom + axis_thickness) {
+        if (pixel_x >= margin_left && pixel_x <= margin_left + plot_width) {
+            color = vec3<f32>(0.0, 0.0, 0.0);
+        }
+    }
+    
+    return vec4<f32>(color, 1.0);
+}

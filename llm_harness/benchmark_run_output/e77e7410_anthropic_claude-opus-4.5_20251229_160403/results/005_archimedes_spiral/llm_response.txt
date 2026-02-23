@@ -1,0 +1,374 @@
+<shader file="shader.wgsl">
+// Archimedes' Spiral - Ancient Greek Mathematical Visualization
+// Demonstrating the spiral r = aθ with angle trisection and area properties
+
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+}
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+// Constants
+const PI: f32 = 3.14159265359;
+const TAU: f32 = 6.28318530718;
+
+// Hash function for procedural noise
+fn hash(p: vec2<f32>) -> f32 {
+    let h = dot(p, vec2<f32>(127.1, 311.7));
+    return fract(sin(h) * 43758.5453123);
+}
+
+// 2D noise for papyrus texture
+fn noise(p: vec2<f32>) -> f32 {
+    let i = floor(p);
+    let f = fract(p);
+    let u = f * f * (3.0 - 2.0 * f);
+    
+    let a = hash(i);
+    let b = hash(i + vec2<f32>(1.0, 0.0));
+    let c = hash(i + vec2<f32>(0.0, 1.0));
+    let d = hash(i + vec2<f32>(1.0, 1.0));
+    
+    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+}
+
+// Fractal Brownian Motion for aged paper texture
+fn fbm(p: vec2<f32>) -> f32 {
+    var value = 0.0;
+    var amplitude = 0.5;
+    var pos = p;
+    for (var i = 0u; i < 5u; i = i + 1u) {
+        value = value + amplitude * noise(pos);
+        pos = pos * 2.0;
+        amplitude = amplitude * 0.5;
+    }
+    return value;
+}
+
+// Distance to Archimedean spiral r = a*theta
+fn spiralDist(p: vec2<f32>, a: f32, maxTheta: f32) -> f32 {
+    let r = length(p);
+    let theta = atan2(p.y, p.x);
+    
+    var minDist = 1000.0;
+    
+    // Check multiple turns of the spiral
+    for (var k = -1i; k <= 8i; k = k + 1i) {
+        let thetaK = theta + f32(k) * TAU;
+        if (thetaK >= 0.0 && thetaK <= maxTheta) {
+            let rSpiral = a * thetaK;
+            let spiralPoint = vec2<f32>(cos(thetaK), sin(thetaK)) * rSpiral;
+            let dist = length(p - spiralPoint);
+            minDist = min(minDist, dist);
+        }
+    }
+    
+    return minDist;
+}
+
+// Draw a line segment
+fn lineDist(p: vec2<f32>, a: vec2<f32>, b: vec2<f32>) -> f32 {
+    let pa = p - a;
+    let ba = b - a;
+    let h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
+
+// Draw an arc
+fn arcDist(p: vec2<f32>, center: vec2<f32>, radius: f32, startAngle: f32, endAngle: f32) -> f32 {
+    let rel = p - center;
+    let angle = atan2(rel.y, rel.x);
+    let r = length(rel);
+    
+    // Check if angle is in range
+    var ang = angle;
+    if (ang < startAngle) {
+        ang = ang + TAU;
+    }
+    
+    if (ang >= startAngle && ang <= endAngle) {
+        return abs(r - radius);
+    }
+    
+    // Distance to endpoints
+    let p1 = center + vec2<f32>(cos(startAngle), sin(startAngle)) * radius;
+    let p2 = center + vec2<f32>(cos(endAngle), sin(endAngle)) * radius;
+    return min(length(p - p1), length(p - p2));
+}
+
+// Draw a circle
+fn circleDist(p: vec2<f32>, center: vec2<f32>, radius: f32) -> f32 {
+    return abs(length(p - center) - radius);
+}
+
+// Draw a point marker
+fn pointDist(p: vec2<f32>, center: vec2<f32>, radius: f32) -> f32 {
+    return length(p - center) - radius;
+}
+
+// Papyrus background texture
+fn papyrusColor(uv: vec2<f32>) -> vec3<f32> {
+    let baseColor = vec3<f32>(0.96, 0.90, 0.83); // #F5E6D3
+    
+    // Add noise for aged paper texture
+    let n1 = fbm(uv * 8.0);
+    let n2 = fbm(uv * 20.0 + vec2<f32>(100.0, 50.0));
+    let n3 = fbm(uv * 3.0 + vec2<f32>(200.0, 150.0));
+    
+    // Staining and aging
+    var color = baseColor - vec3<f32>(0.1, 0.08, 0.05) * n1;
+    color = color - vec3<f32>(0.05, 0.04, 0.03) * n2;
+    color = color - vec3<f32>(0.08, 0.06, 0.04) * n3;
+    
+    // Water damage at edges
+    let edgeDist = min(min(uv.x, 1.0 - uv.x), min(uv.y, 1.0 - uv.y));
+    let waterDamage = smoothstep(0.15, 0.0, edgeDist) * fbm(uv * 15.0);
+    color = color - vec3<f32>(0.15, 0.12, 0.08) * waterDamage;
+    
+    // Darkened edges (aging)
+    let edgeDark = smoothstep(0.1, 0.0, edgeDist);
+    color = color * (1.0 - edgeDark * 0.3);
+    
+    return color;
+}
+
+// Greek letter patterns (simplified bitmap-style)
+fn greekTheta(p: vec2<f32>, center: vec2<f32>, size: f32) -> f32 {
+    let rel = (p - center) / size;
+    let circle = abs(length(rel) - 0.4) - 0.08;
+    let line = abs(rel.x) - 0.08;
+    let inCircle = select(1000.0, line, length(rel) < 0.45);
+    return min(circle, inCircle) * size;
+}
+
+fn greekPi(p: vec2<f32>, center: vec2<f32>, size: f32) -> f32 {
+    let rel = (p - center) / size;
+    // Top bar
+    let top = max(abs(rel.x) - 0.35, abs(rel.y - 0.3) - 0.06);
+    // Left leg
+    let left = max(abs(rel.x + 0.2) - 0.06, abs(rel.y) - 0.35);
+    // Right leg
+    let right = max(abs(rel.x - 0.2) - 0.06, abs(rel.y) - 0.35);
+    return min(min(top, left), right) * size;
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let resolution = params.resolution;
+    let uv = pos.xy / resolution;
+    let aspect = resolution.x / resolution.y;
+    
+    // Center and scale coordinates
+    var p = (pos.xy - resolution * 0.5) / min(resolution.x, resolution.y);
+    p = p * 2.2; // Scale to fit spiral
+    
+    // Shift spiral center slightly left to make room for annotations
+    let spiralCenter = vec2<f32>(-0.1, 0.0);
+    let sp = p - spiralCenter;
+    
+    // Time simulation (static for this render)
+    let time = 0.7; // Fixed time for static visualization
+    
+    // Start with papyrus background
+    var color = papyrusColor(uv);
+    
+    // === ARCHIMEDEAN SPIRAL ===
+    let spiralA = 1.0 / (4.0 * PI); // Coefficient for r = a*theta
+    let maxTheta = 8.0 * PI; // 4 complete turns
+    
+    // Draw the main spiral
+    let spiralD = spiralDist(sp, spiralA, maxTheta);
+    let spiralColor = vec3<f32>(0.118, 0.196, 0.388); // Deep blue #1E3263
+    let spiralWidth = 0.012;
+    let spiralAlpha = smoothstep(spiralWidth, spiralWidth * 0.3, spiralD);
+    color = mix(color, spiralColor, spiralAlpha * 0.9);
+    
+    // === ANGLE TRISECTION DEMONSTRATION ===
+    let trisectCenter = spiralCenter;
+    let angle60 = PI / 3.0; // 60 degrees
+    let angle20 = PI / 9.0; // 20 degrees (1/3 of 60)
+    
+    // Construction lines for angle trisection
+    let constructColor = vec3<f32>(0.545, 0.271, 0.075); // Faded red #8B4513
+    let lineWidth = 0.006;
+    
+    // Ray OA (horizontal reference)
+    let rayOA = lineDist(sp, trisectCenter, trisectCenter + vec2<f32>(0.8, 0.0));
+    let rayOAalpha = smoothstep(lineWidth, lineWidth * 0.3, rayOA);
+    color = mix(color, constructColor, rayOAalpha * 0.7);
+    
+    // Ray OB (60 degree line)
+    let dirB = vec2<f32>(cos(angle60), sin(angle60));
+    let rayOB = lineDist(sp, trisectCenter, trisectCenter + dirB * 0.8);
+    let rayOBalpha = smoothstep(lineWidth, lineWidth * 0.3, rayOB);
+    color = mix(color, constructColor, rayOBalpha * 0.7);
+    
+    // Ray OP (20 degree - trisected angle)
+    let dirP = vec2<f32>(cos(angle20), sin(angle20));
+    let trisectRadius = spiralA * angle20; // Point on spiral
+    let pointP = trisectCenter + dirP * trisectRadius * 3.0; // Extended for visibility
+    let rayOP = lineDist(sp, trisectCenter, pointP);
+    let rayOPalpha = smoothstep(lineWidth * 1.5, lineWidth * 0.3, rayOP);
+    let goldColor = vec3<f32>(0.85, 0.65, 0.12); // Golden
+    color = mix(color, goldColor, rayOPalpha * 0.8);
+    
+    // Arc showing the 60 degree angle
+    let arcR = 0.25;
+    let arcD = arcDist(sp, trisectCenter, arcR, 0.0, angle60);
+    let arcAlpha = smoothstep(lineWidth * 0.8, lineWidth * 0.2, arcD);
+    color = mix(color, constructColor, arcAlpha * 0.6);
+    
+    // Mark trisection arcs (at 20 and 40 degrees)
+    let arc20 = arcDist(sp, trisectCenter, arcR * 0.9, 0.0, angle20);
+    let arc20Alpha = smoothstep(lineWidth * 0.6, lineWidth * 0.1, arc20);
+    color = mix(color, goldColor, arc20Alpha * 0.5);
+    
+    // === POINT MARKERS ===
+    let pointRadius = 0.015;
+    
+    // Origin point O
+    let pointO = pointDist(sp, trisectCenter, pointRadius);
+    let pointOAlpha = smoothstep(0.0, -0.005, pointO);
+    color = mix(color, spiralColor, pointOAlpha);
+    
+    // Point P on spiral (trisection point)
+    let trisectP = trisectCenter + dirP * spiralA * angle20;
+    let pointPdist = pointDist(sp, trisectP, pointRadius * 0.8);
+    let pointPAlpha = smoothstep(0.0, -0.005, pointPdist);
+    color = mix(color, goldColor, pointPAlpha);
+    
+    // === UNIFORM SPACING DEMONSTRATION ===
+    // Draw radial marks showing equal spacing between turns
+    for (var turn = 1u; turn <= 4u; turn = turn + 1u) {
+        let theta = f32(turn) * TAU;
+        let r = spiralA * theta;
+        let markPos = spiralCenter + vec2<f32>(r, 0.0);
+        let markD = lineDist(sp, markPos + vec2<f32>(0.0, -0.03), markPos + vec2<f32>(0.0, 0.03));
+        let markAlpha = smoothstep(lineWidth * 0.5, lineWidth * 0.1, markD);
+        color = mix(color, spiralColor * 0.5, markAlpha * 0.8);
+    }
+    
+    // === AREA VISUALIZATION (First Turn) ===
+    // Subtle fill showing area under first turn
+    let firstTurnTheta = TAU;
+    let firstTurnR = spiralA * firstTurnTheta;
+    let pTheta = atan2(sp.y, sp.x);
+    let pThetaPos = select(pTheta + TAU, pTheta, pTheta >= 0.0);
+    let pR = length(sp);
+    let spiralRatP = spiralA * pThetaPos;
+    
+    let inFirstTurn = select(0.0, 1.0, pThetaPos <= TAU && pR <= spiralRatP && pR > 0.02);
+    let areaColor = vec3<f32>(0.3, 0.5, 0.7);
+    color = mix(color, areaColor, inFirstTurn * 0.15);
+    
+    // === TANGENT LINE VISUALIZATION ===
+    // Show tangent at a point on the spiral
+    let tangentTheta = 2.5 * PI;
+    let tangentR = spiralA * tangentTheta;
+    let tangentPoint = spiralCenter + vec2<f32>(cos(tangentTheta), sin(tangentTheta)) * tangentR;
+    
+    // Tangent direction for Archimedean spiral
+    // dr/dtheta = a, so tangent makes angle psi with radius where tan(psi) = r/a = theta
+    let tangentAngle = tangentTheta + atan(tangentTheta);
+    let tangentDir = vec2<f32>(cos(tangentAngle), sin(tangentAngle));
+    
+    let tangentLine = lineDist(sp, tangentPoint - tangentDir * 0.15, tangentPoint + tangentDir * 0.15);
+    let tangentAlpha = smoothstep(lineWidth * 0.8, lineWidth * 0.2, tangentLine);
+    color = mix(color, vec3<f32>(0.6, 0.3, 0.5), tangentAlpha * 0.7);
+    
+    // Radius vector to tangent point
+    let radiusLine = lineDist(sp, spiralCenter, tangentPoint);
+    let radiusAlpha = smoothstep(lineWidth * 0.5, lineWidth * 0.1, radiusLine);
+    color = mix(color, constructColor * 0.7, radiusAlpha * 0.4);
+    
+    // Mark tangent point
+    let tangentPointD = pointDist(sp, tangentPoint, pointRadius * 0.7);
+    let tangentPointAlpha = smoothstep(0.0, -0.004, tangentPointD);
+    color = mix(color, vec3<f32>(0.6, 0.3, 0.5), tangentPointAlpha);
+    
+    // === COMPASS MARKS (Construction Aesthetic) ===
+    // Faint compass pivot marks
+    let compassMark = circleDist(sp, spiralCenter, 0.02);
+    let compassAlpha = smoothstep(0.003, 0.001, compassMark);
+    color = mix(color, spiralColor * 0.3, compassAlpha * 0.5);
+    
+    // === GREEK LETTER ANNOTATIONS ===
+    // θ near the angle
+    let thetaPos = spiralCenter + vec2<f32>(0.35, 0.15);
+    let thetaD = greekTheta(sp, thetaPos, 0.06);
+    let thetaAlpha = smoothstep(0.008, 0.002, thetaD);
+    color = mix(color, spiralColor, thetaAlpha * 0.8);
+    
+    // π symbol near first turn completion
+    let piPos = spiralCenter + vec2<f32>(spiralA * TAU + 0.08, 0.08);
+    let piD = greekPi(sp, piPos, 0.05);
+    let piAlpha = smoothstep(0.008, 0.002, piD);
+    color = mix(color, spiralColor, piAlpha * 0.8);
+    
+    // === ARCHIMEDES MEDALLION (Corner) ===
+    let medallionCenter = vec2<f32>(0.75, -0.75);
+    let medallionR = 0.18;
+    
+    // Outer circle
+    let outerRing = circleDist(sp, medallionCenter, medallionR);
+    let outerRingAlpha = smoothstep(lineWidth * 1.5, lineWidth * 0.3, outerRing);
+    color = mix(color, spiralColor * 0.6, outerRingAlpha * 0.7);
+    
+    // Inner circle
+    let innerRing = circleDist(sp, medallionCenter, medallionR * 0.85);
+    let innerRingAlpha = smoothstep(lineWidth, lineWidth * 0.2, innerRing);
+    color = mix(color, spiralColor * 0.6, innerRingAlpha * 0.5);
+    
+    // Simple profile silhouette (stylized)
+    let profileRel = sp - medallionCenter;
+    let profileDist = length(profileRel);
+    let profileAngle = atan2(profileRel.y, profileRel.x);
+    
+    // Create a simple head shape
+    let headShape = profileDist - medallionR * 0.6 * (1.0 + 0.15 * cos(profileAngle * 2.0 - 0.5));
+    let inMedallion = select(0.0, 1.0, profileDist < medallionR * 0.8);
+    let headAlpha = smoothstep(0.01, -0.01, headShape) * inMedallion;
+    color = mix(color, spiralColor * 0.4, headAlpha * 0.3);
+    
+    // Small spiral in medallion
+    let miniSpiralD = spiralDist(profileRel * 4.0, 0.15, 3.0 * PI);
+    let miniSpiralAlpha = smoothstep(0.02, 0.005, miniSpiralD) * inMedallion;
+    color = mix(color, spiralColor, miniSpiralAlpha * 0.6);
+    
+    // === EQUATION ANNOTATION r = aθ ===
+    // Simple representation using line segments
+    let eqCenter = vec2<f32>(-0.85, 0.85);
+    
+    // "r" - simple vertical with curve
+    let rLine = lineDist(sp, eqCenter, eqCenter + vec2<f32>(0.0, -0.08));
+    let rAlpha = smoothstep(lineWidth * 0.7, lineWidth * 0.1, rLine);
+    color = mix(color, spiralColor, rAlpha * 0.7);
+    
+    // "=" sign
+    let eq1 = lineDist(sp, eqCenter + vec2<f32>(0.05, -0.02), eqCenter + vec2<f32>(0.12, -0.02));
+    let eq2 = lineDist(sp, eqCenter + vec2<f32>(0.05, -0.05), eqCenter + vec2<f32>(0.12, -0.05));
+    let eqAlpha = smoothstep(lineWidth * 0.5, lineWidth * 0.1, min(eq1, eq2));
+    color = mix(color, spiralColor, eqAlpha * 0.7);
+    
+    // === FINAL ADJUSTMENTS ===
+    // Add subtle vignette
+    let vignetteD = length(uv - vec2<f32>(0.5, 0.5));
+    let vignette = 1.0 - smoothstep(0.4, 0.75, vignetteD) * 0.2;
+    color = color * vignette;
+    
+    // Slight sepia tone for aged look
+    let luminance = dot(color, vec3<f32>(0.299, 0.587, 0.114));
+    let sepiaColor = vec3<f32>(luminance * 1.1, luminance * 0.95, luminance * 0.82);
+    color = mix(color, sepiaColor, 0.1);
+    
+    return vec4<f32>(color, 1.0);
+}
+</shader>

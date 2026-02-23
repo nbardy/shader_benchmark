@@ -1,0 +1,165 @@
+# Claude 3.5 Sonnet - WGSL Specific Error Patterns
+
+## Model Information
+- Model: `anthropic/claude-3.5-sonnet-20241022`
+- Language: WGSL (WebGPU Shading Language)
+- Baseline Success Rate: 30% (3/10 tests)
+- Target Success Rate: 60%+ (after P0/P1 fixes)
+
+## Known Error Patterns (October 2025)
+
+### P0 Priority Fixes (Similar to Haiku 4.5)
+
+#### 1. Params Naming Conflict (40% failure rate → FIXED)
+**Pattern**: Using uppercase `Params` for both variable and type name
+**Example**:
+```wgsl
+@group(0) @binding(0) var<uniform> Params: Params;  // ❌ FAILS
+```
+**Fix**: Use lowercase variable name
+```wgsl
+@group(0) @binding(0) var<uniform> params: Params;  // ✅ CORRECT
+```
+**Status**: ✅ FIXED in language_specs.py:168, shader_parser.py:72
+
+#### 2. Dynamic Array Indexing (30% failure rate)
+**Pattern**: LLM uses variable indexing into arrays (works in GLSL, not WGSL)
+**Example**:
+```wgsl
+let vertices = array<vec3<f32>, 8>(...);
+for (var i = 0u; i < 8u; i++) {
+    let v = vertices[i];  // ❌ FAILS - variable indexing not allowed
+}
+```
+**Fix**: Use const loop unrolling or access patterns
+```wgsl
+// Option 1: Const indexing
+let v0 = vertices[0u];
+let v1 = vertices[1u];
+// ... etc
+
+// Option 2: Switch statement with const indices
+switch (i) {
+    case 0u: { return vertices[0u]; }
+    case 1u: { return vertices[1u]; }
+    // ... etc
+}
+```
+
+### P1 Priority Fixes (Expected in Sonnet)
+
+#### 3. mod() Function (Likely 10-20% failure rate)
+**Pattern**: LLM uses GLSL `mod(x, y)` instead of WGSL `%` operator
+**Example**:
+```wgsl
+let cycle_time = mod(params.time, 5.0);  // ❌ FAILS
+```
+**Fix**: Use `%` operator
+```wgsl
+let cycle_time = params.time % 5.0;  // ✅ CORRECT
+```
+
+#### 4. Reserved Keywords (Likely 10-20% failure rate)
+**Pattern**: LLM uses semantically correct names that are WGSL reserved words
+**Example**:
+```wgsl
+let target = vec3<f32>(0.0, 0.0, 0.0);  // ❌ FAILS ('target' is reserved)
+```
+**Fix**: Use alternative names
+```wgsl
+let target_pos = vec3<f32>(0.0, 0.0, 0.0);  // ✅ CORRECT
+```
+
+**Reserved Keywords**: target, handle, using, namespace, typedef
+
+## Model-Specific Behaviors
+
+### Strengths
+- More sophisticated than Haiku at understanding WGSL syntax
+- Better at following complex geometric/mathematical specifications
+- Generally produces well-structured shader code
+
+### Weaknesses
+- **Dynamic array indexing** - Major weakness (30% failure rate)
+  - Sonnet trained on GLSL examples where this works
+  - Tends to use elegant for-loops that don't compile in WGSL
+- **Variable/type naming conflicts** - ✅ FIXED via lowercase params convention
+- Still confuses GLSL and WGSL operators occasionally (mod function)
+
+### Comparison to Haiku 4.5
+- **Sonnet**: Better at complex logic, worse at WGSL-specific syntax rules
+- **Haiku**: Better at following strict syntax rules, worse at complex math
+- **Both**: Confuse GLSL and WGSL operators (mod, reserved keywords)
+
+## Recommended Prompt Strategy
+
+### Critical Warnings (Add to all prompts)
+```
+⚠️ CRITICAL WGSL REQUIREMENTS:
+1. NO variable array indexing - use const indices or switch statements
+2. Use % operator, NOT mod() function
+3. Reserved keywords: target, handle, using, namespace, typedef
+4. Variable name must differ from type name (use lowercase: params: Params)
+```
+
+### Model-Specific Examples
+When generating prompts for Sonnet, emphasize:
+- **Array indexing patterns**: Show switch-based indexing examples
+- **Explicit const unrolling**: Show loop unrolling patterns
+- **Alternative data structures**: Use parameters or switch statements instead of arrays
+
+Example pattern to include:
+```wgsl
+// ❌ WRONG - Variable indexing
+for (var i = 0u; i < 8u; i++) {
+    let v = vertices[i];  // FAILS!
+}
+
+// ✅ CORRECT - Const indexing via switch
+fn get_vertex(idx: u32) -> vec3<f32> {
+    switch (idx) {
+        case 0u: { return vec3<f32>(-1.0, -1.0, -1.0); }
+        case 1u: { return vec3<f32>( 1.0, -1.0, -1.0); }
+        // ... etc
+        default: { return vec3<f32>(0.0); }
+    }
+}
+```
+
+## Auto-Repair Patterns
+
+See `shader_parser.py:WGSLRepair` class for implementation:
+- `_fix_params_naming()`: ✅ IMPLEMENTED - Converts uppercase Params variable to lowercase
+- `_fix_dynamic_array_indexing()`: ⏳ TODO - Convert for-loops to switch statements
+- `_fix_mod_function()`: ⏳ TODO - Convert mod(x, y) to (x % y)
+- `_fix_reserved_keywords()`: ⏳ TODO - Append _var to reserved words
+
+## Testing Validation
+
+After implementing fixes, test on these known-failing problems:
+1. `brahmagupta_cyclic_quadrilaterals` - Dynamic array indexing
+2. `compound_polyhedra_stella_octangula` - Array indexing in loops
+3. `al_khwarizmi_geometric_algebra` - mod() function (if present)
+4. `apollonius_conic_sections` - Reserved keyword 'target' (if present)
+
+Expected improvement: 30% → 60%+ success rate
+
+## Known Working Problems (30% baseline)
+- `geometric_cube` - Simple geometry, no arrays
+- `archimedean_spiral_galaxy` - Parametric curves, no indexing
+- `apollonian_gasket` - Recursive patterns, no arrays
+
+## Maintenance Notes
+
+### When adding new fixes:
+1. Document the error pattern in this file first
+2. Implement auto-repair in shader_parser.py
+3. Update language_specs.py constraints
+4. Test on known-failing problems
+5. Update success rate expectations
+
+### Architecture Principles (from HAIKU_ERROR_PATTERNS.md):
+1. Prefer compiler-error-driven repair over predictive regex
+2. Simple fixes are better than complex heuristics
+3. Document WHY each fix works, not just WHAT it does
+4. Keep error knowledge base up to date

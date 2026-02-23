@@ -1,0 +1,45 @@
+{
+  "problem_index": 3,
+  "problem_name": "apollonius_conic_sections",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T18:59:43.863640",
+      "data": {
+        "shaders": [
+          "shader.wgsl"
+        ],
+        "llm_response_len": 5226
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T18:59:43.865624",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d5c3460a_google_gemini-3-flash-preview_20251229_185850/results/003_apollonius_conic_sections"
+      }
+    },
+    "render": {
+      "status": "complete",
+      "timestamp": "2025-12-29T19:01:07.517079",
+      "data": {
+        "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d5c3460a_google_gemini-3-flash-preview_20251229_185850/results/003_apollonius_conic_sections/artifacts/result.png"
+      }
+    },
+    "judge": {
+      "status": "complete",
+      "timestamp": "2025-12-29T19:01:21.132288",
+      "data": {
+        "scores": [
+          50,
+          40,
+          30,
+          45,
+          35
+        ]
+      }
+    }
+  },
+  "created": "2025-12-29T18:59:27.102366",
+  "last_updated": "2025-12-29T19:01:21.132292"
+}

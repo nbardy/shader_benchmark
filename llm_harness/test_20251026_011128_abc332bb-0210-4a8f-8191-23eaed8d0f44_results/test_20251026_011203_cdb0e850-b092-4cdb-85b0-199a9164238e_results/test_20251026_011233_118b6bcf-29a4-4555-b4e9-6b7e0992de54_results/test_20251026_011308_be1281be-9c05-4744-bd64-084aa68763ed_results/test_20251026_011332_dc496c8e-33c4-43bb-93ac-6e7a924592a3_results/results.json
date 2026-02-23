@@ -1,0 +1,13 @@
+{
+  "scores": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_011128_abc332bb-0210-4a8f-8191-23eaed8d0f44_results/test_20251026_011203_cdb0e850-b092-4cdb-85b0-199a9164238e_results/test_20251026_011233_118b6bcf-29a4-4555-b4e9-6b7e0992de54_results/test_20251026_011308_be1281be-9c05-4744-bd64-084aa68763ed_results/test_20251026_011332_dc496c8e-33c4-43bb-93ac-6e7a924592a3_results",
+  "status": "failed",
+  "execution_success": false,
+  "has_image": false
+}

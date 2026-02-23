@@ -1,0 +1,15 @@
+{
+  "problem_index": 1,
+  "problem_name": "al_khwarizmi_geometric_algebra",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-12-28T20:05:58.074186",
+      "data": {
+        "error": "OpenRouter API error: 402 - {\"error\":{\"message\":\"This request requires more credits, or fewer max_tokens. You requested up to 64000 tokens, but can only afford 41131. To increase, visit https://openrouter.ai/settings/keys and create a key with a higher total limit\",\"code\":402,\"metadata\":{\"provider_name\":null}},\"user_id\":\"user_2vi2bRGZbu6aVy8mqhR6MLGwDAO\"}"
+      }
+    }
+  },
+  "created": "2025-12-28T20:05:53.959310",
+  "last_updated": "2025-12-28T20:05:58.074191"
+}

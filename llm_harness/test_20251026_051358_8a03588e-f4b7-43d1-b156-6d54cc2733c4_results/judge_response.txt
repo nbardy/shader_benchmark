@@ -1,0 +1,192 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+* Topological correctness: Euler characteristic V-E+F = -2 confirming genus-1 minimal surface topology
+* Mean curvature minimization: RMS mean curvature vector |H| ≤ 8×10^-4 throughout surface via cotangent Laplacian analysis
+* Three-fold rotational symmetry: Catenoidal ends positioned at 120° ± 5° angular intervals around central axis
+* Minimal surface equation satisfaction: Surface satisfies H = 0 constraint with numerical precision ≤ 1.2×10^-3
+* Branch point handling: Correct mathematical treatment of Costa surface's characteristic branch points and singularities
+* Saddle region geometry: Proper hyperbolic curvature in central connecting region between catenoidal ends
+* Parametric accuracy: Surface generation follows correct Costa surface parametrization with appropriate parameter domains
+
+**S4: Visual Implementation Section**  
+* Frosted glass material rendering: Elegant translucent appearance with appropriate subsurface scattering effects
+* Curvature-based tinting: Lime-green highlighting accurately represents regions of lowest mean curvature (H < 5×10^-4)
+* Three-dimensional depth perception: Clear visualization of surface topology including handle structure and catenoidal ends
+* Surface continuity: Smooth rendering without mesh artifacts or discontinuities at branch points
+* Lighting quality: Appropriate illumination showcasing surface curvature variations and topological features
+* Transparency effects: Proper alpha blending and depth sorting for translucent material representation
+* Anti-aliasing implementation: Clean edges and smooth surface transitions without pixelation artifacts
+
+**S5: Completeness & Specifications Section**
+* Mesh extraction capability: Surface geometry recoverable from alpha channel silhouette via marching tetrahedra
+* Quantitative verification: Numerical tests for Euler characteristic, curvature bounds, and symmetry measurements
+* Render quality standards: All triangles maintain interior angles ≥ 5° for geometric stability
+* Curvature color mapping: Minimum 80% green pixel coverage in low-curvature regions (H < 5×10^-4)
+* Symmetry verification: Point-cloud slicing at |z| > 1.2 enables clustering analysis of three catenoidal ends
+* Output format compliance: Score 1-10 with ≤120-word rationale summarizing test results
+* Mathematical visualization fidelity: Visual output enables verification of Costa surface's fundamental mathematical properties
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+The Costa surface should appear like a delicate, three-winged glass sculpture suspended in mid-air. Viewers must immediately notice:
+1. The vertical catenoidal neck shooting up/down
+2. The two horizontal catenoidal ends
+3. The saddle-like junction that hints at the single toroidal handle (genus 1)
+
+Mathematical data:
+- Weierstrass representation: g(z) = z, dh = λ*dz/(z³-1), λ = 0.252 (period-closing)
+- Parameter domain: hexagonally-fundamental region expressed by polar grid in the z-plane with 450 (radial) × 300 (angular) samples. Use conjugate pairing to close periods and tile just once.
+- Coordinate integration via Kummer surface tracking; step size adaptive to local curvature. Terminate when |z| > 4 or |Re ∫| > 5.
+
+Mesh & normals:
+- Weld identical boundary vertices to enforce genus 1 and Euler characteristic -2
+- Compute mean curvature H at each vertex; store in vertex attribute
+
+Shading:
+- Base material – frosted glass (IOR 1.5, roughness 0.2)
+- Curvature tint – mix 80% material colour with lime-green (#55FF88) where |H|<5×10^-4
+- Lighting – three-point studio rig: key (4,4,6), fill (-6,-2,5) intensity 0.5, rim (0,0,8) intensity 0.7, all pure white
+
+Camera & framing:
+- Perspective; focal length 35 mm, sensor 36 mm (true-to-life field)
+- Position (6,4,3), look-at (0,0,0). Orbit lines of sight by 5° downwards so the vertical neck is not foreshortened.
+- Depth-of-field: focus distance 5 units, f/2 blur for background only
+
+Extras:
+- Add invisible ground-plane with shadow-catcher for soft shadow
+- Transparent background (#00000000) – allows later compositing
+- PNG-32 (RGBA), 2600 × 1600 px
+Deliverable: Outputs a single image.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Detailed Evaluation of Costa Surface Shader Visualization
+
+## Analysis by Criterion
+
+### S1: Problem Accuracy (Generic)
+The image demonstrates a substantial disconnect from the specified requirements. While a translucent surface is rendered, the fundamental mathematical structure of the Costa surface is not evident. The visualization lacks:
+- Clear identification of the three catenoidal ends positioned at 120° intervals
+- The characteristic vertical catenoidal neck
+- Visible saddle-junction topology indicating genus-1 topology
+- Any obvious three-fold rotational symmetry
+- Distinguishable branch point geometry
+
+The surface appears as an amorphous translucent form rather than the precise mathematical object specified. Critical geometric features that should be immediately recognizable are absent or obscured.
+
+**Score: 28/100** – Basic translucency present but geometric accuracy severely compromised.
+
+---
+
+### S2: Visual Quality (Generic)
+Technical execution shows competent rendering fundamentals:
+- **Resolution & Format**: Appears to meet 2600×1600 px PNG-32 RGBA specification
+- **Lighting**: Three-point studio setup discernible with appropriate key/fill/rim positioning
+- **Anti-aliasing**: Smooth edges without obvious pixelation
+- **Material Rendering**: Frosted glass appearance with adequate subsurface scattering
+
+However, visual impact is diminished by:
+- Overall lack of surface definition and clarity
+- Insufficient contrast to showcase topological features
+- Geometry too subtle relative to background
+- Depth-of-field effects potentially obscuring critical surface details
+
+**Score: 62/100** – Technically sound rendering compromised by insufficient geometric prominence and feature visibility.
+
+---
+
+### S3: Mathematical Accuracy Section
+
+**Topological Correctness**: Unable to verify. No clear handle structure visible; genus-1 topology unconfirmed visually.
+
+**Mean Curvature Minimization**: Cannot assess whether |H| ≤ 8×10⁻⁴ constraint is satisfied. No clear curvature variation patterns visible.
+
+**Three-fold Rotational Symmetry**: **FAILED**. Expected three catenoidal ends at 120° ± 5° intervals are not clearly distinguishable. Symmetry cannot be verified from this rendering.
+
+**Minimal Surface Equation Satisfaction**: Unable to confirm H = 0 constraint compliance. Surface lacks distinguishing features characteristic of a minimal surface.
+
+**Branch Point Handling**: Not visually verifiable. Costa surface characteristic singularities are not evident.
+
+**Saddle Region Geometry**: The hyperbolic curvature expected in the central saddle junction is not apparent. Critical topological feature missing.
+
+**Parametric Accuracy**: Weierstrass representation implementation cannot be validated. Surface lacks precision geometry expected from hexagonal parameter domain sampling.
+
+**Score: 18/100** – Minimal surface properties fundamentally unverifiable; topology unconfirmed; critical geometric features absent.
+
+---
+
+### S4: Visual Implementation Section
+
+**Frosted Glass Material**: Rendering is present with appropriate translucency, though potentially over-blurred.
+
+**Curvature-based Tinting**: **CRITICAL FAILURE**. Lime-green (#55FF88) highlighting for low-curvature regions (H < 5×10⁻⁴) is not visually apparent. Expected ≥80% green coverage in minimal regions is absent; surface appears uniformly pale without color differentiation.
+
+**3D Depth Perception**: Limited. The handle structure and distinct catenoidal ends are not clearly spatially separated.
+
+**Surface Continuity**: Appears smooth; no obvious mesh artifacts or discontinuities at alleged branch points (though branch points themselves are not visible).
+
+**Lighting Quality**: Adequate three-point setup, but insufficient to disambiguate surface topology and curvature variations.
+
+**Transparency Effects**: Proper alpha blending appears implemented; background transparency maintained.
+
+**Anti-aliasing**: Edges rendered cleanly without pixelation.
+
+**Score: 35/100** – Material foundation present but curvature tinting completely absent; insufficient feature visibility.
+
+---
+
+### S5: Completeness & Specifications Section
+
+**Mesh Extraction Capability**: Cannot verify marching tetrahedra recovery without visible surface silhouette detail.
+
+**Quantitative Verification**: No numerical data visible; topology, curvature bounds, and symmetry measurements cannot be confirmed.
+
+**Render Quality Standards**: Interior angle constraint (≥5°) unverifiable; surface geometry too indistinct.
+
+**Curvature Color Mapping**: **FAILED**. Expected minimum 80% green pixel coverage in low-curvature regions is not achieved. Lime-green tinting is virtually absent.
+
+**Symmetry Verification**: Three-fold rotational symmetry not apparent; point-cloud slicing analysis would likely fail to confirm three distinct catenoidal ends.
+
+**Output Format**: PNG-32 RGBA format appears correct; resolution specification likely met.
+
+**Mathematical Visualization Fidelity**: **SEVERELY COMPROMISED**. Visualization does not enable verification of Costa surface's fundamental mathematical properties. Critical distinguishing features are not visually accessible.
+
+**Score: 22/100** – Format compliance minimal; quantitative verification impossible; essential geometric features absent.
+
+---
+
+## Summary
+
+This rendering represents a technically competent but mathematically incomplete visualization. While the shader demonstrates foundational rendering capability (materials, lighting, anti-aliasing), it fails to render the actual Costa surface topology with sufficient clarity and precision. The most critical failure is the absence of lime-green curvature-based tinting and the invisibility of the three catenoidal ends and central saddle junction. The surface appears as an undifferentiated translucent form rather than a mathematically precise genus-1 minimal surface with characteristic three-fold rotational symmetry. Essential mathematical features required for scientific visualization are not visually accessible.
+
+---
+
+<scores><S1>28</S1><S2>62</S2><S3>18</S3><S4>35</S4><S5>22</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[28, 62, 18, 35, 22]
+

@@ -1,0 +1,12 @@
+2025-12-29 19:47:22.477 [INFO] Logger initialized for problem 7: binary_tree_fractal
+2025-12-29 19:47:22.477 [INFO] ========== PROBLEM START ==========
+2025-12-29 19:47:22.478 [INFO] Index: 7
+2025-12-29 19:47:22.478 [INFO] Name: binary_tree_fractal
+2025-12-29 19:47:22.478 [ERROR] EXCEPTION in run_single_problem:
+2025-12-29 19:47:22.478 [ERROR]   Type: RuntimeError
+2025-12-29 19:47:22.478 [ERROR]   Message: Resume from checkpoint not yet implemented
+2025-12-29 19:47:22.478 [ERROR]   Traceback:
+2025-12-29 19:47:22.479 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 343, in run_single_problem
+    raise RuntimeError("Resume from checkpoint not yet implemented")
+2025-12-29 19:47:22.479 [INFO] ========== PROBLEM END: FAILED ==========
+2025-12-29 19:47:22.479 [INFO] Execution time: 0.00s

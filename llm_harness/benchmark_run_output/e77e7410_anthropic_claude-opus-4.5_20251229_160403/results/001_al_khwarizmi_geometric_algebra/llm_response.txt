@@ -1,0 +1,389 @@
+<shader file="shader.wgsl">
+// Al-Khwarizmi's Geometric Algebra: x² + 10x = 39
+// Visualizing the birth of algebra through completing the square
+
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+}
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+// Islamic color palette
+const MANUSCRIPT_BG: vec3<f32> = vec3<f32>(0.996, 0.953, 0.780);
+const DEEP_BLUE: vec3<f32> = vec3<f32>(0.118, 0.227, 0.541);
+const GOLD: vec3<f32> = vec3<f32>(0.961, 0.620, 0.043);
+const WHITE: vec3<f32> = vec3<f32>(0.98, 0.98, 0.95);
+const DARK_INK: vec3<f32> = vec3<f32>(0.1, 0.08, 0.06);
+const RED_ACCENT: vec3<f32> = vec3<f32>(0.7, 0.15, 0.1);
+
+// SDF for a box
+fn sdBox(p: vec2<f32>, b: vec2<f32>) -> f32 {
+    let d = abs(p) - b;
+    return length(max(d, vec2<f32>(0.0, 0.0))) + min(max(d.x, d.y), 0.0);
+}
+
+// 8-fold star pattern for Islamic decoration
+fn star8Pattern(p: vec2<f32>, scale: f32) -> f32 {
+    var uv = p * scale;
+    uv = fract(uv) - 0.5;
+    
+    var minD = 1.0;
+    for (var i = 0u; i < 8u; i = i + 1u) {
+        let angle = f32(i) * 3.14159265 / 4.0;
+        let dir = vec2<f32>(cos(angle), sin(angle));
+        let d = abs(dot(uv, dir));
+        minD = min(minD, d);
+    }
+    return minD;
+}
+
+// Arabesque vine pattern
+fn arabesqueVine(p: vec2<f32>, time: f32) -> f32 {
+    let scaled = p * 8.0;
+    let wave1 = sin(scaled.x * 2.0 + scaled.y * 1.5) * 0.3;
+    let wave2 = cos(scaled.y * 2.5 - scaled.x * 1.2) * 0.25;
+    let pattern = sin((scaled.x + wave1) * 3.14159) * cos((scaled.y + wave2) * 3.14159);
+    return smoothstep(0.4, 0.6, abs(pattern));
+}
+
+// Smooth animation phase
+fn getPhase(time: f32) -> f32 {
+    // 5 second cycle, smooth transitions between 5 steps
+    let cycle = time * 0.2; // 5 seconds per cycle
+    return fract(cycle) * 5.0;
+}
+
+// Draw the geometric construction
+fn drawConstruction(uv: vec2<f32>, phase: f32) -> vec4<f32> {
+    // Solution: x = 3, so the original square has side 3
+    // Rectangles have dimensions 3 × 2.5
+    // Corner squares are 2.5 × 2.5
+    // Final square has side 8 (3 + 2.5 + 2.5)
+    
+    let x_val = 3.0;
+    let half_coeff = 2.5; // 10/4 = 2.5 for each side
+    let total_side = x_val + 2.0 * half_coeff; // = 8
+    
+    // Scale everything to fit nicely in view
+    let scale = 0.08;
+    let center = vec2<f32>(0.0, 0.05);
+    let p = (uv - center) / scale;
+    
+    var color = MANUSCRIPT_BG;
+    var alpha = 1.0;
+    
+    // Animation phases:
+    // 0-1: Draw original x² square
+    // 1-2: Add rectangles (10x split into 4 pieces)
+    // 2-3: Show the incomplete figure
+    // 3-4: Complete the corners
+    // 4-5: Show final solution
+    
+    let lineWidth = 0.15;
+    
+    // Phase 1: Original square (x² = 9)
+    let sq1_center = vec2<f32>(0.0, 0.0);
+    let sq1_size = vec2<f32>(x_val * 0.5, x_val * 0.5);
+    let d_sq1 = sdBox(p - sq1_center, sq1_size);
+    
+    let sq1_alpha = smoothstep(0.0, 1.0, phase);
+    if (d_sq1 < 0.0) {
+        color = mix(color, DEEP_BLUE, sq1_alpha * 0.9);
+    }
+    if (abs(d_sq1) < lineWidth) {
+        color = mix(color, DARK_INK, sq1_alpha * smoothstep(lineWidth, 0.0, abs(d_sq1)));
+    }
+    
+    // Phase 2-3: Add four rectangles (each x × 2.5)
+    let rect_alpha = smoothstep(1.0, 2.0, phase);
+    
+    // Right rectangle
+    let rect_r_center = vec2<f32>(x_val * 0.5 + half_coeff * 0.5, 0.0);
+    let rect_r_size = vec2<f32>(half_coeff * 0.5, x_val * 0.5);
+    let d_rect_r = sdBox(p - rect_r_center, rect_r_size);
+    
+    // Left rectangle  
+    let rect_l_center = vec2<f32>(-x_val * 0.5 - half_coeff * 0.5, 0.0);
+    let d_rect_l = sdBox(p - rect_l_center, rect_r_size);
+    
+    // Top rectangle
+    let rect_t_center = vec2<f32>(0.0, x_val * 0.5 + half_coeff * 0.5);
+    let rect_t_size = vec2<f32>(x_val * 0.5, half_coeff * 0.5);
+    let d_rect_t = sdBox(p - rect_t_center, rect_t_size);
+    
+    // Bottom rectangle
+    let rect_b_center = vec2<f32>(0.0, -x_val * 0.5 - half_coeff * 0.5);
+    let d_rect_b = sdBox(p - rect_b_center, rect_t_size);
+    
+    // Draw rectangles
+    if (d_rect_r < 0.0) { color = mix(color, GOLD, rect_alpha * 0.85); }
+    if (d_rect_l < 0.0) { color = mix(color, GOLD, rect_alpha * 0.85); }
+    if (d_rect_t < 0.0) { color = mix(color, GOLD, rect_alpha * 0.85); }
+    if (d_rect_b < 0.0) { color = mix(color, GOLD, rect_alpha * 0.85); }
+    
+    // Rectangle outlines
+    let rect_line = smoothstep(lineWidth, 0.0, abs(d_rect_r)) +
+                    smoothstep(lineWidth, 0.0, abs(d_rect_l)) +
+                    smoothstep(lineWidth, 0.0, abs(d_rect_t)) +
+                    smoothstep(lineWidth, 0.0, abs(d_rect_b));
+    color = mix(color, DARK_INK, min(rect_line, 1.0) * rect_alpha);
+    
+    // Phase 4: Corner squares (completing the square!)
+    let corner_alpha = smoothstep(3.0, 4.0, phase);
+    let corner_size = vec2<f32>(half_coeff * 0.5, half_coeff * 0.5);
+    
+    // Four corners
+    let corner_tr = vec2<f32>(x_val * 0.5 + half_coeff * 0.5, x_val * 0.5 + half_coeff * 0.5);
+    let corner_tl = vec2<f32>(-x_val * 0.5 - half_coeff * 0.5, x_val * 0.5 + half_coeff * 0.5);
+    let corner_br = vec2<f32>(x_val * 0.5 + half_coeff * 0.5, -x_val * 0.5 - half_coeff * 0.5);
+    let corner_bl = vec2<f32>(-x_val * 0.5 - half_coeff * 0.5, -x_val * 0.5 - half_coeff * 0.5);
+    
+    let d_corner_tr = sdBox(p - corner_tr, corner_size);
+    let d_corner_tl = sdBox(p - corner_tl, corner_size);
+    let d_corner_br = sdBox(p - corner_br, corner_size);
+    let d_corner_bl = sdBox(p - corner_bl, corner_size);
+    
+    // Draw corners with white fill and blue outline
+    if (d_corner_tr < 0.0) { color = mix(color, WHITE, corner_alpha * 0.95); }
+    if (d_corner_tl < 0.0) { color = mix(color, WHITE, corner_alpha * 0.95); }
+    if (d_corner_br < 0.0) { color = mix(color, WHITE, corner_alpha * 0.95); }
+    if (d_corner_bl < 0.0) { color = mix(color, WHITE, corner_alpha * 0.95); }
+    
+    let corner_line = smoothstep(lineWidth, 0.0, abs(d_corner_tr)) +
+                      smoothstep(lineWidth, 0.0, abs(d_corner_tl)) +
+                      smoothstep(lineWidth, 0.0, abs(d_corner_br)) +
+                      smoothstep(lineWidth, 0.0, abs(d_corner_bl));
+    color = mix(color, DEEP_BLUE, min(corner_line, 1.0) * corner_alpha);
+    
+    // Phase 5: Highlight final square outline
+    let final_alpha = smoothstep(4.0, 4.5, phase);
+    let final_size = vec2<f32>(total_side * 0.5, total_side * 0.5);
+    let d_final = sdBox(p, final_size);
+    
+    if (abs(d_final) < lineWidth * 1.5 && abs(d_final) > lineWidth * 0.5) {
+        color = mix(color, RED_ACCENT, final_alpha * 0.9);
+    }
+    
+    return vec4<f32>(color, 1.0);
+}
+
+// Draw decorative Islamic border
+fn drawBorder(uv: vec2<f32>, aspect: f32) -> vec3<f32> {
+    var color = MANUSCRIPT_BG;
+    
+    let borderWidth = 0.08;
+    let innerBorder = 0.06;
+    
+    // Distance from edge
+    let distX = min(abs(uv.x - 0.5), abs(uv.x + 0.5));
+    let distY = min(abs(uv.y - 0.5), abs(uv.y + 0.5));
+    let distEdge = min(distX, distY);
+    
+    // Outer decorative band
+    if (distEdge < borderWidth) {
+        let star = star8Pattern(uv, 12.0);
+        let starColor = mix(DEEP_BLUE, GOLD, smoothstep(0.05, 0.15, star));
+        color = mix(starColor, color, smoothstep(borderWidth - 0.01, borderWidth, distEdge));
+    }
+    
+    // Inner gold line
+    if (distEdge > borderWidth - 0.005 && distEdge < borderWidth + 0.005) {
+        color = GOLD;
+    }
+    
+    // Corner arabesques
+    let cornerDist = min(
+        length(uv - vec2<f32>(0.45, 0.45)),
+        min(length(uv - vec2<f32>(-0.45, 0.45)),
+        min(length(uv - vec2<f32>(0.45, -0.45)),
+            length(uv - vec2<f32>(-0.45, -0.45))))
+    );
+    
+    if (cornerDist < 0.12) {
+        let vine = arabesqueVine(uv * 3.0, 0.0);
+        color = mix(color, mix(DEEP_BLUE, GOLD, vine), smoothstep(0.12, 0.08, cornerDist) * 0.5);
+    }
+    
+    return color;
+}
+
+// Draw text labels (simplified geometric representations)
+fn drawLabel(uv: vec2<f32>, center: vec2<f32>, phase: f32, labelType: u32) -> vec3<f32> {
+    let p = uv - center;
+    let d = length(p);
+    
+    // Simple circular label background
+    if (d < 0.025) {
+        return mix(WHITE, DARK_INK, smoothstep(0.02, 0.025, d));
+    }
+    
+    return vec3<f32>(-1.0); // No label
+}
+
+// Draw mathematical annotations
+fn drawAnnotations(uv: vec2<f32>, phase: f32) -> vec4<f32> {
+    var color = vec3<f32>(-1.0);
+    
+    // x² label in center of blue square
+    let label_x2 = vec2<f32>(0.0, 0.05);
+    let d_x2 = length(uv - label_x2);
+    if (d_x2 < 0.03 && phase > 0.5) {
+        let labelAlpha = smoothstep(0.5, 1.0, phase);
+        color = mix(WHITE, DEEP_BLUE, 0.3);
+    }
+    
+    // "= 64" annotation for final phase
+    if (phase > 4.0) {
+        let anno_pos = vec2<f32>(0.35, -0.25);
+        let d_anno = length(uv - anno_pos);
+        if (d_anno < 0.04) {
+            color = WHITE;
+        }
+    }
+    
+    if (color.x < 0.0) {
+        return vec4<f32>(0.0, 0.0, 0.0, 0.0);
+    }
+    return vec4<f32>(color, 1.0);
+}
+
+// Title area with Arabic-style decoration
+fn drawTitle(uv: vec2<f32>) -> vec3<f32> {
+    let titleY = 0.42;
+    let titleHeight = 0.04;
+    
+    if (abs(uv.y - titleY) < titleHeight && abs(uv.x) < 0.35) {
+        // Decorative title band
+        let pattern = sin(uv.x * 50.0) * 0.5 + 0.5;
+        return mix(DEEP_BLUE, GOLD, pattern * 0.3);
+    }
+    
+    return vec3<f32>(-1.0);
+}
+
+// Draw equation display area
+fn drawEquation(uv: vec2<f32>, phase: f32) -> vec3<f32> {
+    let eqY = -0.42;
+    let eqHeight = 0.035;
+    
+    if (abs(uv.y - eqY) < eqHeight && abs(uv.x) < 0.4) {
+        // Equation background
+        let bg = mix(WHITE, MANUSCRIPT_BG, 0.3);
+        
+        // Decorative underline
+        if (abs(uv.y - (eqY - eqHeight + 0.005)) < 0.003) {
+            return GOLD;
+        }
+        
+        return bg;
+    }
+    
+    return vec3<f32>(-1.0);
+}
+
+// Geometric area labels using simple shapes
+fn drawAreaMarkers(uv: vec2<f32>, phase: f32) -> vec4<f32> {
+    let scale = 0.08;
+    let center = vec2<f32>(0.0, 0.05);
+    let p = (uv - center) / scale;
+    
+    var color = vec4<f32>(0.0);
+    
+    // Small decorative dots at square centers
+    let x_val = 3.0;
+    let half_coeff = 2.5;
+    
+    // Center dot for x² (appears in phase 1)
+    let dot_center = vec2<f32>(0.0, 0.0);
+    let d_dot = length(p - dot_center);
+    if (d_dot < 0.4 && phase > 0.8) {
+        let dotAlpha = smoothstep(0.8, 1.2, phase);
+        color = vec4<f32>(WHITE, dotAlpha * smoothstep(0.4, 0.2, d_dot));
+    }
+    
+    // Corner markers (appear in phase 4)
+    if (phase > 3.5) {
+        let cornerAlpha = smoothstep(3.5, 4.0, phase);
+        let corners = array<vec2<f32>, 4>(
+            vec2<f32>(x_val * 0.5 + half_coeff * 0.5, x_val * 0.5 + half_coeff * 0.5),
+            vec2<f32>(-x_val * 0.5 - half_coeff * 0.5, x_val * 0.5 + half_coeff * 0.5),
+            vec2<f32>(x_val * 0.5 + half_coeff * 0.5, -x_val * 0.5 - half_coeff * 0.5),
+            vec2<f32>(-x_val * 0.5 - half_coeff * 0.5, -x_val * 0.5 - half_coeff * 0.5)
+        );
+        
+        for (var i = 0u; i < 4u; i = i + 1u) {
+            let d = length(p - corners[i]);
+            if (d < 0.3) {
+                color = vec4<f32>(DEEP_BLUE, cornerAlpha * smoothstep(0.3, 0.15, d));
+            }
+        }
+    }
+    
+    return color;
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let res = params.resolution;
+    let aspect = res.x / res.y;
+    
+    // Normalize to [-0.5, 0.5] range, centered
+    var uv = (pos.xy - res * 0.5) / min(res.x, res.y);
+    
+    // Simulate time for animation (use position-based pseudo-time for static render)
+    // For actual animation, this would come from a uniform
+    let simTime = 4.2; // Show near completion of construction
+    let phase = getPhase(simTime);
+    
+    // Start with background
+    var finalColor = MANUSCRIPT_BG;
+    
+    // Draw decorative border
+    let borderColor = drawBorder(uv, aspect);
+    if (borderColor.x >= 0.0) {
+        finalColor = borderColor;
+    }
+    
+    // Draw title area
+    let titleColor = drawTitle(uv);
+    if (titleColor.x >= 0.0) {
+        finalColor = titleColor;
+    }
+    
+    // Draw equation area
+    let eqColor = drawEquation(uv, phase);
+    if (eqColor.x >= 0.0) {
+        finalColor = eqColor;
+    }
+    
+    // Main construction area - check bounds
+    if (abs(uv.x) < 0.4 && abs(uv.y - 0.05) < 0.35) {
+        let construction = drawConstruction(uv, phase);
+        finalColor = construction.rgb;
+    }
+    
+    // Draw area markers
+    let markers = drawAreaMarkers(uv, phase);
+    if (markers.a > 0.0) {
+        finalColor = mix(finalColor, markers.rgb, markers.a);
+    }
+    
+    // Add subtle paper texture
+    let noise = fract(sin(dot(uv * 100.0, vec2<f32>(12.9898, 78.233))) * 43758.5453);
+    finalColor = finalColor + (noise - 0.5) * 0.02;
+    
+    // Vignette effect for aged manuscript look
+    let vignette = 1.0 - length(uv) * 0.5;
+    finalColor = finalColor * (0.85 + vignette * 0.15);
+    
+    return vec4<f32>(finalColor, 1.0);
+}
+</shader>

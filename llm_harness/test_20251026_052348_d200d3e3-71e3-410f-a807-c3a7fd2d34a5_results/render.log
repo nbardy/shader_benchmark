@@ -1,0 +1,27 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052348_d200d3e3-71e3-410f-a807-c3a7fd2d34a5_results/shaders/shader_0.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052348_d200d3e3-71e3-410f-a807-c3a7fd2d34a5_results/artifacts/result.png
+Return code: 101
+
+=== STDOUT ===
+(empty)
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: no definition in scope for identifier: 'mod'
+   ┌─ wgsl:73:24
+   │
+73 │     let dash_pattern = mod(angle + 0.0, dash_period);
+   │                        ^^^ unknown identifier
+
+
+    no definition in scope for identifier: 'mod'
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

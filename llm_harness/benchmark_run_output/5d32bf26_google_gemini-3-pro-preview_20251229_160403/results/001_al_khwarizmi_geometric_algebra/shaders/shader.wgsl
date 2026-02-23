@@ -1,0 +1,254 @@
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+    time: f32,
+    aspect: f32,
+};
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+// --- CONSTANTS ---
+const PI: f32 = 3.14159265359;
+const BLUE: vec3<f32> = vec3<f32>(0.117, 0.227, 0.541); // #1E3A8A
+const GOLD: vec3<f32> = vec3<f32>(0.960, 0.620, 0.040); // #F59E0B
+const PAPER: vec3<f32> = vec3<f32>(0.996, 0.953, 0.780); // #FEF3C7
+const DARK: vec3<f32> = vec3<f32>(0.2, 0.1, 0.05);
+
+// --- HELPER FUNCTIONS ---
+
+// Manual mix for f32 to satisfy strict constraints
+fn mix_f32(x: f32, y: f32, a: f32) -> f32 {
+    return x * (1.0 - a) + y * a;
+}
+
+// Manual mix for vec3
+fn mix_vec3(x: vec3<f32>, y: vec3<f32>, a: f32) -> vec3<f32> {
+    return x * (1.0 - a) + y * a;
+}
+
+// 2D Rotation
+fn rotate(p: vec2<f32>, angle: f32) -> vec2<f32> {
+    let c = cos(angle);
+    let s = sin(angle);
+    // Standard rotation matrix multiplication
+    return vec2<f32>(p.x * c - p.y * s, p.x * s + p.y * c);
+}
+
+// Signed Distance to Box
+fn sd_box(p: vec2<f32>, b: vec2<f32>) -> f32 {
+    let d = abs(p) - b;
+    return length(max(d, vec2<f32>(0.0))) + min(max(d.x, d.y), 0.0);
+}
+
+// Signed Distance to Cross (for the 'x' variable visualization)
+fn sd_cross(p: vec2<f32>, size: f32, width: f32) -> f32 {
+    let d1 = sd_box(rotate(p, PI * 0.25), vec2<f32>(size, width));
+    let d2 = sd_box(rotate(p, -PI * 0.25), vec2<f32>(size, width));
+    return min(d1, d2);
+}
+
+// Islamic Star Pattern SDF (approximated with overlapping squares)
+fn star_pattern(p: vec2<f32>, scale: f32) -> f32 {
+    // Grid repetition logic using fract replacement
+    // fract(x) returns x - floor(x)
+    let scaled = p * scale;
+    let cell_uv = fract(scaled) - 0.5;
+    
+    // rotating square 1
+    let d1 = sd_box(cell_uv, vec2<f32>(0.2));
+    // rotating square 2 (rotated 45 deg)
+    let d2 = sd_box(rotate(cell_uv, PI * 0.25), vec2<f32>(0.2));
+    
+    return min(d1, d2);
+}
+
+// Function to draw a line segment
+fn sd_segment(p: vec2<f32>, a: vec2<f32>, b: vec2<f32>) -> f32 {
+    let pa = p - a;
+    let ba = b - a;
+    let h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    // --- SETUP COORDINATES ---
+    // Normalized device coordinates (-1 to 1 variant)
+    let min_dim = min(params.resolution.x, params.resolution.y);
+    // Center (0,0), scale such that the viewport covers about 10x10 units
+    // The problem deals with x=3 (square 3x3) + 2*2.5 = 8 total width.
+    // 12.0 gives some margins.
+    var uv = (pos.xy - params.resolution * 0.5) / min_dim * 12.0;
+    
+    // --- ANIMATION TIMING ---
+    // Total cycle: 6 seconds
+    let total_time_sec = 6.0;
+    // Safe modulo using fract
+    let time_in_cycle = fract(params.time / total_time_sec) * total_time_sec;
+    
+    // Stages:
+    // 0.0 - 1.0: Initial Square x^2
+    // 1.0 - 2.5: Add Rectangles (+10x)
+    // 2.5 - 4.0: Complete Square (+25)
+    // 4.0 - 5.5: Show Solution (=64)
+    // 5.5 - 6.0: Reset
+    
+    let t_rects = smoothstep(1.0, 2.0, time_in_cycle);
+    let t_corners = smoothstep(2.5, 3.5, time_in_cycle);
+    let t_solution = smoothstep(4.0, 5.0, time_in_cycle);
+    let t_reset = 1.0 - smoothstep(5.5, 6.0, time_in_cycle);
+    
+    // Apply reset fade
+    let global_alpha = t_reset;
+
+    // --- GEOMETRY DEFINITIONS ---
+    // x = 3, rect_width = 2.5
+    // Initial square: centered at origin for simplicity? 
+    // Al-Khwarizmi usually drew x^2 then added around.
+    // Let's keep x^2 at center.
+    let x_val = 3.0; // The 'x' in x^2
+    let rect_w = 2.5;
+    
+    // Half sizes
+    let h_x = x_val * 0.5;
+    let h_r_w = rect_w * 0.5;
+    let h_r_l = x_val * 0.5; // Length of rectangle matches square side
+    let h_c = rect_w * 0.5; // Corner square is 2.5x2.5
+    
+    // --- DRAWING ACCUMULATORS ---
+    var color = PAPER;
+    
+    // --- BACKGROUND PATTERN ---
+    // Subtle Islamic tessellation
+    let pattern_d = star_pattern(uv, 0.5); // scale 0.5
+    let pattern_mask = smoothstep(0.05, 0.0, abs(pattern_d - 0.02));
+    color = mix_vec3(color, PAPER * 0.9, pattern_mask * 0.5);
+
+    // --- 1. CENTRAL SQUARE (x^2) ---
+    // Box from -1.5 to 1.5
+    let dist_sq = sd_box(uv, vec2<f32>(h_x));
+    let fill_sq = 1.0 - smoothstep(0.0, 0.05, dist_sq);
+    let stroke_sq = 1.0 - smoothstep(0.0, 0.05, abs(dist_sq));
+    
+    // Color logic
+    var sq_color = mix_vec3(PAPER, BLUE, fill_sq);
+    // Add "x" symbol in middle
+    let dist_sym_x = sd_cross(uv, 0.3, 0.05);
+    let mask_sym_x = 1.0 - smoothstep(0.0, 0.05, dist_sym_x);
+    // Only show symbol if square is visible
+    sq_color = mix_vec3(sq_color, GOLD, mask_sym_x * fill_sq);
+    
+    color = mix_vec3(color, sq_color, fill_sq);
+    color = mix_vec3(color, DARK, stroke_sq);
+
+    // --- 2. FOUR RECTANGLES (10x) ---
+    // Positions:
+    // Right: Center x = 1.5 + 1.25 = 2.75, y = 0
+    // Left:  Center x = -2.75, y = 0
+    // Top:   Center x = 0, y = 2.75
+    // Bottom: Center x = 0, y = -2.75
+    
+    let offset_rect = h_x + h_r_w;
+    
+    // Combine 4 rectangles using symmetry
+    let abs_uv = abs(uv);
+    // Logic: check horizontal rects and vertical rects
+    // Vertical pair (top/bottom): x in [-1.5, 1.5], |y| around 2.75
+    // Horizontal pair (left/right): y in [-1.5, 1.5], |x| around 2.75
+    
+    // We can fold the space to simplifying drawing
+    // Fold to first quadrant
+    let q_uv = abs_uv;
+    
+    // Rect 1 (Vertical-ish in this folded space? No, distinct shapes)
+    // Draw Horizontal Rects (conceptually Right one, symmetrized)
+    let p_right = vec2<f32>(abs_uv.x - offset_rect, abs_uv.y);
+    let dist_rect_h = sd_box(p_right, vec2<f32>(h_r_w, h_x));
+    
+    // Draw Vertical Rects (Top one, symmetrized)
+    let p_top = vec2<f32>(abs_uv.x, abs_uv.y - offset_rect);
+    let dist_rect_v = sd_box(p_top, vec2<f32>(h_x, h_r_w));
+    
+    let dist_rects = min(dist_rect_h, dist_rect_v);
+    
+    // Animation for rectangles (slide out)
+    // Check if we are in phase 2
+    if (t_rects > 0.0) {
+        let fill_rect = 1.0 - smoothstep(0.0, 0.05, dist_rects);
+        let stroke_rect = 1.0 - smoothstep(0.0, 0.05, abs(dist_rects));
+        
+        // Rect appearance effect involving alpha
+        let rect_vis = t_rects;
+        
+        let r_col = mix_vec3(color, GOLD, fill_rect * rect_vis);
+        color = mix_vec3(color, r_col, fill_rect * rect_vis);
+        color = mix_vec3(color, DARK, stroke_rect * rect_vis);
+    }
+
+    // --- 3. FOUR CORNERS (25) ---
+    // Position: (+/- 2.75, +/- 2.75)
+    // Size: 2.5 side -> half 1.25
+    let p_corner = abs_uv - vec2<f32>(offset_rect); 
+    let dist_corners = sd_box(p_corner, vec2<f32>(h_c));
+    
+    if (t_corners > 0.0) {
+        let fill_corn = 1.0 - smoothstep(0.0, 0.05, dist_corners);
+        let stroke_corn = 1.0 - smoothstep(0.0, 0.05, abs(dist_corners));
+        
+        let corner_vis = t_corners;
+        
+        // Hollow/White corners to distinguish "completion"
+        let c_base = mix_vec3(PAPER, vec3<f32>(1.0, 1.0, 1.0), 0.5);
+        
+        color = mix_vec3(color, c_base, fill_corn * corner_vis);
+        // Pattern inside corners?
+        let inner_pat = star_pattern(p_corner * 4.0, 1.0);
+        let pat_alpha = (1.0 - smoothstep(0.0, 0.1, inner_pat)) * 0.3;
+        color = mix_vec3(color, BLUE, pat_alpha * fill_corn * corner_vis);
+        
+        color = mix_vec3(color, DARK, stroke_corn * corner_vis);
+    }
+    
+    // --- 4. SOLUTION HIGHLIGHT / BORDER ---
+    // The total square has side 3 + 2.5 + 2.5 = 8?
+    // Start x=3. Added 2.5 on EACH side? 
+    // Wait, x^2 + 10x used 4 rectangles. 
+    // 10x = 4 * (x * 2.5). Correct.
+    // Total side becomes x + 2.5 + 2.5 = x + 5 = 8. Correct.
+    // Box radius is 4.0.
+    
+    let dist_total = sd_box(uv, vec2<f32>(4.0));
+    
+    if (t_solution > 0.0) {
+        let glow = max(0.0, 1.0 - abs(dist_total) * 2.0);
+        let pulse = 0.5 + 0.5 * sin(params.time * 5.0);
+        let outline = smoothstep(0.5, 1.0, glow);
+        
+        // Draw ornate border highlight
+        color = mix_vec3(color, GOLD, outline * t_solution * pulse);
+        
+        // Darken outside to focus
+        let vignette = smoothstep(4.0, 6.0, length(uv));
+        color = mix_vec3(color, DARK, vignette * 0.8 * t_solution);
+    }
+
+    // --- DECORATIVE FRAME ---
+    let frame_d = abs(sd_box(uv, vec2<f32>(5.5))) - 0.1;
+    let frame = 1.0 - smoothstep(0.0, 0.05, frame_d);
+    
+    // Islamic pattern on the frame
+    let frame_pat = star_pattern(uv, 1.5); // denser
+    let frame_pat_mask = smoothstep(0.0, 0.05, abs(frame_pat - 0.05));
+    let frame_col = mix_vec3(BLUE, GOLD, frame_pat_mask);
+    
+    color = mix_vec3(color, frame_col, frame);
+
+    return vec4<f32>(color * global_alpha, 1.0);
+}

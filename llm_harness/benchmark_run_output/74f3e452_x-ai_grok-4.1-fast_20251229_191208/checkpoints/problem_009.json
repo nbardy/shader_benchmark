@@ -1,0 +1,32 @@
+{
+  "problem_index": 9,
+  "problem_name": "braided_rope",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T19:49:12.293173",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 3680
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T19:35:27.427513",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/74f3e452_x-ai_grok-4.1-fast_20251229_191208/results/009_braided_rope"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-12-29T19:35:28.622236",
+      "data": {
+        "error": "Shader execution failed: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader 'user_shader' parsing error: expected ')', found ':'\n   \u250c\u2500 wgsl:35:34\n   \u2502\n35 \u2502     var res: SDFRes = SDFRes(dist: 1e10, id: 0u);\n   \u2502                                  ^ expected ')'\n\n\n    expected ')', fou"
+      }
+    }
+  },
+  "created": "2025-12-29T19:34:00.341252",
+  "last_updated": "2025-12-29T19:49:12.293183"
+}

@@ -1,0 +1,45 @@
+{
+  "problem_index": 8,
+  "problem_name": "brahmagupta_cyclic_quadrilaterals",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:11:22.016729",
+      "data": {
+        "shaders": [
+          "shader.wgsl"
+        ],
+        "llm_response_len": 13083
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:11:22.018418",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/results/008_brahmagupta_cyclic_quadrilaterals"
+      }
+    },
+    "render": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:11:57.076980",
+      "data": {
+        "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/results/008_brahmagupta_cyclic_quadrilaterals/artifacts/result.png"
+      }
+    },
+    "judge": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:12:11.873116",
+      "data": {
+        "scores": [
+          85,
+          90,
+          75,
+          80,
+          70
+        ]
+      }
+    }
+  },
+  "created": "2025-12-29T16:10:30.075538",
+  "last_updated": "2025-12-29T16:12:11.873121"
+}

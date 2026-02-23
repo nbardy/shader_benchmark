@@ -1,0 +1,28 @@
+2025-12-30 19:09:40.291 [INFO] Logger initialized for problem 2: apollonian_gasket
+2025-12-30 19:09:40.291 [INFO] ========== PROBLEM START ==========
+2025-12-30 19:09:40.291 [INFO] Index: 2
+2025-12-30 19:09:40.291 [INFO] Name: apollonian_gasket
+2025-12-30 19:09:40.293 [INFO] ---------- STAGE START: GENERATE ----------
+2025-12-30 19:09:40.293 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-12-30 19:09:40.294 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/checkpoints/problem_002.json
+2025-12-30 19:09:40.294 [INFO] Loading request prompt
+2025-12-30 19:09:40.294 [INFO] API call: LLM generation model=x-ai/grok-4.1-fast, language=wgsl
+2025-12-30 19:11:50.849 [INFO] API response: LLM generation - success, size=2465 bytes
+2025-12-30 19:11:50.850 [INFO] Parsing shader response
+2025-12-30 19:11:50.850 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2025-12-30 19:11:50.853 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/checkpoints/problem_002.json
+2025-12-30 19:11:50.853 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2025-12-30 19:11:50.855 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2025-12-30 19:11:50.856 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/checkpoints/problem_002.json
+2025-12-30 19:11:50.856 [INFO] Attempting to save checkpoint: stage=compile, status=complete
+2025-12-30 19:11:50.857 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/checkpoints/problem_002.json
+2025-12-30 19:11:50.857 [INFO] Attempting to save checkpoint: stage=render, status=in_progress
+2025-12-30 19:11:50.859 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/checkpoints/problem_002.json
+2025-12-30 19:27:24.289 [INFO] Attempting to save checkpoint: stage=render, status=complete
+2025-12-30 19:27:24.290 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/checkpoints/problem_002.json
+2025-12-30 19:27:24.290 [INFO] Attempting to save checkpoint: stage=judge, status=in_progress
+2025-12-30 19:27:24.291 [INFO] Checkpoint saved successfully: stage=judge, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/checkpoints/problem_002.json
+2025-12-30 19:27:33.195 [INFO] Attempting to save checkpoint: stage=judge, status=complete
+2025-12-30 19:27:33.197 [INFO] Checkpoint saved successfully: stage=judge, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/checkpoints/problem_002.json
+2025-12-30 19:27:33.197 [INFO] ========== PROBLEM END: SUCCESS ==========
+2025-12-30 19:27:33.197 [INFO] Execution time: 1072.90s

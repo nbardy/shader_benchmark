@@ -1,0 +1,120 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+- Spiral arm geometry must follow Archimedean spiral equation with r/θ = a relationship and RMS error < 3%
+- Two spiral arms must be precisely displaced by 180° with no spurious additional arms above 5% of star count
+- Star-count histogram versus radius must follow exponential decay N(r)∝e^(-r/3) within ±10% tolerance
+- Linear relationship between r and θ must be maintained for proper pitch angle representation
+- Mathematical precision must be verified through log-polar plotting and statistical analysis
+
+**S4: Visual Implementation Section**  
+- Color gradient must show average (B−V) increase of 0.35 ± 0.05 mag between r = 0 and r = 8
+- Core luminosity must dominate center 5 × 5 px region with appropriate brightness concentration
+- Bloom intensity must be < 1% of maximum outside r = 0.4 for proper core treatment
+- Organic scatter must create visibly fuzzy arms rather than rigid lines with appropriate σ offsets
+- Visual rendering must balance realistic galactic appearance with mathematical precision
+- Star distribution must appear natural while maintaining statistical requirements
+
+**S5: Completeness & Specifications Section**
+- Both spiral arms must be complete and clearly visible throughout the galactic structure
+- Radial density distribution must be properly implemented across the entire galaxy
+- Color progression must span the full specified range from core to outer regions
+- Core treatment must be appropriately confined with proper bloom management
+- Arm geometry must demonstrate correct pitch and offset characteristics
+- Statistical signatures must be verifiable through histogram analysis and measurement
+- Overall galaxy structure must appear realistic while meeting all mathematical constraints
+- Assessment must include verification of arm geometry (3 pts), radial density (2 pts), color gradient (2 pts), core treatment (1 pt), and organic scatter (2 pts)
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+**Objective** – Render a face‑on **two‑arm** spiral galaxy whose stellar arms follow the *Archimedean* law $r = a\theta$.
+
+**Star‑field specification**
+
+* **Spiral parameters** $a = 0.25$ (units: galaxy‐normed).  Two arms offset by $\pi$. θ spans [0, 8π] (four full turns).
+* **Star sampling** – generate 120 000 stars:
+
+  * Draw θ uniformly; compute arm centre $r=a\theta$.
+  * Tangential spread: add Gaussian offset Δθ ~ $\mathcal N(0,\sigma_{θ}^{2})$ with $\sigma_{θ}=0.035$.
+  * Radial blur: Gaussian offset Δr ~ $\mathcal N(0,\sigma_{r}^{2})$, where $\sigma_{r}=0.025(1+0.5θ)$.
+  * **Radial density fall‑off** weight $w = \exp(-r/3)$; keep star if $u<w$ where $u\sim U(0,1)$.
+* **Background** – 10 000 disc‑halo stars: radius sampled $p(r)\propto r\,e^{-r/3}$ up to $r=10$; angle uniform; small white dots.
+
+**Colour & magnitude**
+
+* Star colour temperature $T(r)=7200-250r\;\text{K}$; convert to sRGB with black‑body approximation.
+* Star brightness proportional to $e^{-0.5r}$ (clipped).  Render each star as Gaussian sprite of FWHM = 0.03 + 0.004 r.
+
+**Canvas & camera**
+
+* Orthographic view of square region r ≤ 10.  Resolution 3000 × 3000 px, black background.
+* Supernova‑like core glow: add additive circular bloom (radius 0.4, colour #ffffaa, opacity 0.6).
+
+**Deliverable** – 16‑bit PNG.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+Detailed Mathematical Visualization Assessment:
+
+S1: Problem Accuracy (60/100)
+- The core mathematical requirements are partially met
+- Archimedean spiral structure is visible but not perfectly precise
+- Lack of clear two-arm separation and offset
+- Some deviation from the specified r = aθ geometry
+
+S2: Visual Quality (65/100)
+- Clean black background meets specification
+- Resolution appears appropriate
+- Lacks depth and organic star distribution
+- Somewhat rigid spiral arm rendering
+- Insufficient color temperature variation
+
+S3: Mathematical Accuracy (55/100)
+- Spiral geometry shows significant mathematical imprecision
+- Arm displacement not convincingly at 180°
+- Star density distribution appears uniform rather than exponential
+- Linear r/θ relationship not clearly demonstrated
+- RMS error likely exceeds specified 3% tolerance
+
+S4: Visual Implementation (50/100)
+- Core luminosity is present but not dynamically rendered
+- Lacks subtle color gradient between core and outer regions
+- Bloom intensity appears excessive
+- Star scatter is too uniform, missing organic randomness
+- Does not capture realistic galactic morphology
+
+S5: Completeness & Specifications (55/100)
+- Arms incomplete and lacking detailed structure
+- Radial density distribution appears inconsistent
+- Color progression minimal
+- Core treatment too uniform
+- Statistical signatures not effectively captured
+
+<scores><S1>60</S1><S2>65</S2><S3>55</S3><S4>50</S4><S5>55</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[60, 65, 55, 50, 55]
+

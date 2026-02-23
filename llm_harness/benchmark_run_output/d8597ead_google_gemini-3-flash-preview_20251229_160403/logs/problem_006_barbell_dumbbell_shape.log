@@ -1,0 +1,28 @@
+2025-12-29 16:05:18.813 [INFO] Logger initialized for problem 6: barbell_dumbbell_shape
+2025-12-29 16:05:18.813 [INFO] ========== PROBLEM START ==========
+2025-12-29 16:05:18.813 [INFO] Index: 6
+2025-12-29 16:05:18.813 [INFO] Name: barbell_dumbbell_shape
+2025-12-29 16:05:18.813 [INFO] ---------- STAGE START: GENERATE ----------
+2025-12-29 16:05:18.813 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-12-29 16:05:18.814 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d8597ead_google_gemini-3-flash-preview_20251229_160403/checkpoints/problem_006.json
+2025-12-29 16:05:18.814 [INFO] Loading request prompt
+2025-12-29 16:05:18.814 [INFO] API call: LLM generation model=google/gemini-3-flash-preview, language=wgsl
+2025-12-29 16:05:33.823 [INFO] API response: LLM generation - success, size=5150 bytes
+2025-12-29 16:05:33.823 [INFO] Parsing shader response
+2025-12-29 16:05:33.823 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2025-12-29 16:05:33.826 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d8597ead_google_gemini-3-flash-preview_20251229_160403/checkpoints/problem_006.json
+2025-12-29 16:05:33.826 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2025-12-29 16:05:33.827 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2025-12-29 16:05:33.828 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d8597ead_google_gemini-3-flash-preview_20251229_160403/checkpoints/problem_006.json
+2025-12-29 16:05:33.828 [INFO] Attempting to save checkpoint: stage=compile, status=complete
+2025-12-29 16:05:33.828 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d8597ead_google_gemini-3-flash-preview_20251229_160403/checkpoints/problem_006.json
+2025-12-29 16:05:33.828 [INFO] Attempting to save checkpoint: stage=render, status=in_progress
+2025-12-29 16:05:33.829 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d8597ead_google_gemini-3-flash-preview_20251229_160403/checkpoints/problem_006.json
+2025-12-29 16:06:14.254 [INFO] Attempting to save checkpoint: stage=render, status=complete
+2025-12-29 16:06:14.255 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d8597ead_google_gemini-3-flash-preview_20251229_160403/checkpoints/problem_006.json
+2025-12-29 16:06:14.255 [INFO] Attempting to save checkpoint: stage=judge, status=in_progress
+2025-12-29 16:06:14.255 [INFO] Checkpoint saved successfully: stage=judge, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d8597ead_google_gemini-3-flash-preview_20251229_160403/checkpoints/problem_006.json
+2025-12-29 16:06:31.966 [INFO] Attempting to save checkpoint: stage=judge, status=complete
+2025-12-29 16:06:31.968 [INFO] Checkpoint saved successfully: stage=judge, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d8597ead_google_gemini-3-flash-preview_20251229_160403/checkpoints/problem_006.json
+2025-12-29 16:06:31.968 [INFO] ========== PROBLEM END: SUCCESS ==========
+2025-12-29 16:06:31.969 [INFO] Execution time: 73.16s

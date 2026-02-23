@@ -1,0 +1,32 @@
+{
+  "problem_index": 7,
+  "problem_name": "binary_tree_fractal",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-30T19:22:58.710565",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 6067
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-30T19:22:58.716021",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/results/007_binary_tree_fractal"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-12-30T19:27:24.354895",
+      "data": {
+        "error": "Shader execution failed: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader 'user_shader' parsing error: declaration of `sdBranch` is recursive\n   \u250c\u2500 wgsl:67:4\n   \u2502\n67 \u2502 fn sdBranch(p: vec3<f32>, start_pos: vec3<f32>, dir: vec3<f32>, len: f32, rad: f32, level: u32) -> f32 {\n   \u2502   "
+      }
+    }
+  },
+  "created": "2025-12-30T19:21:09.304806",
+  "last_updated": "2025-12-30T19:27:24.354901"
+}

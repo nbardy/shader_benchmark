@@ -1,0 +1,46 @@
+2025-10-26 02:20:26.618 [INFO] Logger initialized for problem 16: chinese_remainder_theorem
+2025-10-26 02:20:26.618 [INFO] ========== PROBLEM START ==========
+2025-10-26 02:20:26.618 [INFO] Index: 16
+2025-10-26 02:20:26.618 [INFO] Name: chinese_remainder_theorem
+2025-10-26 02:20:26.619 [INFO] ---------- STAGE START: GENERATE ----------
+2025-10-26 02:20:26.619 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-10-26 02:20:26.619 [ERROR] Checkpoint save FAILED: stage=generate
+2025-10-26 02:20:26.619 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_021216/checkpoints/problem_016.tmp'
+2025-10-26 02:20:26.619 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 02:20:26.619 [INFO] Loading request prompt
+2025-10-26 02:20:26.619 [INFO] API call: LLM generation model=anthropic/claude-haiku-4.5, language=wgsl
+2025-10-26 02:20:53.142 [INFO] API response: LLM generation - success, size=14877 bytes
+2025-10-26 02:20:53.142 [INFO] Parsing shader response
+2025-10-26 02:20:53.142 [ERROR] EXCEPTION in generate stage:
+2025-10-26 02:20:53.142 [ERROR]   Type: ValueError
+2025-10-26 02:20:53.142 [ERROR]   Message: No shader files found
+2025-10-26 02:20:53.142 [ERROR]   Traceback:
+2025-10-26 02:20:53.143 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 268, in run_single_problem
+    shaders, main_rs = shader_parser.parse_response(llm_response)
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+2025-10-26 02:20:53.143 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/shader_parser.py", line 213, in parse_response
+    raise ValueError("No shader files found")
+2025-10-26 02:20:53.143 [INFO] Attempting to save checkpoint: stage=generate, status=failed
+2025-10-26 02:20:53.143 [ERROR] Checkpoint save FAILED: stage=generate
+2025-10-26 02:20:53.143 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_021216/checkpoints/problem_016.tmp'
+2025-10-26 02:20:53.144 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 02:20:53.144 [INFO] ---------- STAGE END: GENERATE - FAILED ----------
+2025-10-26 02:20:53.144 [ERROR] EXCEPTION in run_single_problem:
+2025-10-26 02:20:53.144 [ERROR]   Type: ValueError
+2025-10-26 02:20:53.144 [ERROR]   Message: No shader files found
+2025-10-26 02:20:53.144 [ERROR]   Traceback:
+2025-10-26 02:20:53.144 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 268, in run_single_problem
+    shaders, main_rs = shader_parser.parse_response(llm_response)
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+2025-10-26 02:20:53.144 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/shader_parser.py", line 213, in parse_response
+    raise ValueError("No shader files found")
+2025-10-26 02:20:53.144 [INFO] ========== PROBLEM END: FAILED ==========
+2025-10-26 02:20:53.144 [INFO] Execution time: 26.52s

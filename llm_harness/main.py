@@ -23,8 +23,8 @@ async def main():
     parser.add_argument('--language-spec', default='wgsl',
                        choices=SUPPORTED_LANGUAGES,
                        help=f'Shader language specification (default: wgsl). Options: {", ".join(SUPPORTED_LANGUAGES)}')
-    parser.add_argument('--judge-model', default='anthropic/claude-3.5-haiku',
-                       help='Judge model for evaluation (default: anthropic/claude-3.5-haiku)')
+    parser.add_argument('--judge-model', default='anthropic/claude-opus-4.5',
+                       help='Judge model for evaluation (default: anthropic/claude-opus-4.5)')
     parser.add_argument('--no-report', action='store_true', help='Skip individual test report generation')
     parser.add_argument('--no-judge', action='store_true', help='Skip judge evaluation (for debugging)')
 

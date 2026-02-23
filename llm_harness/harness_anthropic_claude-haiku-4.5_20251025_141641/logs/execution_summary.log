@@ -1,0 +1,34 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: harness_anthropic_claude-haiku-4.5_20251025_141641
+Started: 2025-10-25T14:16:41.017754
+============================================================
+
+[2025-10-25 14:16:41.017811] HARNESS INITIALIZED
+  Model: anthropic/claude-haiku-4.5
+  Problems: 5
+  Max parallel: 1
+  Problem list:
+    000: ackermann_function_growth
+    001: al_khwarizmi_geometric_algebra
+    002: apollonian_gasket
+    003: apollonius_conic_sections
+    004: archimedean_spiral_galaxy
+
+[2025-10-25 14:16:41.222882] START problem_000: ackermann_function_growth
+[2025-10-25 14:19:28.039104] EXCEPTION in problem_000 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: declaration of `Params` is recursive
+  ┌─ wgsl:9:36
+  │
+9 │ @group(0) @binding(0) var<uniform> Params: Params;
+  │                                    ^^^^^^  ^^^^^^ uses itself here
+
+
+    declaration of
+[2025-10-25 14:19:28.039315] END problem_000: ackermann_function_growth - FAILED (166.81s)

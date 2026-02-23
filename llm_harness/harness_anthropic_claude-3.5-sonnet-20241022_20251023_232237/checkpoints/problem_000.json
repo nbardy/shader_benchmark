@@ -1,0 +1,32 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-23T23:23:29.710167",
+      "data": {
+        "shaders": [
+          "ackermann.wgsl"
+        ],
+        "llm_response_len": 10352
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-23T23:24:20.652946",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251023_232329_efc849c3-6a39-4c3f-b3da-44c8b741059c_results"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-10-23T23:24:20.891859",
+      "data": {
+        "error": "Shader execution failed: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `ackermann`\n    \nShader 'ackermann' parsing error: name `final` is a reserved keyword\n   \u250c\u2500 wgsl:98:9\n   \u2502\n98 \u2502     let final = mix(color, barColor, barAlpha);\n   \u2502         ^^^^^ definition of `final`\n\n\n    name `final` is a reserve"
+      }
+    }
+  },
+  "created": "2025-10-23T23:22:37.659463",
+  "last_updated": "2025-10-23T23:24:20.891866"
+}

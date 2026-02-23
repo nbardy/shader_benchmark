@@ -1,0 +1,55 @@
+2025-10-26 12:49:00.602 [INFO] Logger initialized for problem 0: geometric_cube
+2025-10-26 12:49:00.602 [INFO] ========== PROBLEM START ==========
+2025-10-26 12:49:00.602 [INFO] Index: 0
+2025-10-26 12:49:00.602 [INFO] Name: geometric_cube
+2025-10-26 12:49:00.602 [INFO] ---------- STAGE START: GENERATE ----------
+2025-10-26 12:49:00.602 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-10-26 12:49:00.603 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/harness_anthropic_claude-haiku-4.5_20251026_124900/checkpoints/problem_000.json
+2025-10-26 12:49:00.603 [INFO] Loading request prompt
+2025-10-26 12:49:00.603 [INFO] API call: LLM generation model=anthropic/claude-haiku-4.5, language=wgsl
+2025-10-26 12:49:14.421 [INFO] API response: LLM generation - success, size=5793 bytes
+2025-10-26 12:49:14.421 [INFO] Parsing shader response
+2025-10-26 12:49:14.422 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2025-10-26 12:49:14.424 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/harness_anthropic_claude-haiku-4.5_20251026_124900/checkpoints/problem_000.json
+2025-10-26 12:49:14.424 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2025-10-26 12:49:14.425 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2025-10-26 12:49:14.427 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/harness_anthropic_claude-haiku-4.5_20251026_124900/checkpoints/problem_000.json
+2025-10-26 12:49:14.427 [INFO] Attempting to save checkpoint: stage=compile, status=complete
+2025-10-26 12:49:14.428 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/harness_anthropic_claude-haiku-4.5_20251026_124900/checkpoints/problem_000.json
+2025-10-26 12:49:14.429 [INFO] Attempting to save checkpoint: stage=render, status=in_progress
+2025-10-26 12:49:14.430 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/harness_anthropic_claude-haiku-4.5_20251026_124900/checkpoints/problem_000.json
+2025-10-26 12:49:14.667 [INFO] Attempting to save checkpoint: stage=render, status=failed
+2025-10-26 12:49:14.668 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/harness_anthropic_claude-haiku-4.5_20251026_124900/checkpoints/problem_000.json
+2025-10-26 12:49:14.668 [ERROR] EXCEPTION in run_single_problem:
+2025-10-26 12:49:14.668 [ERROR]   Type: RuntimeError
+2025-10-26 12:49:14.668 [ERROR]   Message: Shader execution still failing after repair: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader validation error: 
+   ┌─ user_shader:65:17
+   │
+65 │         let v = vertices[i];
+   │                 ^^^^^^^^^^^ naga::Expression [64]
+
+
+    Entry point fs_main at Fragment is invalid
+    Expression [64] is invalid
+    The expres
+2025-10-26 12:49:14.668 [ERROR]   Traceback:
+2025-10-26 12:49:14.669 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 306, in run_single_problem
+    result_image = await test_runner.render_shader(test_folder)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-26 12:49:14.669 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_runner.py", line 277, in render_shader
+    return await self.render_shader_wgpu(test_folder)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-26 12:49:14.669 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_runner.py", line 369, in render_shader_wgpu
+    raise RuntimeError(
+        f"Shader execution still failing after repair: {result.stderr[:500]}"
+    )
+2025-10-26 12:49:14.669 [INFO] ========== PROBLEM END: FAILED ==========
+2025-10-26 12:49:14.669 [INFO] Execution time: 14.07s

@@ -1,0 +1,15 @@
+{
+  "problem_index": 1,
+  "problem_name": "al_khwarizmi_geometric_algebra",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-10-24T19:44:04.634512",
+      "data": {
+        "error": "No main.rs content found in LLM response"
+      }
+    }
+  },
+  "created": "2025-10-24T19:43:36.732129",
+  "last_updated": "2025-10-24T19:44:04.634515"
+}

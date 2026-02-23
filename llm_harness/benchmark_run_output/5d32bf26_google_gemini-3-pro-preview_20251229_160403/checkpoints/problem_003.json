@@ -1,0 +1,15 @@
+{
+  "problem_index": 3,
+  "problem_name": "apollonius_conic_sections",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-12-29T16:21:31.393969",
+      "data": {
+        "error": "Failed after 3 retries: Response ended prematurely (hit token limit)"
+      }
+    }
+  },
+  "created": "2025-12-29T16:17:12.809162",
+  "last_updated": "2025-12-29T16:21:31.393975"
+}

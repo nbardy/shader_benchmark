@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_051102_5c3eb5b9-d1ed-4748-8a78-5d22ead5b4c2_results/shaders/cardioid_limacon.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_051102_5c3eb5b9-d1ed-4748-8a78-5d22ead5b4c2_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 2.819 ms   | CPU 76.474 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_051102_5c3eb5b9-d1ed-4748-8a78-5d22ead5b4c2_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

@@ -1,0 +1,30 @@
+{
+  "problem_index": 1,
+  "problem_name": "al_khwarizmi_geometric_algebra",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T15:56:16.757456",
+      "data": {
+        "shaders": [
+          "al_khwarizmi_quadratic.wgsl"
+        ],
+        "llm_response_len": 10225
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T15:56:16.761733",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/bdd896e3_anthropic_claude-opus-4_20251229_155125/results/001_al_khwarizmi_geometric_algebra"
+      }
+    },
+    "render": {
+      "status": "in_progress",
+      "timestamp": "2025-12-29T15:56:16.762338",
+      "data": {}
+    }
+  },
+  "created": "2025-12-29T15:53:20.662439",
+  "last_updated": "2025-12-29T15:56:16.762341"
+}

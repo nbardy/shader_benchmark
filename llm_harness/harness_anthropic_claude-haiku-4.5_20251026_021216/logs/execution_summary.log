@@ -1,0 +1,70 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: harness_anthropic_claude-haiku-4.5_20251026_021216
+Started: 2025-10-26T02:12:16.709657
+============================================================
+
+[2025-10-26 02:12:16.709733] HARNESS INITIALIZED
+  Model: anthropic/claude-haiku-4.5
+  Problems: 20
+  Max parallel: 1
+  Problem list:
+    000: ackermann_function_growth
+    001: al_khwarizmi_geometric_algebra
+    002: apollonian_gasket
+    003: apollonius_conic_sections
+    004: archimedean_spiral_galaxy
+    005: archimedes_spiral
+    006: barbell_dumbbell_shape
+    007: binary_tree_fractal
+    008: brahmagupta_cyclic_quadrilaterals
+    009: braided_rope
+    010: butterfly_curve
+    011: calabi_yau_manifold
+    012: capsule_shape
+    013: cardioid_limacon_collection
+    014: catenoid_helicoid_minimal
+    015: chinese_remainder_sunzi
+    016: chinese_remainder_theorem
+    017: chladni_patterns
+    018: complex_analysis_stained_glass
+    019: compound_polyhedra_stella_octangula
+
+[2025-10-26 02:12:17.029919] START problem_000: ackermann_function_growth
+[2025-10-26 02:22:08.061528] EXCEPTION in problem_000 (run_single_problem): RuntimeError: Shader execution still failing after repair: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader validation error: 
+   ┌─ user_shader:19:1
+   │  
+19 │ ╭ fn ackermann_log10(n: u32) -> f32 {
+20 │ │     // A(3,n) = 2^(2^...2) - 3  (tower of height n+3)
+21 │ │     // log₁₀ values:
+22 │ │     let values = array<f32, 11>(
+   · │
+36 
+[2025-10-26 02:22:08.061753] END problem_000: ackermann_function_growth - FAILED (591.03s)
+[2025-10-26 02:22:10.585629] EXCEPTION in problem_019 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: expected ';', found '32'
+   ┌─ wgsl:42:20
+   │
+42 │     let s = 1.1547f32;
+   │                    ^^ expected ';'
+
+
+    expected ';', found '32'
+
+
+note: run with `RUST_BACKTRACE=1` environment variable
+[2025-10-26 02:22:10.585701] END problem_019: compound_polyhedra_stella_octangula - FAILED (23.03s)

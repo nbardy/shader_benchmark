@@ -1,0 +1,45 @@
+{
+  "problem_index": 1,
+  "problem_name": "al_khwarizmi_geometric_algebra",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-30T19:09:40.280182",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 7443
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-30T19:09:40.285334",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/results/001_al_khwarizmi_geometric_algebra"
+      }
+    },
+    "render": {
+      "status": "complete",
+      "timestamp": "2025-12-30T19:27:24.282765",
+      "data": {
+        "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/results/001_al_khwarizmi_geometric_algebra/artifacts/result.png"
+      }
+    },
+    "judge": {
+      "status": "complete",
+      "timestamp": "2025-12-30T19:27:43.058833",
+      "data": {
+        "scores": [
+          10,
+          50,
+          1,
+          15,
+          5
+        ]
+      }
+    }
+  },
+  "created": "2025-12-30T19:08:07.827180",
+  "last_updated": "2025-12-30T19:27:43.058843"
+}

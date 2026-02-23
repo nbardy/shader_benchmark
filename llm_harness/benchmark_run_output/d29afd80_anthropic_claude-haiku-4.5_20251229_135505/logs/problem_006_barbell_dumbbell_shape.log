@@ -1,0 +1,28 @@
+2025-12-29 13:57:57.111 [INFO] Logger initialized for problem 6: barbell_dumbbell_shape
+2025-12-29 13:57:57.111 [INFO] ========== PROBLEM START ==========
+2025-12-29 13:57:57.111 [INFO] Index: 6
+2025-12-29 13:57:57.111 [INFO] Name: barbell_dumbbell_shape
+2025-12-29 13:57:57.112 [INFO] ---------- STAGE START: GENERATE ----------
+2025-12-29 13:57:57.112 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-12-29 13:57:57.113 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/checkpoints/problem_006.json
+2025-12-29 13:57:57.113 [INFO] Loading request prompt
+2025-12-29 13:57:57.113 [INFO] API call: LLM generation model=anthropic/claude-haiku-4.5, language=wgsl
+2025-12-29 13:58:25.881 [INFO] API response: LLM generation - success, size=12612 bytes
+2025-12-29 13:58:25.882 [INFO] Parsing shader response
+2025-12-29 13:58:25.882 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2025-12-29 13:58:25.885 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/checkpoints/problem_006.json
+2025-12-29 13:58:25.885 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2025-12-29 13:58:25.888 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2025-12-29 13:58:25.889 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/checkpoints/problem_006.json
+2025-12-29 13:58:25.889 [INFO] Attempting to save checkpoint: stage=compile, status=complete
+2025-12-29 13:58:25.890 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/checkpoints/problem_006.json
+2025-12-29 13:58:25.890 [INFO] Attempting to save checkpoint: stage=render, status=in_progress
+2025-12-29 13:58:25.891 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/checkpoints/problem_006.json
+2025-12-29 13:59:46.990 [INFO] Attempting to save checkpoint: stage=render, status=complete
+2025-12-29 13:59:46.991 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/checkpoints/problem_006.json
+2025-12-29 13:59:46.991 [INFO] Attempting to save checkpoint: stage=judge, status=in_progress
+2025-12-29 13:59:46.991 [INFO] Checkpoint saved successfully: stage=judge, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/checkpoints/problem_006.json
+2025-12-29 14:00:06.755 [INFO] Attempting to save checkpoint: stage=judge, status=complete
+2025-12-29 14:00:06.756 [INFO] Checkpoint saved successfully: stage=judge, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/checkpoints/problem_006.json
+2025-12-29 14:00:06.757 [INFO] ========== PROBLEM END: SUCCESS ==========
+2025-12-29 14:00:06.757 [INFO] Execution time: 129.65s

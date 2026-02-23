@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_054030_69983f41-f283-4ef7-b830-d0f874e0c2f3_results/shaders/twin_helical_stairs.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_054030_69983f41-f283-4ef7-b830-d0f874e0c2f3_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 0.000 ms   | CPU 1434.977 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_054030_69983f41-f283-4ef7-b830-d0f874e0c2f3_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

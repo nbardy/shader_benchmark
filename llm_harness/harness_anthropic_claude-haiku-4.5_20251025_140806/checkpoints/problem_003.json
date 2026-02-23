@@ -1,0 +1,15 @@
+{
+  "problem_index": 3,
+  "problem_name": "apollonius_conic_sections",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-10-25T14:09:14.190684",
+      "data": {
+        "error": "cannot access local variable 'content' where it is not associated with a value"
+      }
+    }
+  },
+  "created": "2025-10-25T14:08:58.529348",
+  "last_updated": "2025-10-25T14:09:14.190689"
+}

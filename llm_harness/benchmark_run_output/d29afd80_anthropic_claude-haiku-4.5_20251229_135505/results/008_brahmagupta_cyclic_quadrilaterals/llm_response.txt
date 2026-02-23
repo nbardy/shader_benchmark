@@ -1,0 +1,526 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brahmagupta's Cyclic Quadrilaterals</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #1a1a1a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+        }
+        h1 {
+            text-align: center;
+            color: #64b5f6;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #90caf9;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        canvas {
+            border: 3px solid #64b5f6;
+            background: #000;
+            display: block;
+            margin: 20px auto;
+            box-shadow: 0 0 20px rgba(100, 181, 246, 0.3);
+        }
+        .info-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #64b5f6;
+        }
+        .info-section {
+            background: #333;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #64b5f6;
+        }
+        .info-section h3 {
+            margin-top: 0;
+            color: #64b5f6;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        .formula {
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin: 8px 0;
+            color: #90caf9;
+            border: 1px solid #444;
+        }
+        .value {
+            font-size: 14px;
+            margin: 6px 0;
+            color: #fff;
+        }
+        .value-label {
+            color: #90caf9;
+            font-weight: bold;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            background: #64b5f6;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #90caf9;
+            transform: scale(1.05);
+        }
+        .color-legend {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+        }
+        .ptolemy-section {
+            background: #1a3a2a;
+            border-left-color: #4db8a8;
+        }
+        .ptolemy-section h3 {
+            color: #4db8a8;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔷 Brahmagupta's Cyclic Quadrilaterals 🔷</h1>
+    <p class="subtitle">Visualizing the ancient formula: Area = √[(s-a)(s-b)(s-c)(s-d)]</p>
+    
+    <div class="controls">
+        <button onclick="switchMode('square')">Square</button>
+        <button onclick="switchMode('rectangle')">Rectangle</button>
+        <button onclick="switchMode('irregular')">Irregular</button>
+        <button onclick="switchMode('animate')">Animate</button>
+    </div>
+
+    <canvas id="canvas" width="2000" height="2000"></canvas>
+
+    <div class="info-panel">
+        <div class="info-section">
+            <h3>📐 Quadrilateral Sides</h3>
+            <div class="value"><span class="value-label">Side a:</span> <span id="sideA">0.00</span></div>
+            <div class="value"><span class="value-label">Side b:</span> <span id="sideB">0.00</span></div>
+            <div class="value"><span class="value-label">Side c:</span> <span id="sideC">0.00</span></div>
+            <div class="value"><span class="value-label">Side d:</span> <span id="sideD">0.00</span></div>
+            <div class="color-legend">
+                <div class="legend-item"><div class="legend-color" style="background: #FF6B6B;"></div>Side a</div>
+                <div class="legend-item"><div class="legend-color" style="background: #4ECDC4;"></div>Side b</div>
+                <div class="legend-item"><div class="legend-color" style="background: #45B7D1;"></div>Side c</div>
+                <div class="legend-item"><div class="legend-color" style="background: #FFA07A;"></div>Side d</div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>📏 Semiperimeter & Area</h3>
+            <div class="formula">s = (a+b+c+d)/2</div>
+            <div class="value"><span class="value-label">Semiperimeter (s):</span> <span id="semiperimeter">0.00</span></div>
+            <div class="formula">Area = √[(s-a)(s-b)(s-c)(s-d)]</div>
+            <div class="value"><span class="value-label">Area:</span> <span id="area">0.00</span></div>
+        </div>
+
+        <div class="info-section">
+            <h3>📐 Factors</h3>
+            <div class="value"><span class="value-label">(s-a):</span> <span id="factor1">0.00</span></div>
+            <div class="value"><span class="value-label">(s-b):</span> <span id="factor2">0.00</span></div>
+            <div class="value"><span class="value-label">(s-c):</span> <span id="factor3">0.00</span></div>
+            <div class="value"><span class="value-label">(s-d):</span> <span id="factor4">0.00</span></div>
+        </div>
+
+        <div class="info-section ptolemy-section">
+            <h3>🎯 Ptolemy's Theorem</h3>
+            <div class="formula">ac + bd = ef</div>
+            <div class="value"><span class="value-label">Diagonal e:</span> <span id="diagonalE">0.00</span></div>
+            <div class="value"><span class="value-label">Diagonal f:</span> <span id="diagonalF">0.00</span></div>
+            <div class="value"><span class="value-label">ac + bd:</span> <span id="ptolemyLeft">0.00</span></div>
+            <div class="value"><span class="value-label">Equality check: ef:</span> <span id="ptolemyRight">0.00</span></div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const CANVAS_SIZE = 2000;
+        const CENTER_X = CANVAS_SIZE / 2;
+        const CENTER_Y = CANVAS_SIZE / 2;
+        const RADIUS = 600;
+        
+        let currentMode = 'square';
+        let animationTime = 0;
+        let quadrilateral = [];
+        
+        class QuadrilateralState {
+            constructor() {
+                this.vertices = [];
+                this.mode = 'square';
+            }
+            
+            updateSquare(time) {
+                const baseAngles = [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2];
+                this.vertices = baseAngles.map(angle => {
+                    return {
+                        x: CENTER_X + RADIUS * Math.cos(angle),
+                        y: CENTER_Y + RADIUS * Math.sin(angle),
+                        angle: angle
+                    };
+                });
+            }
+            
+            updateRectangle(time) {
+                const baseAngles = [
+                    Math.atan2(1, 2),
+                    Math.PI - Math.atan2(1, 2),
+                    Math.PI + Math.atan2(1, 2),
+                    2 * Math.PI - Math.atan2(1, 2)
+                ];
+                this.vertices = baseAngles.map(angle => {
+                    return {
+                        x: CENTER_X + RADIUS * Math.cos(angle),
+                        y: CENTER_Y + RADIUS * Math.sin(angle),
+                        angle: angle
+                    };
+                });
+            }
+            
+            updateIrregular(time) {
+                const baseAngles = [0.2, 1.3, 3.5, 5.2];
+                this.vertices = baseAngles.map(angle => {
+                    return {
+                        x: CENTER_X + RADIUS * Math.cos(angle),
+                        y: CENTER_Y + RADIUS * Math.sin(angle),
+                        angle: angle
+                    };
+                });
+            }
+            
+            updateAnimated(time) {
+                const phase = time * 0.0005;
+                const baseAngles = [
+                    phase,
+                    phase + Math.PI * 0.6 + 0.3 * Math.sin(phase * 0.7),
+                    phase + Math.PI * 1.3 + 0.4 * Math.sin(phase * 0.5),
+                    phase + Math.PI * 2.1 + 0.3 * Math.sin(phase * 0.6)
+                ];
+                this.vertices = baseAngles.map(angle => {
+                    return {
+                        x: CENTER_X + RADIUS * Math.cos(angle),
+                        y: CENTER_Y + RADIUS * Math.sin(angle),
+                        angle: angle
+                    };
+                });
+            }
+            
+            update(mode, time) {
+                this.mode = mode;
+                if (mode === 'square') this.updateSquare(time);
+                else if (mode === 'rectangle') this.updateRectangle(time);
+                else if (mode === 'irregular') this.updateIrregular(time);
+                else if (mode === 'animate') this.updateAnimated(time);
+            }
+        }
+        
+        const state = new QuadrilateralState();
+        
+        function distance(p1, p2) {
+            const dx = p2.x - p1.x;
+            const dy = p2.y - p1.y;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+        
+        function calculateMeasurements() {
+            if (state.vertices.length !== 4) return null;
+            
+            const v = state.vertices;
+            const sides = [
+                distance(v[0], v[1]),
+                distance(v[1], v[2]),
+                distance(v[2], v[3]),
+                distance(v[3], v[0])
+            ];
+            
+            const semiperimeter = (sides[0] + sides[1] + sides[2] + sides[3]) / 2;
+            
+            const factors = [
+                semiperimeter - sides[0],
+                semiperimeter - sides[1],
+                semiperimeter - sides[2],
+                semiperimeter - sides[3]
+            ];
+            
+            const product = factors[0] * factors[1] * factors[2] * factors[3];
+            const area = product >= 0 ? Math.sqrt(product) : 0;
+            
+            // Diagonals for Ptolemy's theorem
+            const diagonalE = distance(v[0], v[2]);
+            const diagonalF = distance(v[1], v[3]);
+            const ptolemyLeft = sides[0] * sides[2] + sides[1] * sides[3];
+            const ptolemyRight = diagonalE * diagonalF;
+            
+            return {
+                sides,
+                semiperimeter,
+                factors,
+                area,
+                diagonalE,
+                diagonalF,
+                ptolemyLeft,
+                ptolemyRight
+            };
+        }
+        
+        function drawCircle() {
+            ctx.strokeStyle = '#444';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(CENTER_X, CENTER_Y, RADIUS, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
+        
+        function drawQuadrilateral() {
+            if (state.vertices.length !== 4) return;
+            
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A'];
+            const v = state.vertices;
+            
+            // Draw sides
+            for (let i = 0; i < 4; i++) {
+                ctx.strokeStyle = colors[i];
+                ctx.lineWidth = 8;
+                ctx.beginPath();
+                ctx.moveTo(v[i].x, v[i].y);
+                ctx.lineTo(v[(i + 1) % 4].x, v[(i + 1) % 4].y);
+                ctx.stroke();
+            }
+            
+            // Draw diagonals (Ptolemy visualization)
+            ctx.strokeStyle = 'rgba(150, 150, 150, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(v[0].x, v[0].y);
+            ctx.lineTo(v[2].x, v[2].y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(v[1].x, v[1].y);
+            ctx.lineTo(v[3].x, v[3].y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Draw vertices
+            for (let i = 0; i < 4; i++) {
+                ctx.fillStyle = colors[i];
+                ctx.beginPath();
+                ctx.arc(v[i].x, v[i].y, 15, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Vertex labels
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 24px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                const labelChars = ['A', 'B', 'C', 'D'];
+                ctx.fillText(labelChars[i], v[i].x, v[i].y);
+            }
+        }
+        
+        function drawCenter() {
+            ctx.fillStyle = '#90caf9';
+            ctx.beginPath();
+            ctx.arc(CENTER_X, CENTER_Y, 8, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        
+        function updateInfoPanel(measurements) {
+            if (!measurements) return;
+            
+            document.getElementById('sideA').textContent = measurements.sides[0].toFixed(2);
+            document.getElementById('sideB').textContent = measurements.sides[1].toFixed(2);
+            document.getElementById('sideC').textContent = measurements.sides[2].toFixed(2);
+            document.getElementById('sideD').textContent = measurements.sides[3].toFixed(2);
+            
+            document.getElementById('semiperimeter').textContent = measurements.semiperimeter.toFixed(2);
+            document.getElementById('area').textContent = measurements.area.toFixed(2);
+            
+            document.getElementById('factor1').textContent = measurements.factors[0].toFixed(2);
+            document.getElementById('factor2').textContent = measurements.factors[1].toFixed(2);
+            document.getElementById('factor3').textContent = measurements.factors[2].toFixed(2);
+            document.getElementById('factor4').textContent = measurements.factors[3].toFixed(2);
+            
+            document.getElementById('diagonalE').textContent = measurements.diagonalE.toFixed(2);
+            document.getElementById('diagonalF').textContent = measurements.diagonalF.toFixed(2);
+            document.getElementById('ptolemyLeft').textContent = measurements.ptolemyLeft.toFixed(2);
+            document.getElementById('ptolemyRight').textContent = measurements.ptolemyRight.toFixed(2);
+        }
+        
+        function render(time) {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+            
+            state.update(currentMode, time);
+            
+            drawCircle();
+            drawQuadrilateral();
+            drawCenter();
+            
+            const measurements = calculateMeasurements();
+            updateInfoPanel(measurements);
+            
+            requestAnimationFrame(render);
+        }
+        
+        function switchMode(mode) {
+            currentMode = mode;
+        }
+        
+        // Start animation
+        render(0);
+    </script>
+</body>
+</html>
+```
+
+<shader file="brahmagupta.wgsl">
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+    time: f32,
+    mode: f32,
+}
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = (pos.xy - params.resolution * 0.5) / min(params.resolution.x, params.resolution.y);
+    
+    // Center coordinates
+    let center = vec2<f32>(0.0, 0.0);
+    let radius = 0.6;
+    
+    // Generate cyclic quadrilateral vertices based on mode
+    let t = params.time * 0.0005;
+    
+    var angle0 = 0.0;
+    var angle1 = 1.57079632679;
+    var angle2 = 3.14159265359;
+    var angle3 = 4.71238898038;
+    
+    if (i32(params.mode) == 1) {
+        // Rectangle
+        angle0 = atan(0.5);
+        angle1 = 3.14159265359 - atan(0.5);
+        angle2 = 3.14159265359 + atan(0.5);
+        angle3 = 6.28318530718 - atan(0.5);
+    } else if (i32(params.mode) == 2) {
+        // Irregular
+        angle0 = 0.2;
+        angle1 = 1.3;
+        angle2 = 3.5;
+        angle3 = 5.2;
+    } else if (i32(params.mode) == 3) {
+        // Animated
+        angle0 = t;
+        angle1 = t + 1.88495559215 + 0.3 * sin(t * 0.7);
+        angle2 = t + 4.08407044967 + 0.4 * sin(t * 0.5);
+        angle3 = t + 6.59734457541 + 0.3 * sin(t * 0.6);
+    }
+    
+    let v0 = center + vec2<f32>(radius * cos(angle0), radius * sin(angle0));
+    let v1 = center + vec2<f32>(radius * cos(angle1), radius * sin(angle1));
+    let v2 = center + vec2<f32>(radius * cos(angle2), radius * sin(angle2));
+    let v3 = center + vec2<f32>(radius * cos(angle3), radius * sin(angle3));
+    
+    // Distance to circle
+    let distToCircle = abs(length(uv - center) - radius);
+    let circleColor = select(vec3<f32>(0.0), vec3<f32>(0.267, 0.267, 0.267), distToCircle < 0.01);
+    
+    // Distance to sides
+    let dist0 = distanceToSegment(uv, v0, v1);
+    let dist1 = distanceToSegment(uv, v1, v2);
+    let dist2 = distanceToSegment(uv, v2, v3);
+    let dist3 = distanceToSegment(uv, v3, v0);
+    
+    let minDist = min(min(dist0, dist1), min(dist2, dist3));
+    
+    var sideColor = vec3<f32>(0.0);
+    if (minDist == dist0) {
+        sideColor = vec3<f32>(1.0, 0.42, 0.42);
+    } else if (minDist == dist1) {
+        sideColor = vec3<f32>(0.31, 0.80, 0.77);
+    } else if (minDist == dist2) {
+        sideColor = vec3<f32>(0.27, 0.72, 0.82);
+    } else if (minDist == dist3) {
+        sideColor = vec3<f32>(1.0, 0.63, 0.48);
+    }
+    
+    let sideAlpha = 1.0 - smoothstep(0.0, 0.02, minDist);
+    
+    // Distance to vertices
+    let vdist0 = length(uv - v0);
+    let vdist1 = length(uv - v1);
+    let vdist2 = length(uv - v2);
+    let vdist3 = length(uv - v3);
+    
+    let minVdist = min(min(vdist0, vdist1), min(vdist2, vdist3));
+    let vertexAlpha = 1.0 - smoothstep(0.0, 0.03, minVdist);
+    
+    // Combine colors
+    let baseColor = circleColor + sideColor * sideAlpha + vec3<f32>(0.565, 0.725, 0.96) * vertexAlpha;
+    
+    return vec4<f32>(baseColor, 1.0);
+}
+
+fn distanceToSegment(p: vec2<f32>, a: vec2<f32>, b: vec2<f32>) -> f32 {
+    let pa = p - a;
+    let ba = b - a;
+    let h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
+</shader>

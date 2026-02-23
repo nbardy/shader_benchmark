@@ -1,0 +1,112 @@
+[2025-10-26 05:06:32.924551] START problem_004: archimedean_spiral_galaxy
+[2025-10-26 05:07:08.771178] START problem_005: archimedes_spiral
+[2025-10-26 05:07:31.590386] START problem_006: barbell_dumbbell_shape
+[2025-10-26 05:08:13.030517] START problem_007: binary_tree_fractal
+[2025-10-26 05:08:54.759041] START problem_008: brahmagupta_cyclic_quadrilaterals
+[2025-10-26 05:09:32.122369] EXCEPTION in problem_008 (generate stage): ValueError: No shader files found
+[2025-10-26 05:09:32.123374] EXCEPTION in problem_008 (run_single_problem): ValueError: No shader files found
+[2025-10-26 05:09:32.123499] END problem_008: brahmagupta_cyclic_quadrilaterals - FAILED (37.36s)
+[2025-10-26 05:09:32.124351] START problem_009: braided_rope
+[2025-10-26 05:09:48.685412] START problem_010: butterfly_curve
+[2025-10-26 05:10:04.514237] START problem_011: calabi_yau_manifold
+[2025-10-26 05:10:29.351888] START problem_012: capsule_shape
+[2025-10-26 05:10:46.988495] START problem_013: cardioid_limacon_collection
+[2025-10-26 05:11:02.567226] START problem_014: catenoid_helicoid_minimal
+[2025-10-26 05:11:16.744583] START problem_015: chinese_remainder_sunzi
+[2025-10-26 05:11:52.600415] START problem_016: chinese_remainder_theorem
+[2025-10-26 05:12:17.307122] EXCEPTION in problem_016 (generate stage): ValueError: No shader files found
+[2025-10-26 05:12:17.307723] EXCEPTION in problem_016 (run_single_problem): ValueError: No shader files found
+[2025-10-26 05:12:17.307809] END problem_016: chinese_remainder_theorem - FAILED (24.71s)
+[2025-10-26 05:12:17.308246] START problem_017: chladni_patterns
+[2025-10-26 05:12:25.803298] START problem_018: complex_analysis_stained_glass
+[2025-10-26 05:12:49.028409] START problem_019: compound_polyhedra_stella_octangula
+[2025-10-26 05:13:07.890764] START problem_020: conformal_spiral_mapping
+[2025-10-26 05:13:28.158466] START problem_021: costa_minimal_surface
+[2025-10-26 05:13:58.932830] START problem_022: crystal_lattice_diffraction
+[2025-10-26 05:14:11.484311] START problem_023: cycloid_wave_patterns
+[2025-10-26 05:14:27.946068] START problem_024: cylindrical_bend_deformation
+[2025-10-26 05:15:02.725856] START problem_025: differential_equations_water
+[2025-10-26 05:15:20.942513] START problem_026: dna_double_helix
+[2025-10-26 05:15:45.444553] START problem_027: epicycloids
+[2025-10-26 05:16:00.162416] START problem_028: euler_polyhedron_formula
+[2025-10-26 05:16:32.288378] EXCEPTION in problem_028 (generate stage): ValueError: No shader files found
+[2025-10-26 05:16:32.289057] EXCEPTION in problem_028 (run_single_problem): ValueError: No shader files found
+[2025-10-26 05:16:32.289122] END problem_028: euler_polyhedron_formula - FAILED (32.13s)
+[2025-10-26 05:16:32.289823] START problem_029: euler_polyhedron_platonic
+[2025-10-26 05:17:08.328447] START problem_030: fermat_parabolic_spiral
+[2025-10-26 05:17:20.241557] START problem_031: five_pointed_star_polygon
+[2025-10-26 05:17:28.663451] START problem_032: fourier_architectural_blueprint
+[2025-10-26 05:17:56.638277] START problem_033: fourier_epicycles_drawing
+[2025-10-26 05:18:23.554967] START problem_034: fractal_loxodromic_patterns
+[2025-10-26 05:18:40.391309] START problem_035: fractal_tree_2d
+[2025-10-26 05:18:52.587965] START problem_036: gauss_complex_plane
+[2025-10-26 05:19:15.177600] EXCEPTION in problem_036 (generate stage): ValueError: No shader files found
+[2025-10-26 05:19:15.179440] EXCEPTION in problem_036 (run_single_problem): ValueError: No shader files found
+[2025-10-26 05:19:15.179597] END problem_036: gauss_complex_plane - FAILED (22.59s)
+[2025-10-26 05:19:15.180324] START problem_037: geometric_cube
+[2025-10-26 05:19:48.624188] START problem_038: glass_sphere_red_core
+[2025-10-26 05:20:28.578189] START problem_039: group_theory_kaleidoscope
+[2025-10-26 05:21:04.079494] START problem_040: gyroscopic_nested_rings
+[2025-10-26 05:21:19.540592] START problem_041: helical_twist_deformation
+[2025-10-26 05:21:57.291441] START problem_042: helical_twisted_cube_advanced
+[2025-10-26 05:22:22.947929] START problem_043: holographic_interference
+[2025-10-26 05:22:34.769024] START problem_044: hopf_fibration_base_loops
+[2025-10-26 05:23:11.137928] START problem_045: hyper_menger_cube_3sphere
+[2025-10-26 05:23:29.274099] START problem_046: hyperbolic_heat_kernel
+[2025-10-26 05:23:48.070856] START problem_047: icosahedron_wireframe
+[2025-10-26 05:24:12.271199] START problem_048: klein_bottle
+[2025-10-26 05:24:25.689852] START problem_049: lissajous_curve_garden
+[2025-10-26 05:24:47.336803] START problem_050: logarithmic_spiral_motion
+[2025-10-26 05:25:02.350314] START problem_051: lorenz_attractor_poincare
+[2025-10-26 05:25:24.868101] START problem_052: loxodromic_sphere_spirals
+[2025-10-26 05:25:44.061100] START problem_053: mandala_circles
+[2025-10-26 05:26:04.391482] START problem_054: mandelbulb_fractal
+[2025-10-26 05:26:44.643393] START problem_055: menger_cube_fractal
+[2025-10-26 05:27:23.183805] START problem_056: menger_sponge_fractal
+[2025-10-26 05:27:39.042699] START problem_057: mobius_strip_half_twist
+[2025-10-26 05:27:58.778279] START problem_058: mobius_strip_triple_twist
+[2025-10-26 05:28:14.674073] START problem_059: mobius_transformation_3d
+[2025-10-26 05:28:53.559345] START problem_060: number_theory_music
+[2025-10-26 05:29:14.393992] START problem_061: octagram_star_polygon
+[2025-10-26 05:29:28.278890] START problem_062: parametric_gear_train
+[2025-10-26 05:29:51.194738] START problem_063: parametric_seashell
+[2025-10-26 05:30:27.471229] START problem_064: penrose_tiling_p3
+[2025-10-26 05:31:03.382603] START problem_065: phyllotaxis_spiral
+[2025-10-26 05:31:21.911978] START problem_066: poincare_disc
+[2025-10-26 05:31:49.688996] START problem_067: prime_crystal_lattice
+[2025-10-26 05:32:05.929080] START problem_068: probability_weather_patterns
+[2025-10-26 05:32:28.048458] START problem_069: quantum_probability_waves
+[2025-10-26 05:32:48.506013] START problem_070: ramanujan_mock_theta
+[2025-10-26 05:33:11.090306] START problem_071: reaction_diffusion_patterns
+[2025-10-26 05:33:32.143371] START problem_072: README.md
+[2025-10-26 05:33:32.144703] EXCEPTION in problem_072 (generate stage): FileNotFoundError: Request prompt file not found: /Users/nicholasbardy/git/shader_benchmark/problems/base_set/README.md/request.txt
+[2025-10-26 05:33:32.145204] EXCEPTION in problem_072 (run_single_problem): FileNotFoundError: Request prompt file not found: /Users/nicholasbardy/git/shader_benchmark/problems/base_set/README.md/request.txt
+[2025-10-26 05:33:32.145281] END problem_072: README.md - FAILED (0.00s)
+[2025-10-26 05:33:32.145813] START problem_073: regular_dodecahedron
+[2025-10-26 05:34:12.187542] START problem_074: regular_icosahedron
+[2025-10-26 05:34:47.398964] START problem_075: regular_octahedron
+[2025-10-26 05:35:14.301184] START problem_076: regular_tetrahedron
+[2025-10-26 05:35:35.775401] START problem_077: riemann_surface_branch_cuts
+[2025-10-26 05:35:52.672033] START problem_078: riemann_zeta_zeros
+[2025-10-26 05:36:14.123060] START problem_079: rose_curves
+[2025-10-26 05:36:32.341629] START problem_080: rotating_hypercube_projection
+[2025-10-26 05:37:05.951232] START problem_081: rounded_box
+[2025-10-26 05:37:20.960185] START problem_082: schwarzschild_black_hole
+[2025-10-26 05:37:56.834213] START problem_083: sierpinski_tetrahedron
+[2025-10-26 05:38:30.746652] START problem_084: sierpinski_triangle_6_iterations
+[2025-10-26 05:38:43.791433] START problem_085: spherical_inversion_mapping
+[2025-10-26 05:39:11.058491] START problem_086: spinning_gear_assembly
+[2025-10-26 05:39:44.115870] START problem_087: spinning_vortex_funnel
+[2025-10-26 05:40:03.235583] START problem_088: spiral_staircase_tower
+[2025-10-26 05:40:30.093293] START problem_089: stella_octangula
+[2025-10-26 05:40:56.826066] START problem_090: superformula_explorer
+[2025-10-26 05:41:24.035082] START problem_091: taper_shear_transformation
+[2025-10-26 05:42:02.718679] START problem_092: topology_fabric_texture
+[2025-10-26 05:42:49.177820] START problem_093: torus_donut_parametric
+[2025-10-26 05:43:25.440916] START problem_094: trefoil_alexander_polynomial
+[2025-10-26 05:43:41.586317] START problem_095: trigonometric_mandalas
+[2025-10-26 05:43:53.976092] START problem_096: truncated_icosahedron
+[2025-10-26 05:44:18.838146] START problem_097: twisted_stellated_polyhedron
+[2025-10-26 05:44:49.931876] START problem_098: voronoi_diagram
+[2025-10-26 05:45:08.503483] START problem_099: wave_deformation_field
+[2025-10-26 05:45:33.514819] START problem_100: weierstrass_function

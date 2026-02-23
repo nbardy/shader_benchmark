@@ -1,0 +1,205 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Parametric Equation Implementation:
+- Exact x equation: x = sin(t) * (e^cos(t) - 2*cos(4*t) - sin(t/12)^5)
+- Exact y equation: y = cos(t) * (e^cos(t) - 2*cos(4*t) - sin(t/12)^5)
+- Parameter t ranging correctly from 0 to 12π for complete curve
+- Proper exponential term computation: e^cos(t)
+- Accurate trigonometric function calculations throughout
+
+Mathematical Precision:
+- All parametric equation components implemented with numerical accuracy
+- Correct evaluation of complex trigonometric expressions
+- Proper handling of exponential and power functions
+- Mathematical consistency in curve generation algorithm
+- Accurate parametric form producing recognizable butterfly shape
+
+**S4: Visual Implementation Section**  
+Butterfly Curve Visualization:
+- Clear, recognizable butterfly silhouette with distinctive wing shapes
+- Intricate wing patterns showing mathematical complexity
+- Symmetrical butterfly wings demonstrating parametric precision
+- Natural butterfly coloring with appropriate gradient schemes
+- Fine detail resolution in wing pattern structures
+
+Animation and Flight Motion:
+- Smooth animated flight motion suggesting realistic butterfly movement
+- Convincing flight realism with appropriate motion dynamics
+- Seamless animation loop continuity without jumps or artifacts
+- Professional animation quality enhancing visual appeal
+- Smooth parameter progression creating fluid motion effects
+
+**S5: Completeness & Specifications Section**
+Required Butterfly Elements:
+- Complete parametric butterfly curve implementation
+- All mathematical equation components properly rendered
+- Full parameter range coverage producing complete butterfly shape
+- Intricate wing patterns as specified in requirements
+- Animated flight motion completing the visualization
+
+Technical and Visual Standards:
+- High-quality rendering with proper numerical stability
+- Professional visual presentation meeting aesthetic requirements
+- Efficient shader implementation with clean code structure
+- Complete adherence to butterfly curve specification requirements
+- All technical and artistic elements properly integrated
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+# Butterfly Curve
+
+Create an animated WebGL visualization of the transcendental butterfly curve with color gradients that emphasize its wing-like structure.
+
+## Requirements:
+
+1. Implement the butterfly curve equation:
+   - x = sin(t) * (e^cos(t) - 2*cos(4t) - sin(t/12)^5)
+   - y = cos(t) * (e^cos(t) - 2*cos(4t) - sin(t/12)^5)
+2. Animate the curve drawing from t=0 to t=12π
+3. Apply a color gradient that changes based on:
+   - The angle from center
+   - The distance from center
+   - Creating a butterfly wing effect
+4. Add particle effects that follow the curve path
+5. Implement a subtle glow effect on the curve
+6. Include smooth camera zoom that reveals the full pattern
+7. Add a complementary animated background
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Evaluation
+
+## Detailed Assessment
+
+### Image Analysis
+The provided image is a solid gradient background transitioning from light gray-blue at the top to darker teal-blue tones at the bottom. **This is not a butterfly curve visualization at all** - it appears to be either a blank canvas, a background placeholder, or a failed rendering.
+
+---
+
+## Criterion-by-Criterion Evaluation
+
+### S1: Problem Accuracy (Generic)
+**Score: 5/100**
+
+The image completely fails to meet the core requirement: visualizing the butterfly curve. There is no parametric curve, no butterfly shape, no mathematical visualization whatsoever. The image shows only a gradient background with no evidence of:
+- The butterfly curve implementation
+- Any mathematical plotting
+- Recognition of the specified problem requirements
+
+The accuracy is essentially non-existent.
+
+---
+
+### S2: Visual Quality (Generic)
+**Score: 35/100**
+
+While the gradient itself is smoothly rendered without visible artifacts, the overall visual quality is poor in context:
+- The gradient is technically clean and well-anti-aliased (+)
+- Colors are harmonious and professionally rendered (+)
+- However, the image appears incomplete or represents a failed render (---)
+- No substantive visual content beyond background (---)
+- Does not meet the requirement for an "aesthetic, polished" mathematical visualization (---)
+
+The technical execution of the gradient is competent, but it's irrelevant without the actual visualization.
+
+---
+
+### S3: Mathematical Accuracy Section
+**Score: 2/100**
+
+**Parametric Equation Implementation: 0/25**
+- No visible butterfly curve
+- No evidence of x = sin(t) * (e^cos(t) - 2*cos(4*t) - sin(t/12)^5) implementation
+- No evidence of y = cos(t) * (e^cos(t) - 2*cos(4*t) - sin(t/12)^5) implementation
+- Parameter range t ∈ [0, 12π] not evident in visualization
+- Complete absence of curve rendering
+
+**Mathematical Precision: 1/25**
+- No trigonometric functions visible
+- No exponential calculations present
+- No butterfly curve generation
+- Numerically inaccurate to the point of non-existence
+
+This criterion is almost entirely unmet.
+
+---
+
+### S4: Visual Implementation Section
+**Score: 3/100**
+
+**Butterfly Curve Visualization: 0/50**
+- No butterfly silhouette present
+- No wing patterns visible
+- No symmetry demonstration
+- No butterfly coloring scheme applied
+- Complete absence of curve detail
+
+**Animation and Flight Motion: 3/50**
+- Cannot assess animation from static image, but no evidence of curve-based motion
+- No visible animated elements
+- Appears to be a static gradient
+- No motion dynamics evident
+
+This section is almost entirely unmet, with only minor points for technical rendering quality.
+
+---
+
+### S5: Completeness & Specifications Section
+**Score: 2/100**
+
+**Required Butterfly Elements: 0/50**
+- No parametric butterfly curve implementation visible
+- No mathematical equation components rendered
+- No parameter range coverage demonstrated
+- No wing patterns shown
+- No animation evidence
+
+**Technical and Visual Standards: 2/50**
+- Gradient rendering is technically stable (minimal credit)
+- No professional mathematical visualization presentation
+- Implementation appears incomplete or failed
+- Massive gap between specifications and delivery
+- No integration of required elements
+
+---
+
+## Summary
+
+This image represents a **complete failure to deliver the specified butterfly curve visualization**. It appears to be either:
+1. A blank background/placeholder that was submitted in error
+2. A failed rendering where the actual visualization code didn't execute
+3. An incomplete development stage
+
+There is **no evidence of any mathematical implementation, butterfly curve, animation, particle effects, glow effects, or camera zoom**. The only element present is a gradient background, which is explicitly not part of the requirements.
+
+For a mathematical visualization assignment, this represents a fundamental non-delivery of the core requirement.
+
+<scores><S1>5</S1><S2>35</S2><S3>2</S3><S4>3</S4><S5>2</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[5, 35, 2, 3, 2]
+

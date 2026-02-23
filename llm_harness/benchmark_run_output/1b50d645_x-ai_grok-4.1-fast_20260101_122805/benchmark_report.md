@@ -1,0 +1,58 @@
+# Shader Benchmark Report
+
+**Model:** x-ai/grok-4.1-fast
+**Generated:** 2026-01-01 12:45:25
+**Total Tests:** 1
+**Successful Renders:** 0
+**Success Rate:** 0/1 (0.0%)
+**Scored Tests:** 0  
+
+---
+
+## Summary Statistics
+
+*No scored tests available for statistical analysis.*
+
+---
+
+## Detailed Test Results
+
+### Test 1: Ackermann Function Growth
+
+**Test ID:** `000_ackermann_function_growth`  
+**Shader Files:** shader_0.wgsl  
+**Execution Status:** ❌ Failed  
+**Image Generated:** ❌ No  
+**Judge Scores:** ✅ Available  
+
+#### Problem Prompt
+
+> The plot should shock the viewer by how astronomically fast the Ackermann function explodes, even for modest inputs. Use a log₁₀ axis so the bars fit on screen yet their heights still dwarf each other.
+> 
+> Data table:
+> A(3,n) values:
+> - n=0: 1
+> - n=1: 2
+> - n=2: 2^2-1 = 3
+> - n=3: 2^(2^2)-3 = 13
+> - n=4: 2^(2^(2^2))-3 = 65533
+> - n=5 through n=10: exponential towers of increasing height
+> 
+> Pre-compute exact integer values using bignum arithmetic; convert to log₁₀ with high-precision (at least 50 digits).
+> 
+> Visual spec:
+> - Canvas 1600 × 1200, white background
+> - 11 vertical bars, equally spaced 80 px apart
+> - Bar widths 40 px; top-cap rounded
+> - Fill colour gradient deep-blue (#0033CC) for n=0 to searing-red (#FF3300) for n=10 (linear in n)
+> - y-axis log₁₀ scale 0→10, grid-lines every integer decade
+> - Annotate each bar with exact exponent-tower notation beneath x-axis
+> 
+> Deliverable: Outputs a single image.
+
+#### Rendered Output
+
+*No image available (compilation or execution failed)*
+
+---
+

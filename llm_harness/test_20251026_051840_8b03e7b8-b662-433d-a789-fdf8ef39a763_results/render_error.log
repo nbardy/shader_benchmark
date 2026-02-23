@@ -1,0 +1,38 @@
+=== RENDER FAILED ===
+Return code: 101
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_051840_8b03e7b8-b662-433d-a789-fdf8ef39a763_results/shaders/shader_0.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_051840_8b03e7b8-b662-433d-a789-fdf8ef39a763_results/artifacts/result.png
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader validation error: 
+   ┌─ user_shader:73:1
+   │  
+73 │ ╭ fn compute_trajectory_field(pixel_pos: vec2<f32>, trajectory_points: array<vec3<f32>, 50>, point_count: u32) -> f32 {
+74 │ │     var min_dist = 1000.0;
+75 │ │     
+76 │ │     // Sample trajectory distances (unrolled for WGSL constraints)
+77 │ │     for (var i = 0u; i < point_count; i = i + 1u) {
+78 │ │         let p = trajectory_points[i];
+   │ │                 ^^^^^^^^^^^^^^^^^^^^ naga::Expression [11]
+   · │
+84 │ │     
+85 │ │     return min_dist;
+   │ ╰────────────────────^ naga::Function [7]
+
+
+    Function [7] 'compute_trajectory_field' is invalid
+    Expression [11] is invalid
+    The expression [2] may only be indexed by a constant
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+=== STDOUT ===

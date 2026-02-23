@@ -1,0 +1,13 @@
+{
+  "run_id": "harness_anthropic_claude-3.5-sonnet-20241022_20251025_200933",
+  "model": "anthropic/claude-3.5-sonnet-20241022",
+  "judge_model": "anthropic/claude-haiku-4.5",
+  "total_problems": 3,
+  "problems": [
+    "ackermann_function_growth",
+    "al_khwarizmi_geometric_algebra",
+    "apollonian_gasket"
+  ],
+  "created": "2025-10-25T20:09:33.326321",
+  "last_updated": "2025-10-25T20:10:46.588534"
+}

@@ -1,0 +1,30 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_051852_e9d91eb7-3096-4fd5-94aa-80490bc56d25_results/shaders/fractal_tree.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_051852_e9d91eb7-3096-4fd5-94aa-80490bc56d25_results/artifacts/result.png
+Return code: 101
+
+=== STDOUT ===
+(empty)
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: declaration of `tree_recursive` is recursive
+   ┌─ wgsl:41:4
+   │
+41 │ fn tree_recursive(
+   │    ^^^^^^^^^^^^^^
+   ·
+65 │         result = result + tree_recursive(
+   │                           ^^^^^^^^^^^^^^ uses itself here
+
+
+    declaration of `tree_recursive` is recursive
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

@@ -1,0 +1,3 @@
+JUDGE SKIPPED - ALL BLACK IMAGE
+Reason: Image mean pixel value < 5.0
+Score: 1/500 (minimal score for render failure)

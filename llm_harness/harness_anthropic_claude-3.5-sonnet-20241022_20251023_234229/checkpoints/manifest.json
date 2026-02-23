@@ -1,0 +1,12 @@
+{
+  "run_id": "harness_anthropic_claude-3.5-sonnet-20241022_20251023_234229",
+  "model": "anthropic/claude-3.5-sonnet-20241022",
+  "judge_model": "anthropic/claude-haiku-4.5",
+  "total_problems": 2,
+  "problems": [
+    "ackermann_function_growth",
+    "al_khwarizmi_geometric_algebra"
+  ],
+  "created": "2025-10-23T23:42:29.206036",
+  "last_updated": "2025-10-23T23:43:38.625373"
+}

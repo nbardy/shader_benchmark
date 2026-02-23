@@ -1,0 +1,114 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: d8597ead_google_gemini-3-flash-preview_20251229_160403
+Started: 2025-12-29T16:04:03.268668
+============================================================
+
+[2025-12-29 16:04:03.268716] HARNESS INITIALIZED
+  Model: google/gemini-3-flash-preview
+  Problems: 10
+  Max parallel: 5
+  Problem list:
+    000: ackermann_function_growth
+    001: al_khwarizmi_geometric_algebra
+    002: apollonian_gasket
+    003: apollonius_conic_sections
+    004: archimedean_spiral_galaxy
+    005: archimedes_spiral
+    006: barbell_dumbbell_shape
+    007: binary_tree_fractal
+    008: brahmagupta_cyclic_quadrilaterals
+    009: braided_rope
+
+[2025-12-29 16:04:03.541693] START problem_000: ackermann_function_growth
+[2025-12-29 16:04:15.187798] START problem_001: al_khwarizmi_geometric_algebra
+[2025-12-29 16:04:28.846114] START problem_002: apollonian_gasket
+[2025-12-29 16:04:39.627174] START problem_003: apollonius_conic_sections
+[2025-12-29 16:04:52.105827] START problem_004: archimedean_spiral_galaxy
+[2025-12-29 16:05:05.489241] START problem_005: archimedes_spiral
+[2025-12-29 16:05:18.813490] START problem_006: barbell_dumbbell_shape
+[2025-12-29 16:05:33.829630] START problem_007: binary_tree_fractal
+[2025-12-29 16:05:50.832793] START problem_008: brahmagupta_cyclic_quadrilaterals
+[2025-12-29 16:06:03.911776] START problem_009: braided_rope
+[2025-12-29 16:06:13.951655] EXCEPTION in problem_000 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: expected identifier, found '<'
+   ┌─ wgsl:82:8
+   │
+82 │     var<function> bars_mask: f32 = 0.0;
+   │        ^ expected identifier
+
+
+    expected identifier, found '<'
+
+
+note: run with `RUST_BACKTRACE=1
+[2025-12-29 16:06:13.952113] END problem_000: ackermann_function_growth - FAILED (130.41s)
+[2025-12-29 16:06:14.015431] END problem_002: apollonian_gasket - SUCCESS (105.17s)
+[2025-12-29 16:06:14.069544] EXCEPTION in problem_007 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: expected ';', found ','
+   ┌─ wgsl:44:32
+   │
+44 │     var depth_stack: array<f32>, 127>;
+   │                                ^ expected ';'
+
+
+    expected ';', found ','
+
+
+note: run with `RUST_BACKTRAC
+[2025-12-29 16:06:14.069602] END problem_007: binary_tree_fractal - FAILED (40.24s)
+[2025-12-29 16:06:14.084412] EXCEPTION in problem_004 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: expected ';', found '?'
+   ┌─ wgsl:78:42
+   │
+78 │         let theta1 = (angle_pixel < 0.0) ? (angle_pixel + 6.28318 * (turn + 1.0)) : (angle_pixel + 6.28318 * turn);
+   │                               
+[2025-12-29 16:06:14.084924] END problem_004: archimedean_spiral_galaxy - FAILED (81.97s)
+[2025-12-29 16:06:14.147748] EXCEPTION in problem_009 (run_single_problem): RuntimeError: Shader execution still failing after repair: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: name `ref` is a reserved keyword
+    ┌─ wgsl:119:17
+    │
+119 │             let ref = reflect(-light_dir, n);
+    │                 ^^^ definition of `ref`
+
+
+    name `ref` is a reserved keyword
+
+
+note:
+[2025-12-29 16:06:14.147871] END problem_009: braided_rope - FAILED (10.23s)
+[2025-12-29 16:06:28.966742] END problem_001: al_khwarizmi_geometric_algebra - SUCCESS (133.78s)
+[2025-12-29 16:06:31.203071] END problem_003: apollonius_conic_sections - SUCCESS (111.58s)
+[2025-12-29 16:06:31.969189] END problem_006: barbell_dumbbell_shape - SUCCESS (73.16s)
+[2025-12-29 16:06:32.360857] END problem_008: brahmagupta_cyclic_quadrilaterals - SUCCESS (41.53s)
+[2025-12-29 16:06:37.082287] END problem_005: archimedes_spiral - SUCCESS (91.59s)
+
+============================================================
+Run completed: 2025-12-29T16:06:37.083040

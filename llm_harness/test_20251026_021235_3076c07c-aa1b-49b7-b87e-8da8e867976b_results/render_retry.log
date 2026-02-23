@@ -1,0 +1,36 @@
+=== RENDER_RETRY LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_021235_3076c07c-aa1b-49b7-b87e-8da8e867976b_results/shaders/shader_0.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_021235_3076c07c-aa1b-49b7-b87e-8da8e867976b_results/artifacts/result.png
+Return code: 101
+
+=== STDOUT ===
+(empty)
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader validation error: 
+   ┌─ user_shader:19:1
+   │  
+19 │ ╭ fn ackermann_log10(n: u32) -> f32 {
+20 │ │     // A(3,n) = 2^(2^...2) - 3  (tower of height n+3)
+21 │ │     // log₁₀ values:
+22 │ │     let values = array<f32, 11>(
+   · │
+36 │ │     if (n >= 11u) { return 9.86551e3; }
+37 │ │     return values[n];
+   │ │            ^^^^^^^^^ naga::Expression [17]
+   │ ╰─────────────────────^ naga::Function [1]
+
+
+    Function [1] 'ackermann_log10' is invalid
+    Expression [17] is invalid
+    The expression [13] may only be indexed by a constant
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

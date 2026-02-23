@@ -1,0 +1,32 @@
+2025-12-28 20:07:14.994 [INFO] Logger initialized for problem 7: binary_tree_fractal
+2025-12-28 20:07:14.994 [INFO] ========== PROBLEM START ==========
+2025-12-28 20:07:14.995 [INFO] Index: 7
+2025-12-28 20:07:14.995 [INFO] Name: binary_tree_fractal
+2025-12-28 20:07:14.995 [INFO] ---------- STAGE START: GENERATE ----------
+2025-12-28 20:07:14.995 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-12-28 20:07:14.995 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/ca67cecf_anthropic_claude-haiku-4.5_20251228_200655/checkpoints/problem_007.json
+2025-12-28 20:07:14.995 [INFO] Loading request prompt
+2025-12-28 20:07:14.996 [INFO] API call: LLM generation model=anthropic/claude-haiku-4.5, language=wgsl
+2025-12-28 20:07:15.372 [ERROR] EXCEPTION in generate stage:
+2025-12-28 20:07:15.372 [ERROR]   Type: Exception
+2025-12-28 20:07:15.372 [ERROR]   Message: OpenRouter API error: 403 - {"error":{"message":"Key limit exceeded (total limit). Manage it using https://openrouter.ai/settings/keys","code":403}}
+2025-12-28 20:07:15.372 [ERROR]   Traceback:
+2025-12-28 20:07:15.373 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 313, in run_single_problem
+    llm_response = await llm_client.generate_shaders(self.model, request_prompt)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-12-28 20:07:15.373 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/llm_client.py", line 66, in generate_shaders
+    raise Exception(f"OpenRouter API error: {response.status_code} - {response.text}")
+2025-12-28 20:07:15.373 [INFO] Attempting to save checkpoint: stage=generate, status=failed
+2025-12-28 20:07:15.374 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/ca67cecf_anthropic_claude-haiku-4.5_20251228_200655/checkpoints/problem_007.json
+2025-12-28 20:07:15.374 [INFO] ---------- STAGE END: GENERATE - FAILED ----------
+2025-12-28 20:07:15.374 [ERROR] EXCEPTION in run_single_problem:
+2025-12-28 20:07:15.374 [ERROR]   Type: Exception
+2025-12-28 20:07:15.374 [ERROR]   Message: OpenRouter API error: 403 - {"error":{"message":"Key limit exceeded (total limit). Manage it using https://openrouter.ai/settings/keys","code":403}}
+2025-12-28 20:07:15.374 [ERROR]   Traceback:
+2025-12-28 20:07:15.374 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 313, in run_single_problem
+    llm_response = await llm_client.generate_shaders(self.model, request_prompt)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-12-28 20:07:15.374 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/llm_client.py", line 66, in generate_shaders
+    raise Exception(f"OpenRouter API error: {response.status_code} - {response.text}")
+2025-12-28 20:07:15.374 [INFO] ========== PROBLEM END: FAILED ==========
+2025-12-28 20:07:15.374 [INFO] Execution time: 0.38s

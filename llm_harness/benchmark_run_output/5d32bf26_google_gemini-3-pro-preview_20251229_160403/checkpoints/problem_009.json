@@ -1,0 +1,15 @@
+{
+  "problem_index": 9,
+  "problem_name": "braided_rope",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-12-29T16:48:31.027606",
+      "data": {
+        "error": "Failed after 3 retries: Response ended prematurely (hit token limit)"
+      }
+    }
+  },
+  "created": "2025-12-29T16:43:40.751702",
+  "last_updated": "2025-12-29T16:48:31.027613"
+}

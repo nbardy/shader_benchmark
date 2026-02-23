@@ -1,0 +1,32 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-23T23:50:31.426493",
+      "data": {
+        "shaders": [
+          "ackermann.wgsl"
+        ],
+        "llm_response_len": 8813
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-23T23:50:57.898482",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251023_235031_bb00d4f4-3d6b-45c2-a74b-7aacaea3f589_results"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-10-23T23:50:58.136528",
+      "data": {
+        "error": "Shader execution failed: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader 'user_shader' parsing error: no definition in scope for identifier: 'mod'\n   \u250c\u2500 wgsl:68:13\n   \u2502\n68 \u2502         abs(mod(uv.y + 1.0, 0.2) - 0.1),\n   \u2502             ^^^ unknown identifier\n\n\n    no definition in s"
+      }
+    }
+  },
+  "created": "2025-10-23T23:49:44.614552",
+  "last_updated": "2025-10-23T23:50:58.136533"
+}

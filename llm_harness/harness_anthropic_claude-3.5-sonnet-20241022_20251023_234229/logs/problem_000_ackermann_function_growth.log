@@ -1,0 +1,51 @@
+2025-10-23 23:42:29.205 [INFO] Logger initialized for problem 0: ackermann_function_growth
+2025-10-23 23:42:29.205 [INFO] ========== PROBLEM START ==========
+2025-10-23 23:42:29.205 [INFO] Index: 0
+2025-10-23 23:42:29.205 [INFO] Name: ackermann_function_growth
+2025-10-23 23:42:29.205 [INFO] ---------- STAGE START: GENERATE ----------
+2025-10-23 23:42:29.205 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-10-23 23:42:29.206 [INFO] Checkpoint saved successfully: stage=generate, file=harness_anthropic_claude-3.5-sonnet-20241022_20251023_234229/checkpoints/problem_000.json
+2025-10-23 23:42:29.206 [INFO] Loading request prompt
+2025-10-23 23:42:29.206 [INFO] API call: LLM generation model=anthropic/claude-3.5-sonnet-20241022
+2025-10-23 23:43:16.244 [INFO] API response: LLM generation - success, size=9408 bytes
+2025-10-23 23:43:16.245 [INFO] Parsing shader response
+2025-10-23 23:43:16.246 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2025-10-23 23:43:16.248 [INFO] Checkpoint saved successfully: stage=generate, file=harness_anthropic_claude-3.5-sonnet-20241022_20251023_234229/checkpoints/problem_000.json
+2025-10-23 23:43:16.248 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2025-10-23 23:43:16.252 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2025-10-23 23:43:16.253 [INFO] Checkpoint saved successfully: stage=compile, file=harness_anthropic_claude-3.5-sonnet-20241022_20251023_234229/checkpoints/problem_000.json
+2025-10-23 23:43:38.439 [INFO] Attempting to save checkpoint: stage=compile, status=complete
+2025-10-23 23:43:38.440 [INFO] Checkpoint saved successfully: stage=compile, file=harness_anthropic_claude-3.5-sonnet-20241022_20251023_234229/checkpoints/problem_000.json
+2025-10-23 23:43:38.440 [INFO] Attempting to save checkpoint: stage=render, status=in_progress
+2025-10-23 23:43:38.440 [INFO] Checkpoint saved successfully: stage=render, file=harness_anthropic_claude-3.5-sonnet-20241022_20251023_234229/checkpoints/problem_000.json
+2025-10-23 23:43:38.625 [INFO] Attempting to save checkpoint: stage=render, status=failed
+2025-10-23 23:43:38.625 [INFO] Checkpoint saved successfully: stage=render, file=harness_anthropic_claude-3.5-sonnet-20241022_20251023_234229/checkpoints/problem_000.json
+2025-10-23 23:43:38.625 [ERROR] EXCEPTION in run_single_problem:
+2025-10-23 23:43:38.625 [ERROR]   Type: RuntimeError
+2025-10-23 23:43:38.625 [ERROR]   Message: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `ackermann_plot`
+    
+Shader 'ackermann_plot' parsing error: Float literal is infinite
+   ┌─ wgsl:40:20
+   │
+40 │     let h5 = log10(pow(2.0, 65533.0)) / 10.0;  // A(3,5)
+   │                    ^^^ see msg
+
+
+    Float literal is infinite
+
+
+note: run with `
+2025-10-23 23:43:38.625 [ERROR]   Traceback:
+2025-10-23 23:43:38.626 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 285, in run_single_problem
+    result_image = await test_runner.render_shader(test_folder)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-23 23:43:38.626 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_runner.py", line 149, in render_shader
+    raise RuntimeError(f"Shader execution failed: {result.stderr[:500]}")
+2025-10-23 23:43:38.627 [INFO] ========== PROBLEM END: FAILED ==========
+2025-10-23 23:43:38.627 [INFO] Execution time: 69.42s

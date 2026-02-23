@@ -1,0 +1,224 @@
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+    time: f32,
+    pad: f32,
+};
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+fn smin(a: f32, b: f32, k: f32) -> f32 {
+    var resa = -k * a;
+    var resb = -k * b;
+    return -(log(exp(resa) + exp(resb))) / k;
+}
+
+fn rotY(a: f32, p: vec3<f32>) -> vec3<f32> {
+    let c = cos(a);
+    let s = sin(a);
+    return vec3<f32>(c * p.x + s * p.z, p.y, -s * p.x + c * p.z);
+}
+
+fn rotZ(a: f32, p: vec3<f32>) -> vec3<f32> {
+    let c = cos(a);
+    let s = sin(a);
+    return vec3<f32>(c * p.x - s * p.y, s * p.x + c * p.y, p.z);
+}
+
+fn map(p_world: vec3<f32>) -> f32 {
+    let time_anim = params.time;
+    let tilt_z = 0.2617993877991494;
+    let angle_y = time_anim * 1.0471975511965976;
+    var pp = rotZ(tilt_z, p_world);
+    pp = rotY(angle_y, pp);
+    let c = vec3<f32>(2.5, 0.0, 0.0);
+    let d1 = length(pp + c) - 0.8;
+    let d2 = length(pp - c) - 0.8;
+    let dc = length(pp.yz) - 0.3;
+    let res = smin(smin(d1, d2, 2.0), dc, 2.0);
+    return res;
+}
+
+fn normal(p_world: vec3<f32>) -> vec3<f32> {
+    let e = 0.001;
+    let p = p_world;
+    let x = vec3<f32>(e, 0.0, 0.0);
+    let y = vec3<f32>(0.0, e, 0.0);
+    let z = vec3<f32>(0.0, 0.0, e);
+    let nx = map(p + x) - map(p - x);
+    let ny = map(p + y) - map(p - y);
+    let nz = map(p + z) - map(p - z);
+    return normalize(vec3<f32>(nx, ny, nz));
+}
+
+fn softshadow(p_world: vec3<f32>, rd: vec3<f32>, mint: f32, maxt: f32) -> f32 {
+    var res: f32 = 1.0;
+    var t: f32 = mint;
+    var i: u32 = 0u;
+    loop {
+        if (i >= 32u) { break; }
+        let h = map(p_world + rd * t);
+        res = min(res, 8.0 * h / t);
+        if (res < 0.005) { break; }
+        t += clamp(h, 0.02, 0.1);
+        if (t > maxt) { break; }
+        i = i + 1u;
+    }
+    return res;
+}
+
+fn saturate(x: f32) -> f32 {
+    return clamp(x, 0.0, 1.0);
+}
+
+fn fresnelSchlick(cos_theta: f32, F0: vec3<f32>) -> vec3<f32> {
+    return F0 + (vec3<f32>(1.0) - F0) * pow(1.0 - cos_theta, 5.0);
+}
+
+fn DistributionGGX(NdotH: f32, roughness: f32) -> f32 {
+    let a = roughness * roughness;
+    let a2 = a * a;
+    let denom = NdotH * NdotH * (a2 - 1.0) + 1.0;
+    return a2 / (3.1415926535 * denom * denom + 0.0001);
+}
+
+fn GeometrySchlickGGX(NdotV: f32, roughness: f32) -> f32 {
+    let r = roughness + 1.0;
+    let k = (r * r) / 8.0;
+    return NdotV / (NdotV * (1.0 - k) + k);
+}
+
+fn GeometrySmith(NdotV: f32, NdotL: f32, roughness: f32) -> f32 {
+    let ggx1 = GeometrySchlickGGX(NdotV, roughness);
+    let ggx2 = GeometrySchlickGGX(NdotL, roughness);
+    return ggx1 * ggx2;
+}
+
+fn get_material(p_world: vec3<f32>, N: vec3<f32>, V: vec3<f32>, rd: vec3<f32>) -> vec3<f32> {
+    let time_anim = params.time;
+    let tilt_z = 0.2617993877991494;
+    let angle_y = time_anim * 1.0471975511965976;
+    var pp = rotZ(tilt_z, p_world);
+    pp = rotY(angle_y, pp);
+    let c = vec3<f32>(2.5, 0.0, 0.0);
+    let d1 = length(pp + c) - 0.8;
+    let d2 = length(pp - c) - 0.8;
+    let dc_ = length(pp.yz) - 0.3;
+    let is_cyl_bool = (min(d1, d2) > dc_);
+    var base_color = vec3<f32>(0.7, 0.7, 0.8);
+    var roughness = select(0.12, 0.28, is_cyl_bool);
+    if (is_cyl_bool) {
+        let stripe = 0.5 + 0.5 * sin(pp.x * 25.0);
+        base_color *= (1.0 + 0.08 * (stripe - 0.7));
+        roughness += 0.03 * (1.0 - stripe);
+        roughness = clamp(roughness, 0.12, 0.35);
+    }
+    let metalness = select(0.95, 0.85, is_cyl_bool);
+    let F0 = mix(vec3<f32>(0.04), base_color, metalness);
+    let reflect_dir = normalize(reflect(-V, N));
+    let env_col = mix(vec3<f32>(0.9, 0.9, 0.95), vec3<f32>(1.0), saturate(reflect_dir.y));
+    let F = fresnelSchlick(saturate(dot(N, V)), F0);
+    let kD = (1.0 - F) * (1.0 - metalness);
+    let diffuse = kD * base_color / 3.1415926535;
+    let ambient = 0.2 * env_col * (diffuse + F * 0.04);
+    var col = ambient;
+
+    // Primary dir light
+    let Ld1 = normalize(vec3<f32>(1.0, 2.0, 1.0));
+    let sh1 = softshadow(p_world + N * 0.02, Ld1, 0.02, 10.0);
+    let NdotL1 = saturate(dot(N, Ld1));
+    if (NdotL1 > 0.0) {
+        let H1 = normalize(V + Ld1);
+        let NdotH1 = saturate(dot(N, H1));
+        let NdotV = saturate(dot(N, V));
+        let F1 = fresnelSchlick(NdotH1, F0);
+        let D1 = DistributionGGX(NdotH1, roughness);
+        let G1 = GeometrySmith(NdotV, NdotL1, roughness);
+        let specular1 = (D1 * G1 * F1) / (4.0 * NdotV * NdotL1 + 0.0001);
+        col += (diffuse + specular1) * NdotL1 * 0.8 * sh1;
+    }
+
+    // Rim dir light
+    let Ld3 = normalize(vec3<f32>(-1.0, 0.0, -1.0));
+    let sh3 = softshadow(p_world + N * 0.02, Ld3, 0.02, 10.0);
+    let NdotL3 = saturate(dot(N, Ld3));
+    if (NdotL3 > 0.0) {
+        let H3 = normalize(V + Ld3);
+        let NdotH3 = saturate(dot(N, H3));
+        let NdotV = saturate(dot(N, V));
+        let F3 = fresnelSchlick(NdotH3, F0);
+        let D3 = DistributionGGX(NdotH3, roughness);
+        let G3 = GeometrySmith(NdotV, NdotL3, roughness);
+        let specular3 = (D3 * G3 * F3) / (4.0 * NdotV * NdotL3 + 0.0001);
+        col += (diffuse + specular3) * NdotL3 * 0.3 * sh3;
+    }
+
+    // Fill point light
+    let light_pos_fill = vec3<f32>(-3.0, 1.0, 2.0);
+    let to_fill = light_pos_fill - p_world;
+    let dist_fill = length(to_fill);
+    let Ld_fill = to_fill / dist_fill;
+    let att_fill = 1.0 / (1.0 + dist_fill * dist_fill * 0.125);
+    let sh_fill = softshadow(p_world + N * 0.02, Ld_fill, 0.02, dist_fill * 0.95);
+    let NdotLf = saturate(dot(N, Ld_fill));
+    if (NdotLf > 0.0) {
+        let H_fill = normalize(V + Ld_fill);
+        let NdotHf = saturate(dot(N, H_fill));
+        let NdotV = saturate(dot(N, V));
+        let Ff = fresnelSchlick(NdotHf, F0);
+        let Df = DistributionGGX(NdotHf, roughness);
+        let Gf = GeometrySmith(NdotV, NdotLf, roughness);
+        let specularf = (Df * Gf * Ff) / (4.0 * NdotV * NdotLf + 0.0001);
+        col += (diffuse + specularf) * NdotLf * 0.4 * att_fill * sh_fill;
+    }
+
+    return col;
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let frag_coord = pos.xy;
+    let aspect = params.resolution.x / params.resolution.y;
+    var uv = (frag_coord / params.resolution - 0.5) * 2.0;
+    uv.x *= aspect;
+    let cam_pos = vec3<f32>(4.0, 3.0, 5.0);
+    let forward = normalize(-cam_pos);
+    let right_vec = normalize(cross(vec3<f32>(0.0, 1.0, 0.0), forward));
+    let up_vec = cross(forward, right_vec);
+    let fov_scale = 0.7;
+    let rd = normalize(forward + fov_scale * (right_vec * uv.x + up_vec * uv.y));
+    let ro = cam_pos;
+
+    var tmax: f32 = 20.0;
+    var t: f32 = 0.1;
+    var i: u32 = 0u;
+    loop {
+        if (i >= 128u) { break; }
+        let p = ro + t * rd;
+        let h = map(p);
+        if (h < 0.001) { break; }
+        t += h;
+        if (t > tmax) { break; }
+        i = i + 1u;
+    }
+
+    let center_dist = length(frag_coord - 0.5 * params.resolution) / (0.5 * length(params.resolution));
+    let bg_col = mix(vec3<f32>(0.9, 0.9, 0.95), vec3<f32>(1.0, 1.0, 1.0), center_dist * center_dist);
+
+    var final_color: vec3<f32> = bg_col;
+    if (t < tmax) {
+        let p_hit = ro + rd * t;
+        let N = normal(p_hit);
+        let V = -rd;
+        final_color = get_material(p_hit, N, V, rd);
+        final_color = mix(final_color, bg_col, 1.0 - exp2(-2.0 * sqrt(t)));
+    }
+    return vec4<f32>(final_color, 1.0);
+}

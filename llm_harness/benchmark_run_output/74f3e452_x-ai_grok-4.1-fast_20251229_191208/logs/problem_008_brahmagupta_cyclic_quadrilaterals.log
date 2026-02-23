@@ -1,0 +1,12 @@
+2025-12-29 19:47:22.480 [INFO] Logger initialized for problem 8: brahmagupta_cyclic_quadrilaterals
+2025-12-29 19:47:22.480 [INFO] ========== PROBLEM START ==========
+2025-12-29 19:47:22.480 [INFO] Index: 8
+2025-12-29 19:47:22.480 [INFO] Name: brahmagupta_cyclic_quadrilaterals
+2025-12-29 19:47:22.480 [ERROR] EXCEPTION in run_single_problem:
+2025-12-29 19:47:22.480 [ERROR]   Type: RuntimeError
+2025-12-29 19:47:22.480 [ERROR]   Message: Resume from checkpoint not yet implemented
+2025-12-29 19:47:22.480 [ERROR]   Traceback:
+2025-12-29 19:47:22.480 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 343, in run_single_problem
+    raise RuntimeError("Resume from checkpoint not yet implemented")
+2025-12-29 19:47:22.481 [INFO] ========== PROBLEM END: FAILED ==========
+2025-12-29 19:47:22.481 [INFO] Execution time: 0.00s

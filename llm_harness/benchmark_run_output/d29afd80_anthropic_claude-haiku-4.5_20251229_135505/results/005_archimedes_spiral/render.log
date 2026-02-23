@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/results/005_archimedes_spiral/shaders/shader_0.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/results/005_archimedes_spiral/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 2.863 ms   | CPU 107.918 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/results/005_archimedes_spiral/artifacts/result.png"
+
+=== STDERR ===
+(empty)

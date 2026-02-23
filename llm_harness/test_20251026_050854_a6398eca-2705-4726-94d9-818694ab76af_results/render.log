@@ -1,0 +1,30 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_050854_a6398eca-2705-4726-94d9-818694ab76af_results/shaders/shader.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_050854_a6398eca-2705-4726-94d9-818694ab76af_results/artifacts/result.png
+Return code: 101
+
+=== STDOUT ===
+(empty)
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: declaration of `sd_tree_branch` is recursive
+    ┌─ wgsl:97:4
+    │
+ 97 │ fn sd_tree_branch(
+    │    ^^^^^^^^^^^^^^
+    ·
+115 │         d = min(d, sd_tree_branch(p, p_end, left_dir, next_len, next_rad, depth + 1u));
+    │                    ^^^^^^^^^^^^^^ uses itself here
+
+
+    declaration of `sd_tree_branch` is recursive
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

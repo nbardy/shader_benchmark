@@ -1,0 +1,15 @@
+{
+  "problem_index": 2,
+  "problem_name": "apollonian_gasket",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-12-29T20:41:54.683437",
+      "data": {
+        "error": "No shader files found"
+      }
+    }
+  },
+  "created": "2025-12-29T20:38:22.104671",
+  "last_updated": "2025-12-29T20:41:54.683443"
+}

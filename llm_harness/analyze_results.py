@@ -37,8 +37,19 @@ class BenchmarkAnalyzer:
         """Scan all harness directories and collect results."""
         print("🔍 Analyzing harness results...")
 
-        harness_dirs = sorted([d for d in self.harness_dir.glob('harness_*') if d.is_dir()])
-        print(f"Found {len(harness_dirs)} harness runs\n")
+        # CRITICAL: Support BOTH legacy and new directory structures
+        # Legacy pattern: harness_anthropic_claude-3.5-sonnet-20241022_20251024_123456/
+        # New pattern:    benchmark_run_output/97fe1f08_anthropic_claude-haiku-4.5_20251026_154624/
+        #
+        # If you add a third directory pattern, add another glob here AND update
+        # the model name extraction logic in _analyze_harness() below
+
+        # Scan both old harness_* pattern and new benchmark_run_output/* structure
+        old_pattern_dirs = sorted([d for d in self.harness_dir.glob('harness_*') if d.is_dir()])
+        new_pattern_dirs = sorted([d for d in (self.harness_dir / 'benchmark_run_output').glob('*') if d.is_dir()]) if (self.harness_dir / 'benchmark_run_output').exists() else []
+
+        harness_dirs = old_pattern_dirs + new_pattern_dirs
+        print(f"Found {len(harness_dirs)} harness runs ({len(old_pattern_dirs)} legacy, {len(new_pattern_dirs)} new structure)\n")
 
         for harness in harness_dirs:
             self._analyze_harness(harness)
@@ -47,20 +58,44 @@ class BenchmarkAnalyzer:
 
     def _analyze_harness(self, harness_path):
         """Analyze a single harness run."""
+        # CRITICAL: Model name extraction depends on directory naming convention
+        # This code must stay synchronized with directory patterns in analyze() above
+        #
+        # Naming conventions:
+        # - Legacy: harness_MODEL_DATE_TIME  (e.g., harness_anthropic_claude-3.5-sonnet_20251024_011837)
+        # - New:    UUID_MODEL_DATE_TIME     (e.g., 97fe1f08_anthropic_claude-haiku-4.5_20251026_154624)
+        #
+        # If benchmark_harness.py changes how it names directories, update this logic!
+
         # Extract model name from dirname
-        dirname = harness_path.name  # e.g., "harness_anthropic_claude-3.5-sonnet_20251024_011837"
-        parts = dirname.replace('harness_', '').split('_')
+        dirname = harness_path.name
 
-        # Reconstruct model name (everything before the timestamp)
-        # Format: harness_MODEL_DATE_TIME where MODEL can have underscores
-        # We identify timestamp by the pattern YYYYMMDD_HHMMSS
-        timestamp_pattern = r'(\d{8}_\d{6})$'
-        match = re.search(timestamp_pattern, dirname)
+        # Handle two directory patterns:
+        # Old: harness_anthropic_claude-3.5-sonnet_20251024_011837
+        # New: 97fe1f08_anthropic_claude-haiku-4.5_20251026_154624
 
-        if match:
-            model = dirname[:match.start()].replace('harness_', '')
+        if dirname.startswith('harness_'):
+            # Legacy pattern: harness_MODEL_DATE_TIME
+            timestamp_pattern = r'(\d{8}_\d{6})$'
+            match = re.search(timestamp_pattern, dirname)
+            if match:
+                model = dirname[:match.start()].replace('harness_', '')
+            else:
+                model = "unknown"
         else:
-            model = "unknown"
+            # New pattern: UUID_MODEL_DATE_TIME
+            # Remove UUID prefix (8 hex chars + underscore)
+            if re.match(r'^[a-f0-9]{8}_', dirname):
+                remaining = dirname[9:]  # Skip "UUID_"
+                # Extract everything between UUID and timestamp
+                timestamp_pattern = r'_(\d{8}_\d{6})$'
+                match = re.search(timestamp_pattern, remaining)
+                if match:
+                    model = remaining[:match.start()]
+                else:
+                    model = remaining
+            else:
+                model = "unknown"
 
         self.results['total_runs'] += 1
         self.results['by_model'][model]['runs'] += 1

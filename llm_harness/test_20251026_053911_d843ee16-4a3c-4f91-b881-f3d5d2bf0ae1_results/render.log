@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_053911_d843ee16-4a3c-4f91-b881-f3d5d2bf0ae1_results/shaders/spherical_inversion.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_053911_d843ee16-4a3c-4f91-b881-f3d5d2bf0ae1_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 0.000 ms   | CPU 866.106 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_053911_d843ee16-4a3c-4f91-b881-f3d5d2bf0ae1_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

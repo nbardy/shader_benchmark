@@ -1,0 +1,138 @@
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+};
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+fn helix(t: f32, phase: f32, radius: f32, pitch: f32) -> vec3<f32> {
+    let angle = t + phase;
+    let x = radius * cos(angle);
+    let z = radius * sin(angle);
+    let y = (pitch / (6.28318530718)) * t;
+    return vec3<f32>(x, y, z);
+}
+
+fn sdStrand(p: vec3<f32>, t: f32, phase: f32, radius: f32, pitch: f32, tubeRadius: f32) -> f32 {
+    let helixPos = helix(t, phase, radius, pitch);
+    let localP = p - helixPos;
+    return length(localP) - tubeRadius;
+}
+
+fn sceneSDF(p: vec3<f32>) -> vec4<f32> {
+    let cylRadius = 0.6;
+    let pitchDist = 1.8;
+    let tubeRad = 0.15;
+    
+    let phase0 = 0.0;
+    let phase1 = 2.0943951023932;
+    let phase2 = 4.18879020478639;
+    
+    var bestDist = 1e6;
+    var bestColor = vec3<f32>(0.1);
+    
+    // Strand 1: coral #c96
+    var d = 1e6;
+    for (var i: i32 = 0; i < 20; i = i + 1) {
+        let t = f32(i) * 0.5;
+        d = min(d, sdStrand(p, t, phase0, cylRadius, pitchDist, tubeRad));
+    }
+    if (d < bestDist) {
+        bestDist = d;
+        bestColor = vec3<f32>(0.8, 0.6, 0.4);
+    }
+    
+    // Strand 2: mint #6c9
+    d = 1e6;
+    for (var i: i32 = 0; i < 20; i = i + 1) {
+        let t = f32(i) * 0.5;
+        d = min(d, sdStrand(p, t, phase1, cylRadius, pitchDist, tubeRad));
+    }
+    if (d < bestDist) {
+        bestDist = d;
+        bestColor = vec3<f32>(0.4, 0.8, 0.6);
+    }
+    
+    // Strand 3: lavender #96c
+    d = 1e6;
+    for (var i: i32 = 0; i < 20; i = i + 1) {
+        let t = f32(i) * 0.5;
+        d = min(d, sdStrand(p, t, phase2, cylRadius, pitchDist, tubeRad));
+    }
+    if (d < bestDist) {
+        bestDist = d;
+        bestColor = vec3<f32>(0.6, 0.4, 0.8);
+    }
+    
+    return vec4<f32>(bestColor, bestDist);
+}
+
+fn rayMarch(ro: vec3<f32>, rd: vec3<f32>) -> vec4<f32> {
+    var t = 0.0;
+    var steps = 0;
+    let maxSteps = 64;
+    let maxDist = 20.0;
+    let minDist = 0.001;
+    
+    loop {
+        if (steps >= maxSteps || t >= maxDist) { break; }
+        
+        let p = ro + rd * t;
+        let scene = sceneSDF(p);
+        let dist = scene.w;
+        
+        if (dist < minDist) {
+            return scene;
+        }
+        
+        t = t + dist * 0.8;
+        steps = steps + 1;
+    }
+    
+    return vec4<f32>(0.1, 0.1, 0.15, 1e6);
+}
+
+fn normal(p: vec3<f32>) -> vec3<f32> {
+    let eps = 0.001;
+    let dx = sceneSDF(p + vec3<f32>(eps, 0.0, 0.0)).w - sceneSDF(p - vec3<f32>(eps, 0.0, 0.0)).w;
+    let dy = sceneSDF(p + vec3<f32>(0.0, eps, 0.0)).w - sceneSDF(p - vec3<f32>(0.0, eps, 0.0)).w;
+    let dz = sceneSDF(p + vec3<f32>(0.0, 0.0, eps)).w - sceneSDF(p - vec3<f32>(0.0, 0.0, eps)).w;
+    return normalize(vec3<f32>(dx, dy, dz));
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = (pos.xy - params.resolution * 0.5) / params.resolution.y;
+    
+    let cameraPos = vec3<f32>(3.0, 2.0, 2.0);
+    let targetPos = vec3<f32>(0.0, 1.0, 0.0);
+    let upVec = vec3<f32>(0.0, 1.0, 0.0);
+    
+    let forward = normalize(targetPos - cameraPos);
+    let right = normalize(cross(forward, upVec));
+    let up = cross(right, forward);
+    
+    let rayDir = normalize(right * uv.x + up * uv.y + forward);
+    
+    let scene = rayMarch(cameraPos, rayDir);
+    var color = scene.xyz;
+    
+    if (scene.w < 1e5) {
+        let hitPos = cameraPos + rayDir * scene.w;
+        let norm = normal(hitPos);
+        let lightDir = normalize(vec3<f32>(1.0, 2.0, 1.0));
+        let diffuse = max(0.0, dot(norm, lightDir)) * 0.8 + 0.2;
+        color = color * diffuse;
+    }
+    
+    color = pow(color, vec3<f32>(0.454545));
+    
+    return vec4<f32>(color, 1.0);
+}

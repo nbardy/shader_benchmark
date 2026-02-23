@@ -1,0 +1,133 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Helical Geometry Implementation:
+- Accurate helical paths with correct parametric equations for three strands
+- Center-to-center separation exactly 0.3√3 units between adjacent helices
+- Proper phase offsets (120° apart) for three-strand braid configuration
+- Mathematical precision in helical curve generation and positioning
+- Correct tangent relationships between helix pairs along braid structure
+
+Pitch Consistency and Measurements:
+- Uniform pitch of 1.8 units maintained throughout entire braid length
+- Pitch accuracy within ±2% tolerance as specified
+- Consistent helical advancement rate for all three strands
+- No pitch variations or irregularities in helical progression
+- Mathematical verification of pitch uniformity across braid geometry
+
+**S4: Visual Implementation Section**  
+Braided Structure Visualization:
+- Clear three-strand braid pattern with proper over-under crossings
+- Visual cross-over order following ABCABC sequence every 60° rotation
+- Smooth helical curves without artifacts or discontinuities
+- Proper strand thickness and cylindrical geometry throughout
+- Professional rope-like appearance with realistic braided texture
+
+Color Coding and Pattern Recognition:
+- Distinct colors for each strand (A, B, C) enabling pattern identification
+- ABCABC crossing sequence clearly visible and consistently maintained
+- Color consistency throughout entire braid length
+- No core visible through strand gaps as specified
+- Appropriate viewing angle showcasing braid structure clearly
+
+**S5: Completeness & Specifications Section**
+Required Braid Elements:
+- Complete three-strand braided rope implementation
+- All mathematical constraints properly satisfied (separation, pitch, sequence)
+- Proper helical geometry with correct phase relationships
+- Visual cross-over pattern matching specified ABCABC sequence
+- No missing geometric components or incomplete braid sections
+
+Technical Specification Compliance:
+- Accurate implementation of all helical parameters and constraints
+- Professional rendering quality meeting visual standards
+- Complete adherence to braided rope geometry requirements
+- All specified mathematical relationships properly demonstrated
+- Full compliance with pitch, separation, and pattern specifications
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+**Objective**
+Create a three-strand braided rope using helical geometry with proper phase relationships.
+
+**Geometry**
+Three helices on cylinder radius 0.6, pitch 1.8, phase offsets 0, 120°, 240°. Tube radius 0.15. 
+
+**Styling**
+Colour strands #c96, #6c9, #96c. Cylinder core hidden. Camera (3,2,2). 2000×1800 PNG.
+
+**Deliverable** PNG.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Evaluation of Shader-Generated Braided Rope Image
+
+## Detailed Assessment
+
+### Analysis
+
+The provided image is a **completely blank, uniform light blue gradient** with no visible geometric content whatsoever. This represents a total failure to deliver any of the required mathematical visualization elements.
+
+**Critical Issues:**
+
+1. **Complete Absence of Geometry**: No braided rope, helices, strands, or any 3D structure is visible
+2. **No Mathematical Implementation**: The three-strand helix configuration with specified parameters is entirely absent
+3. **No Color Coding**: The required colors (#c96, #6c9, #96c) for strand differentiation are missing
+4. **No Braid Pattern**: The ABCABC crossing sequence cannot exist in a blank image
+5. **Rendering Failure**: The image appears to be a default background or failed render output
+
+**What Should Be Present:**
+- Three distinct colored tubular strands wound in a helical pattern
+- Clear over-under crossing sequence visible in the braid
+- Proper cylindrical geometry with 0.15 unit tube radius
+- Three strands on 0.6 unit radius cylinder at 120° phase offsets
+- Pitch consistency of 1.8 units throughout
+- Camera perspective from position (3,2,2)
+- Professional rope-like appearance
+
+**What Is Present:**
+- Uniform light bluish-purple gradient fill
+- No discernible geometric features
+- No mathematical content
+- No visual sophistication
+
+### Scoring Rationale
+
+**S1 (Problem Accuracy)**: The image demonstrates **zero compliance** with mathematical requirements. None of the helical geometry, phase relationships, separation distances, or pitch specifications are implemented or visible.
+
+**S2 (Visual Quality)**: While the gradient is technically clean, it represents a complete rendering failure with no content to evaluate. This fails the entire purpose of the visualization.
+
+**S3 (Mathematical Accuracy)**: No helical geometry exists. No parametric equations are implemented. No pitch, separation, or phase relationships are demonstrated. Complete failure.
+
+**S4 (Visual Implementation)**: No braided structure, no strand colors, no crossing patterns, and no rope-like appearance are present. Absolute non-compliance.
+
+**S5 (Completeness & Specifications)**: The image is fundamentally incomplete—it lacks every single required element including the three strands, braided pattern, mathematical constraints, and technical specifications.
+
+<scores><S1>2</S1><S2>5</S2><S3>1</S3><S4>1</S4><S5>1</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[2, 5, 1, 1, 1]
+

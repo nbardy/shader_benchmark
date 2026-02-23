@@ -4,13 +4,40 @@ import re
 import aiohttp
 import json
 import xml.etree.ElementTree as ET
-from typing import List
+from typing import List, Tuple, Optional, Dict, Any
 from pathlib import Path
 from dotenv import load_dotenv
 from critic_template import CriticTemplate
 
+
+def extract_usage_data(api_response: dict) -> Dict[str, Any]:
+    """Extract usage/cost data from OpenRouter API response.
+
+    Returns dict with standardized fields:
+        - prompt_tokens: int
+        - completion_tokens: int
+        - total_tokens: int
+        - cost: float (in credits)
+        - cached_tokens: int (if available)
+    """
+    usage = api_response.get('usage', {})
+    return {
+        'prompt_tokens': usage.get('prompt_tokens', 0),
+        'completion_tokens': usage.get('completion_tokens', 0),
+        'total_tokens': usage.get('total_tokens', 0),
+        'cost': usage.get('cost', 0.0),
+        'cached_tokens': usage.get('prompt_tokens_details', {}).get('cached_tokens', 0),
+    }
+try:
+    from PIL import Image
+    import numpy as np
+    HAS_PIL = True
+except ImportError:
+    HAS_PIL = False
+    print("⚠️ Warning: PIL/numpy not available - image analysis disabled")
+
 class Judge:
-    def __init__(self, judge_model: str = "anthropic/claude-3.5-haiku"):
+    def __init__(self, judge_model: str = "anthropic/claude-opus-4-6"):
         self.api_key = os.getenv('OPENROUTER_API_KEY')
         if not self.api_key:
             raise ValueError("OPENROUTER_API_KEY environment variable not set")
@@ -22,27 +49,109 @@ class Judge:
             "Content-Type": "application/json"
         }
         self.critic_template = CriticTemplate()
-    
-    async def evaluate_with_template(self, critic_path: Path, request_path: Path, result_image_path: Path, save_dir: Path = None) -> List[int]:
-        """Evaluate using structured critic template system"""
-        
-        # Generate the full prompt using template
+
+    def analyze_image_quality(self, image_path: Path) -> Tuple[bool, Optional[str]]:
+        """
+        Analyze image to detect obvious failures that should skip LLM judge.
+
+        Uses multiple metrics to avoid false positives:
+        - Mean pixel value alone is insufficient (starfield on black has low mean but is valid)
+        - Also check max pixel value and standard deviation
+
+        Returns:
+            (should_skip, failure_reason) where:
+            - should_skip: True if image is obviously failed (all black/white)
+            - failure_reason: "ALL_BLACK", "ALL_WHITE", or None
+
+        Args:
+            image_path: Path to the rendered image
+        """
+        if not HAS_PIL:
+            return (False, None)  # Can't analyze without PIL
+
+        if not image_path or not image_path.exists():
+            return (True, "NO_IMAGE")
+
+        try:
+            # Load image and convert to RGB numpy array
+            img = Image.open(image_path).convert('RGB')
+            pixels = np.array(img)
+
+            # Calculate statistics
+            mean_value = np.mean(pixels)
+            max_value = np.max(pixels)
+            std_value = np.std(pixels)
+
+            # ALL BLACK detection:
+            # - Mean must be very low (< 1.0)
+            # - AND max must be low (< 10) - no bright pixels at all
+            # - AND stddev must be near zero (< 2) - uniform darkness
+            # This avoids false positives for starfields/galaxies on black backgrounds
+            if mean_value < 1.0 and max_value < 10 and std_value < 2.0:
+                return (True, "ALL_BLACK")
+
+            # ALL WHITE detection:
+            # - Mean must be very high (> 254)
+            # - AND min must be high (> 245) - no dark pixels
+            # - AND stddev must be near zero (< 2) - uniform brightness
+            min_value = np.min(pixels)
+            if mean_value > 254.0 and min_value > 245 and std_value < 2.0:
+                return (True, "ALL_WHITE")
+
+            # Image has meaningful content, proceed with LLM judge
+            return (False, None)
+
+        except Exception as e:
+            print(f"Warning: Failed to analyze image quality: {e}")
+            return (False, None)  # Don't skip on analysis errors
+
+    async def evaluate_with_template(self, critic_path: Path, request_path: Path, result_image_path: Path, save_dir: Path = None) -> Tuple[List[int], Optional[str], Dict[str, Any]]:
+        """
+        Evaluate using structured critic template system.
+
+        Returns:
+            (scores, failure_reason, usage) where:
+            - scores: List[int] of 5 scores (0-100 each)
+            - failure_reason: "NO_IMAGE" if no image exists, None otherwise
+            - usage: Dict with cost/token data from API
+        """
+        empty_usage = {'prompt_tokens': 0, 'completion_tokens': 0, 'total_tokens': 0, 'cost': 0.0, 'cached_tokens': 0}
+
+        # Only skip if there's literally no image file to judge
+        if not result_image_path or not result_image_path.exists():
+            print(f"⏭️  Skipping LLM judge - NO IMAGE GENERATED (0/500)")
+            if save_dir and save_dir.exists():
+                skip_log = save_dir / "judge_skipped.txt"
+                with open(skip_log, 'w') as f:
+                    f.write("JUDGE SKIPPED - NO IMAGE GENERATED\n")
+                    f.write("Reason: No result image file found\n")
+                    f.write("Score: 0/500 (automatic failure)\n")
+            return ([0, 0, 0, 0, 0], "NO_IMAGE", empty_usage)
+
+        # Always send to LLM judge - let it score everything
+        # (removed "smart skip" for black/white images - caused false positives)
         judge_prompt = self.critic_template.format_critic_prompt(critic_path, request_path)
-        return await self.evaluate(judge_prompt, result_image_path, save_dir)
+        scores, usage = await self.evaluate(judge_prompt, result_image_path, save_dir)
+        return (scores, None, usage)
     
-    async def evaluate(self, judge_prompt: str, result_image_path: Path, save_dir: Path = None) -> List[int]:
-        """Evaluate the shader result using GPT-4o via OpenRouter as a judge"""
-        
+    async def evaluate(self, judge_prompt: str, result_image_path: Path, save_dir: Path = None) -> Tuple[List[int], Dict[str, Any]]:
+        """Evaluate the shader result using configured judge model via OpenRouter.
+
+        Returns:
+            Tuple of (scores: List[int], usage: Dict) where usage contains cost data.
+        """
+        empty_usage = {'prompt_tokens': 0, 'completion_tokens': 0, 'total_tokens': 0, 'cost': 0.0, 'cached_tokens': 0}
+
         if not result_image_path or not result_image_path.exists():
             print(f"Error: Result image not found at {result_image_path}")
-            return [1, 1, 1, 1, 1]
+            return [1, 1, 1, 1, 1], empty_usage
         
         # Encode image to base64
         try:
             image_base64 = self._encode_image(result_image_path)
         except Exception as e:
             print(f"Error encoding image: {e}")
-            return [1, 1, 1, 1, 1]
+            return [1, 1, 1, 1, 1], empty_usage
         
         # The judge_prompt from template already contains instructions
         full_prompt = judge_prompt
@@ -69,7 +178,7 @@ class Judge:
                 ]
             }
             
-            print("Calling GPT-4o judge for evaluation...")
+            print(f"Calling {self.judge_model} for evaluation...")
             
             async with aiohttp.ClientSession() as session:
                 async with session.post(
@@ -84,8 +193,10 @@ class Judge:
                     
                     result = await response.json()
                     response_text = result['choices'][0]['message']['content']
+                    usage = extract_usage_data(result)
                     print(f"Judge response: {response_text}")
-                    
+                    print(f"Judge cost: ${usage['cost']:.4f} ({usage['total_tokens']} tokens)")
+
                     # Save raw judge response if save directory provided
                     if save_dir and save_dir.exists():
                         judge_log_file = save_dir / "judge_response.txt"
@@ -97,11 +208,12 @@ class Judge:
                             f.write("RAW RESPONSE:\n")
                             f.write(response_text)
                             f.write("\n\n" + "="*50 + "\n\n")
+                            f.write(f"USAGE:\n{usage}\n\n")
                         print(f"Judge response saved to: {judge_log_file}")
-                    
+
                     # Parse scores from response
                     scores = self._parse_scores(response_text)
-                    
+
                     # Add parsed scores to log file if it exists
                     if save_dir and save_dir.exists():
                         judge_log_file = save_dir / "judge_response.txt"
@@ -109,13 +221,13 @@ class Judge:
                             f.write(f"PARSED SCORES:\n{scores}\n\n")
                             if scores == [1, 1, 1, 1, 1]:
                                 f.write("⚠️ WARNING: Default fallback scores - parsing may have failed!\n")
-                    
+
                     print(f"Parsed scores: {scores}")
-                    return scores
+                    return scores, usage
             
         except Exception as e:
-            print(f"Error calling GPT-4o judge: {e}")
-            
+            print(f"Error calling judge ({self.judge_model}): {e}")
+
             # Save error log if save directory provided
             if save_dir and save_dir.exists():
                 error_log_file = save_dir / "judge_error.txt"
@@ -127,9 +239,9 @@ class Judge:
                     f.write("\n\n")
                     f.write("RETURNING DEFAULT SCORES: [1, 1, 1, 1, 1]\n")
                 print(f"Judge error logged to: {error_log_file}")
-            
+
             # Return default scores on error
-            return [1, 1, 1, 1, 1]
+            return [1, 1, 1, 1, 1], empty_usage
     
     def _encode_image(self, image_path: Path) -> str:
         """Encode image to base64 for OpenAI API"""

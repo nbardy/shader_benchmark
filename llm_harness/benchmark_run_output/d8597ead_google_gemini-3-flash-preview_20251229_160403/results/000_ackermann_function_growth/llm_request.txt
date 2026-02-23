@@ -1,0 +1,22 @@
+The plot should shock the viewer by how astronomically fast the Ackermann function explodes, even for modest inputs. Use a log₁₀ axis so the bars fit on screen yet their heights still dwarf each other.
+
+Data table:
+A(3,n) values:
+- n=0: 1
+- n=1: 2
+- n=2: 2^2-1 = 3
+- n=3: 2^(2^2)-3 = 13
+- n=4: 2^(2^(2^2))-3 = 65533
+- n=5 through n=10: exponential towers of increasing height
+
+Pre-compute exact integer values using bignum arithmetic; convert to log₁₀ with high-precision (at least 50 digits).
+
+Visual spec:
+- Canvas 1600 × 1200, white background
+- 11 vertical bars, equally spaced 80 px apart
+- Bar widths 40 px; top-cap rounded
+- Fill colour gradient deep-blue (#0033CC) for n=0 to searing-red (#FF3300) for n=10 (linear in n)
+- y-axis log₁₀ scale 0→10, grid-lines every integer decade
+- Annotate each bar with exact exponent-tower notation beneath x-axis
+
+Deliverable: Outputs a single image.

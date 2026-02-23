@@ -1,0 +1,127 @@
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    var vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+    time: f32,
+    aspect: f32,
+};
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+fn log_10(x: f32) -> f32 {
+    return log(x) / log(10.0);
+}
+
+fn get_log_height(n: u32) -> f32 {
+    switch(n) {
+        case 0u: { return 0.0; }
+        case 1u: { return log_10(2.0); }
+        case 2u: { return log_10(3.0); }
+        case 3u: { return log_10(13.0); }
+        case 4u: { return log_10(65533.0); }
+        case 5u: { return 65536.0 * log_10(2.0); }
+        case 6u: { return 3.4028235e+38; }
+        case 7u: { return 3.4028235e+38; }
+        case 8u: { return 3.4028235e+38; }
+        case 9u: { return 3.4028235e+38; }
+        case 10u: { return 3.4028235e+38; }
+        default: { return 0.0; }
+    }
+}
+
+fn get_bar_color(n: u32) -> vec3<f32> {
+    let t = f32(n) / 10.0;
+    let blue = vec3<f32>(0.0, 0.2, 0.8);
+    let red = vec3<f32>(1.0, 0.2, 0.0);
+    return blue + (red - blue) * t;
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let p = pos.xy;
+    var color: vec4<f32> = vec4<f32>(1.0, 1.0, 1.0, 1.0);
+
+    let res = params.resolution;
+    let scale_log_y = res.y / 10.0;
+
+    // Axes colors
+    let axis_color: vec3<f32> = vec3<f32>(0.7, 0.7, 0.7);
+    let grid_color: vec3<f32> = vec3<f32>(0.92, 0.92, 0.92);
+
+    // X-axis (bottom)
+    let axis_thick = 3.0;
+    let d_xaxis = abs(p.y - res.y);
+    if (d_xaxis < axis_thick) {
+        color.rgb = axis_color;
+    }
+
+    // Y-axis (left of plot)
+    let bar_width: f32 = 40.0;
+    let bar_spacing: f32 = 80.0;
+    let num_bars: u32 = 11u;
+    let span: f32 = bar_spacing * f32(num_bars - 1u);
+    let plot_left: f32 = (res.x - span) * 0.5;
+    let d_yaxis = abs(p.x - plot_left);
+    if (d_yaxis < axis_thick) {
+        color.rgb = axis_color;
+    }
+
+    // Horizontal grid lines (decades 1 to 9)
+    for (var k: u32 = 1u; k < 10u; k = k + 1u) {
+        let log_k: f32 = f32(k);
+        let grid_y: f32 = res.y - log_k * scale_log_y;
+        let d_grid: f32 = abs(p.y - grid_y);
+        if (d_grid < 1.5) {
+            let grid_mix: f32 = 1.0 - smoothstep(0.0, 1.5, d_grid);
+            color.rgb = mix(color.rgb, grid_color, grid_mix * 0.5);
+        }
+    }
+
+    // Bars
+    let rel_x: f32 = p.x - plot_left;
+    let bar_i_f: f32 = rel_x / bar_spacing;
+    let bar_i: u32 = u32(floor(bar_i_f));
+    if (bar_i < num_bars) {
+        let center_x: f32 = plot_left + bar_spacing * f32(bar_i);
+        let half_w: f32 = bar_width * 0.5;
+        let dx: f32 = abs(p.x - center_x);
+        if (dx <= half_w + 2.0) {
+            let log_h: f32 = get_log_height(bar_i);
+            let norm_h: f32 = log_h / 10.0;
+            let plot_h: f32 = min(norm_h * res.y, res.y);
+            let bar_top: f32 = res.y - plot_h;
+            let rad: f32 = half_w;
+            let cap_cy: f32 = bar_top + rad;
+
+            var bar_d: f32 = 1e20;
+
+            // Bar body (rectangle)
+            let body_top: f32 = bar_top + rad;
+            if (p.y <= res.y && p.y >= body_top) {
+                bar_d = min(bar_d, dx);
+            }
+
+            // Rounded top cap (semicircle)
+            let cap_dx: f32 = p.x - center_x;
+            let cap_dy: f32 = p.y - cap_cy;
+            let cap_dist: f32 = sqrt(cap_dx * cap_dx + cap_dy * cap_dy);
+            if (cap_dist <= rad + 1.0 && p.y <= cap_cy && p.y >= bar_top) {
+                bar_d = min(bar_d, cap_dist);
+            }
+
+            if (bar_d < rad + 1.0) {
+                let bar_c: vec3<f32> = get_bar_color(bar_i);
+                let aa = 1.0 - smoothstep(rad - 1.5, rad + 1.5, bar_d);
+                color.rgb = mix(color.rgb, bar_c, aa);
+            }
+        }
+    }
+
+    return color;
+}

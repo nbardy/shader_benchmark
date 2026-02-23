@@ -1,0 +1,12 @@
+{
+  "run_id": "e3453f23_anthropic_claude-haiku-4.5_20251026_130353",
+  "model": "anthropic/claude-haiku-4.5",
+  "judge_model": "anthropic/claude-haiku-4.5",
+  "language": "wgsl",
+  "problems": [
+    "geometric_cube"
+  ],
+  "total_problems": 1,
+  "max_parallel": 1,
+  "created": "2025-10-26T13:03:53.961410"
+}

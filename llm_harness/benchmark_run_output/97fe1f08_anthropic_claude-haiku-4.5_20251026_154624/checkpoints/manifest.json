@@ -1,0 +1,11 @@
+{
+  "run_id": "97fe1f08_anthropic_claude-haiku-4.5_20251026_154624",
+  "model": "anthropic/claude-haiku-4.5",
+  "judge_model": "anthropic/claude-haiku-4.5",
+  "total_problems": 1,
+  "problems": [
+    "geometric_cube"
+  ],
+  "created": "2025-10-26T15:46:24.603867",
+  "last_updated": "2025-10-26T15:46:54.757387"
+}

@@ -1,0 +1,13 @@
+{
+  "scores": [
+    45,
+    75,
+    30,
+    50,
+    35
+  ],
+  "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d8597ead_google_gemini-3-flash-preview_20251229_160403/results/001_al_khwarizmi_geometric_algebra",
+  "status": "completed",
+  "execution_success": true,
+  "has_image": true
+}

@@ -1,0 +1,30 @@
+=== RENDER_RETRY LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_051307_87e7bb28-3f70-41f7-8824-3fda54e02c47_results/shaders/stella_octangula.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_051307_87e7bb28-3f70-41f7-8824-3fda54e02c47_results/artifacts/result.png
+Return code: 101
+
+=== STDOUT ===
+(empty)
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: declaration of `trace` is recursive
+    ┌─ wgsl:64:4
+    │
+ 64 │ fn trace(ro: vec3<f32>, rd: vec3<f32>, depth: i32) -> vec3<f32> {
+    │    ^^^^^
+    ·
+113 │     let refracted_col = trace(p + refracted_rd * 0.02, refracted_rd, depth + 1);
+    │                         ^^^^^ uses itself here
+
+
+    declaration of `trace` is recursive
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

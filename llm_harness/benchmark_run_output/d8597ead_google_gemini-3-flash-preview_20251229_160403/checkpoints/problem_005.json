@@ -1,0 +1,45 @@
+{
+  "problem_index": 5,
+  "problem_name": "archimedes_spiral",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:05:18.808879",
+      "data": {
+        "shaders": [
+          "shader.wgsl"
+        ],
+        "llm_response_len": 4654
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:05:18.812126",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d8597ead_google_gemini-3-flash-preview_20251229_160403/results/005_archimedes_spiral"
+      }
+    },
+    "render": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:06:14.212331",
+      "data": {
+        "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d8597ead_google_gemini-3-flash-preview_20251229_160403/results/005_archimedes_spiral/artifacts/result.png"
+      }
+    },
+    "judge": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:06:37.080389",
+      "data": {
+        "scores": [
+          62,
+          75,
+          55,
+          68,
+          50
+        ]
+      }
+    }
+  },
+  "created": "2025-12-29T16:05:05.489538",
+  "last_updated": "2025-12-29T16:06:37.080398"
+}

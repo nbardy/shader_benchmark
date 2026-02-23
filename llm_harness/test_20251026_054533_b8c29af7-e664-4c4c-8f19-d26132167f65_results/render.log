@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_054533_b8c29af7-e664-4c4c-8f19-d26132167f65_results/shaders/wave_interference.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_054533_b8c29af7-e664-4c4c-8f19-d26132167f65_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 1.566 ms   | CPU 66.966 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_054533_b8c29af7-e664-4c4c-8f19-d26132167f65_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

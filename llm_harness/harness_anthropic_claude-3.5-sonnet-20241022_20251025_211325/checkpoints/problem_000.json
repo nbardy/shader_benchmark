@@ -1,0 +1,32 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-25T21:13:46.253960",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 3329
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-25T21:13:46.262426",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251025_211346_285db4f7-d1bf-4ceb-9696-1cf10304abc6_results"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-10-25T21:15:29.983647",
+      "data": {
+        "error": "Shader execution still failing after repair: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader 'user_shader' parsing error: failed to convert expression to a concrete type: Cannot cast scalar components of expression `[31] Binary { op: Multiply, left: [29], right: [30] }` to type "
+      }
+    }
+  },
+  "created": "2025-10-25T21:13:26.338923",
+  "last_updated": "2025-10-25T21:15:29.983652"
+}

@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_053756_7bdd435f-6ae9-45a7-bedf-2e8c68b2b850_results/shaders/schwarzschild_lensing.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_053756_7bdd435f-6ae9-45a7-bedf-2e8c68b2b850_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 0.000 ms   | CPU 1014.671 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_053756_7bdd435f-6ae9-45a7-bedf-2e8c68b2b850_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

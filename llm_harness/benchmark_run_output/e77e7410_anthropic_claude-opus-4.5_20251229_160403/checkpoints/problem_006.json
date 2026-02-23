@@ -1,0 +1,45 @@
+{
+  "problem_index": 6,
+  "problem_name": "barbell_dumbbell_shape",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:09:32.672395",
+      "data": {
+        "shaders": [
+          "shader.wgsl"
+        ],
+        "llm_response_len": 10445
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:09:32.674136",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/results/006_barbell_dumbbell_shape"
+      }
+    },
+    "render": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:11:56.872164",
+      "data": {
+        "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/results/006_barbell_dumbbell_shape/artifacts/result.png"
+      }
+    },
+    "judge": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:12:12.971301",
+      "data": {
+        "scores": [
+          80,
+          75,
+          70,
+          65,
+          70
+        ]
+      }
+    }
+  },
+  "created": "2025-12-29T16:08:47.627336",
+  "last_updated": "2025-12-29T16:12:12.971306"
+}

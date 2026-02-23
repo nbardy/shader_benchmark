@@ -1,0 +1,11 @@
+{
+  "run_id": "harness_anthropic_claude-3.5-sonnet-20241022_20251023_222453",
+  "model": "anthropic/claude-3.5-sonnet-20241022",
+  "judge_model": "anthropic/claude-haiku-4.5",
+  "total_problems": 1,
+  "problems": [
+    "geometric_cube"
+  ],
+  "created": "2025-10-23T22:24:53.965975",
+  "last_updated": "2025-10-23T22:26:27.758629"
+}

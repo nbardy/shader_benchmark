@@ -1,0 +1,158 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+- Binary tree topology must have exactly depth 7 with precisely 127 segments (N=127 ± 0)
+- Branching angles must be accurate: 45° from parent branch with ±35° rotation tolerance
+- Length scaling must follow mathematical rule: branch length of level k = 0.7^k
+- Radius tapering must conform to scaling factor 0.6 per level with end-radius level 7 ≈ 0.08·0.6^7
+- BFS through centreline graph must yield correct binary tree structure
+- Least-squares fit of length vs depth must achieve slope log0.7 ± 0.05 for mathematical precision
+
+**S4: Visual Implementation Section**  
+- 3D fractal tree must appear organic and natural despite mathematical construction
+- Realistic bark texture must be applied consistently across all branch segments
+- Lighting must enhance the three-dimensional tree structure effectively
+- Background gradient must be exact with no deviations from specification
+- No aliasing must be visible on twig tips or branch edges
+- Visual quality must create convincing winter tree silhouette
+- Rendering must balance mathematical precision with natural organic appearance
+
+**S5: Completeness & Specifications Section**
+- All 127 segments must be present and properly connected in binary tree structure
+- Recursive branching pattern must be complete to depth 7
+- Progressive thinning and shortening must be consistent with scaling rules throughout
+- Angle accuracy verification must pass for 200 random branch splits with mean 45° ± 3°
+- Visual realism must be maintained while preserving mathematical accuracy
+- Tree structure must appear convincing as natural winter tree despite fractal construction
+- Assessment must verify topology (3 pts), angle accuracy (2 pts), length scaling (2 pts), radius scaling (1 pt), and render clarity (2 pts)
+
+Output format:
+Score: S/10
+Rationale: <brief narrative (≤120 words) summarising which tests passed/failed>
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+Grow an organic winter tree suspended in empty space—trunk straight upward, two children per branch, no leaves. Lighting should emphasise delicate twig silhouettes.
+
+Recursive geometry:
+- Trunk segment length = 1, radius = 0.08
+- Each branch splits into two at a 45° angle from parent direction, rotated ±35° about parent axis to avoid planar look
+- Length scale factor 0.7; radius factor 0.6
+- Depth 7 (level 0 trunk → level 7 twigs). Expected segments 2⁷-1 = 127
+
+Implementation notes:
+- Represent branches as tapered cylinders; smooth-join with spherically-blended joints
+- Material – dark-bark (#4b3726), roughness 0.7
+
+Scene & camera:
+- Camera (3,-6,2.5) aiming at origin; FOV 40°
+- Three-point lights: key (3,-5,5), fill (-2,-6,4) 40%, rim (0,0,6) 30%
+- Background gradient sky (zenith #d7ecff → horizon #ffffff)
+
+File: 2400×2400
+Deliverable: Outputs a single image.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Assessment
+
+## Detailed Analysis
+
+### S1: Problem Accuracy (Generic)
+The image shows only a trunk segment with a single child branch. This represents a critical failure to meet the core requirement: a complete binary tree with depth 7 and 127 total segments. The specification demands recursive branching to 7 levels with two children per branch at each node. The implementation appears to have terminated after just 2 segments, failing the fundamental mathematical structure entirely.
+
+**Score: 12/100** - Only the trunk and first branch are present; tree generation failed.
+
+### S2: Visual Quality (Generic)
+The rendered trunk demonstrates good technical execution: smooth geometry, appropriate dark-bark coloring (#4b3726), proper cylindrical form, and acceptable lighting integration. The background gradient is correctly implemented (light blue zenith to white horizon). However, the extreme incompleteness undermines visual impact—this is a technically competent fragment, not a complete visualization.
+
+**Score: 68/100** - Technically sound rendering, but lacks sufficient content for meaningful assessment.
+
+### S3: Mathematical Accuracy Section
+**Critical Failures:**
+- **Segment count:** 2 segments present vs. required 127 (98.4% deficit) ✗
+- **Tree depth:** Only 2 levels completed vs. required depth 7 ✗
+- **Binary topology:** Incomplete; cannot verify full structure ✗
+- **Branching angles:** Cannot verify across tree (only 1 branch visible) ✗
+- **Length scaling:** Cannot validate without full tree ✗
+- **Radius tapering:** Trunk appears correct (0.08); child branch roughly 0.048 (0.6×0.08) appears reasonable ✓
+- **BFS traversal:** Incomplete tree fails structural verification ✗
+- **Least-squares fit:** Insufficient data points (2 vs. required 7+ levels) ✗
+
+The single visible branch appears to split at approximately 45° from vertical, but with only one branch, angle variance testing is impossible.
+
+**Score: 8/100** - Tree generation algorithm failed catastrophically; 98%+ of required segments missing.
+
+### S4: Visual Implementation Section
+**Passing elements:**
+- Bark texture applied with appropriate roughness ✓
+- Lighting enhances visible geometry (key light effective) ✓
+- Background gradient correct ✓
+- No visible aliasing on rendered surfaces ✓
+- Smooth joint blending between trunk and branch ✓
+
+**Critical failures:**
+- No fractal tree appearance (incomplete) ✗
+- Cannot assess organic silhouette (missing 125 segments) ✗
+- Cannot verify complete twig structure ✗
+- Missing winter tree aesthetic due to insufficient branching ✗
+
+**Score: 24/100** - Individual elements well-rendered, but incomplete tree prevents achieving intended visual goal.
+
+### S5: Completeness & Specifications Section
+**Checklist:**
+- All 127 segments present: **FAIL** (2/127 = 1.6%) ✗
+- Binary tree to depth 7: **FAIL** (depth 2/7) ✗
+- Progressive scaling: Partial ✓ (visible but incomplete) 
+- Angle accuracy verification: **IMPOSSIBLE** (insufficient branches) ✗
+- Natural appearance: **IMPOSSIBLE** (insufficient structure) ✗
+- Topology verification (3 pts): 0/3 ✗
+- Angle accuracy (2 pts): 0/2 ✗
+- Length scaling (2 pts): 0/2 ✗
+- Radius scaling (1 pt): 0.5/1 ✓
+- Render clarity (2 pts): 1.5/2 ✓
+
+**Score: 6/100** - Severe incompleteness; only 2/11 specification components met.
+
+---
+
+## Summary
+
+The shader implementation failed at the core algorithm level. The recursive branching generation function appears to have been called only twice, producing a trunk and single child branch rather than the required 127-segment binary tree spanning 7 depth levels. While individual rendering elements (material, lighting, background, anti-aliasing) are competently executed, the 98.4% deficit in required geometry makes this a non-functional solution. This is a tree generation failure, not a visualization quality issue.
+
+**Primary failure mode:** Recursive tree generation did not iterate to required depth; likely termination condition error in branching loop.
+
+<scores>
+<S1>12</S1>
+<S2>68</S2>
+<S3>8</S3>
+<S4>24</S4>
+<S5>6</S5>
+</scores>
+
+==================================================
+
+PARSED SCORES:
+[12, 68, 8, 24, 6]
+

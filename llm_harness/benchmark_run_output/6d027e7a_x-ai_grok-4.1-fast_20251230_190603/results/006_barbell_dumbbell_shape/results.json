@@ -1,0 +1,13 @@
+{
+  "scores": [
+    45,
+    20,
+    10,
+    15,
+    10
+  ],
+  "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/results/006_barbell_dumbbell_shape",
+  "status": "completed",
+  "execution_success": true,
+  "has_image": true
+}

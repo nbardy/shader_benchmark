@@ -1,0 +1,33 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: harness_anthropic_claude-3.5-sonnet-20241022_20251024_200156
+Started: 2025-10-24T20:01:56.318294
+============================================================
+
+[2025-10-24 20:01:56.318356] HARNESS INITIALIZED
+  Model: anthropic/claude-3.5-sonnet-20241022
+  Problems: 5
+  Max parallel: 1
+  Problem list:
+    000: ackermann_function_growth
+    001: al_khwarizmi_geometric_algebra
+    002: apollonian_gasket
+    003: apollonius_conic_sections
+    004: archimedean_spiral_galaxy
+
+[2025-10-24 20:01:56.325175] START problem_000: ackermann_function_growth
+[2025-10-24 20:03:52.214341] EXCEPTION in problem_000 (run_single_problem): RuntimeError: Compilation failed:     Updating crates.io index
+     Locking 154 packages to latest compatible versions
+      Adding pollster v0.3.0 (available: v0.4.0)
+      Adding wgpu v0.20.1 (available: v27.0.1)
+   Compiling proc-macro2 v1.0.103
+   Compiling quote v1.0.41
+   Compiling unicode-ident v1.0.20
+   Compiling libc v0.2.177
+   Compiling cfg-if v1.0.4
+   Compiling autocfg v1.5.0
+   Compiling cfg_aliases v0.1.1
+   Compiling bitflags v2.10.0
+   Compiling parking_lot_core v0.9.12
+   Compiling thiserror v1.0.69
+   Compili
+[2025-10-24 20:03:52.214848] END problem_000: ackermann_function_growth - FAILED (115.89s)

@@ -1,0 +1,20 @@
+2025-10-26 04:30:44.064 [INFO] Logger initialized for problem 0: ackermann_function_growth
+2025-10-26 04:30:44.064 [INFO] ========== PROBLEM START ==========
+2025-10-26 04:30:44.064 [INFO] Index: 0
+2025-10-26 04:30:44.064 [INFO] Name: ackermann_function_growth
+2025-10-26 04:30:44.064 [INFO] ---------- STAGE START: GENERATE ----------
+2025-10-26 04:30:44.064 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-10-26 04:30:44.064 [INFO] Checkpoint saved successfully: stage=generate, file=harness_anthropic_claude-haiku-4.5_20251026_043043/checkpoints/problem_000.json
+2025-10-26 04:30:44.064 [INFO] Loading request prompt
+2025-10-26 04:30:44.065 [INFO] API call: LLM generation model=anthropic/claude-haiku-4.5, language=wgsl
+2025-10-26 04:31:03.436 [INFO] API response: LLM generation - success, size=6811 bytes
+2025-10-26 04:31:03.436 [INFO] Parsing shader response
+2025-10-26 04:31:03.436 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2025-10-26 04:31:03.439 [INFO] Checkpoint saved successfully: stage=generate, file=harness_anthropic_claude-haiku-4.5_20251026_043043/checkpoints/problem_000.json
+2025-10-26 04:31:03.439 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2025-10-26 04:31:03.440 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2025-10-26 04:31:03.441 [INFO] Checkpoint saved successfully: stage=compile, file=harness_anthropic_claude-haiku-4.5_20251026_043043/checkpoints/problem_000.json
+2025-10-26 04:31:03.441 [INFO] Attempting to save checkpoint: stage=compile, status=complete
+2025-10-26 04:31:03.442 [INFO] Checkpoint saved successfully: stage=compile, file=harness_anthropic_claude-haiku-4.5_20251026_043043/checkpoints/problem_000.json
+2025-10-26 04:31:03.442 [INFO] Attempting to save checkpoint: stage=render, status=in_progress
+2025-10-26 04:31:03.443 [INFO] Checkpoint saved successfully: stage=render, file=harness_anthropic_claude-haiku-4.5_20251026_043043/checkpoints/problem_000.json

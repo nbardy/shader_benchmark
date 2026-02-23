@@ -1,0 +1,148 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+- Double cone must be properly constructed as infinite and oblique following Apollonius's classical geometric description
+- Cone angle must be precisely 30° from vertical for accurate mathematical representation
+- All three conic sections (ellipse, parabola, hyperbola) must be correctly generated from their respective cutting plane intersections
+- Cutting plane angles must be accurate: 45° for ellipse, 30° for parabola, 15° for hyperbola
+- Intersection curves must demonstrate valid parametric representations and proper geometric relationships
+- Construction methods must be mathematically sound and true to classical geometric principles
+
+**S4: Visual Implementation Section**  
+- Cone must be rendered as a clear wireframe structure with appropriate transparency
+- Cutting planes must be semi-transparent and visually distinguishable from each other
+- Intersection curves must be bold and properly colored: blue ellipse, green parabola, red hyperbola
+- Parchment background and orthographic projection must create authentic ancient manuscript aesthetics
+- Overall composition must be balanced and reminiscent of historical mathematical diagrams
+- Visual clarity must effectively distinguish between the three different conic types
+- Wireframe and transparency effects must enhance rather than obscure the geometric relationships
+
+**S5: Completeness & Specifications Section**
+- All three conic sections must be present and clearly demonstrated in the visualization
+- Geometric annotations including generators, normals, and Greek letters must be present and helpful
+- Educational value must be achieved through clear demonstration of how different plane angles create different conic types
+- Historical authenticity must be maintained through classical Greek geometric approach and diagrammatic style
+- Infinite cone extension must be appropriately represented to show the complete mathematical concept
+- Modern rendering techniques must be applied while preserving ancient mathematical concepts
+- Accessibility to contemporary learners must be balanced with historical mathematical heritage
+- Visual demonstration must clearly connect cutting plane geometry to resulting conic section properties
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+**Objective**
+Create a shader visualization of Apollonius's Conic Sections as they were understood in ancient Greece (~200 BCE), showing all three conic types emerging from a single double cone through different cutting planes, honoring the geometric construction methods of antiquity.
+
+**Historical Context**
+Apollonius of Perga (c. 240-190 BCE), known as "The Great Geometer," revolutionized the study of conic sections in his eight-volume treatise "Conics." Unlike his predecessors who used finite right circular cones, Apollonius considered arbitrary oblique double cones extending infinitely in both directions. His definitions of ellipse, parabola, and hyperbola remain in use today.
+
+**Mathematical Specification**
+
+1. **The Double Cone Construction**
+   - Generate an infinite double cone with vertex at origin
+   - Cone angle: 30° from vertical axis
+   - Use parametric form: x² + y² = (z·tan(30°))²
+   - Extend from z = -3 to z = 3 for visualization
+
+2. **Three Classical Cutting Planes**
+   - **Ellipse**: Plane at 45° angle to cone axis, intersecting both nappes
+   - **Parabola**: Plane parallel to cone generator (exactly 30° from vertical)
+   - **Hyperbola**: Plane at 15° angle to cone axis (steeper than cone angle)
+
+3. **Ancient Greek Construction Visualization**
+   - Show the cone as translucent wireframe (like ancient diagrams)
+   - Display cutting planes as semi-transparent colored surfaces
+   - Highlight the intersection curves in bold, using ancient color symbolism:
+     * Ellipse: Deep blue (celestial motion)
+     * Parabola: Green (earthly trajectories)
+     * Hyperbola: Red (infinite extension)
+
+4. **Geometric Annotations**
+   - Add construction lines showing:
+     * Cone generators (straight lines on cone surface)
+     * Plane normal vectors
+     * Dandelin spheres tangent points (optional advanced feature)
+   - Include Greek letters α, β, γ for the three plane angles
+
+5. **Rendering Requirements**
+   - Use orthographic projection (as Greeks would have drawn)
+   - Apply subtle shading to show 3D form while maintaining diagram clarity
+   - Background: Parchment color (#F4E8D0)
+   - Include a small inset showing Apollonius's original cone diagram style
+   - Resolution: 1600×1600 pixels minimum
+
+**Educational Goals**
+- Demonstrate how all conic sections emerge from a single geometric object
+- Show the elegance of ancient Greek mathematical visualization
+- Connect historical mathematics to modern computer graphics
+- Honor Apollonius's systematic approach to mathematical classification
+
+**Deliverable**
+A single shader that renders this complete historical mathematical visualization, bringing ancient geometric wisdom into the modern digital age.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+Detailed Evaluation:
+
+**S1: Problem Accuracy (50/100)**
+- Partially captures the concept of conic sections
+- Missing critical details of the full double cone structure
+- Cutting planes are minimally represented
+- Lacks precise geometric construction specifications
+- No clear demonstration of the mathematical principles
+
+**S2: Visual Quality (40/100)**
+- Low resolution and minimal visual detail
+- Weak color representation
+- Lacks sophistication in rendering
+- Background is generic, not true to parchment aesthetic
+- Minimal use of transparency and wireframe techniques
+
+**S3: Mathematical Accuracy (30/100)**
+- Cone angle and extension are not correctly represented
+- Only rudimentary intersection curves shown
+- No precise geometric annotations
+- Missing critical parametric representations
+- Fails to demonstrate mathematical relationships between conic sections
+
+**S4: Visual Implementation (45/100)**
+- Basic color coding (blue, green, red) somewhat follows specifications
+- No clear wireframe structure
+- Cutting planes are barely distinguishable
+- Lacks orthographic projection clarity
+- Minimal visual communication of geometric concepts
+
+**S5: Completeness & Specifications (35/100)**
+- Incomplete representation of all three conic sections
+- No geometric annotations
+- Minimal educational value
+- No historical authenticity
+- Fails to demonstrate the comprehensive mathematical concept
+
+<scores><S1>50</S1><S2>40</S2><S3>30</S3><S4>45</S4><S5>35</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[50, 40, 30, 45, 35]
+

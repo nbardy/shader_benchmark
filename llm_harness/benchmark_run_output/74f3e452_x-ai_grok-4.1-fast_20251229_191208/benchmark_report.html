@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shader Benchmark Report - x-ai/grok-4.1-fast</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --success: #3fb950;
+            --warning: #d29922;
+            --error: #f85149;
+            --border: #30363d;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        header {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+        h1 { color: var(--accent); margin-bottom: 1rem; font-size: 2rem; }
+        h2 { color: var(--text-primary); margin: 2rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+        h3 { color: var(--text-secondary); margin: 1.5rem 0 0.75rem; }
+        h4 { color: var(--accent); margin: 1rem 0 0.5rem; font-size: 1rem; }
+        .meta { color: var(--text-secondary); font-size: 0.9rem; }
+        .meta span { margin-right: 2rem; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .stat-card {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--accent); }
+        .stat-label { color: var(--text-secondary); font-size: 0.85rem; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: var(--bg-tertiary); color: var(--text-secondary); font-weight: 600; }
+        tr:hover { background: var(--bg-tertiary); }
+        .test-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .test-title { font-size: 1.25rem; color: var(--text-primary); }
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .badge-success { background: rgba(63, 185, 80, 0.2); color: var(--success); }
+        .badge-error { background: rgba(248, 81, 73, 0.2); color: var(--error); }
+        .prompt-box {
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--accent);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .image-container {
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .image-container img {
+            max-width: 100%;
+            max-height: 600px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .score-bar {
+            display: flex;
+            align-items: center;
+            margin: 0.25rem 0;
+        }
+        .score-label { width: 180px; color: var(--text-secondary); font-size: 0.9rem; }
+        .score-track {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0 1rem;
+        }
+        .score-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .score-value { width: 60px; text-align: right; font-weight: 500; }
+        .no-image {
+            background: var(--bg-tertiary);
+            padding: 3rem;
+            text-align: center;
+            color: var(--text-secondary);
+            border-radius: 8px;
+        }
+        /* Image Gallery Styles */
+        .gallery-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            margin: 2rem 0;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        .gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: var(--bg-tertiary);
+            cursor: pointer;
+            user-select: none;
+        }
+        .gallery-header:hover {
+            background: #2d333b;
+        }
+        .gallery-title {
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .gallery-toggle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            transition: transform 0.3s ease;
+        }
+        .gallery-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+        .gallery-content {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            max-height: 800px;
+            overflow-y: auto;
+        }
+        .gallery-content.collapsed {
+            display: none;
+        }
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--bg-tertiary);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+        .gallery-item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 1rem 0.75rem 0.75rem;
+            color: white;
+        }
+        .gallery-item-title {
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .gallery-item-score {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        .gallery-item-failed {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--error);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Shader Benchmark Report</h1>
+            <div class="meta">
+                <span><strong>Model:</strong> x-ai/grok-4.1-fast</span>
+                <span><strong>Generated:</strong> 2025-12-29 19:49:25</span>
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">3</div>
+                <div class="stat-label">Total Tests</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">1/3</div>
+                <div class="stat-label">Successful Renders</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">33%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">1</div>
+                <div class="stat-label">Scored Tests</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">65.0</div>
+                <div class="stat-label">Average Score /100</div>
+            </div>
+        </div>
+
+        <div class="gallery-section">
+            <div class="gallery-header" onclick="toggleGallery()">
+                <span class="gallery-title">Image Gallery</span>
+                <span class="gallery-toggle" id="galleryToggle">▼</span>
+            </div>
+            <div class="gallery-content" id="galleryContent">
+                <div class="gallery-item gallery-item-failed">
+                    <div>
+                        <div class="gallery-item-title" style="color: var(--error);">Ackermann Function Growth</div>
+                        <div style="font-size: 2rem; margin: 0.5rem 0;">✗</div>
+                        <div class="gallery-item-score">Render Failed</div>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="results/002_apollonian_gasket/artifacts/result.png" alt="Apollonian Gasket" loading="lazy">
+                    <div class="gallery-item-overlay">
+                        <div class="gallery-item-title">Apollonian Gasket</div>
+                        <div class="gallery-item-score">325/500</div>
+                    </div>
+                </div>
+                <div class="gallery-item gallery-item-failed">
+                    <div>
+                        <div class="gallery-item-title" style="color: var(--error);">Apollonius Conic Sections</div>
+                        <div style="font-size: 2rem; margin: 0.5rem 0;">✗</div>
+                        <div class="gallery-item-score">Render Failed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Summary Statistics</h2>
+        <table>
+            <thead>
+                <tr><th>Category</th><th>Average Score</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Mathematical Accuracy</td><td>75.0/100</td></tr>
+                <tr><td>Visual Quality</td><td>60.0/100</td></tr>
+                <tr><td>Color Implementation</td><td>65.0/100</td></tr>
+                <tr><td>Geometric Completeness</td><td>55.0/100</td></tr>
+                <tr><td>Reference Elements</td><td>70.0/100</td></tr>
+                <tr><td><strong>Overall Average</strong></td><td><strong>65.0/100</strong></td></tr>
+            </tbody>
+        </table>
+
+        <h2>Detailed Test Results</h2>
+
+        <div class="test-card">
+            <div class="test-header">
+                <span class="test-title">Test 1: Ackermann Function Growth</span>
+                <span class="badge badge-error">✗ Failed</span>
+            </div>
+            <div class="meta">
+                <span><strong>Test ID:</strong> 000_ackermann_function_growth</span>
+                <span><strong>Shaders:</strong> shader_0.wgsl</span>
+            </div>
+
+            <h4>Problem Prompt</h4>
+            <div class="prompt-box">The plot should shock the viewer by how astronomically fast the Ackermann function explodes, even for modest inputs. Use a log₁₀ axis so the bars fit on screen yet their heights still dwarf each other.
+
+Data table:
+A(3,n) values:
+- n=0: 1
+- n=1: 2
+- n=2: 2^2-1 = 3
+- n=3: 2^(2^2)-3 = 13
+- n=4: 2^(2^(2^2))-3 = 65533
+- n=5 through n=10: exponential towers of increasing height
+
+Pre-compute exact integer values using bignum arithmetic; convert to log₁₀ with high-precision (at least 50 digits).
+
+Visual spec:
+- Canvas 1600 × 1200, white background
+- 11 vertical bars, equally spaced 80 px apart
+- Bar widths 40 px; top-cap rounded
+- Fill colour gradient deep-blue (#0033CC) for n=0 to searing-red (#FF3300) for n=10 (linear in n)
+- y-axis log₁₀ scale 0→10, grid-lines every integer decade
+- Annotate each bar with exact exponent-tower notation beneath x-axis
+
+Deliverable: Outputs a single image.</div>
+
+            <h4>Rendered Output</h4>
+            <div class="no-image">No image available (compilation or execution failed)</div>
+        </div>
+
+        <div class="test-card">
+            <div class="test-header">
+                <span class="test-title">Test 2: Apollonian Gasket</span>
+                <span class="badge badge-success">✓ Success</span>
+            </div>
+            <div class="meta">
+                <span><strong>Test ID:</strong> 002_apollonian_gasket</span>
+                <span><strong>Shaders:</strong> shader_0.wgsl</span>
+            </div>
+
+            <h4>Problem Prompt</h4>
+            <div class="prompt-box">Craft a high-resolution, jewel-like image of the classical Apollonian gasket that emerges as the limit set of a rank-2 Kleinian group. The red and green "facets" should interlace so finely that the boundary between them looks like crystalline edges under a microscope.
+
+Mathematical engine:
+1. Möbius generators: Work in the Riemann sphere (identify plane C∪{∞}). Let
+   M₁(z) = (2z+1)/(z+1), M₂(z) = (2z-1)/(z-1)
+2. Symbolic address & parity: Every orbit point is encoded by a word in {1, 2}. Mark points whose last generator is even length word in red (#ff3355) and odd length in green (#33ff55).
+3. Sampling:
+   - Begin with seed z₀ = 0
+   - Randomly walk 3,000,000 steps (alias method, equal probability)
+   - Discard first 12 iterates of every walk to bypass transient region; plot the next 9 iterations (depth-limiting to emphasise detail)
+
+Projection & canvas:
+- Use stereographic projection to map sphere to plane; scale so outermost circle fits a 2400 × 2400 px square with 120 px padding
+- Background pure black (#000000)
+- Each orbit point rendered as sub-pixel disk radius 0.6 px; enable additive alpha so high-density regions glow
+- After plotting, apply a single-pass Gaussian bloom σ = 1 px, 40% opacity, to make bright clusters sparkle
+
+File: PNG-24, sRGB
+Deliverable: Outputs a single image.</div>
+            <h4>Judge Scores</h4>
+            <div class="score-bar">
+                <span class="score-label">Mathematical Accuracy</span>
+                <div class="score-track">
+                    <div class="score-fill" style="width: 75%; background: hsl(90.0, 70%, 50%);"></div>
+                </div>
+                <span class="score-value">75/100</span>
+            </div>
+            <div class="score-bar">
+                <span class="score-label">Visual Quality</span>
+                <div class="score-track">
+                    <div class="score-fill" style="width: 60%; background: hsl(72.0, 70%, 50%);"></div>
+                </div>
+                <span class="score-value">60/100</span>
+            </div>
+            <div class="score-bar">
+                <span class="score-label">Color Implementation</span>
+                <div class="score-track">
+                    <div class="score-fill" style="width: 65%; background: hsl(78.0, 70%, 50%);"></div>
+                </div>
+                <span class="score-value">65/100</span>
+            </div>
+            <div class="score-bar">
+                <span class="score-label">Geometric Completeness</span>
+                <div class="score-track">
+                    <div class="score-fill" style="width: 55%; background: hsl(66.0, 70%, 50%);"></div>
+                </div>
+                <span class="score-value">55/100</span>
+            </div>
+            <div class="score-bar">
+                <span class="score-label">Reference Elements</span>
+                <div class="score-track">
+                    <div class="score-fill" style="width: 70%; background: hsl(84.0, 70%, 50%);"></div>
+                </div>
+                <span class="score-value">70/100</span>
+            </div>
+            <div class="score-bar" style="margin-top: 0.5rem; font-weight: bold;">
+                <span class="score-label">Total</span>
+                <div class="score-track">
+                    <div class="score-fill" style="width: 65.0%; background: var(--accent);"></div>
+                </div>
+                <span class="score-value">325/500</span>
+            </div>
+
+            <h4>Rendered Output</h4>
+            <div class="image-container">
+                <img src="images/002_apollonian_gasket_result.png" alt="Rendered output for Apollonian Gasket">
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div class="test-header">
+                <span class="test-title">Test 3: Apollonius Conic Sections</span>
+                <span class="badge badge-error">✗ Failed</span>
+            </div>
+            <div class="meta">
+                <span><strong>Test ID:</strong> 003_apollonius_conic_sections</span>
+                <span><strong>Shaders:</strong> shader_0.wgsl</span>
+            </div>
+
+            <h4>Problem Prompt</h4>
+            <div class="prompt-box">**Objective**
+Create a shader visualization of Apollonius's Conic Sections as they were understood in ancient Greece (~200 BCE), showing all three conic types emerging from a single double cone through different cutting planes, honoring the geometric construction methods of antiquity.
+
+**Historical Context**
+Apollonius of Perga (c. 240-190 BCE), known as "The Great Geometer," revolutionized the study of conic sections in his eight-volume treatise "Conics." Unlike his predecessors who used finite right circular cones, Apollonius considered arbitrary oblique double cones extending infinitely in both directions. His definitions of ellipse, parabola, and hyperbola remain in use today.
+
+**Mathematical Specification**
+
+1. **The Double Cone Construction**
+   - Generate an infinite double cone with vertex at origin
+   - Cone angle: 30° from vertical axis
+   - Use parametric form: x² + y² = (z·tan(30°))²
+   - Extend from z = -3 to z = 3 for visualization
+
+2. **Three Classical Cutting Planes**
+   - **Ellipse**: Plane at 45° angle to cone axis, intersecting both nappes
+   - **Parabola**: Plane parallel to cone generator (exactly 30° from vertical)
+   - **Hyperbola**: Plane at 15° angle to cone axis (steeper than cone angle)
+
+3. **Ancient Greek Construction Visualization**
+   - Show the cone as translucent wireframe (like ancient diagrams)
+   - Display cutting planes as semi-transparent colored surfaces
+   - Highlight the intersection curves in bold, using ancient color symbolism:
+     * Ellipse: Deep blue (celestial motion)
+     * Parabola: Green (earthly trajectories)
+     * Hyperbola: Red (infinite extension)
+
+4. **Geometric Annotations**
+   - Add construction lines showing:
+     * Cone generators (straight lines on cone surface)
+     * Plane normal vectors
+     * Dandelin spheres tangent points (optional advanced feature)
+   - Include Greek letters α, β, γ for the three plane angles
+
+5. **Rendering Requirements**
+   - Use orthographic projection (as Greeks would have drawn)
+   - Apply subtle shading to show 3D form while maintaining diagram clarity
+   - Background: Parchment color (#F4E8D0)
+   - Include a small inset showing Apollonius's original cone diagram style
+   - Resolution: 1600×1600 pixels minimum
+
+**Educational Goals**
+- Demonstrate how all conic sections emerge from a single geometric object
+- Show the elegance of ancient Greek mathematical visualization
+- Connect historical mathematics to modern computer graphics
+- Honor Apollonius's systematic approach to mathematical classification
+
+**Deliverable**
+A single shader that renders this complete historical mathematical visualization, bringing ancient geometric wisdom into the modern digital age.</div>
+
+            <h4>Rendered Output</h4>
+            <div class="no-image">No image available (compilation or execution failed)</div>
+        </div>
+
+    </div>
+    <script>
+        function toggleGallery() {
+            const content = document.getElementById('galleryContent');
+            const toggle = document.getElementById('galleryToggle');
+            content.classList.toggle('collapsed');
+            toggle.classList.toggle('collapsed');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+{
+  "problem_index": 0,
+  "problem_name": "geometric_cube",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-26T15:46:39.852881",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 5492
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-26T15:46:39.860312",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/97fe1f08_anthropic_claude-haiku-4.5_20251026_154624/results/000_geometric_cube"
+      }
+    },
+    "render": {
+      "status": "complete",
+      "timestamp": "2025-10-26T15:46:40.246471",
+      "data": {
+        "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/97fe1f08_anthropic_claude-haiku-4.5_20251026_154624/results/000_geometric_cube/artifacts/result.png"
+      }
+    },
+    "judge": {
+      "status": "complete",
+      "timestamp": "2025-10-26T15:46:54.756457",
+      "data": {
+        "scores": [
+          28,
+          78,
+          33,
+          62,
+          32
+        ]
+      }
+    }
+  },
+  "created": "2025-10-26T15:46:24.603684",
+  "last_updated": "2025-10-26T15:46:54.756470"
+}

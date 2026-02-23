@@ -1,0 +1,45 @@
+{
+  "problem_index": 3,
+  "problem_name": "apollonius_conic_sections",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T13:57:10.655010",
+      "data": {
+        "shaders": [
+          "apollonius_conics.wgsl"
+        ],
+        "llm_response_len": 14826
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T13:57:10.662204",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/results/003_apollonius_conic_sections"
+      }
+    },
+    "render": {
+      "status": "complete",
+      "timestamp": "2025-12-29T13:59:46.823407",
+      "data": {
+        "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d29afd80_anthropic_claude-haiku-4.5_20251229_135505/results/003_apollonius_conic_sections/artifacts/result.png"
+      }
+    },
+    "judge": {
+      "status": "complete",
+      "timestamp": "2025-12-29T14:00:04.247968",
+      "data": {
+        "scores": [
+          45,
+          60,
+          35,
+          50,
+          40
+        ]
+      }
+    }
+  },
+  "created": "2025-12-29T13:56:34.292505",
+  "last_updated": "2025-12-29T14:00:04.247974"
+}

@@ -1,0 +1,22 @@
+[2025-10-26 02:14:45.973746] START problem_004: archimedean_spiral_galaxy
+[2025-10-26 02:15:16.544323] START problem_005: archimedes_spiral
+[2025-10-26 02:16:07.190474] START problem_006: barbell_dumbbell_shape
+[2025-10-26 02:16:36.374165] START problem_007: binary_tree_fractal
+[2025-10-26 02:17:08.854851] START problem_008: brahmagupta_cyclic_quadrilaterals
+[2025-10-26 02:17:35.165651] EXCEPTION in problem_008 (generate stage): ValueError: No shader files found
+[2025-10-26 02:17:35.166129] EXCEPTION in problem_008 (run_single_problem): ValueError: No shader files found
+[2025-10-26 02:17:35.166193] END problem_008: brahmagupta_cyclic_quadrilaterals - FAILED (26.31s)
+[2025-10-26 02:17:35.166755] START problem_009: braided_rope
+[2025-10-26 02:17:50.168954] START problem_010: butterfly_curve
+[2025-10-26 02:18:05.202919] START problem_011: calabi_yau_manifold
+[2025-10-26 02:18:40.294170] START problem_012: capsule_shape
+[2025-10-26 02:19:00.446261] START problem_013: cardioid_limacon_collection
+[2025-10-26 02:19:20.201010] START problem_014: catenoid_helicoid_minimal
+[2025-10-26 02:19:40.715367] START problem_015: chinese_remainder_sunzi
+[2025-10-26 02:20:26.618862] START problem_016: chinese_remainder_theorem
+[2025-10-26 02:20:53.143526] EXCEPTION in problem_016 (generate stage): ValueError: No shader files found
+[2025-10-26 02:20:53.144716] EXCEPTION in problem_016 (run_single_problem): ValueError: No shader files found
+[2025-10-26 02:20:53.144891] END problem_016: chinese_remainder_theorem - FAILED (26.52s)
+[2025-10-26 02:20:53.145635] START problem_017: chladni_patterns
+[2025-10-26 02:21:19.503780] START problem_018: complex_analysis_stained_glass
+[2025-10-26 02:21:47.551141] START problem_019: compound_polyhedra_stella_octangula

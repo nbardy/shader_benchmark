@@ -1,0 +1,32 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-26T05:05:09.371296",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 6165
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-26T05:05:09.376859",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_050509_827110af-68f1-4dae-826f-907c4213e955_results"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-10-26T05:45:51.928504",
+      "data": {
+        "error": "Shader execution still failing after repair: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader validation error: \n   \u250c\u2500 user_shader:81:30\n   \u2502\n81 \u2502             bar_log_height = log_values[i];\n   \u2502                              ^^^^^^^^^^^^^ naga::Expression [62]\n\n\n    Entry point f"
+      }
+    }
+  },
+  "created": "2025-10-26T05:04:53.634442",
+  "last_updated": "2025-10-26T05:45:51.928511"
+}

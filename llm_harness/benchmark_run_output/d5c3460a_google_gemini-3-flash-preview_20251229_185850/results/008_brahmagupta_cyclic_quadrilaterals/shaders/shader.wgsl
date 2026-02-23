@@ -1,0 +1,116 @@
+// BRAHMAGUPTA'S CYCLIC QUADRILATERAL VISUALIZATION
+// Formula: Area = sqrt((s-a)(s-b)(s-c)(s-d))
+// Semiperimeter: s = (a+b+c+d)/2
+
+struct Params {
+    resolution: vec2<f32>,
+    time: f32,
+    mode: f32, // 0: Irregular, 1: Square, 2: Rectangle
+};
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+fn sd_line(p: vec2<f32>, a: vec2<f32>, b: vec2<f32>) -> f32 {
+    let pa = p - a;
+    let ba = b - a;
+    let h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
+
+fn get_pts(time: f32) -> array<vec2<f32>, 4> {
+    let r = 0.8;
+    // Animate angles to demonstrate different cyclic shapes
+    let a1 = 0.5 * sin(time * 0.4);
+    let a2 = 1.57 + 0.3 * cos(time * 0.5);
+    let a3 = 3.14 + 0.4 * sin(time * 0.6);
+    let a4 = 4.71 + 0.2 * cos(time * 0.3);
+    
+    return array<vec2<f32>, 4>(
+        vec2<f32>(r * cos(a1), r * sin(a1)),
+        vec2<f32>(r * cos(a2), r * sin(a2)),
+        vec2<f32>(r * cos(a3), r * sin(a3)),
+        vec2<f32>(r * cos(a4), r * sin(a4))
+    );
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = (pos.xy * 2.0 - params.resolution.xy) / min(params.resolution.x, params.resolution.y);
+    let time = params.time;
+    
+    // Geometry Setup
+    let pts = get_pts(time);
+    let p0 = pts[0u];
+    let p1 = pts[1u];
+    let p2 = pts[2u];
+    let p3 = pts[3u];
+
+    // Side Lengths
+    let a = distance(p0, p1);
+    let b = distance(p1, p2);
+    let c = distance(p2, p3);
+    let d = distance(p3, p0);
+    
+    // Diagonals for Ptolemy's
+    let e_diag = distance(p0, p2);
+    let f_diag = distance(p1, p3);
+
+    // Brahmagupta calculation
+    let s = (a + b + c + d) * 0.5;
+    let area_sq = (s - a) * (s - b) * (s - c) * (s - d);
+    let area = sqrt(max(0.0, area_sq));
+
+    // Distance fields
+    var d_quad = 1000.0;
+    d_quad = min(d_quad, sd_line(uv, p0, p1));
+    d_quad = min(d_quad, sd_line(uv, p1, p2));
+    d_quad = min(d_quad, sd_line(uv, p2, p3));
+    d_quad = min(d_quad, sd_line(uv, p3, p0));
+    
+    let d_diag = min(sd_line(uv, p0, p2), sd_line(uv, p1, p3));
+    let circum_dist = abs(length(uv) - 0.8);
+
+    // Rendering
+    var color = vec3<f32>(0.08, 0.08, 0.1); // Background
+    
+    // Draw Circumcircle
+    color = mix(color, vec3<f32>(0.2, 0.2, 0.3), 1.0 - smoothstep(0.005, 0.01, circum_dist));
+    
+    // Draw Diagonals (Ptolemy)
+    color = mix(color, vec3<f32>(0.3, 0.3, 0.1), 1.0 - smoothstep(0.002, 0.006, d_diag));
+
+    // Draw Sides with Color Coding
+    let edge_w = 0.012;
+    color = mix(color, vec3<f32>(1.0, 0.4, 0.4), 1.0 - smoothstep(0.0, edge_w, sd_line(uv, p0, p1))); // 'a' side
+    color = mix(color, vec3<f32>(0.4, 1.0, 0.4), 1.0 - smoothstep(0.0, edge_w, sd_line(uv, p1, p2))); // 'b' side
+    color = mix(color, vec3<f32>(0.4, 0.4, 1.0), 1.0 - smoothstep(0.0, edge_w, sd_line(uv, p2, p3))); // 'c' side
+    color = mix(color, vec3<f32>(1.0, 1.0, 0.4), 1.0 - smoothstep(0.0, edge_w, sd_line(uv, p3, p0))); // 'd' side
+
+    // Draw Interior Area Glow
+    // Simple point-in-polygon check for quad (convex assumption for cyclic)
+    let dot0 = dot(vec2<f32>(p1.y - p0.y, p0.x - p1.x), uv - p0);
+    let dot1 = dot(vec2<f32>(p2.y - p1.y, p1.x - p2.x), uv - p1);
+    let dot2 = dot(vec2<f32>(p3.y - p2.y, p2.x - p3.x), uv - p2);
+    let dot3 = dot(vec2<f32>(p0.y - p3.y, p3.x - p0.x), uv - p3);
+    
+    let inside = select(0.0, 1.0, dot0 > 0.0 && dot1 > 0.0 && dot2 > 0.0 && dot3 > 0.0);
+    color = mix(color, vec3<f32>(1.0, 1.0, 1.0), inside * 0.1);
+
+    // Visual Area Bars (Bottom)
+    let bar_uv = uv + vec2<f32>(0.0, 0.85);
+    let area_bar = step(0.0, bar_uv.y) * step(bar_uv.y, 0.05) * step(-0.5, bar_uv.x) * step(bar_uv.x, -0.5 + area);
+    color = mix(color, vec3<f32>(0.0, 0.8, 0.8), area_bar);
+
+    // Vignette
+    let vignette = 1.0 - length(pos.xy / params.resolution - 0.5) * 0.8;
+    
+    return vec4<f32>(color * vignette, 1.0);
+}

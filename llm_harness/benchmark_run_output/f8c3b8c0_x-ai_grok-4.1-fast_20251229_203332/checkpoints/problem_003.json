@@ -1,0 +1,32 @@
+{
+  "problem_index": 3,
+  "problem_name": "apollonius_conic_sections",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T20:44:16.204714",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 9674
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T20:44:16.206436",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/f8c3b8c0_x-ai_grok-4.1-fast_20251229_203332/results/003_apollonius_conic_sections"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-12-29T20:58:12.622619",
+      "data": {
+        "error": "Shader execution failed: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader 'user_shader' parsing error: expected assignment or increment/decrement, found 'project'\n   \u250c\u2500 wgsl:77:8\n   \u2502\n77 \u2502     fn project(p: vec3<f32>) -> vec2<f32> {\n   \u2502        ^^^^^^^ expected assignment or incr"
+      }
+    }
+  },
+  "created": "2025-12-29T20:41:54.684997",
+  "last_updated": "2025-12-29T20:58:12.622622"
+}

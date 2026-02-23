@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_021235_3076c07c-aa1b-49b7-b87e-8da8e867976b_results/test_20251026_021333_69236d8a-f733-4e70-a77c-537c81eb71e9_results/test_20251026_021358_2bec9eed-9df3-49df-9cb6-18983a015da6_results/test_20251026_021445_0433cbb6-0d95-48e4-b3f0-d17bb1eb6b32_results/test_20251026_021805_8b83d255-64d9-48d1-be3f-44598794c218_results/shaders/butterfly.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_021235_3076c07c-aa1b-49b7-b87e-8da8e867976b_results/test_20251026_021333_69236d8a-f733-4e70-a77c-537c81eb71e9_results/test_20251026_021358_2bec9eed-9df3-49df-9cb6-18983a015da6_results/test_20251026_021445_0433cbb6-0d95-48e4-b3f0-d17bb1eb6b32_results/test_20251026_021805_8b83d255-64d9-48d1-be3f-44598794c218_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 0.110 ms   | CPU 287.888 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_021235_3076c07c-aa1b-49b7-b87e-8da8e867976b_results/test_20251026_021333_69236d8a-f733-4e70-a77c-537c81eb71e9_results/test_20251026_021358_2bec9eed-9df3-49df-9cb6-18983a015da6_results/test_20251026_021445_0433cbb6-0d95-48e4-b3f0-d17bb1eb6b32_results/test_20251026_021805_8b83d255-64d9-48d1-be3f-44598794c218_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

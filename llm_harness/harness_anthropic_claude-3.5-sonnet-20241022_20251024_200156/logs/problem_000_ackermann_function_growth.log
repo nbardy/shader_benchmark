@@ -1,0 +1,40 @@
+2025-10-24 20:01:56.325 [INFO] Logger initialized for problem 0: ackermann_function_growth
+2025-10-24 20:01:56.325 [INFO] ========== PROBLEM START ==========
+2025-10-24 20:01:56.325 [INFO] Index: 0
+2025-10-24 20:01:56.325 [INFO] Name: ackermann_function_growth
+2025-10-24 20:01:56.325 [INFO] ---------- STAGE START: GENERATE ----------
+2025-10-24 20:01:56.325 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-10-24 20:01:56.325 [INFO] Checkpoint saved successfully: stage=generate, file=harness_anthropic_claude-3.5-sonnet-20241022_20251024_200156/checkpoints/problem_000.json
+2025-10-24 20:01:56.325 [INFO] Loading request prompt
+2025-10-24 20:01:56.325 [INFO] API call: LLM generation model=anthropic/claude-3.5-sonnet-20241022
+2025-10-24 20:02:19.395 [INFO] API response: LLM generation - success, size=3527 bytes
+2025-10-24 20:02:19.395 [INFO] Parsing shader response
+2025-10-24 20:02:19.396 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2025-10-24 20:02:19.398 [INFO] Checkpoint saved successfully: stage=generate, file=harness_anthropic_claude-3.5-sonnet-20241022_20251024_200156/checkpoints/problem_000.json
+2025-10-24 20:02:19.398 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2025-10-24 20:02:19.402 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2025-10-24 20:02:19.404 [INFO] Checkpoint saved successfully: stage=compile, file=harness_anthropic_claude-3.5-sonnet-20241022_20251024_200156/checkpoints/problem_000.json
+2025-10-24 20:03:52.208 [INFO] Attempting to save checkpoint: stage=compile, status=failed
+2025-10-24 20:03:52.212 [INFO] Checkpoint saved successfully: stage=compile, file=harness_anthropic_claude-3.5-sonnet-20241022_20251024_200156/checkpoints/problem_000.json
+2025-10-24 20:03:52.212 [ERROR] EXCEPTION in run_single_problem:
+2025-10-24 20:03:52.212 [ERROR]   Type: RuntimeError
+2025-10-24 20:03:52.212 [ERROR]   Message: Compilation failed:     Updating crates.io index
+     Locking 154 packages to latest compatible versions
+      Adding pollster v0.3.0 (available: v0.4.0)
+      Adding wgpu v0.20.1 (available: v27.0.1)
+   Compiling proc-macro2 v1.0.103
+   Compiling quote v1.0.41
+   Compiling unicode-ident v1.0.20
+   Compiling libc v0.2.177
+   Compiling cfg-if v1.0.4
+   Compiling autocfg v1.5.0
+   Compiling cfg_aliases v0.1.1
+   Compiling bitflags v2.10.0
+   Compiling parking_lot_core v0.9.12
+   Compiling thiserror v1.0.69
+   Compili
+2025-10-24 20:03:52.212 [ERROR]   Traceback:
+2025-10-24 20:03:52.214 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 274, in run_single_problem
+    raise RuntimeError(compile_msg)
+2025-10-24 20:03:52.214 [INFO] ========== PROBLEM END: FAILED ==========
+2025-10-24 20:03:52.214 [INFO] Execution time: 115.89s

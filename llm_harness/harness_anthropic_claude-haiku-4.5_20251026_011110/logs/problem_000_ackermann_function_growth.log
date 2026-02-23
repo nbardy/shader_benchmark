@@ -1,0 +1,48 @@
+2025-10-26 01:11:11.083 [INFO] Logger initialized for problem 0: ackermann_function_growth
+2025-10-26 01:11:11.083 [INFO] ========== PROBLEM START ==========
+2025-10-26 01:11:11.083 [INFO] Index: 0
+2025-10-26 01:11:11.083 [INFO] Name: ackermann_function_growth
+2025-10-26 01:11:11.084 [INFO] ---------- STAGE START: GENERATE ----------
+2025-10-26 01:11:11.084 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-10-26 01:11:11.085 [INFO] Checkpoint saved successfully: stage=generate, file=harness_anthropic_claude-haiku-4.5_20251026_011110/checkpoints/problem_000.json
+2025-10-26 01:11:11.085 [INFO] Loading request prompt
+2025-10-26 01:11:11.086 [INFO] API call: LLM generation model=anthropic/claude-haiku-4.5, language=wgsl
+2025-10-26 01:11:28.928 [INFO] API response: LLM generation - success, size=6020 bytes
+2025-10-26 01:11:28.929 [INFO] Parsing shader response
+2025-10-26 01:11:28.929 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2025-10-26 01:11:28.931 [INFO] Checkpoint saved successfully: stage=generate, file=harness_anthropic_claude-haiku-4.5_20251026_011110/checkpoints/problem_000.json
+2025-10-26 01:11:28.931 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2025-10-26 01:11:28.932 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2025-10-26 01:11:28.934 [INFO] Checkpoint saved successfully: stage=compile, file=harness_anthropic_claude-haiku-4.5_20251026_011110/checkpoints/problem_000.json
+2025-10-26 01:11:28.934 [INFO] Attempting to save checkpoint: stage=compile, status=complete
+2025-10-26 01:11:28.936 [INFO] Checkpoint saved successfully: stage=compile, file=harness_anthropic_claude-haiku-4.5_20251026_011110/checkpoints/problem_000.json
+2025-10-26 01:11:28.936 [INFO] Attempting to save checkpoint: stage=render, status=in_progress
+2025-10-26 01:11:28.938 [INFO] Checkpoint saved successfully: stage=render, file=harness_anthropic_claude-haiku-4.5_20251026_011110/checkpoints/problem_000.json
+2025-10-26 01:15:38.856 [INFO] Attempting to save checkpoint: stage=render, status=failed
+2025-10-26 01:15:38.858 [INFO] Checkpoint saved successfully: stage=render, file=harness_anthropic_claude-haiku-4.5_20251026_011110/checkpoints/problem_000.json
+2025-10-26 01:15:38.858 [ERROR] EXCEPTION in run_single_problem:
+2025-10-26 01:15:38.858 [ERROR]   Type: RuntimeError
+2025-10-26 01:15:38.858 [ERROR]   Message: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: numeric literal not representable by target type: `1.28e19729`
+   ┌─ wgsl:58:9
+   │
+58 │         1.28e19729 * 0.30103, // A(3,7): unimaginably large (placeholder)
+   │         ^^^^^^^^^^ numeric literal
+2025-10-26 01:15:38.858 [ERROR]   Traceback:
+2025-10-26 01:15:38.859 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 305, in run_single_problem
+    result_image = await test_runner.render_shader(test_folder)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-26 01:15:38.859 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_runner.py", line 264, in render_shader
+    return await self.render_shader_wgpu(test_folder)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-26 01:15:38.859 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_runner.py", line 360, in render_shader_wgpu
+    raise RuntimeError(f"Shader execution failed: {result.stderr[:500]}")
+2025-10-26 01:15:38.859 [INFO] ========== PROBLEM END: FAILED ==========
+2025-10-26 01:15:38.859 [INFO] Execution time: 267.77s

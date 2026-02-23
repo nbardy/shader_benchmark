@@ -1,0 +1,32 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-25T14:26:11.348055",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 7589
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-25T14:26:11.349679",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251025_142611_4998a4b4-1804-4791-b2df-2401f72aaf1a_results"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-10-25T14:27:42.822154",
+      "data": {
+        "error": "Shader execution failed: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader 'user_shader' parsing error: numeric literal not representable by target type: `5.942e19726`\n   \u250c\u2500 wgsl:32:9\n   \u2502\n32 \u2502         5.942e19726,     // A(3,4): tower height\n   \u2502         ^^^^^^^^^^^ numeric liter"
+      }
+    }
+  },
+  "created": "2025-10-25T14:25:48.391352",
+  "last_updated": "2025-10-25T14:27:42.822157"
+}

@@ -1,0 +1,259 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Heat Kernel Mathematical Properties:
+- Accurate heat kernel values with correct center maximum K = 1.24 ± 2%
+- Proper radial decay following hyperbolic geometry principles
+- Mathematical precision in heat diffusion calculations for hyperbolic space
+- Correct implementation of hyperbolic heat kernel formula
+- Exponentially accelerated diffusion behavior accurately demonstrated
+
+Isotherm Calculation Precision:
+- Level set K=0.2 corresponding to hyperbolic radius r ≈ 1.481 (ρ ≈ 0.901)
+- Accurate flood-fill analysis for color band mapping to 0.19–0.21 range
+- Median Euclidean radius ρ̂ conversion to hyperbolic r̂=2 artanh ρ̂
+- Mathematical accuracy |r̂ − 1.481| ≤ 0.03 for full precision requirements
+- Proper coordinate transformation between Euclidean and hyperbolic metrics
+
+Palette Monotonicity Mathematics:
+- Monotonic color progression verified along 256+ radial rays
+- Color index decreasing strictly outward in ≥95% of rays as required
+- Mathematical consistency in color mapping function throughout disk
+- Proper implementation of plasma palette color progression
+- Accurate color-to-value mapping maintaining mathematical relationships
+
+**S4: Visual Implementation Section**  
+Color Mapping and Visual Quality:
+- Plasma palette transitioning from hot (white-yellow) center to cool (purple-black) edge
+- Professional color scheme enhancing hyperbolic diffusion pattern visibility
+- Clear visual representation of heat diffusion behavior in hyperbolic space
+- High-quality color gradient implementation supporting mathematical analysis
+- Appropriate contrast and clarity for scientific visualization purposes
+
+Geometric Overlay Elements:
+- Geodesic circle overlay with proper dashed pattern (10–14 px length)
+- Circle color accuracy with ΔE* < 6 from #ffcc33 specification
+- Hough-circle detection confirming geometric precision
+- Professional overlay integration enhancing mathematical understanding
+- Clear geometric reference elements supporting hyperbolic analysis
+
+Legend and Annotation Quality:
+- Color-bar rectangle legend properly positioned and rendered
+- Tick labels readable with OCR-verifiable numeric values
+- Professional legend design supporting scientific interpretation
+- Clear value-to-color correspondence enabling quantitative analysis
+- High-quality annotation meeting scientific visualization standards
+
+**S5: Completeness & Specifications Section**
+Required Heat Kernel Elements:
+- Complete hyperbolic heat kernel visualization with center maximum
+- All mathematical properties of hyperbolic diffusion accurately represented
+- Geodesic circle overlay and legend fully implemented as specified
+- Proper Poincaré disk representation maintaining geometric accuracy
+- Complete thermal diffusion pattern demonstration in hyperbolic space
+
+Technical Specification Compliance:
+- All mathematical constraints satisfied within specified tolerance ranges
+- Color mapping requirements met with proper monotonicity verification
+- Geometric overlay elements meeting exact specification requirements
+- Legend and annotation standards achieved for professional visualization
+- Complete adherence to hyperbolic heat kernel visualization requirements
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+Imagine a thermogram on the Poincaré disk that visualises how heat pulses spread in negatively curved space. Colours must transition from white-hot at the centre to icy indigo at the frontier, emphasising the exponentially accelerated diffusion unique to hyperbolic geometry.
+
+Mathematics:
+- Heat kernel in 2-D hyperbolic space (curvature −1) for time t=0.2:
+  K(r,t) = (1/√(4πt)) * exp(-t) * exp(-r²/(4t))
+  where r is the hyperbolic distance from origin (on Poincaré disk r = 2 artanh ρ with ρ=|z|)
+- Compute K on 2048×2048 disk-centric grid
+
+Colour & geometry:
+- Map K linearly to "plasma" palette (Matplotlib); K_max≈1.2400 at centre
+- Cap outer 10 px ring to pure black to frame disk
+- Overlay geodesic circle of hyperbolic radius 1.5 (Euclidean radius ρ_c=tanh(1.5/2)=0.905); draw as 3 px gold (#ffcc33) dashed line (dash 12 px)
+
+Annotations:
+- Add a minuscule legend at bottom-left: colour bar 200 × 20 px, ticks at K=1.24, 0.5, 0.1
+
+File: PNG-24, sRGB, 2200 × 2200 px
+Deliverable: Outputs a single image.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Evaluation: Hyperbolic Heat Kernel
+
+## Detailed Analysis
+
+### **S1: Problem Accuracy (Generic)**
+
+**Strengths:**
+- Core heat kernel formula implementation appears present with proper hyperbolic distance calculation (r = 2 artanh ρ)
+- Poincaré disk representation correctly centered and circular
+- Basic color gradient from center outward demonstrates conceptual understanding
+- Geodesic circle overlay present at approximately correct radius
+
+**Weaknesses:**
+- The visualization exhibits predominantly cool (purple/blue) coloration throughout, which contradicts the expected "white-hot center to icy indigo edge" progression specified
+- Expected K_max ≈ 1.24 should produce bright white/yellow-white at the center; observed center is pale pink/magenta
+- The heat kernel formula requires exp(-r²/(4t)) decay; the observed gradient appears flatter than mathematically expected for hyperbolic exponential acceleration
+- Legend tick values appear extremely small/illegible in bottom-left; cannot verify K=1.24, 0.5, 0.1 numerical accuracy
+
+**Rating Justification:** The mathematical framework is present but the color mapping appears inverted or incorrectly scaled, fundamentally misrepresenting the heat diffusion magnitude across the domain.
+
+---
+
+### **S2: Visual Quality (Generic)**
+
+**Strengths:**
+- High resolution (2200×2200 px) appears well-maintained with crisp rendering
+- Smooth anti-aliasing throughout the gradient
+- Clean geometric circle overlay with minimal artifacts
+- Professional overall composition with black border framing
+- Good contrast between overlay circle and background
+
+**Weaknesses:**
+- Legend at bottom-left is extremely small and nearly illegible
+- No visible dashed pattern on the geodesic circle; appears as solid line (requirement: 10-14 px dash length with 12 px specified)
+- Outer 10 px ring framing to pure black not clearly visible (may be present but imperceptible)
+- Color legend bar is minimal and text labels are unreadable
+- Missing clear annotation text for scientific communication
+
+**Rating Justification:** While technically competent in resolution and smoothing, the visualization lacks professional scientific polish in annotation and geometric detail rendering.
+
+---
+
+### **S3: Mathematical Accuracy Section**
+
+#### **Heat Kernel Mathematical Properties:**
+- **Center Maximum K_max:** Expected ~1.24 at center; observed appears as pale pink (~0.6-0.8 range on visual scale), suggesting **significant error** in kernel value or color mapping normalization. **CRITICAL FAILURE** for this requirement.
+- **Radial Decay:** The gradient decay from center to edge appears too shallow; hyperbolic geometry should show *accelerated* diffusion (exponential in nature), creating sharper falloff than Euclidean. Observed gradient is relatively smooth, suggesting **possible underestimation of exponential acceleration**. Estimated error: 25-40%.
+- **Formula Implementation:** Mathematically, K(r,t) = (1/√(4πt)) * exp(-t) * exp(-r²/(4t)) with t=0.2. The normalization factor (1/√(4πt)) should yield ~0.995, and exp(-0.2) ≈ 0.818, so baseline should be ~0.81. The observed maximum appears misaligned with this calculation.
+
+**Accuracy Score Component:** 35/100 — Fundamental error in magnitude representation.
+
+#### **Isotherm Calculation Precision:**
+- **K=0.2 Level Set:** Cannot verify from visual inspection alone; expected hyperbolic radius r ≈ 1.481, Euclidean radius ρ ≈ 0.901. The geodesic circle appears positioned at approximately the correct radius geometrically (~90% of disk radius), suggesting **possibly correct placement despite color magnitude errors**.
+- **Coordinate Transformation:** The r = 2 artanh ρ transformation appears implemented (circle position suggests correct hyperbolic geometry understanding), but cannot verify precision within ±0.03 tolerance without computational analysis.
+
+**Accuracy Score Component:** 55/100 — Geometric positioning appears reasonable, but magnitude errors cascade through all isotherm calculations.
+
+#### **Palette Monotonicity Mathematics:**
+- **Monotonic Progression:** Visual inspection across radial rays shows consistent color decrease from center outward (magenta → purple → blue), satisfying monotonic requirement. Estimated compliance: 95%+.
+- **Plasma Palette Application:** The color progression is consistent with matplotlib's plasma palette (cool → warm axis inverted), but the *value scaling* appears fundamentally miscalibrated.
+
+**Accuracy Score Component:** 70/100 — Monotonicity correct, but value mapping incorrect.
+
+**Overall S3 Score Justification:** Major failure in heat kernel center maximum (≤50% error margin), moderate concerns with decay rate, but geometric positioning and monotonicity appear sound. Weighted average reflects critical flaw in core mathematical property.
+
+---
+
+### **S4: Visual Implementation Section**
+
+#### **Color Mapping and Visual Quality:**
+- **Expected Scheme:** White-yellow (hot) center → purple-indigo (cool) edge
+- **Observed Scheme:** Pale magenta center → deep purple edge
+- **Assessment:** The color trajectory is inverted or severely miscalibrated. The center should show high intensity (brightness approaching white), not low saturation pale magenta. This represents a **fundamental failure** in color-to-heat-kernel mapping.
+- **Contrast/Clarity:** While gradients are smooth, the inverted/muted palette obscures the exponential acceleration signature expected in hyperbolic geometry.
+
+**Component Score:** 35/100 — Major color mapping error.
+
+#### **Geometric Overlay Elements:**
+- **Circle Position:** Appears positioned at ~ρ ≈ 0.90 Euclidean radius, consistent with hyperbolic radius 1.5 specification. **Geometric accuracy: ~90%**
+- **Circle Color (#ffcc33):** Observed gold appears accurate in hue (ΔE* likely <6 from spec).
+- **Dashing Pattern:** **CRITICAL ISSUE** — Circle appears solid, not dashed. Requirement specifies 10-14 px dashes with 12 px specified. If dashing is present, it's too fine to resolve at this scale. **Non-compliance: ~95% likelihood**.
+- **Line Width:** Appears to be ~3 px, consistent with specification.
+- **Integration:** Overlay enhances visualization despite color mapping issues.
+
+**Component Score:** 60/100 — Geometric positioning correct, color acceptable, but dashing pattern missing.
+
+#### **Legend and Annotation Quality:**
+- **Color Bar Position:** Bottom-left placement appears correct
+- **Dimensions/Readability:** Legend is extremely small; tick labels are essentially unreadable/illegible
+- **Numeric Values:** Cannot verify OCR-readable tick labels (K=1.24, 0.5, 0.1) due to insufficient size
+- **Professional Standard:** Falls short of scientific visualization standards; legend must be functional for quantitative interpretation
+
+**Component Score:** 25/100 — Legend present but non-functional; fails readability requirement.
+
+**Overall S4 Score Justification:** Color mapping fundamental error (-40 points), geometric overlay mostly correct (+15 points), but legend failure and dashing non-compliance severe (-35 points).
+
+---
+
+### **S5: Completeness & Specifications Section**
+
+#### **Required Heat Kernel Elements:**
+- ✓ Hyperbolic heat kernel visualization present (conceptually)
+- ✗ Center maximum K ≈ 1.24 **NOT** accurately represented (appears ~0.6-0.8)
+- ✓ Geodesic circle overlay implemented
+- ✗ Legend **incomplete/illegible** — fails functional requirement
+- ✗ Thermal diffusion pattern shown, but **magnitude fundamentally incorrect**
+
+**Element Completeness:** 60% — Structure present, values incorrect.
+
+#### **Technical Specification Compliance:**
+
+| Requirement | Status | Compliance % |
+|---|---|---|
+| Heat kernel formula implementation | Partial | 50% |
+| K_max ≈ 1.24 ± 2% | FAIL | 0% |
+| Color: white-hot center | FAIL | 10% |
+| Color: icy indigo edge | PARTIAL | 70% |
+| Plasma palette monotonicity | PASS | 95% |
+| Geodesic circle radius = 1.5 (ρ ≈ 0.905) | PASS | 90% |
+| Geodesic circle color #ffcc33 | PASS | 95% |
+| Circle dashing (12 px) | FAIL | 5% |
+| Legend position & dimensions | PARTIAL | 60% |
+| Legend readability | FAIL | 10% |
+| PNG-24 sRGB format | PASS | 100% |
+| Image resolution 2200×2200 px | PASS | 100% |
+| Outer 10 px black frame | UNKNOWN | 50% |
+
+**Overall Technical Compliance:** ~55%
+
+**Critical Failures:**
+1. **Heat kernel magnitude misrepresentation** (K_max mapping error)
+2. **Inverted/incorrect color scaling** (center not white-hot)
+3. **Missing/invisible dashing pattern** on geodesic circle
+4. **Non-functional legend** (illegible text)
+
+**Overall S5 Score Justification:** While structure and geometric elements are substantially correct, the core mathematical property (heat kernel values) and critical visual elements (color mapping, legend) fail specification, constituting incomplete delivery.
+
+---
+
+## Summary Assessment
+
+This visualization demonstrates **solid geometric understanding** of hyperbolic spaces and **correct algorithmic framework**, but suffers from **critical failures in the core mathematical representation**: specifically, the heat kernel values appear to be scaled or mapped incorrectly, resulting in a center that is pale magenta rather than bright white, and overall heat magnitude that appears systematically underestimated. Additionally, annotation and geometric details (dashing, legend readability) fall short of professional standards.
+
+The visualization is approximately **55-60% complete** in meeting specifications, with failures concentrated in the highest-priority areas (mathematical accuracy of heat kernel values and color-to-value mapping).
+
+---
+
+<scores><S1>48</S1><S2>62</S2><S3>52</S3><S4>40</S4><S5>51</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[48, 62, 52, 40, 51]
+

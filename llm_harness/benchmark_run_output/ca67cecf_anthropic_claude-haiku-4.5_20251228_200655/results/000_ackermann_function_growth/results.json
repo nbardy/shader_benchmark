@@ -1,0 +1,13 @@
+{
+  "scores": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/ca67cecf_anthropic_claude-haiku-4.5_20251228_200655/results/000_ackermann_function_growth",
+  "status": "failed",
+  "execution_success": false,
+  "has_image": false
+}

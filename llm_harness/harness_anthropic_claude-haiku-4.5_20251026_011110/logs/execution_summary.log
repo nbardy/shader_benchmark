@@ -1,0 +1,36 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: harness_anthropic_claude-haiku-4.5_20251026_011110
+Started: 2025-10-26T01:11:10.646453
+============================================================
+
+[2025-10-26 01:11:10.646575] HARNESS INITIALIZED
+  Model: anthropic/claude-haiku-4.5
+  Problems: 10
+  Max parallel: 1
+  Problem list:
+    000: ackermann_function_growth
+    001: al_khwarizmi_geometric_algebra
+    002: apollonian_gasket
+    003: apollonius_conic_sections
+    004: archimedean_spiral_galaxy
+    005: archimedes_spiral
+    006: barbell_dumbbell_shape
+    007: binary_tree_fractal
+    008: brahmagupta_cyclic_quadrilaterals
+    009: braided_rope
+
+[2025-10-26 01:11:11.083874] START problem_000: ackermann_function_growth
+[2025-10-26 01:15:38.859281] EXCEPTION in problem_000 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: numeric literal not representable by target type: `1.28e19729`
+   ┌─ wgsl:58:9
+   │
+58 │         1.28e19729 * 0.30103, // A(3,7): unimaginably large (placeholder)
+   │         ^^^^^^^^^^ numeric literal
+[2025-10-26 01:15:38.859534] END problem_000: ackermann_function_growth - FAILED (267.77s)

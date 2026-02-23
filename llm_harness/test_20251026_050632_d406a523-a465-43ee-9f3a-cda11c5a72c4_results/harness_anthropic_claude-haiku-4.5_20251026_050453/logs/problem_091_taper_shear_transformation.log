@@ -1,0 +1,88 @@
+2025-10-26 05:41:24.034 [INFO] Logger initialized for problem 91: taper_shear_transformation
+2025-10-26 05:41:24.035 [INFO] ========== PROBLEM START ==========
+2025-10-26 05:41:24.035 [INFO] Index: 91
+2025-10-26 05:41:24.035 [INFO] Name: taper_shear_transformation
+2025-10-26 05:41:24.035 [INFO] ---------- STAGE START: GENERATE ----------
+2025-10-26 05:41:24.035 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-10-26 05:41:24.035 [ERROR] Checkpoint save FAILED: stage=generate
+2025-10-26 05:41:24.035 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_050453/checkpoints/problem_091.tmp'
+2025-10-26 05:41:24.035 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 05:41:24.035 [INFO] Loading request prompt
+2025-10-26 05:41:24.035 [INFO] API call: LLM generation model=anthropic/claude-haiku-4.5, language=wgsl
+2025-10-26 05:42:02.712 [INFO] API response: LLM generation - success, size=14069 bytes
+2025-10-26 05:42:02.712 [INFO] Parsing shader response
+2025-10-26 05:42:02.713 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2025-10-26 05:42:02.713 [ERROR] Checkpoint save FAILED: stage=generate
+2025-10-26 05:42:02.713 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_050453/checkpoints/problem_091.tmp'
+2025-10-26 05:42:02.714 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 05:42:02.714 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2025-10-26 05:42:02.716 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2025-10-26 05:42:02.716 [ERROR] Checkpoint save FAILED: stage=compile
+2025-10-26 05:42:02.716 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_050453/checkpoints/problem_091.tmp'
+2025-10-26 05:42:02.716 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 05:42:02.716 [INFO] Attempting to save checkpoint: stage=compile, status=complete
+2025-10-26 05:42:02.716 [ERROR] Checkpoint save FAILED: stage=compile
+2025-10-26 05:42:02.716 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_050453/checkpoints/problem_091.tmp'
+2025-10-26 05:42:02.717 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 05:42:02.717 [INFO] Attempting to save checkpoint: stage=render, status=in_progress
+2025-10-26 05:42:02.717 [ERROR] Checkpoint save FAILED: stage=render
+2025-10-26 05:42:02.717 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_050453/checkpoints/problem_091.tmp'
+2025-10-26 05:42:02.717 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 05:45:58.453 [INFO] Attempting to save checkpoint: stage=render, status=complete
+2025-10-26 05:45:58.453 [ERROR] Checkpoint save FAILED: stage=render
+2025-10-26 05:45:58.453 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_050453/checkpoints/problem_091.tmp'
+2025-10-26 05:45:58.453 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 05:46:03.578 [INFO] Attempting to save checkpoint: stage=judge, status=in_progress
+2025-10-26 05:46:03.578 [ERROR] Checkpoint save FAILED: stage=judge
+2025-10-26 05:46:03.578 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_050453/checkpoints/problem_091.tmp'
+2025-10-26 05:46:03.579 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 05:46:14.535 [INFO] Attempting to save checkpoint: stage=judge, status=complete
+2025-10-26 05:46:14.536 [ERROR] Checkpoint save FAILED: stage=judge
+2025-10-26 05:46:14.536 [ERROR] Exception: FileNotFoundError: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_050453/checkpoints/problem_091.tmp'
+2025-10-26 05:46:14.536 [ERROR] Traceback:
+  File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 196, in _save_stage_checkpoint
+    with open(temp_file, 'w') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+
+2025-10-26 05:46:14.537 [INFO] ========== PROBLEM END: SUCCESS ==========
+2025-10-26 05:46:14.538 [INFO] Execution time: 290.50s
+2025-10-26 05:46:14.538 [ERROR] EXCEPTION in run_single_problem:
+2025-10-26 05:46:14.538 [ERROR]   Type: FileNotFoundError
+2025-10-26 05:46:14.538 [ERROR]   Message: [Errno 2] No such file or directory: 'harness_anthropic_claude-haiku-4.5_20251026_050453/logs/execution_summary.log'
+2025-10-26 05:46:14.538 [ERROR]   Traceback:
+2025-10-26 05:46:14.539 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 348, in run_single_problem
+    self.logger.log_problem_end(problem_index, problem, True, execution_time)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-26 05:46:14.539 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/debug_logger.py", line 168, in log_problem_end
+    with open(self.summary_log, 'a') as f:
+         ~~~~^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-26 05:46:14.539 [INFO] ========== PROBLEM END: FAILED ==========
+2025-10-26 05:46:14.539 [INFO] Execution time: 290.50s

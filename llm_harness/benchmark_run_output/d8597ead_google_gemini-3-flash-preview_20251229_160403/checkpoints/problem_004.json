@@ -1,0 +1,32 @@
+{
+  "problem_index": 4,
+  "problem_name": "archimedean_spiral_galaxy",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:05:05.482846",
+      "data": {
+        "shaders": [
+          "galaxy.wgsl"
+        ],
+        "llm_response_len": 3987
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:05:05.487386",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d8597ead_google_gemini-3-flash-preview_20251229_160403/results/004_archimedean_spiral_galaxy"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-12-29T16:06:14.079910",
+      "data": {
+        "error": "Shader execution failed: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader 'user_shader' parsing error: expected ';', found '?'\n   \u250c\u2500 wgsl:78:42\n   \u2502\n78 \u2502         let theta1 = (angle_pixel < 0.0) ? (angle_pixel + 6.28318 * (turn + 1.0)) : (angle_pixel + 6.28318 * turn);\n   \u2502      "
+      }
+    }
+  },
+  "created": "2025-12-29T16:04:52.108447",
+  "last_updated": "2025-12-29T16:06:14.079921"
+}

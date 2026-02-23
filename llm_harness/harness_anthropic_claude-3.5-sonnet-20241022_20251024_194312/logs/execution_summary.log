@@ -1,0 +1,39 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: harness_anthropic_claude-3.5-sonnet-20241022_20251024_194312
+Started: 2025-10-24T19:43:12.653382
+============================================================
+
+[2025-10-24 19:43:12.653443] HARNESS INITIALIZED
+  Model: anthropic/claude-3.5-sonnet-20241022
+  Problems: 5
+  Max parallel: 1
+  Problem list:
+    000: ackermann_function_growth
+    001: al_khwarizmi_geometric_algebra
+    002: apollonian_gasket
+    003: apollonius_conic_sections
+    004: archimedean_spiral_galaxy
+
+[2025-10-24 19:43:12.659525] START problem_000: ackermann_function_growth
+[2025-10-24 19:43:36.730147] EXCEPTION in problem_000 (generate stage): ValueError: No main.rs content found in LLM response
+[2025-10-24 19:43:36.731440] EXCEPTION in problem_000 (run_single_problem): ValueError: No main.rs content found in LLM response
+[2025-10-24 19:43:36.731527] END problem_000: ackermann_function_growth - FAILED (24.07s)
+[2025-10-24 19:43:36.731970] START problem_001: al_khwarizmi_geometric_algebra
+[2025-10-24 19:44:04.634368] EXCEPTION in problem_001 (generate stage): ValueError: No main.rs content found in LLM response
+[2025-10-24 19:44:04.635215] EXCEPTION in problem_001 (run_single_problem): ValueError: No main.rs content found in LLM response
+[2025-10-24 19:44:04.635269] END problem_001: al_khwarizmi_geometric_algebra - FAILED (27.90s)
+[2025-10-24 19:44:04.635521] START problem_002: apollonian_gasket
+[2025-10-24 19:44:25.616212] EXCEPTION in problem_002 (generate stage): ValueError: No main.rs content found in LLM response
+[2025-10-24 19:44:25.619301] EXCEPTION in problem_002 (run_single_problem): ValueError: No main.rs content found in LLM response
+[2025-10-24 19:44:25.619521] END problem_002: apollonian_gasket - FAILED (20.98s)
+[2025-10-24 19:44:25.620429] START problem_003: apollonius_conic_sections
+[2025-10-24 19:45:02.400798] EXCEPTION in problem_003 (generate stage): ValueError: No main.rs content found in LLM response
+[2025-10-24 19:45:02.402895] EXCEPTION in problem_003 (run_single_problem): ValueError: No main.rs content found in LLM response
+[2025-10-24 19:45:02.403001] END problem_003: apollonius_conic_sections - FAILED (36.78s)
+[2025-10-24 19:45:02.403536] START problem_004: archimedean_spiral_galaxy
+[2025-10-24 19:45:24.732547] EXCEPTION in problem_004 (generate stage): ValueError: No main.rs content found in LLM response
+[2025-10-24 19:45:24.734773] EXCEPTION in problem_004 (run_single_problem): ValueError: No main.rs content found in LLM response
+[2025-10-24 19:45:24.734858] END problem_004: archimedean_spiral_galaxy - FAILED (22.33s)
+
+============================================================
+Run completed: 2025-10-24T19:45:24.735335

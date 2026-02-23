@@ -1,0 +1,32 @@
+{
+  "problem_index": 5,
+  "problem_name": "archimedes_spiral",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-30T19:19:08.422312",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 6159
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-30T19:19:08.427393",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/results/005_archimedes_spiral"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-12-30T19:27:24.297441",
+      "data": {
+        "error": "Shader execution failed: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader validation error: \n   \u250c\u2500 user_shader:19:1\n   \u2502  \n19 \u2502 \u256d fn papyrus_uv(frag_uv: vec2<f32>) -> vec3<f32> {\n20 \u2502 \u2502     var col: vec3<f32> = vec3<f32>(0.96, 0.902, 0.827);\n21 \u2502 \u2502     let center_uv = vec2<f32>(0"
+      }
+    }
+  },
+  "created": "2025-12-30T19:16:42.258710",
+  "last_updated": "2025-12-30T19:27:24.297444"
+}

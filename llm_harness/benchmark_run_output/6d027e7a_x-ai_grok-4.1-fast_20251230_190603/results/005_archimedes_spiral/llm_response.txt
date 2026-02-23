@@ -1,0 +1,166 @@
+```wgsl
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+};
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+fn hash(n: vec2<f32>) -> f32 {
+    return fract(sin(dot(n, vec2<f32>(12.9898, 78.233))) * 43758.5453123);
+}
+
+fn papyrus_uv(frag_uv: vec2<f32>) -> vec3<f32> {
+    var col: vec3<f32> = vec3<f32>(0.96, 0.902, 0.827);
+    let center_uv = vec2<f32>(0.5, 0.5);
+    let to_center = frag_uv - center_uv;
+    let vig_in = 1.0 - length(to_center) * 2.0;
+    let vig = pow(max(vig_in, 0.0), vec3<f32>(2.0));
+    let grain1 = hash(frag_uv * 180.0) * 2.0 - 1.0;
+    let grain2 = hash(frag_uv * 80.0 + 0.37) * 2.0 - 1.0;
+    col = col + vec3<f32>(grain1 * 0.015, grain1 * 0.012, grain1 * 0.018);
+    col = col + vec3<f32>(grain2 * 0.008, grain2 * 0.006, grain2 * 0.01);
+    let edge_factor = 1.0 - smoothstep(0.0, 0.15, 1.0 - vig_in);
+    col = col * mix(1.0, 0.75, edge_factor);
+    let water_base = smoothstep(0.0, 0.7, 0.15 - frag_uv.y) * smoothstep(0.0, 0.7, 0.6 - frag_uv.x);
+    let water_n = hash(frag_uv * 25.0 + vec2<f32>(0.8, 1.3));
+    let water_dark = select(0.0, 0.25, water_n > 0.65);
+    col = col * (1.0 - water_base * water_dark);
+    return col * vig + 0.02;
+}
+
+fn fmod_custom(x: f32, period: f32) -> f32 {
+    return x - period * floor(x / period);
+}
+
+fn poly_wire_dist(p: vec2<f32>, sides: f32, radius: f32) -> f32 {
+    let ang = atan2(p.y, p.x);
+    let pi2 = 6.28318530718;
+    let a = ang / pi2 + 0.5;
+    let ba = fmod_custom(a * sides, 1.0);
+    let rdist = abs(length(p) - radius);
+    let adist = min(ba, 1.0 - ba) * (pi2 / sides) * radius;
+    return min(rdist, adist);
+}
+
+fn dist_ray(p: vec2<f32>, angle: f32) -> f32 {
+    let c = cos(angle);
+    let s = sin(angle);
+    let dir = vec2<f32>(c, s);
+    let proj = dot(p, dir);
+    let proj_clamped = proj * select(0.0, 1.0, proj >= 0.0);
+    let closest = dir * proj_clamped;
+    return length(p - closest);
+}
+
+fn sd_segment(p: vec2<f32>, a: vec2<f32>, b: vec2<f32>) -> f32 {
+    let pa = p - a;
+    let ba = b - a;
+    let h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let frag_uv = pos.xy / params.resolution;
+    let uv = (2.0 * frag_uv - 1.0);
+    let pi = 3.14159265359;
+    let tau = 6.28318530718;
+    let zoom = 0.115;
+    let p = uv * zoom;
+    let r = length(p);
+    let phi = atan2(p.y, p.x);
+    let phase = phi - pi * r;
+    let wrapped = fmod_custom(phase + pi, tau) - pi;
+    let dphi = abs(wrapped);
+    let spiral_d = r * dphi;
+    let spiral_thick_math = 0.022;
+    var spiral_mask: f32 = 1.0 - smoothstep(0.0, spiral_thick_math, spiral_d);
+    let fade_out = 1.0 - smoothstep(7.2, 8.2, r);
+    spiral_mask *= fade_out;
+
+    // Trisection
+    let beta = pi / 3.0;
+    let r_C_math = beta / pi;
+    let r_P_math = r_C_math / 3.0;
+    let theta_P = pi * r_P_math;
+    let point_P = r_P_math * vec2<f32>(cos(theta_P), sin(theta_P));
+    let point_C = r_C_math * vec2<f32>(cos(beta), sin(beta));
+    let thick_ray_math = 0.018;
+    let dist_rayA = dist_ray(p, 0.0);
+    let dist_rayB = dist_ray(p, beta);
+    let ray_mask = max(1.0 - smoothstep(0.0, thick_ray_math, dist_rayA), 1.0 - smoothstep(0.0, thick_ray_math, dist_rayB));
+
+    // Circles
+    var d_circ: f32 = abs(length(p) - 0.333);
+    d_circ = min(d_circ, abs(length(p) - 1.0));
+    d_circ = min(d_circ, abs(length(p) - 2.0));
+    d_circ = min(d_circ, abs(length(p) - 4.0));
+    d_circ = min(d_circ, abs(length(p) - 6.0));
+    d_circ = min(d_circ, abs(length(p) - 8.0));
+    let circ_thick_math = 0.010;
+    let circ_mask = 1.0 - smoothstep(0.0, circ_thick_math, d_circ);
+
+    // Points
+    let point_thick_math = 0.018;
+    let d_P = length(p - point_P);
+    let d_C = length(p - point_C);
+    let d_O = length(p);
+    let point_mask = max(1.0 - smoothstep(0.0, point_thick_math * 0.6, d_O),
+                        max(1.0 - smoothstep(0.0, point_thick_math * 1.4, d_P),
+                            1.0 - smoothstep(0.0, point_thick_math * 1.4, d_C)));
+
+    // Tangent example
+    let theta_tan = 4.0 * pi;
+    let r_tan = theta_tan / pi;
+    let pos_tan = vec2<f32>(r_tan * cos(theta_tan), r_tan * sin(theta_tan));
+    let dr_dt = 1.0 / pi;
+    let er = vec2<f32>(cos(theta_tan), sin(theta_tan));
+    let et = vec2<f32>(-sin(theta_tan), cos(theta_tan));
+    let tang_vec = dr_dt * er + r_tan * et;
+    let tang_len = length(tang_vec);
+    let tang_dir = tang_vec / tang_len;
+    let tan_len = 0.4;
+    let tan_a = pos_tan - tang_dir * (tan_len * 0.5);
+    let tan_b = pos_tan + tang_dir * (tan_len * 0.5);
+    let tan_d = sd_segment(p, tan_a, tan_b);
+    let tan_mask = 1.0 - smoothstep(0.0, 0.015, tan_d);
+
+    // Construct mask
+    let construct_mask = max(ray_mask, max(circ_mask, max(point_mask, tan_mask)));
+
+    // Polygons exhaustion
+    let poly_thick_math = 0.012;
+    let p6_d = poly_wire_dist(p, 6.0, 1.90);
+    let p12_d = poly_wire_dist(p, 12.0, 1.84);
+    let p24_d = poly_wire_dist(p, 24.0, 1.80);
+    let p48_d = poly_wire_dist(p, 48.0, 1.76);
+    let min_poly_d = min(p6_d, min(p12_d, min(p24_d, p48_d)));
+    let poly_mask = 1.0 - smoothstep(0.0, poly_thick_math, min_poly_d);
+
+    // Colors
+    var col: vec3<f32> = papyrus_uv(frag_uv);
+    let spiral_col: vec3<f32> = vec3<f32>(0.12, 0.20, 0.39);
+    col = mix(col, spiral_col, spiral_mask * 0.95);
+    let construct_col: vec3<f32> = vec3<f32>(0.545, 0.271, 0.075);
+    col = mix(col, construct_col, construct_mask * 0.85);
+    let poly_col: vec3<f32> = vec3<f32>(0.85, 0.45, 0.25);
+    col = mix(col, poly_col, poly_mask * 0.65);
+    let tan_col: vec3<f32> = vec3<f32>(0.85, 0.65, 0.15);
+    col = mix(col, tan_col, tan_mask * 0.9);
+
+    // Final vignette boost
+    let final_vig = 1.0 - length(frag_uv - vec2<f32>(0.5));
+    col *= final_vig * 0.3 + 0.7;
+    col = pow(col, vec3<f32>(0.96));
+
+    return vec4<f32>(col, 1.0);
+}
+```

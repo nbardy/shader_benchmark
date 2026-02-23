@@ -1,0 +1,15 @@
+{
+  "problem_index": 4,
+  "problem_name": "archimedean_spiral_galaxy",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-12-29T19:45:40.281371",
+      "data": {
+        "error": "No shader files found"
+      }
+    }
+  },
+  "created": "2025-12-29T19:22:01.141365",
+  "last_updated": "2025-12-29T19:45:40.281377"
+}

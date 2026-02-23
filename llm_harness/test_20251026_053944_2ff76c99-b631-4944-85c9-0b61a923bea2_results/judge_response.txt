@@ -1,0 +1,141 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+**Kinematic Gear Ratio Verification (4 pts)**
+- Pitch radii ratio precisely A:B:C = 24:16:12 (2:4/3:1 simplified)
+- Centre distances between gears match theoretical ratios within ±2% tolerance
+- Gear spacing ensures proper meshing without interference
+- Mathematical relationship between gear sizes and rotational speeds maintained
+
+**Contact Point Mechanics (2 pts)**
+- Tooth normals at contact points match within ±3° angular tolerance
+- Proper gear meshing demonstrated at all contact interfaces
+- No gaps or overlaps at gear engagement points
+- Consistent tooth profile shapes maintaining involute geometry
+
+**Angular Velocity Relationships**
+- Inverse relationship between gear radius and angular velocity
+- Rotational speed ratios match gear diameter ratios precisely
+- Conservation of angular momentum across gear train
+
+**S4: Visual Implementation Section**  
+**Arrow Representation Accuracy (2 pts)**
+- Angular velocity arrows lengths proportional to ω values
+- Correct directional indication of gear rotation
+- Arrow scaling factor consistent across all three gears
+- Visual clarity of rotational motion indicators
+
+**Material and Rendering Quality (2 pts)**
+- Grey metallic material appearance appropriate for mechanical gears
+- Orthographic view projection correctly implemented
+- Proper depth perception and dimensional accuracy
+- Industrial/mechanical aesthetic maintained throughout
+
+**Gear Tooth Visualization**
+- Clear definition of individual gear teeth
+- Consistent tooth spacing and profile shapes
+- Proper gear meshing visualization at contact points
+- No visual artifacts or rendering errors
+
+**S5: Completeness & Specifications Section**
+**Problem Identification**
+- Problem 206: Spinning Gear Assembly specification
+- Input spec: generation prompt compliance
+- Candidate: PNG output evaluation requirements
+
+**Technical Implementation Verification**
+- All three gears (A, B, C) present and properly positioned
+- Mechanical constraints satisfied (no impossible configurations)
+- Engineering accuracy in gear train design
+
+**Output Requirements**
+- Score: S/10 with detailed component breakdown
+- Rationale: ≤180 words covering all evaluation aspects
+- Systematic assessment of both mathematical and visual criteria
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+**Objective**
+Create a mechanical gear assembly with proper kinematic relationships and angular velocity visualization.
+
+**Gears**
+
+* Gear A: 24 teeth, radius 2.
+* Gear B: 16 teeth, radius 1.4 (meshes with A).
+* Gear C: 12 teeth, radius 1.0 (meshes with B).
+
+Module = 0.26 rad per tooth (involute profiles optional). Place centres along x‑axis with proper centre distances. Initial angular positions so teeth engage.
+
+**Spin animation** not required; instead show instantaneous state with angular velocities vector glyphs: size ∝ ω (ω_A = 1, ω_B = −1.5, ω_C = 1.333).
+
+**Styling**
+Orthographic view, top‑down slight tilt 15°, grey metal. 2200×1600 PNG.
+
+**Deliverable** PNG.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Evaluation: Spinning Gear Assembly
+
+## Detailed Assessment
+
+**S1: Problem Accuracy (Generic)**
+The image shows only a single gear with one angular velocity arrow. The specification requires a three-gear assembly (A, B, C) with proper kinematic relationships. The pitch radii ratio (24:16:12 = 2:4/3:1) cannot be verified with one gear present. The required inverse angular velocity relationships (ω_A=1, ω_B=−1.5, ω_C=1.333) are entirely absent. Critical mechanical constraints and center-distance specifications are not demonstrated.
+
+**S2: Visual Quality (Generic)**
+The rendered gear exhibits excellent surface quality with proper metallic grey material and realistic specular highlights. Tooth geometry is well-defined with clear individual teeth visible. The orthographic projection is correctly implemented. However, the single arrow representation is incomplete. The 2200×1600 PNG output meets format specifications. The overall polish is high, but the incomplete assembly severely limits overall visual completeness.
+
+**S3: Mathematical Accuracy Section**
+**Kinematic Verification**: Cannot assess. Only one gear present; pitch ratio verification impossible (0/4 pts).
+
+**Contact Point Mechanics**: No meshing interfaces visible. Tooth normals cannot be verified. Single isolated gear provides no engagement demonstration (0/2 pts).
+
+**Angular Velocity Relationships**: Single arrow shown (appears vertical, suggesting stationary or unclear direction). Required three arrows with proportional magnitudes (1:−1.5:1.333) completely absent. No inverse radius-velocity relationship demonstrated (0/3 pts).
+
+**S4: Visual Implementation Section**
+**Arrow Representation**: One yellow arrow visible but undersized relative to specifications. Should represent ω_A=1; scaling factor cannot be verified without comparative gears. No indication of required three proportionally-scaled arrows (1/2 pts).
+
+**Material & Rendering**: Excellent metallic grey appearance with appropriate shading and orthographic view correctly applied (2/2 pts).
+
+**Tooth Visualization**: Individual teeth clearly rendered with consistent spacing and profile definition. No meshing zones visible—this is the primary deficiency (1/3 pts).
+
+**S5: Completeness & Specifications Section**
+**Problem Identification**: Problem 206 specification not met. Multi-gear assembly requirement completely unaddressed. PNG format delivered but content drastically incomplete.
+
+**Technical Implementation**: Only 1 of 3 required gears present. No center-distance implementation. No mechanical constraint satisfaction (gear train configuration impossible to assess).
+
+**Output Requirements**: Minimal specification compliance. Three gears, proper positioning, and three proportional angular velocity vectors required—all missing.
+
+---
+
+## Rationale Summary
+The visualization demonstrates strong rendering quality with realistic gear geometry and metallic materials. However, it fundamentally fails the primary objective: a three-gear kinematic assembly with proper meshing, center distances, and angular velocity vector visualization. The single isolated gear with one ambiguous arrow represents approximately 15% of required content. Mathematical accuracy cannot be established without the complete gear train assembly and all three angular velocity indicators with correct proportional magnitudes.
+
+<scores><S1>12</S1><S2>72</S2><S3>8</S3><S4>28</S4><S5>10</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[12, 72, 8, 28, 10]
+

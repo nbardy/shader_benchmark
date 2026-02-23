@@ -1,0 +1,13 @@
+{
+  "scores": [
+    58,
+    65,
+    55,
+    60,
+    57
+  ],
+  "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d5c3460a_google_gemini-3-flash-preview_20251229_185850/results/006_barbell_dumbbell_shape",
+  "status": "completed",
+  "execution_success": true,
+  "has_image": true
+}

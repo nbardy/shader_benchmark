@@ -1,0 +1,63 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: d5c3460a_google_gemini-3-flash-preview_20251229_185850
+Started: 2025-12-29T18:58:50.907265
+============================================================
+
+[2025-12-29 18:58:50.907322] HARNESS INITIALIZED
+  Model: google/gemini-3-flash-preview
+  Problems: 10
+  Max parallel: 100
+  Problem list:
+    000: ackermann_function_growth
+    001: al_khwarizmi_geometric_algebra
+    002: apollonian_gasket
+    003: apollonius_conic_sections
+    004: archimedean_spiral_galaxy
+    005: archimedes_spiral
+    006: barbell_dumbbell_shape
+    007: binary_tree_fractal
+    008: brahmagupta_cyclic_quadrilaterals
+    009: braided_rope
+
+[2025-12-29 18:58:51.158799] START problem_000: ackermann_function_growth
+[2025-12-29 18:59:03.397413] START problem_001: al_khwarizmi_geometric_algebra
+[2025-12-29 18:59:16.166321] START problem_002: apollonian_gasket
+[2025-12-29 18:59:27.102008] START problem_003: apollonius_conic_sections
+[2025-12-29 18:59:43.868785] START problem_004: archimedean_spiral_galaxy
+[2025-12-29 18:59:55.134185] START problem_005: archimedes_spiral
+[2025-12-29 19:00:10.307552] START problem_006: barbell_dumbbell_shape
+[2025-12-29 19:00:24.936318] START problem_007: binary_tree_fractal
+[2025-12-29 19:00:40.513471] START problem_008: brahmagupta_cyclic_quadrilaterals
+[2025-12-29 19:00:57.297482] START problem_009: braided_rope
+[2025-12-29 19:01:07.554455] EXCEPTION in problem_007 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: expected '(', found ','
+   ┌─ wgsl:59:31
+   │
+59 │     var stack_len = array<f32>, 128>();
+   │                               ^ expected '('
+
+
+    expected '(', found ','
+
+
+note: run with `RUST_BACKTRAC
+[2025-12-29 19:01:07.554532] END problem_007: binary_tree_fractal - FAILED (42.62s)
+[2025-12-29 19:01:16.575951] END problem_000: ackermann_function_growth - SUCCESS (145.42s)
+[2025-12-29 19:01:17.332656] END problem_002: apollonian_gasket - SUCCESS (121.17s)
+[2025-12-29 19:01:21.132967] END problem_003: apollonius_conic_sections - SUCCESS (114.03s)
+[2025-12-29 19:01:23.299622] END problem_001: al_khwarizmi_geometric_algebra - SUCCESS (139.90s)
+[2025-12-29 19:01:23.322759] END problem_004: archimedean_spiral_galaxy - SUCCESS (99.45s)
+[2025-12-29 19:01:23.710750] END problem_008: brahmagupta_cyclic_quadrilaterals - SUCCESS (43.20s)
+[2025-12-29 19:01:25.274579] END problem_009: braided_rope - SUCCESS (27.98s)
+[2025-12-29 19:01:27.050399] END problem_006: barbell_dumbbell_shape - SUCCESS (76.74s)
+[2025-12-29 19:01:30.386108] END problem_005: archimedes_spiral - SUCCESS (95.25s)
+
+============================================================
+Run completed: 2025-12-29T19:01:30.386632

@@ -1,0 +1,108 @@
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+    time: f32,
+    aspect: f32,
+};
+
+@group(0) @binding(0) var<uniform> Params: Params;
+
+// LOG10 values for A(3, n)
+// A(3,0) = 1                      => log10 = 0.0
+// A(3,1) = 2                      => log10 = 0.3010
+// A(3,2) = 3                      => log10 = 0.4771
+// A(3,3) = 13                     => log10 = 1.1139
+// A(3,4) = 65533                  => log10 = 4.8164
+// A(3,5) = 2^65536 - 3            => log10 ~= 19728
+// Given the prompt asks for a 0-10 log scale for visibility, 
+// we saturate the insane values at the ceiling of our visual scale.
+const A3_LOGS = array<f32, 11>(
+    0.0,         // n=0
+    0.30103,     // n=1
+    0.47712,     // n=2
+    1.11394,     // n=3
+    4.81646,     // n=4
+    10.0,        // n=5 (Truncated for visualization scale)
+    10.0,        // n=6
+    10.0,        // n=7
+    10.0,        // n=8
+    10.0,        // n=9
+    10.0         // n=10
+);
+
+fn get_bar_color(n: f32) -> vec3<f32> {
+    let deep_blue = vec3<f32>(0.0, 0.2, 0.8);
+    let searing_red = vec3<f32>(1.0, 0.2, 0.0);
+    let t = n / 10.0;
+    return deep_blue + (searing_red - deep_blue) * t;
+}
+
+fn sd_round_rect_top(p: vec2<f32>, b: vec2<f32>, r: f32) -> f32 {
+    var q = p;
+    // Mirror X but keep Y to only round the top
+    q.x = abs(q.x) - b.x + r;
+    let d = select(
+        length(max(q, vec2<f32>(0.0))) + min(max(q.x, q.y), 0.0) - r,
+        max(abs(p.x) - b.x, p.y - b.y),
+        p.y < (b.y - r)
+    );
+    return d;
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    // Canvas setup: White background
+    let bg_color = vec4<f32>(1.0, 1.0, 1.0, 1.0);
+    
+    // Normalized coordinates (0,0 to resolution)
+    let p = pos.xy;
+    let res = Params.resolution;
+    
+    // Grid Lines (10 decades)
+    var grid_line: f32 = 0.0;
+    for (var i: i32 = 1; i <= 10; i = i + 1) {
+        let y_level = res.y * (1.0 - f32(i) / 10.0);
+        let dist = abs(p.y - y_level);
+        grid_line = max(grid_line, 1.0 - smoothstep(0.0, 1.5, dist));
+    }
+    var color = bg_color.rgb - (grid_line * 0.1);
+
+    // Bars Logic
+    // 11 bars, 80px apart, 40px width
+    // Center of graph
+    let start_x = (res.x - (10.0 * 80.0)) * 0.5;
+    
+    var<function> bars_mask: f32 = 0.0;
+    var<function> bar_final_color: vec3<f32> = color;
+
+    for (var n: u32 = 0u; n <= 10u; n = n + 1u) {
+        let center_x = start_x + f32(n) * 80.0;
+        let log_val = A3_LOGS[n];
+        
+        // Height on screen (0 to 10 log scale)
+        let bar_height = (log_val / 10.0) * (res.y * 0.8);
+        let bar_width = 20.0; // half-width
+        
+        // Local coordinate for bar
+        let local_p = vec2<f32>(p.x - center_x, p.y - (res.y * 0.9 - bar_height * 0.5));
+        
+        // Bar logic: Rounded top box
+        let d = sd_round_rect_top(local_p, vec2<f32>(bar_width, bar_height * 0.5), 10.0);
+        let mask = 1.0 - smoothstep(-1.0, 1.0, d);
+        
+        let n_f = f32(n);
+        let current_bar_col = get_bar_color(n_f);
+        
+        bar_final_color = select(bar_final_color, current_bar_col, mask > 0.5);
+    }
+
+    // Shadow/Depth effect for bars
+    return vec4<f32>(bar_final_color, 1.0);
+}

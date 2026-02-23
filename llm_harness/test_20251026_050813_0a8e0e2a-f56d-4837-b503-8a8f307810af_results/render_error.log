@@ -1,0 +1,27 @@
+=== RENDER FAILED ===
+Return code: 101
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_050813_0a8e0e2a-f56d-4837-b503-8a8f307810af_results/shaders/barbell.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_050813_0a8e0e2a-f56d-4837-b503-8a8f307810af_results/artifacts/result.png
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: name `target` is a reserved keyword
+    ┌─ wgsl:252:9
+    │
+252 │     let target = vec3<f32>(0.0, 0.0, 0.0);
+    │         ^^^^^^ definition of `target`
+
+
+    name `target` is a reserved keyword
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+=== STDOUT ===

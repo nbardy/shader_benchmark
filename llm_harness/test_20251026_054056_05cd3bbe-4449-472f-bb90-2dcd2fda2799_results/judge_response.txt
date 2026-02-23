@@ -1,0 +1,140 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+**Vertex Set Positioning (3 pts)**
+- First tetrahedron vertices: (1,1,1), (1,-1,-1), (-1,1,-1), (-1,-1,1)
+- Second tetrahedron vertices: (-1,-1,-1), (-1,1,1), (1,-1,1), (1,1,-1)
+- Both tetrahedron vertex sets detected via clustering within ±0.02 tolerance
+- All 8 vertices correctly positioned at cube corners
+- Edge length √8 ≈ 2.828 maintained for all tetrahedral edges
+
+**Intersection Geometry Analysis (3 pts)**
+- Central regular octahedron formed by tetrahedra intersection
+- 12 internal octahedral edges equal within ±3% tolerance
+- 8 small tetrahedra visible as star points extending outward
+- Proper geometric relationships between intersecting tetrahedra maintained
+
+**Geometric Construction Accuracy**
+- Two interpenetrating tetrahedra correctly oriented
+- Stella octangula eight-pointed star configuration achieved
+- Classical geometric construction principles followed precisely
+
+**S4: Visual Implementation Section**  
+**Color and Transparency System (2 pts)**
+- First tetrahedron: blue/cyan coloring with alpha = 0.7
+- Second tetrahedron: red/magenta coloring with alpha = 0.7
+- Each tetrahedron occupies 50 ± 5% of visible pixels
+- Proper transparency blending at intersection regions
+
+**Edge Rendering Quality (2 pts)**
+- All edges rendered with strokeWidth = 1.5 (target 2 ± 0.2 px)
+- Edges remain visible through transparent faces
+- No z-fighting artifacts or visual glitches
+- Consistent edge thickness throughout entire structure
+
+**Depth and Transparency Management**
+- Proper depth sorting for transparency rendering
+- Clear visualization of compound structure interior
+- Intersection patterns clearly visible
+- Eight-pointed star appearance properly emphasized
+
+**S5: Completeness & Specifications Section**
+**Geometric Construction Requirements**
+- Star Tetrahedron (Stella Octangula) specification met
+- Two interpenetrating tetrahedra properly positioned
+- Vertex alignment on cube corners verified
+- Central octahedral intersection correctly formed
+
+**Visual Clarity Standards**
+- Transparent rendering enables intersection pattern visibility
+- Color distinction between tetrahedra maintains clarity
+- Beautiful symmetry properties clearly demonstrated
+- Classical geometric construction accurately represented
+
+**Evaluation Protocol**
+- Score: S/10 with systematic geometric and visual assessment
+- Rationale: ≤120 words summarizing test pass/fail results
+- All mathematical and visual criteria comprehensively evaluated
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+Superpose two congruent regular tetrahedra so that their vertices lie on a common cube of side 2 centred at origin:
+- Tetra A vertices (1,1,1), (-1,-1,1), (-1,1,-1), (1,-1,-1)
+- Tetra B vertices (1,1,-1), (-1,-1,-1), (-1,1,1), (1,-1,1)
+Combined hull is a regular octahedron's stellation.
+
+Rendering:
+- Solid faces, semi-transparent glass (α 0.6) coloured cyan (#00ccee) for Tetra A, magenta (#cc00ee) for Tetra B
+- Edge stroke overlay 2 px black
+- Camera (4,3,3), FOV 30°, white BG. 2000 × 1600 PNG
+
+Deliverable: Outputs a single image.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Evaluation of Shader-Generated Image
+
+## Detailed Assessment
+
+**Critical Analysis:**
+
+The provided image is a **uniform magenta/pink solid color** with no visible geometric structures, mathematical visualization, or rendered content whatsoever. This represents a complete failure across all evaluation criteria.
+
+### Criterion-by-Criterion Findings:
+
+**S1 (Problem Accuracy):** The image contains zero geometric content. No tetrahedra, octahedron, stella octangula, vertices, edges, or intersection geometry is visible. The mathematical requirements are entirely unmet.
+
+**S2 (Visual Quality):** While the image is technically clean (no artifacts), it is aesthetically meaningless—a solid color provides no visual information or appeal for a mathematical visualization. Resolution and technical execution are irrelevant without content.
+
+**S3 (Mathematical Accuracy):** 
+- No vertex positioning detectable
+- No tetrahedra visible (neither Tetra A nor Tetra B)
+- No octahedral intersection geometry
+- No edge structure rendered
+- No stella octangula configuration present
+
+**S4 (Visual Implementation):**
+- No color differentiation (single magenta dominates; cyan completely absent)
+- No transparency effects demonstrable
+- No edge rendering visible
+- No depth or layering
+- The magenta suggests only one tetrahedron rendered at opaque intensity
+
+**S5 (Completeness & Specifications):**
+- Star tetrahedron specification: **Not met**
+- Interpenetrating geometry: **Not visible**
+- Vertex alignment: **Not demonstrable**
+- Visual clarity: **Non-existent**
+
+**Root Cause:** This appears to be a rendering failure—possibly a shader error, incorrect material assignment, camera culling issue, or incomplete scene composition. The output suggests only a background color or a single face rendered without proper geometry.
+
+---
+
+<scores><S1>2</S1><S2>5</S2><S3>1</S3><S4>2</S4><S5>1</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[2, 5, 1, 2, 1]
+

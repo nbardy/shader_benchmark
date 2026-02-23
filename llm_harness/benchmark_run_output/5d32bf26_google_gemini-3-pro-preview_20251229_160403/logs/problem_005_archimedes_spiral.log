@@ -1,0 +1,32 @@
+2025-12-29 16:26:05.634 [INFO] Logger initialized for problem 5: archimedes_spiral
+2025-12-29 16:26:05.634 [INFO] ========== PROBLEM START ==========
+2025-12-29 16:26:05.634 [INFO] Index: 5
+2025-12-29 16:26:05.634 [INFO] Name: archimedes_spiral
+2025-12-29 16:26:05.634 [INFO] ---------- STAGE START: GENERATE ----------
+2025-12-29 16:26:05.634 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-12-29 16:26:05.635 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/5d32bf26_google_gemini-3-pro-preview_20251229_160403/checkpoints/problem_005.json
+2025-12-29 16:26:05.635 [INFO] Loading request prompt
+2025-12-29 16:26:05.635 [INFO] API call: LLM generation model=google/gemini-3-pro-preview, language=wgsl
+2025-12-29 16:30:25.029 [ERROR] EXCEPTION in generate stage:
+2025-12-29 16:30:25.030 [ERROR]   Type: Exception
+2025-12-29 16:30:25.031 [ERROR]   Message: Failed after 3 retries: Response ended prematurely (hit token limit)
+2025-12-29 16:30:25.031 [ERROR]   Traceback:
+2025-12-29 16:30:25.033 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 313, in run_single_problem
+    llm_response = await llm_client.generate_shaders(self.model, request_prompt)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-12-29 16:30:25.033 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/llm_client.py", line 111, in generate_shaders
+    raise Exception(f"Failed after {MAX_RETRIES} retries: {last_error}")
+2025-12-29 16:30:25.034 [INFO] Attempting to save checkpoint: stage=generate, status=failed
+2025-12-29 16:30:25.036 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/5d32bf26_google_gemini-3-pro-preview_20251229_160403/checkpoints/problem_005.json
+2025-12-29 16:30:25.036 [INFO] ---------- STAGE END: GENERATE - FAILED ----------
+2025-12-29 16:30:25.036 [ERROR] EXCEPTION in run_single_problem:
+2025-12-29 16:30:25.036 [ERROR]   Type: Exception
+2025-12-29 16:30:25.036 [ERROR]   Message: Failed after 3 retries: Response ended prematurely (hit token limit)
+2025-12-29 16:30:25.036 [ERROR]   Traceback:
+2025-12-29 16:30:25.036 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 313, in run_single_problem
+    llm_response = await llm_client.generate_shaders(self.model, request_prompt)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-12-29 16:30:25.037 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/llm_client.py", line 111, in generate_shaders
+    raise Exception(f"Failed after {MAX_RETRIES} retries: {last_error}")
+2025-12-29 16:30:25.037 [INFO] ========== PROBLEM END: FAILED ==========
+2025-12-29 16:30:25.037 [INFO] Execution time: 259.40s

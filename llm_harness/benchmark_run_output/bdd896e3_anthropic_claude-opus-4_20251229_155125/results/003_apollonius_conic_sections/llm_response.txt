@@ -1,0 +1,244 @@
+<shader file="apollonius_conics.wgsl">
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+    time: f32,
+    _padding: f32,
+}
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+// Constants for ancient Greek color symbolism
+const PARCHMENT_COLOR: vec3<f32> = vec3<f32>(0.956, 0.909, 0.816);
+const ELLIPSE_COLOR: vec3<f32> = vec3<f32>(0.15, 0.3, 0.65);    // Deep blue - celestial
+const PARABOLA_COLOR: vec3<f32> = vec3<f32>(0.2, 0.55, 0.2);     // Green - earthly
+const HYPERBOLA_COLOR: vec3<f32> = vec3<f32>(0.75, 0.15, 0.15);  // Red - infinite
+const CONE_COLOR: vec3<f32> = vec3<f32>(0.4, 0.35, 0.3);
+const PLANE_ALPHA: f32 = 0.3;
+const CONE_ANGLE: f32 = 0.523598776; // 30 degrees in radians
+
+// Rotation matrices for visualization
+fn rotate_x(angle: f32) -> mat3x3<f32> {
+    let c = cos(angle);
+    let s = sin(angle);
+    return mat3x3<f32>(
+        vec3<f32>(1.0, 0.0, 0.0),
+        vec3<f32>(0.0, c, -s),
+        vec3<f32>(0.0, s, c)
+    );
+}
+
+fn rotate_y(angle: f32) -> mat3x3<f32> {
+    let c = cos(angle);
+    let s = sin(angle);
+    return mat3x3<f32>(
+        vec3<f32>(c, 0.0, s),
+        vec3<f32>(0.0, 1.0, 0.0),
+        vec3<f32>(-s, 0.0, c)
+    );
+}
+
+// SDF for double cone
+fn sdf_double_cone(p: vec3<f32>) -> f32 {
+    let r = length(p.xy);
+    let cone_r = abs(p.z) * tan(CONE_ANGLE);
+    return r - cone_r;
+}
+
+// SDF for plane
+fn sdf_plane(p: vec3<f32>, normal: vec3<f32>, d: f32) -> f32 {
+    return dot(p, normal) - d;
+}
+
+// Distance from point to line segment
+fn segment_distance(p: vec3<f32>, a: vec3<f32>, b: vec3<f32>) -> f32 {
+    let pa = p - a;
+    let ba = b - a;
+    let h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
+
+// Check if point is on conic section intersection
+fn is_on_conic(p: vec3<f32>, plane_normal: vec3<f32>, plane_d: f32) -> f32 {
+    let cone_dist = abs(sdf_double_cone(p));
+    let plane_dist = abs(sdf_plane(p, plane_normal, plane_d));
+    return max(cone_dist, plane_dist);
+}
+
+// Draw wireframe cone generators
+fn draw_cone_wireframe(p: vec3<f32>) -> f32 {
+    var min_dist = 1000.0;
+    
+    // Draw vertical lines (generators) around the cone
+    let num_generators = 12u;
+    for (var i = 0u; i < num_generators; i = i + 1u) {
+        let angle = f32(i) * 6.283185307 / f32(num_generators);
+        let x = cos(angle);
+        let y = sin(angle);
+        
+        // Upper cone generator
+        let p1 = vec3<f32>(0.0, 0.0, 0.0);
+        let p2 = vec3<f32>(x * 3.0 * tan(CONE_ANGLE), y * 3.0 * tan(CONE_ANGLE), 3.0);
+        min_dist = min(min_dist, segment_distance(p, p1, p2));
+        
+        // Lower cone generator
+        let p3 = vec3<f32>(x * 3.0 * tan(CONE_ANGLE), y * 3.0 * tan(CONE_ANGLE), -3.0);
+        min_dist = min(min_dist, segment_distance(p, p1, p3));
+    }
+    
+    // Draw horizontal circles
+    let num_circles = 6u;
+    for (var i = 1u; i < num_circles; i = i + 1u) {
+        let z = f32(i) * 3.0 / f32(num_circles);
+        let r = z * tan(CONE_ANGLE);
+        
+        // Upper cone circles
+        for (var j = 0u; j < 24u; j = j + 1u) {
+            let a1 = f32(j) * 6.283185307 / 24.0;
+            let a2 = f32(j + 1u) * 6.283185307 / 24.0;
+            let p1 = vec3<f32>(cos(a1) * r, sin(a1) * r, z);
+            let p2 = vec3<f32>(cos(a2) * r, sin(a2) * r, z);
+            min_dist = min(min_dist, segment_distance(p, p1, p2));
+            
+            // Lower cone circles
+            let p3 = vec3<f32>(cos(a1) * r, sin(a1) * r, -z);
+            let p4 = vec3<f32>(cos(a2) * r, sin(a2) * r, -z);
+            min_dist = min(min_dist, segment_distance(p, p3, p4));
+        }
+    }
+    
+    return min_dist;
+}
+
+// Orthographic projection
+fn project_3d_to_2d(p: vec3<f32>, view_mat: mat3x3<f32>) -> vec2<f32> {
+    let rotated = view_mat * p;
+    return rotated.xy * 0.25; // Scale for view
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = (pos.xy - params.resolution * 0.5) / min(params.resolution.x, params.resolution.y);
+    
+    // Setup viewing angle
+    let view_angle = 0.3;
+    let view_mat = rotate_y(view_angle) * rotate_x(-0.4);
+    
+    // Ray for orthographic projection
+    let ray_origin = vec3<f32>(uv.x * 4.0, uv.y * 4.0, 10.0);
+    let ray_dir = vec3<f32>(0.0, 0.0, -1.0);
+    
+    // Transform ray to world space
+    let inv_view = transpose(view_mat);
+    let world_origin = inv_view * ray_origin;
+    let world_dir = normalize(inv_view * ray_dir);
+    
+    // Background
+    var color = PARCHMENT_COLOR;
+    
+    // Define cutting planes
+    let ellipse_normal = normalize(vec3<f32>(0.0, sin(0.785398163), cos(0.785398163))); // 45 degrees
+    let parabola_normal = normalize(vec3<f32>(0.0, sin(CONE_ANGLE), cos(CONE_ANGLE))); // 30 degrees
+    let hyperbola_normal = normalize(vec3<f32>(0.0, sin(0.261799388), cos(0.261799388))); // 15 degrees
+    
+    // Trace through scene
+    var t = 0.0;
+    let max_t = 20.0;
+    let dt = 0.02;
+    
+    var cone_hit = false;
+    var ellipse_hit = false;
+    var parabola_hit = false;
+    var hyperbola_hit = false;
+    
+    while (t < max_t) {
+        let p = world_origin + world_dir * t;
+        
+        // Check cone wireframe
+        let wireframe_dist = draw_cone_wireframe(p);
+        if (wireframe_dist < 0.02) {
+            color = mix(color, CONE_COLOR, 0.5);
+            cone_hit = true;
+        }
+        
+        // Check conic sections
+        let ellipse_dist = is_on_conic(p, ellipse_normal, 0.0);
+        if (ellipse_dist < 0.05 && abs(p.z) < 2.5) {
+            color = mix(color, ELLIPSE_COLOR, 0.8);
+            ellipse_hit = true;
+        }
+        
+        let parabola_dist = is_on_conic(p, parabola_normal, 0.0);
+        if (parabola_dist < 0.05 && abs(p.z) < 2.5) {
+            color = mix(color, PARABOLA_COLOR, 0.8);
+            parabola_hit = true;
+        }
+        
+        let hyperbola_dist = is_on_conic(p, hyperbola_normal, 0.0);
+        if (hyperbola_dist < 0.05 && abs(p.z) < 2.5) {
+            color = mix(color, HYPERBOLA_COLOR, 0.8);
+            hyperbola_hit = true;
+        }
+        
+        // Check cutting planes (semi-transparent)
+        let plane_size = 2.0;
+        
+        // Ellipse plane
+        if (abs(sdf_plane(p, ellipse_normal, 0.0)) < 0.01 && 
+            abs(p.x) < plane_size && abs(p.y) < plane_size && abs(p.z) < plane_size) {
+            color = mix(color, ELLIPSE_COLOR, PLANE_ALPHA);
+        }
+        
+        // Parabola plane
+        if (abs(sdf_plane(p, parabola_normal, 0.0)) < 0.01 && 
+            abs(p.x) < plane_size && abs(p.y) < plane_size && abs(p.z) < plane_size) {
+            color = mix(color, PARABOLA_COLOR, PLANE_ALPHA);
+        }
+        
+        // Hyperbola plane
+        if (abs(sdf_plane(p, hyperbola_normal, 0.0)) < 0.01 && 
+            abs(p.x) < plane_size && abs(p.y) < plane_size && abs(p.z) < plane_size) {
+            color = mix(color, HYPERBOLA_COLOR, PLANE_ALPHA);
+        }
+        
+        t = t + dt;
+    }
+    
+    // Add Greek letter annotations in corner
+    let corner_uv = uv + vec2<f32>(0.8, 0.8);
+    if (length(corner_uv - vec2<f32>(0.0, 0.0)) < 0.05) {
+        color = mix(color, ELLIPSE_COLOR, 0.8); // α position
+    } else if (length(corner_uv - vec2<f32>(0.0, -0.1)) < 0.05) {
+        color = mix(color, PARABOLA_COLOR, 0.8); // β position  
+    } else if (length(corner_uv - vec2<f32>(0.0, -0.2)) < 0.05) {
+        color = mix(color, HYPERBOLA_COLOR, 0.8); // γ position
+    }
+    
+    // Add inset showing classical style
+    let inset_center = vec2<f32>(-0.7, -0.7);
+    let inset_uv = (uv - inset_center) * 4.0;
+    if (abs(inset_uv.x) < 1.0 && abs(inset_uv.y) < 1.0) {
+        // Simple cone cross-section diagram
+        let inset_dist = abs(length(inset_uv.xy) - abs(inset_uv.y) * 0.5);
+        if (inset_dist < 0.02) {
+            color = CONE_COLOR * 0.7;
+        } else {
+            color = PARCHMENT_COLOR * 0.9;
+        }
+        
+        // Frame
+        if (abs(abs(inset_uv.x) - 1.0) < 0.02 || abs(abs(inset_uv.y) - 1.0) < 0.02) {
+            color = CONE_COLOR * 0.5;
+        }
+    }
+    
+    return vec4<f32>(color, 1.0);
+}
+</shader>

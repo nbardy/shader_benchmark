@@ -1,0 +1,97 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: da1d6507_google_gemini-2.0-flash-001_20251229_155135
+Started: 2025-12-29T15:51:35.256713
+============================================================
+
+[2025-12-29 15:51:35.256752] HARNESS INITIALIZED
+  Model: google/gemini-2.0-flash-001
+  Problems: 10
+  Max parallel: 5
+  Problem list:
+    000: ackermann_function_growth
+    001: al_khwarizmi_geometric_algebra
+    002: apollonian_gasket
+    003: apollonius_conic_sections
+    004: archimedean_spiral_galaxy
+    005: archimedes_spiral
+    006: barbell_dumbbell_shape
+    007: binary_tree_fractal
+    008: brahmagupta_cyclic_quadrilaterals
+    009: braided_rope
+
+[2025-12-29 15:51:35.486033] START problem_000: ackermann_function_growth
+[2025-12-29 15:51:43.957374] START problem_001: al_khwarizmi_geometric_algebra
+[2025-12-29 15:51:54.012405] START problem_002: apollonian_gasket
+[2025-12-29 15:52:01.591370] START problem_003: apollonius_conic_sections
+[2025-12-29 15:52:11.219722] START problem_004: archimedean_spiral_galaxy
+[2025-12-29 15:52:21.482484] START problem_005: archimedes_spiral
+[2025-12-29 15:52:30.644817] START problem_006: barbell_dumbbell_shape
+[2025-12-29 15:52:41.113505] START problem_007: binary_tree_fractal
+[2025-12-29 15:52:58.431586] START problem_008: brahmagupta_cyclic_quadrilaterals
+[2025-12-29 15:53:18.789847] EXCEPTION in problem_008 (generate stage): ValueError: No shader files found
+[2025-12-29 15:53:18.794489] EXCEPTION in problem_008 (run_single_problem): ValueError: No shader files found
+[2025-12-29 15:53:18.794808] END problem_008: brahmagupta_cyclic_quadrilaterals - FAILED (20.36s)
+[2025-12-29 15:53:18.796357] START problem_009: braided_rope
+[2025-12-29 15:53:27.120493] END problem_002: apollonian_gasket - SUCCESS (93.11s)
+[2025-12-29 15:53:27.157154] EXCEPTION in problem_000 (run_single_problem): RuntimeError: Shader execution still failing after repair: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: redefinition of `Params`
+   ┌─ wgsl:9:8
+   │
+ 9 │ struct Params {
+   │        ^^^^^^ previous definition of `Params`
+   ·
+15 │ @group(0) @binding(0) var<uniform> Params: Params;
+   │                    
+[2025-12-29 15:53:27.157242] END problem_000: ackermann_function_growth - FAILED (111.67s)
+[2025-12-29 15:53:27.224351] EXCEPTION in problem_006 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: no definition in scope for identifier: 'pos'
+   ┌─ wgsl:95:46
+   │
+95 │     let fill_light_vector = fill_light_pos - pos;
+   │                                              ^^^ unknown identifier
+
+
+    n
+[2025-12-29 15:53:27.224619] END problem_006: barbell_dumbbell_shape - FAILED (56.58s)
+[2025-12-29 15:53:27.231622] EXCEPTION in problem_007 (run_single_problem): RuntimeError: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: expected ';', found '32'
+   ┌─ wgsl:55:21
+   │
+55 │     var depth = 1e9f32;
+   │                     ^^ expected ';'
+
+
+    expected ';', found '32'
+
+
+note: run with `RUST_BACKTRACE=1` environment variab
+[2025-12-29 15:53:27.231860] END problem_007: binary_tree_fractal - FAILED (46.12s)
+[2025-12-29 15:53:27.917233] END problem_009: braided_rope - SUCCESS (9.12s)
+[2025-12-29 15:53:32.533574] END problem_004: archimedean_spiral_galaxy - SUCCESS (81.31s)
+[2025-12-29 15:53:36.740692] END problem_003: apollonius_conic_sections - SUCCESS (95.15s)
+[2025-12-29 15:53:39.309938] END problem_001: al_khwarizmi_geometric_algebra - SUCCESS (115.35s)
+[2025-12-29 15:53:40.363920] END problem_005: archimedes_spiral - SUCCESS (78.88s)
+
+============================================================
+Run completed: 2025-12-29T15:53:40.364681

@@ -1,0 +1,28 @@
+2025-10-24 01:56:28.888 [INFO] Logger initialized for problem 0: geometric_cube
+2025-10-24 01:56:28.888 [INFO] ========== PROBLEM START ==========
+2025-10-24 01:56:28.888 [INFO] Index: 0
+2025-10-24 01:56:28.888 [INFO] Name: geometric_cube
+2025-10-24 01:56:28.888 [INFO] ---------- STAGE START: GENERATE ----------
+2025-10-24 01:56:28.888 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-10-24 01:56:28.888 [INFO] Checkpoint saved successfully: stage=generate, file=harness_anthropic_claude-3.5-sonnet-20241022_20251024_015628/checkpoints/problem_000.json
+2025-10-24 01:56:28.888 [INFO] Loading request prompt
+2025-10-24 01:56:28.889 [INFO] API call: LLM generation model=anthropic/claude-3.5-sonnet-20241022
+2025-10-24 01:57:18.919 [INFO] API response: LLM generation - success, size=10422 bytes
+2025-10-24 01:57:18.920 [INFO] Parsing shader response
+2025-10-24 01:57:18.920 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2025-10-24 01:57:18.922 [INFO] Checkpoint saved successfully: stage=generate, file=harness_anthropic_claude-3.5-sonnet-20241022_20251024_015628/checkpoints/problem_000.json
+2025-10-24 01:57:18.922 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2025-10-24 01:57:18.924 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2025-10-24 01:57:18.925 [INFO] Checkpoint saved successfully: stage=compile, file=harness_anthropic_claude-3.5-sonnet-20241022_20251024_015628/checkpoints/problem_000.json
+2025-10-24 01:58:12.603 [INFO] Attempting to save checkpoint: stage=compile, status=complete
+2025-10-24 01:58:12.604 [INFO] Checkpoint saved successfully: stage=compile, file=harness_anthropic_claude-3.5-sonnet-20241022_20251024_015628/checkpoints/problem_000.json
+2025-10-24 01:58:12.605 [INFO] Attempting to save checkpoint: stage=render, status=in_progress
+2025-10-24 01:58:12.605 [INFO] Checkpoint saved successfully: stage=render, file=harness_anthropic_claude-3.5-sonnet-20241022_20251024_015628/checkpoints/problem_000.json
+2025-10-24 01:58:13.216 [INFO] Attempting to save checkpoint: stage=render, status=complete
+2025-10-24 01:58:13.218 [INFO] Checkpoint saved successfully: stage=render, file=harness_anthropic_claude-3.5-sonnet-20241022_20251024_015628/checkpoints/problem_000.json
+2025-10-24 01:58:13.218 [INFO] Attempting to save checkpoint: stage=judge, status=in_progress
+2025-10-24 01:58:13.219 [INFO] Checkpoint saved successfully: stage=judge, file=harness_anthropic_claude-3.5-sonnet-20241022_20251024_015628/checkpoints/problem_000.json
+2025-10-24 01:58:28.066 [INFO] Attempting to save checkpoint: stage=judge, status=complete
+2025-10-24 01:58:28.068 [INFO] Checkpoint saved successfully: stage=judge, file=harness_anthropic_claude-3.5-sonnet-20241022_20251024_015628/checkpoints/problem_000.json
+2025-10-24 01:58:28.068 [INFO] ========== PROBLEM END: SUCCESS ==========
+2025-10-24 01:58:28.068 [INFO] Execution time: 119.18s

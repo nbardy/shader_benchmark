@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_053103_3a503093-7b1c-4747-b132-267fcacab22c_results/shaders/penrose_tiling.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_053103_3a503093-7b1c-4747-b132-267fcacab22c_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 101.991 ms   | CPU 1701.277 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_053103_3a503093-7b1c-4747-b132-267fcacab22c_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

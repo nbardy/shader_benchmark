@@ -1,0 +1,205 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Wave Superposition Physics:
+- Complex interference pattern generated from exactly 3 wave sources
+- Wave superposition following Σh_i formula verified at multiple points with error < 3%
+- Circular wave fronts emanating correctly from each individual source point
+- Proper amplitude decay implementation with 1/r falloff from each source
+- Mathematical accuracy in wave interference calculations with R² > 0.95
+- Accurate implementation of wave physics and propagation mathematics
+
+Interference Pattern Mathematics:
+- Clear constructive and destructive interference regions properly positioned
+- Proper spacing between interference maxima and minima
+- Correct wave phase relationships creating realistic interference patterns
+- Mathematical precision in wave amplitude calculations and summation
+- Accurate wave frequency and wavelength relationships maintained
+- Physical wave behavior correctly modeled throughout deformation field
+
+**S4: Visual Implementation Section**  
+Surface Rendering Standards:
+- Water-like appearance with realistic shading and material properties
+- Smooth surface normals creating proper light interaction
+- Iridescent surface reflections varying appropriately with viewing angle
+- Professional water surface visualization with authentic optical effects
+- High-quality surface rendering meeting photorealistic standards
+
+Color and Visual Quality:
+- Smooth height-based color gradient transitioning from blue to white
+- Height correlation verified with proper color mapping implementation
+- Seamless color transitions without banding or discontinuities
+- Appropriate color saturation and luminance for water visualization
+- Professional color grading enhancing wave pattern visibility
+
+**S5: Completeness & Specifications Section**
+Required Wave Field Elements:
+- Complete wave deformation field with all 3 source points active
+- All interference patterns clearly visible and mathematically accurate
+- Proper wave physics implementation meeting all specified requirements
+- Comprehensive wave superposition covering entire visualization domain
+- Mathematical accuracy verified across all wave calculations
+
+Technical Specification Compliance:
+- All wave physics requirements satisfied with measured accuracy
+- Surface quality meeting professional visualization standards
+- Color mapping and gradient specifications fully implemented
+- Realistic shading and material properties as specified
+- Full adherence to wave deformation field specifications
+EOF < /dev/null
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+**Objective**
+Visualize a **3D wave deformation field** applied to a planar mesh, creating complex interference patterns from multiple wave sources.
+
+**Mathematical recipe**
+
+1. Create high-resolution plane mesh (100×100 vertices, 5×5 units).
+2. Place 3 wave sources at: (-1.5, 0), (1.5, 0), (0, 1.5).
+3. Wave deformation for each source i:
+   - Height: h_i(x,y,t) = A_i · sin(k|r-r_i| - ωt + φ_i) / (1 + |r-r_i|)
+   - A_i = [0.4, 0.3, 0.5], k = 2π, ω = 0, φ_i = [0, π/3, 2π/3].
+4. Total deformation: z = Σh_i(x,y,0) (static snapshot).
+5. Apply smooth normal recalculation for proper shading.
+6. Add edge clamping to prevent boundary artifacts.
+
+**Styling**
+
+* Surface material: Iridescent shader based on view angle and height.
+* Color mapping: Deep blue (troughs) through cyan, green, yellow to white (peaks).
+* Rim lighting to emphasize wave crests.
+* Subtle displacement texture for water-like microdetail.
+* Fog effect increasing with distance.
+* Camera at (4, -3, 2.5), looking at origin; FOV 35°.
+* Dark blue-black gradient background.
+* Resolution 2048 × 2048 px, 4× SSAA.
+
+**Deliverable** Single PNG showing the complex wave interference pattern with realistic water-like appearance.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Detailed Evaluation of Wave Interference Shader Visualization
+
+## Critical Assessment
+
+After careful examination of the provided image against the mathematical visualization requirements, I must provide the following detailed analysis:
+
+### **S1: Problem Accuracy (Generic)**
+
+**Score Reasoning:** The image shows a smooth color gradient transitioning from cyan to pale yellow/white, but lacks critical mathematical verification requirements. While wave source positioning could theoretically be correct, the visualization fails to demonstrate:
+- Verifiable interference patterns from 3 distinct sources
+- Clear wave front circles emanating from source points (-1.5, 0), (1.5, 0), (0, 1.5)
+- Distinguishable constructive/destructive interference regions
+- The mathematical superposition formula Σh_i applied with measurable accuracy
+
+The pattern appears overly smooth and generalized rather than showing the specific mathematical signature expected from 3-source interference with the given phase offsets (0, π/3, 2π/3).
+
+### **S2: Visual Quality (Generic)**
+
+**Score Reasoning:** The image demonstrates good technical execution in terms of smoothness and color transitions. The rendering appears anti-aliased and artifact-free. However, the visual quality is undermined by:
+- Lack of distinct surface detail showing wave structure
+- Missing rim lighting effects specified in requirements
+- Absent water-like microdetail texture
+- No visible depth cueing or fog effects mentioned in specs
+- Over-generalized appearance; insufficient surface normal variation
+
+The overall aesthetic is polished but generic—lacking the specific visual signatures that would indicate proper wave field rendering.
+
+### **S3: Mathematical Accuracy Section**
+
+**Score Reasoning - Critical Deficiency:** This is the primary concern. The visualization fails to convincingly demonstrate:
+
+**Wave Superposition Physics (Major Issues):**
+- No identifiable circular wave fronts from individual sources
+- Pattern lacks the characteristic 3-source interference geometry
+- Cannot verify amplitude decay with 1/r falloff
+- Phase relationships (0, π/3, 2π/3) not visually evident
+- No measurable R² > 0.95 correlation with expected mathematics
+
+**Interference Pattern Mathematics (Major Issues):**
+- Constructive/destructive interference regions not clearly delineated
+- Expected maxima/minima spacing unmeasurable
+- Wave frequency and wavelength relationships not evident
+- Pattern appears more like a smooth gradient than interference
+- Mathematical precision unverifiable from visual inspection
+
+The image appears to show height-based coloring rather than actual wave interference computation.
+
+### **S4: Visual Implementation Section**
+
+**Score Reasoning:**
+
+**Surface Rendering Standards:**
+- Water-like appearance present but unconvincing
+- Shading appears uniform rather than responding to surface normals
+- Iridescent reflections not evident; viewing angle variation minimal
+- Missing photorealistic water surface characteristics
+- No specular highlights or caustic-like patterns
+
+**Color and Visual Quality:**
+- Smooth color gradient present (cyan → yellow-white)
+- Height correlation presumed but not verified
+- Transitions are smooth without visible banding ✓
+- Color saturation adequate for water visualization ✓
+- However, the gradient appears too uniform; lacks fine structure expected from wave interference
+
+The color mapping appears correct in principle but applied to an insufficiently detailed underlying field.
+
+### **S5: Completeness & Specifications Section**
+
+**Score Reasoning:**
+
+**Required Wave Field Elements (Deficiencies):**
+- ✗ Cannot confirm all 3 source points are mathematically active
+- ✗ Interference patterns not clearly visible; difficult to verify accuracy
+- ✗ Wave physics implementation questionable
+- ✗ Superposition coverage appears incomplete compared to expected mathematics
+- ✗ Mathematical accuracy across domain unverifiable
+
+**Technical Specification Compliance:**
+- ✗ Wave physics accuracy: Unverifiable; pattern too generic
+- ✗ Surface quality: Adequate rendering but insufficient mathematical structure
+- ✗ Color mapping: Implemented but applied to questionable wave field
+- ✗ Realistic shading: Present but not appropriate to wave surface
+- ✗ Wave deformation specifications: Major concerns about implementation
+
+## Summary
+
+The image demonstrates competent shader work and visual smoothness, but fundamentally fails to convincingly visualize the mathematically complex 3-source wave interference pattern specified. The visualization lacks:
+1. Observable mathematical structure from the specified wave equation
+2. Identifiable source locations and their characteristic patterns
+3. Clear interference signatures
+4. Verifiable mathematical accuracy (< 3% error, R² > 0.95)
+5. Realistic water surface detail and microtexture
+
+The result appears to be a smooth color gradient field rather than a genuine wave interference visualization.
+
+<scores><S1>28</S1><S2>62</S2><S3>22</S3><S4>48</S4><S5>25</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[28, 62, 22, 48, 25]
+

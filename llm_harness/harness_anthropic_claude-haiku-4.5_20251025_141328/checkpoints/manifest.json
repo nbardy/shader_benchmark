@@ -1,0 +1,15 @@
+{
+  "run_id": "harness_anthropic_claude-haiku-4.5_20251025_141328",
+  "model": "anthropic/claude-haiku-4.5",
+  "judge_model": "anthropic/claude-haiku-4.5",
+  "total_problems": 5,
+  "problems": [
+    "ackermann_function_growth",
+    "al_khwarizmi_geometric_algebra",
+    "apollonian_gasket",
+    "apollonius_conic_sections",
+    "archimedean_spiral_galaxy"
+  ],
+  "created": "2025-10-25T14:13:28.604412",
+  "last_updated": "2025-10-25T14:15:45.075583"
+}

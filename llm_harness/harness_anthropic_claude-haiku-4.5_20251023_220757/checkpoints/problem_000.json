@@ -1,0 +1,32 @@
+{
+  "problem_index": 0,
+  "problem_name": "geometric_cube",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-23T22:08:26.686507",
+      "data": {
+        "shaders": [
+          "cube.wgsl"
+        ],
+        "llm_response_len": 12434
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-23T22:08:48.376109",
+      "data": {
+        "test_folder": "test_20251023_220826_b707c36d-3c02-47f8-94f9-d566ff0489a3_results"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-10-23T22:08:48.377348",
+      "data": {
+        "error": "[Errno 2] No such file or directory: 'test_20251023_220826_b707c36d-3c02-47f8-94f9-d566ff0489a3_results/render_error.log'"
+      }
+    }
+  },
+  "created": "2025-10-23T22:07:57.739316",
+  "last_updated": "2025-10-23T22:08:48.377350"
+}

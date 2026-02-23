@@ -1,0 +1,13 @@
+{
+  "scores": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d8597ead_google_gemini-3-flash-preview_20251229_160403/results/009_braided_rope",
+  "status": "failed",
+  "execution_success": false,
+  "has_image": false
+}

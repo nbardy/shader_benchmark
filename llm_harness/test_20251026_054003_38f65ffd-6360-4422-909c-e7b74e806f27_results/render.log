@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_054003_38f65ffd-6360-4422-909c-e7b74e806f27_results/shaders/vortex_funnel.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_054003_38f65ffd-6360-4422-909c-e7b74e806f27_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 1364.788 ms   | CPU 1440.441 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_054003_38f65ffd-6360-4422-909c-e7b74e806f27_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

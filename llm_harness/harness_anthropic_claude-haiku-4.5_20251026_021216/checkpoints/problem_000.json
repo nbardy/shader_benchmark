@@ -1,0 +1,32 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-26T02:12:35.759839",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 6432
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-26T02:12:35.769029",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_021235_3076c07c-aa1b-49b7-b87e-8da8e867976b_results"
+      }
+    },
+    "render": {
+      "status": "failed",
+      "timestamp": "2025-10-26T02:22:08.059202",
+      "data": {
+        "error": "Shader execution still failing after repair: \nthread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:\nwgpu error: Validation Error\n\nCaused by:\n    In Device::create_shader_module\n      note: label = `user_shader`\n    \nShader validation error: \n   \u250c\u2500 user_shader:19:1\n   \u2502  \n19 \u2502 \u256d fn ackermann_log10(n: u32) -> f32 {\n20 \u2502 \u2502     // A(3,n) = 2^(2^...2) - 3  (tower of height n+3)\n21 \u2502 \u2502     // log\u2081\u2080 values:\n22 \u2502 "
+      }
+    }
+  },
+  "created": "2025-10-26T02:12:17.030139",
+  "last_updated": "2025-10-26T02:22:08.059208"
+}

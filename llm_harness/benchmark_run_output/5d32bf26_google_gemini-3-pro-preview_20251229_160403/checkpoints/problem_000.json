@@ -1,0 +1,15 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-12-29T16:08:26.784202",
+      "data": {
+        "error": "Failed after 3 retries: Response ended prematurely (hit token limit)"
+      }
+    }
+  },
+  "created": "2025-12-29T16:04:03.545955",
+  "last_updated": "2025-12-29T16:08:26.784210"
+}

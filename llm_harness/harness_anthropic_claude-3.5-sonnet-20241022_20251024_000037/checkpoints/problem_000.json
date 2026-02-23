@@ -1,0 +1,45 @@
+{
+  "problem_index": 0,
+  "problem_name": "ackermann_function_growth",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-10-24T00:01:47.987182",
+      "data": {
+        "shaders": [
+          "ackermann_bars.wgsl"
+        ],
+        "llm_response_len": 9567
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-10-24T00:02:08.861004",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251024_000147_deb879a3-92d8-4d16-b3e8-298a53fcaca3_results"
+      }
+    },
+    "render": {
+      "status": "complete",
+      "timestamp": "2025-10-24T00:02:09.125703",
+      "data": {
+        "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251024_000147_deb879a3-92d8-4d16-b3e8-298a53fcaca3_results/artifacts/result.png"
+      }
+    },
+    "judge": {
+      "status": "complete",
+      "timestamp": "2025-10-24T00:02:20.543703",
+      "data": {
+        "scores": [
+          5,
+          25,
+          1,
+          2,
+          3
+        ]
+      }
+    }
+  },
+  "created": "2025-10-24T00:00:37.766641",
+  "last_updated": "2025-10-24T00:02:20.543716"
+}

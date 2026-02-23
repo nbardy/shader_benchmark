@@ -1,0 +1,45 @@
+{
+  "problem_index": 9,
+  "problem_name": "braided_rope",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-30T19:27:24.275476",
+      "data": {
+        "shaders": [
+          "shader_0.wgsl"
+        ],
+        "llm_response_len": 4911
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-30T19:27:24.279713",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/results/009_braided_rope"
+      }
+    },
+    "render": {
+      "status": "complete",
+      "timestamp": "2025-12-30T19:27:24.594671",
+      "data": {
+        "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/results/009_braided_rope/artifacts/result.png"
+      }
+    },
+    "judge": {
+      "status": "complete",
+      "timestamp": "2025-12-30T19:27:44.467117",
+      "data": {
+        "scores": [
+          85,
+          90,
+          75,
+          88,
+          82
+        ]
+      }
+    }
+  },
+  "created": "2025-12-30T19:25:37.894736",
+  "last_updated": "2025-12-30T19:27:44.467124"
+}

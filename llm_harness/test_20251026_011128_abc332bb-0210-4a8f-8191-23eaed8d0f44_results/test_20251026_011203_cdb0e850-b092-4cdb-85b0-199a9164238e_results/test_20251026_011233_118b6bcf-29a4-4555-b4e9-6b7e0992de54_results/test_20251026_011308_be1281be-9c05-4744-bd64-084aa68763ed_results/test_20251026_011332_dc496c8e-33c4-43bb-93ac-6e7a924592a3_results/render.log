@@ -1,0 +1,27 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_011128_abc332bb-0210-4a8f-8191-23eaed8d0f44_results/test_20251026_011203_cdb0e850-b092-4cdb-85b0-199a9164238e_results/test_20251026_011233_118b6bcf-29a4-4555-b4e9-6b7e0992de54_results/test_20251026_011308_be1281be-9c05-4744-bd64-084aa68763ed_results/test_20251026_011332_dc496c8e-33c4-43bb-93ac-6e7a924592a3_results/shaders/shader_0.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_011128_abc332bb-0210-4a8f-8191-23eaed8d0f44_results/test_20251026_011203_cdb0e850-b092-4cdb-85b0-199a9164238e_results/test_20251026_011233_118b6bcf-29a4-4555-b4e9-6b7e0992de54_results/test_20251026_011308_be1281be-9c05-4744-bd64-084aa68763ed_results/test_20251026_011332_dc496c8e-33c4-43bb-93ac-6e7a924592a3_results/artifacts/result.png
+Return code: 101
+
+=== STDOUT ===
+(empty)
+
+=== STDERR ===
+
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader 'user_shader' parsing error: expected ';', found '{'
+   ┌─ wgsl:46:27
+   │
+46 │         b = if (t < 19.0) { 0.0 } else { (138.51 + 2.04 * (t - 16.4)) / 255.0 };
+   │                           ^ expected ';'
+
+
+    expected ';', found '{'
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

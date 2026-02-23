@@ -1,0 +1,12 @@
+2025-12-29 19:45:40.283 [INFO] Logger initialized for problem 5: archimedes_spiral
+2025-12-29 19:45:40.283 [INFO] ========== PROBLEM START ==========
+2025-12-29 19:45:40.283 [INFO] Index: 5
+2025-12-29 19:45:40.283 [INFO] Name: archimedes_spiral
+2025-12-29 19:45:40.283 [ERROR] EXCEPTION in run_single_problem:
+2025-12-29 19:45:40.283 [ERROR]   Type: RuntimeError
+2025-12-29 19:45:40.283 [ERROR]   Message: Resume from checkpoint not yet implemented
+2025-12-29 19:45:40.283 [ERROR]   Traceback:
+2025-12-29 19:45:40.284 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 343, in run_single_problem
+    raise RuntimeError("Resume from checkpoint not yet implemented")
+2025-12-29 19:45:40.284 [INFO] ========== PROBLEM END: FAILED ==========
+2025-12-29 19:45:40.284 [INFO] Execution time: 0.00s

@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052028_c6a393ed-0cd5-4b81-8fa3-c65f90e5b791_results/shaders/ray_traced_glass_sphere.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052028_c6a393ed-0cd5-4b81-8fa3-c65f90e5b791_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 0.013 ms   | CPU 105.544 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052028_c6a393ed-0cd5-4b81-8fa3-c65f90e5b791_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

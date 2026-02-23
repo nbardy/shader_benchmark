@@ -1,0 +1,20 @@
+{
+  "run_id": "harness_anthropic_claude-3.5-sonnet-20241022_20251025_211903",
+  "model": "anthropic/claude-3.5-sonnet-20241022",
+  "judge_model": "anthropic/claude-3.5-haiku",
+  "total_problems": 10,
+  "problems": [
+    "archimedes_spiral",
+    "barbell_dumbbell_shape",
+    "binary_tree_fractal",
+    "brahmagupta_cyclic_quadrilaterals",
+    "braided_rope",
+    "butterfly_curve",
+    "calabi_yau_manifold",
+    "capsule_shape",
+    "cardioid_limacon_collection",
+    "catenoid_helicoid_minimal"
+  ],
+  "created": "2025-10-25T21:19:03.548162",
+  "last_updated": "2025-10-25T21:24:06.299736"
+}

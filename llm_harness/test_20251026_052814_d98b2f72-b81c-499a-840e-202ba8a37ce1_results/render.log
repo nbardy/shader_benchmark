@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052814_d98b2f72-b81c-499a-840e-202ba8a37ce1_results/shaders/mobius_strip.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052814_d98b2f72-b81c-499a-840e-202ba8a37ce1_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 136.724 ms   | CPU 1548.225 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052814_d98b2f72-b81c-499a-840e-202ba8a37ce1_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

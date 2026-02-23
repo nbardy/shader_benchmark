@@ -1,0 +1,179 @@
+// Archimedes' Spiral - Historical Visualization Shader
+// Syracuse, circa 225 BCE
+// r = θ/π for θ ∈ [0, 8π] (4 complete turns)
+
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+    time: f32,
+}
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+// Distance to line segment
+fn line_distance(p: vec2<f32>, a: vec2<f32>, b: vec2<f32>) -> f32 {
+    let pa = p - a;
+    let ba = b - a;
+    let h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
+
+// Archimedes spiral: r = a*theta
+fn spiral_point(theta: f32, a: f32) -> vec2<f32> {
+    let r = a * theta;
+    return vec2<f32>(r * cos(theta), r * sin(theta));
+}
+
+// Draw the spiral curve with antialiasing
+fn draw_spiral(uv: vec2<f32>, time: f32) -> f32 {
+    let max_theta = 8.0 * 3.14159265;
+    let a = 0.15;
+    
+    // Animate spiral generation: progress from 0 to 1 over 7 seconds
+    let anim_progress = fract(time / 7.0);
+    let max_theta_anim = max_theta * anim_progress;
+    
+    var min_dist = 1000.0;
+    
+    // Sample spiral points discretely (constraint-compliant)
+    var theta = 0.0;
+    let theta_step = 0.05;
+    
+    loop {
+        if (theta > max_theta_anim) { break; }
+        
+        let p1 = spiral_point(theta, a);
+        let p2 = spiral_point(theta + theta_step, a);
+        
+        min_dist = min(min_dist, line_distance(uv, p1, p2));
+        
+        theta = theta + theta_step;
+    }
+    
+    return min_dist;
+}
+
+// Draw construction line for angle trisection
+fn draw_construction_line(uv: vec2<f32>, angle: f32, length: f32) -> f32 {
+    let start = vec2<f32>(0.0, 0.0);
+    let end = vec2<f32>(cos(angle) * length, sin(angle) * length);
+    return line_distance(uv, start, end);
+}
+
+// Draw arc (compass arc)
+fn draw_arc(uv: vec2<f32>, center: vec2<f32>, radius: f32, theta_start: f32, theta_end: f32) -> f32 {
+    let angle = atan2(uv.y - center.y, uv.x - center.x);
+    let dist_to_radius = abs(length(uv - center) - radius);
+    
+    // Check if angle is within arc range
+    var angle_diff = angle - theta_start;
+    if (angle_diff < -3.14159265) { angle_diff = angle_diff + 6.28318530; }
+    if (angle_diff > 3.14159265) { angle_diff = angle_diff - 6.28318530; }
+    
+    let arc_range = theta_end - theta_start;
+    let in_arc = step(0.0, angle_diff) * step(angle_diff, arc_range);
+    
+    return select(1000.0, dist_to_radius, in_arc > 0.5);
+}
+
+// Papyrus background texture (aged parchment effect)
+fn papyrus_background(uv: vec2<f32>) -> vec3<f32> {
+    let base_color = vec3<f32>(0.96, 0.93, 0.82); // #F5E6D3
+    
+    // Subtle noise for aged paper texture
+    let noise_x = sin(uv.x * 120.0) * sin(uv.y * 80.0);
+    let noise_y = sin(uv.x * 95.0) * sin(uv.y * 105.0);
+    let noise = (noise_x + noise_y) * 0.03;
+    
+    // Water damage at edges
+    let edge_dist = min(
+        min(uv.x, 1.0 - uv.x),
+        min(uv.y, 1.0 - uv.y)
+    );
+    let edge_damage = smoothstep(0.15, 0.0, edge_dist) * 0.15;
+    
+    return base_color + noise - edge_damage;
+}
+
+// Main fragment shader
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let aspect = params.resolution.x / params.resolution.y;
+    let uv = (pos.xy - params.resolution * 0.5) / min(params.resolution.x, params.resolution.y);
+    let uv_corrected = vec2<f32>(uv.x * aspect, uv.y);
+    
+    // Papyrus background
+    let bg = papyrus_background(pos.xy / params.resolution);
+    var color = bg;
+    
+    // Scale and center view
+    let scaled_uv = uv_corrected * 1.5;
+    
+    // Draw spiral
+    let spiral_dist = draw_spiral(scaled_uv, params.time);
+    let spiral_color = vec3<f32>(0.12, 0.20, 0.38); // #1E3263 deep blue
+    let spiral_line = smoothstep(0.008, 0.0, spiral_dist);
+    color = mix(color, spiral_color, spiral_line * 0.95);
+    
+    // Draw angle trisection construction (60° angle)
+    let angle_0 = 0.0;
+    let angle_60 = 1.047197551; // 60°
+    let angle_20 = 0.349065850; // 20° (1/3 of 60°)
+    
+    let construction_length = 0.6;
+    
+    let line_0_dist = draw_construction_line(scaled_uv, angle_0, construction_length);
+    let line_60_dist = draw_construction_line(scaled_uv, angle_60, construction_length);
+    let line_20_dist = draw_construction_line(scaled_uv, angle_20, construction_length);
+    
+    let construction_color = vec3<f32>(0.55, 0.27, 0.08); // #8B4513 faded red/brown
+    
+    let line_0 = smoothstep(0.006, 0.0, line_0_dist);
+    let line_60 = smoothstep(0.006, 0.0, line_60_dist);
+    let line_20 = smoothstep(0.008, 0.0, line_20_dist); // Highlight trisection line
+    
+    color = mix(color, construction_color, line_0 * 0.6);
+    color = mix(color, construction_color, line_60 * 0.6);
+    color = mix(color, vec3<f32>(0.8, 0.4, 0.2), line_20 * 0.8);
+    
+    // Draw arc marking the 60° angle
+    let arc_dist = draw_arc(scaled_uv, vec2<f32>(0.0, 0.0), 0.15, angle_0, angle_60);
+    let arc_color = construction_color;
+    let arc_line = smoothstep(0.006, 0.0, arc_dist);
+    color = mix(color, arc_color, arc_line * 0.5);
+    
+    // Mark point P on spiral (1/3 radius point for trisection)
+    let spiral_point_20 = spiral_point(angle_20 / 0.15, 0.15); // Approximate spiral point at 20°
+    let p_dist = length(scaled_uv - spiral_point_20);
+    let p_radius = 0.015;
+    let p_mark = smoothstep(p_radius + 0.005, p_radius - 0.005, p_dist);
+    color = mix(color, vec3<f32>(1.0, 0.5, 0.0), p_mark * 0.9);
+    
+    // Mark center (origin)
+    let center_dist = length(scaled_uv);
+    let center_mark = smoothstep(0.012, 0.0, center_dist);
+    color = mix(color, spiral_color, center_mark);
+    
+    // Mark uniform spacing between turns (key Archimedean property)
+    let turns = 4.0;
+    for (var i = 1u; i < 4u; i = i + 1u) {
+        let turn_angle = 2.0 * 3.14159265 * f32(i);
+        let spacing_point = spiral_point(turn_angle, 0.15);
+        let spacing_dist = length(scaled_uv - spacing_point);
+        let spacing_mark = smoothstep(0.008, 0.002, spacing_dist) * (1.0 - smoothstep(0.006, 0.0, spacing_dist));
+        color = mix(color, vec3<f32>(0.7, 0.3, 0.1), spacing_mark * 0.7);
+    }
+    
+    // Vignette effect for aged papyrus
+    let vignette = smoothstep(1.2, 0.3, length(uv_corrected));
+    color = color * vignette;
+    
+    return vec4<f32>(color, 1.0);
+}

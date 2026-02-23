@@ -1,0 +1,131 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+**Logarithmic Spiral Verification (4 pts)**
+- Streamlines follow precise logarithmic spiral form: r² + const·θ = c
+- Sample 20 representative streamlines for mathematical accuracy
+- RMS error between theoretical and rendered curves must be < 5%
+- Spiral curvature and pitch consistent with vortex fluid dynamics
+
+**Funnel Geometry Precision (2 pts)**
+- Funnel half-angle exactly arctan(1/3) ≈ 18.43°
+- Conical boundary maintains consistent angular profile
+- Mathematical relationship between vortex flow and funnel shape
+- Proper geometric scaling from wide opening to narrow exit
+
+**Streamline Distribution Mathematics**
+- Density distribution follows fluid dynamic principles
+- Flow velocity gradient correctly represented by streamline spacing
+- Conservation of mass principles reflected in streamline convergence
+
+**S4: Visual Implementation Section**  
+**Streamline Density and Distribution (2 pts)**
+- Exactly 150 streamlines rendered with proper spatial distribution
+- Even angular distribution around funnel circumference
+- Appropriate streamline spacing maintaining visual clarity
+- No clustering or gaps that distort flow visualization
+
+**Color and Transparency Implementation (2 pts)**
+- Funnel rendered in transparent blue allowing streamline visibility
+- Appropriate alpha blending showing both surface and interior flow
+- Color intensity variations enhance depth perception
+- Clear distinction between funnel surface and flow streamlines
+
+**Visual Flow Representation**
+- Streamlines clearly show rotational and downward motion
+- Proper visualization of vortex acceleration toward center
+- Smooth curves without jagged or pixelated artifacts
+
+**S5: Completeness & Specifications Section**
+**Problem Identification and Scope**
+- Problem 212: Spinning Vortex Funnel specification
+- Input processing: generation prompt and PNG candidate evaluation
+- Fluid dynamics visualization requirements fully addressed
+
+**Rendering Quality Assessment (2 pts)**
+- Adequate resolution for mathematical accuracy verification
+- Visual clarity enabling streamline path analysis
+- Proper color implementation supporting scientific visualization
+- Professional presentation quality appropriate for technical assessment
+
+**Output Format Compliance**
+- Score: S/10 with component-wise breakdown
+- Rationale: ≤180 words covering mathematical and visual evaluation
+- Systematic verification of all specified criteria
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+**Objective**
+Visualize fluid flow in a vortex funnel using scalar fields and streamlines.
+
+**Physics**
+Scalar field $ρ(r,z)=\exp[-(r/2)^{2}]\,\exp[-(z/6)^{2}]$. Flow lines tangential velocity $v_θ=4/r$.
+Plot 150 streamlines starting radii 0.5–3, z=0 to z=‑6. 
+
+**Styling**
+Funnel surface semi‑transparent blue. 2400×2000 PNG.
+
+**Deliverable** PNG.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Assessment
+
+## Detailed Analysis
+
+**Critical Issues Identified:**
+
+The provided image is a uniform magenta/pink color with no visible mathematical content whatsoever. This represents a complete failure to meet the visualization requirements.
+
+**S1 - Problem Accuracy:** The image contains no streamlines, no funnel geometry, no scalar field visualization, and no fluid dynamics representation. Zero mathematical accuracy achieved.
+
+**S2 - Visual Quality:** While the image has correct resolution (appears to be 2400×2000), it displays only a flat color with no visual elements, shading, or structure. This is technically sound as an image file but completely void of required content.
+
+**S3 - Mathematical Accuracy:** 
+- No logarithmic spirals visible (0/4 pts)
+- No funnel geometry present (0/2 pts)
+- No streamline distribution mathematics implemented
+- Critical failure on all mathematical verification criteria
+
+**S4 - Visual Implementation:**
+- Zero streamlines rendered; requirement of 150 streamlines unmet (0/2 pts)
+- No funnel surface visible; no blue color or transparency (0/2 pts)
+- No flow representation present
+- Complete absence of required visual elements
+
+**S5 - Completeness & Specifications:**
+- Problem 212 requirements entirely unmet
+- No rendering quality for mathematical verification (0/2 pts)
+- Output format is PNG but content is missing
+- Professional presentation completely absent
+
+**Conclusion:** This appears to be either a failed render, placeholder, or corrupted file. The visualization contains absolutely no mathematical or visual content matching Problem 212 specifications.
+
+<scores><S1>2</S1><S2>5</S2><S3>1</S3><S4>1</S4><S5>2</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[2, 5, 1, 1, 2]
+

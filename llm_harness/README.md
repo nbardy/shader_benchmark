@@ -47,8 +47,70 @@ echo "OPENROUTER_API_KEY=sk-or-v1-..." > .env
 
 ### Prerequisites
 - **Python 3.11+** with `venv` module
-- **Rust/Cargo** in `$PATH` (for shader compilation subprocess)
+- **Rust/Cargo** in `$PATH` (for WGSL shader compilation subprocess)
+- **Playwright + Chromium** (for Shadertoy shader execution - see below)
 - **OpenRouter API key** with model access
+
+### Shadertoy Runtime Setup (Optional)
+
+To use Shadertoy-format shaders (GLSL with `mainImage` entrypoint):
+
+```bash
+# Install Playwright library
+pip install playwright
+
+# Install Chromium browser driver
+python -m playwright install chromium
+
+# Test Shadertoy runtime
+python shadertoy_runtime.py
+```
+
+**Why Shadertoy?**
+- **50K+ training examples** on shadertoy.com provide extensive LLM training data
+- **Simpler syntax** than WGSL (implicit types, variable array indexing)
+- **Web-based execution** via WebGL (no Rust compilation required)
+- **Multi-buffer support** for feedback loops and complex effects
+
+**Dependencies:**
+- `playwright` - Async browser automation library
+- Chromium browser driver (200MB download)
+
+**Usage:**
+```bash
+python benchmark_harness.py \
+  --model "anthropic/claude-3.5-sonnet-20241022" \
+  --language shadertoy \
+  --problems geometric_cube
+```
+
+## Supported Shader Languages
+
+The benchmark supports multiple shader language specifications for ablation experiments:
+
+| Language | File Extension | Runtime | Training Data | Status |
+|----------|---------------|---------|---------------|--------|
+| **WGSL** | `.wgsl` | WGPU/Rust harness | Limited (new spec) | Production |
+| **Shadertoy** | `.glsl` | WebGL/Playwright | 50K+ examples | Production |
+| **GLSL** | `.glsl` | WGPU/Rust harness | Extensive | Future |
+| **HLSL Unity** | `.hlsl` | Metal/Swift harness | Extensive | Future |
+
+**Language Selection:**
+```bash
+# WGSL (default) - Modern WebGPU standard
+python benchmark_harness.py --language wgsl --model MODEL --problems PROBLEMS
+
+# Shadertoy - Leverage 50K+ training examples
+python benchmark_harness.py --language shadertoy --model MODEL --problems PROBLEMS
+
+# GLSL - Traditional OpenGL shaders
+python benchmark_harness.py --language glsl --model MODEL --problems PROBLEMS
+```
+
+**Architecture:**
+- `language_specs.py` - Abstract interface for language specifications
+- Each spec defines: constraint prompts, syntax validators, reference examples
+- Test runner routes to appropriate backend (WGPU, WebGL, Metal)
 
 ## Usage
 
@@ -74,7 +136,19 @@ python benchmark_harness.py \
   --problems geometric_cube mandelbrot_set klein_bottle
 ```
 
-**Generates:** `harness_MODEL_TIMESTAMP/harness_report_MODEL_TIMESTAMP.md` with aggregate analysis
+**Generates:** `benchmark_run_output/UUID_MODEL_TIMESTAMP/benchmark_report.md` with aggregate analysis
+
+**Output Location Example:**
+```
+benchmark_run_output/97fe1f08_anthropic_claude-3.5-sonnet-20241022_20251026_154624/
+├── benchmark_report.md        # Your results are here!
+├── config.json
+├── results/
+│   ├── 000_geometric_cube/
+│   ├── 001_mandelbrot_set/
+│   └── 002_klein_bottle/
+└── images/
+```
 
 ## Data Formats
 
@@ -123,20 +197,53 @@ test_YYYYMMDD_HHMMSS_UUID_results/
 └── current_results_report.md     # Individual evaluation report
 ```
 
-### Batch Harness Output
+### Batch Harness Output (New Structure)
+```
+benchmark_run_output/
+└── UUID_MODEL_YYYYMMDD_HHMMSS/             # e.g., 97fe1f08_anthropic_claude-haiku-4.5_20251026_154624
+    ├── config.json                         # Launch configuration (model, problems, timestamps)
+    ├── benchmark_report.md                 # Aggregate results with statistics and embedded images
+    ├── logs/
+    │   ├── execution_summary.log           # Master timeline of all START/END events
+    │   ├── problem_000_geometric_cube.log  # Detailed execution trace for problem 0
+    │   └── problem_001_mandelbrot.log      # Detailed execution trace for problem 1
+    ├── checkpoints/
+    │   ├── manifest.json                   # Run metadata and problem list
+    │   ├── problem_000.json                # Problem 0 checkpoint for resume
+    │   └── problem_001.json                # Problem 1 checkpoint for resume
+    ├── results/
+    │   ├── 000_geometric_cube/             # Test results for problem 0
+    │   │   ├── llm_request.txt             # Prompt sent to LLM
+    │   │   ├── llm_response.txt            # Full LLM response with XML
+    │   │   ├── shaders/
+    │   │   │   └── shader_0.wgsl           # Generated shader code
+    │   │   ├── artifacts/
+    │   │   │   └── result.png              # 1600×1600 rendered output
+    │   │   ├── results.json                # {"scores": [S1, S2, S3, S4, S5], "has_image": true, ...}
+    │   │   └── judge_response.txt          # Full judge evaluation with reasoning
+    │   └── 001_mandelbrot/                 # Test results for problem 1
+    │       └── ...
+    └── images/                             # Copies of PNGs for markdown embedding
+        ├── 000_geometric_cube_result.png
+        └── 001_mandelbrot_result.png
+```
+
+**Directory Structure Benefits:**
+- **UUID prefix** prevents accidental overwrite of concurrent runs
+- **Self-contained** all outputs for one benchmark run in a single directory
+- **Report-friendly** images/ directory mirrors results/ for markdown embedding
+- **Resumable** checkpoints support `--run-id UUID` to continue interrupted runs
+- **Traceable** config.json captures exact launch parameters
+
+**Legacy Structure (Still Supported):**
 ```
 harness_anthropic_claude-3.5-sonnet-20241022_YYYYMMDD_HHMMSS/
-├── harness_report_MODEL_TIMESTAMP.md  # Aggregate results with statistics
-├── logs/
-│   ├── execution_summary.log          # Master timeline of all START/END events
-│   ├── problem_000_name.log           # Detailed execution trace for problem 0
-│   └── problem_001_name.log           # Detailed execution trace for problem 1
-├── checkpoints/
-│   ├── manifest.json                  # Run metadata and problem list
-│   ├── problem_000.json              # Problem 0 checkpoint for resume
-│   └── problem_001.json              # Problem 1 checkpoint for resume
-└── [test_TIMESTAMP_UUID_results/...]  # Individual test directories
+├── harness_report_MODEL_TIMESTAMP.md
+├── logs/ checkpoints/
+└── [test_TIMESTAMP_UUID_results/...]     # Individual test directories mixed in
 ```
+
+Analysis tools (e.g., `analyze_results.py`) support both directory patterns.
 
 ## Technical Constraints
 

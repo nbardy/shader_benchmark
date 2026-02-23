@@ -1,0 +1,125 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Box Geometric Properties:
+- Correct base dimensions with 2×3×1.5 proportional relationships clearly visible
+- All edges uniformly rounded with consistent radius throughout
+- Corners smoothly blend where three edges meet without discontinuities
+- Shape maintains proper box-like appearance despite edge rounding
+- No sharp edges or geometric discontinuities in rounded transitions
+- Mathematical precision in edge radius calculations and corner blending
+
+Rounded Edge Implementation:
+- Consistent rounding radius applied to all 12 edges of the box
+- Proper mathematical transitions from flat faces to rounded edges
+- Accurate geometric modeling of rounded corner intersections
+- Smooth parametric surface generation for all rounded elements
+- Correct implementation of rounded box mathematical formulations
+
+**S4: Visual Implementation Section**  
+Surface Material Properties:
+- Mint green color (light green with slight blue tint) consistently applied
+- Matte surface finish with minimal specular highlights
+- Diffuse shading only without reflective properties
+- Consistent color distribution across entire surface
+- Plastic-like material appearance without metallic characteristics
+
+Rendering Quality Standards:
+- Smooth edge transitions without visible polygonization artifacts
+- Proper ambient occlusion effects in rounded corners
+- Professional anti-aliasing on all edges and surfaces
+- No z-fighting or rendering artifacts visible
+- High-quality surface smoothness throughout all geometry
+
+**S5: Completeness & Specifications Section**
+Required Box Elements:
+- Complete 3D rounded box with all specified dimensional proportions
+- All edges and corners properly rounded as specified
+- Mint green material properties correctly implemented
+- Proper perspective view showing three faces clearly
+- Professional lighting setup with key and ambient illumination
+
+Technical Specification Compliance:
+- Soft shadows from key light creating proper form definition
+- Light gray gradient background as specified
+- Overall soft, professional lighting setup
+- All geometric accuracy requirements met
+- Full adherence to rounded box visualization specifications
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+Create a 3D rounded box (dimensions 2x3x1.5) with rounded edges (radius 0.3) centered at origin. Material: matte mint green plastic (RGB 0.3, 0.8, 0.6). Lighting: soft ambient (0.3) plus key light from top-right. Background: light gray gradient. Camera: perspective view at (4, 3, 5) looking at origin.
+
+Outputs a single image.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Evaluation
+
+## Detailed Assessment
+
+### S1: Problem Accuracy (Generic)
+**Critical Failure:** This image fundamentally fails to meet the core requirement of displaying a 3D rounded box. The image shows only faint geometric artifacts in the upper-left corner with minimal geometry visible. The rounded box with specified dimensions (2×3×1.5) is either completely absent, rendering incorrectly, or positioned far outside the viewport. The mathematical requirements for a properly centered, visible rounded box have not been met. The core subject of the visualization is missing.
+
+### S2: Visual Quality (Generic)
+**Severe Quality Issues:** The image lacks professional polish and visual coherence. What little geometry is visible appears as low-resolution artifacts rather than a properly rendered 3D object. The composition is essentially blank with only faint grayscale marks in the corner. There is no evidence of proper anti-aliasing, shading, or lighting implementation. The resolution appears adequate, but the content renders inadequately. This represents a failed render rather than a polished visualization.
+
+### S3: Mathematical Accuracy Section
+**Complete Failure in Geometric Implementation:**
+- No visible rounded box geometry with 2×3×1.5 proportions
+- Rounded edges (radius 0.3) are not discernible
+- Corner blending is absent or non-functional
+- No evidence of proper mathematical box formulation
+- The fundamental geometric construction has failed entirely
+
+### S4: Visual Implementation Section
+**Material and Rendering Failure:**
+- Mint green color (RGB 0.3, 0.8, 0.6) is completely absent
+- No matte surface finish is visible
+- No diffuse shading or material properties evident
+- The visible elements appear to be grayscale rather than the specified mint green
+- No professional rendering characteristics are present
+- Background is minimally visible; lacks proper light gray gradient implementation
+
+### S5: Completeness & Specifications Section
+**Specification Compliance Failure:**
+- Complete 3D rounded box is missing or invisible
+- Dimensional proportions cannot be verified (geometry not visible)
+- Mint green material not implemented or visible
+- Perspective view does not show three faces clearly (no geometry visible)
+- Lighting setup either failed or is invisible
+- Camera positioning (4, 3, 5) appears to have resulted in geometry being outside frame or rendering failure
+- No soft shadows or proper form definition
+- Background gradient is minimal and poorly executed
+
+## Summary
+This render represents a **complete failure** of the shader/rendering pipeline. The primary 3D object is effectively invisible or missing from the output. Either the shader code contains a critical bug, the camera framing is incorrect, or the geometry generation itself failed. The mathematical visualization requirements are entirely unmet, as the fundamental subject—a visible rounded box—is absent from the image.
+
+<scores><S1>5</S1><S2>8</S2><S3>2</S3><S4>3</S4><S5>2</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[5, 8, 2, 3, 2]
+

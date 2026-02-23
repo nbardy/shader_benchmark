@@ -1,0 +1,45 @@
+{
+  "problem_index": 7,
+  "problem_name": "binary_tree_fractal",
+  "stages": {
+    "generate": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:10:30.072146",
+      "data": {
+        "shaders": [
+          "shader.wgsl"
+        ],
+        "llm_response_len": 9984
+      }
+    },
+    "compile": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:10:30.074310",
+      "data": {
+        "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/results/007_binary_tree_fractal"
+      }
+    },
+    "render": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:11:57.007705",
+      "data": {
+        "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/results/007_binary_tree_fractal/artifacts/result.png"
+      }
+    },
+    "judge": {
+      "status": "complete",
+      "timestamp": "2025-12-29T16:12:11.073761",
+      "data": {
+        "scores": [
+          45,
+          35,
+          25,
+          40,
+          30
+        ]
+      }
+    }
+  },
+  "created": "2025-12-29T16:09:32.675170",
+  "last_updated": "2025-12-29T16:12:11.073765"
+}

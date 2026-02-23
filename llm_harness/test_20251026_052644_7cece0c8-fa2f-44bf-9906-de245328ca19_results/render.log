@@ -1,0 +1,9 @@
+=== RENDER LOG ===
+Command: /Users/nicholasbardy/git/shader_benchmark/shader_harness/target/release/shader-bench --shader /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052644_7cece0c8-fa2f-44bf-9906-de245328ca19_results/shaders/mandelbulb.wgsl --output /Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052644_7cece0c8-fa2f-44bf-9906-de245328ca19_results/artifacts/result.png
+Return code: 0
+
+=== STDOUT ===
+GPU 2.446 ms   | CPU 106.672 ms   | wrote "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_20251026_052644_7cece0c8-fa2f-44bf-9906-de245328ca19_results/artifacts/result.png"
+
+=== STDERR ===
+(empty)

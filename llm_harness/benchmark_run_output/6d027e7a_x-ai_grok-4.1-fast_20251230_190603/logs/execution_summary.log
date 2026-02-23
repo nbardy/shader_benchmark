@@ -1,0 +1,21 @@
+=== BENCHMARK EXECUTION SUMMARY ===
+Run ID: 6d027e7a_x-ai_grok-4.1-fast_20251230_190603
+Started: 2026-01-27T15:45:46.053199
+============================================================
+
+[2026-01-27 15:45:46.053252] HARNESS INITIALIZED
+  Model: x-ai/grok-4.1-fast
+  Problems: 10
+  Max parallel: 100
+  Problem list:
+    000: ackermann_function_growth
+    001: al_khwarizmi_geometric_algebra
+    002: apollonian_gasket
+    003: apollonius_conic_sections
+    004: archimedean_spiral_galaxy
+    005: archimedes_spiral
+    006: barbell_dumbbell_shape
+    007: binary_tree_fractal
+    008: brahmagupta_cyclic_quadrilaterals
+    009: braided_rope
+

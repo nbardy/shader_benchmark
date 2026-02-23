@@ -1,0 +1,132 @@
+# Claude Haiku 4.5 - WGSL Specific Error Patterns
+
+## Model Information
+- Model: `anthropic/claude-haiku-4.5`
+- Language: WGSL (WebGPU Shading Language)
+- Baseline Success Rate: 40% (4/10 tests)
+- Target Success Rate: 70%+ (after P0 fixes)
+
+## Known Error Patterns (October 2025)
+
+### P0 Priority Fixes (60% of failures)
+
+#### 1. mod() Function (20% failure rate)
+**Pattern**: LLM uses GLSL `mod(x, y)` instead of WGSL `%` operator
+**Example**:
+```wgsl
+let cycle_time = mod(params.time, 5.0);  // ❌ FAILS
+```
+**Fix**: Use `%` operator
+```wgsl
+let cycle_time = params.time % 5.0;  // ✅ CORRECT
+```
+
+#### 2. Numeric Overflow (20% failure rate)
+**Pattern**: LLM hardcodes values > f32 max (3.4e38)
+**Example**:
+```wgsl
+case 8u: { return 5.49755813888e308; }  // ❌ FAILS (exceeds f32 max)
+```
+**Fix**: Use logarithmic scale or clamp to 3.4e38
+```wgsl
+case 8u: { return 3.4e38; }  // ✅ CLAMPED
+// OR
+let log_value = log(1.28e19729);  // ✅ LOGARITHMIC SCALE
+```
+
+#### 3. Reserved Keywords (20% failure rate)
+**Pattern**: LLM uses semantically correct names that are WGSL reserved words
+**Example**:
+```wgsl
+let target = vec3<f32>(0.0, 0.0, 0.0);  // ❌ FAILS ('target' is reserved)
+```
+**Fix**: Use alternative names
+```wgsl
+let target_pos = vec3<f32>(0.0, 0.0, 0.0);  // ✅ CORRECT
+```
+
+**Reserved Keywords**: target, handle, using, namespace, typedef
+
+### P1 Priority Fixes (20% of failures)
+
+#### 4. Invalid Ternary Syntax (10% failure rate)
+**Pattern**: LLM uses if/else expression syntax not valid in WGSL
+**Example**:
+```wgsl
+let b = if (t < 19.0) { 0.0 } else { 1.0 };  // ❌ FAILS
+```
+**Fix**: Use select() function
+```wgsl
+let b = select(1.0, 0.0, t < 19.0);  // ✅ CORRECT
+// Note: select(false_val, true_val, condition)
+```
+
+#### 5. Underscore Identifier (10% failure rate)
+**Pattern**: LLM uses `_` as variable name (common in Rust/Python)
+**Example**:
+```wgsl
+let _ = recursive_tree(...);  // ❌ FAILS
+```
+**Fix**: Use named dummy variable
+```wgsl
+let _unused = recursive_tree(...);  // ✅ CORRECT
+```
+
+### P2 Priority Fixes (Future)
+
+#### 6. No Shader Generated (10% failure rate)
+**Pattern**: LLM fails to generate any shader code
+**Root Cause**: Unclear prompts, overly complex mathematical requirements
+**Fix**: Requires prompt engineering improvements
+
+## Model-Specific Behaviors
+
+### Strengths
+- Good at mathematical correctness
+- Understands complex geometric concepts
+- Generally follows WGSL syntax when examples provided
+
+### Weaknesses
+- Confuses GLSL and WGSL syntax (mod function)
+- Tends to hardcode large mathematical values instead of scaling
+- Uses semantically appropriate but reserved keywords
+- Applies Rust/Python idioms (`_` identifier)
+
+## Recommended Prompt Strategy
+
+### Critical Warnings (Add to all prompts)
+```
+⚠️ CRITICAL WGSL REQUIREMENTS:
+1. Use % operator, NOT mod() function
+2. Maximum f32 value is 3.4e38 - use logarithmic scaling for larger values
+3. Reserved keywords: target, handle, using, namespace, typedef
+4. Use select() for ternary, NOT if/else expressions
+5. Never use _ as identifier - use _unused instead
+```
+
+### Model-Specific Examples
+When generating prompts for Haiku 4.5, emphasize:
+- Explicit modulo examples: `x % 5.0`
+- Logarithmic scale examples for large values
+- Alternative naming patterns for common reserved words
+- select() function usage for conditional values
+
+## Auto-Repair Patterns
+
+See `shader_parser.py:WGSLRepair` class for implementation:
+- `_fix_mod_function()`: Convert mod(x, y) to (x % y)
+- `_fix_numeric_overflow()`: Clamp values > 1e38 to 3.4e38
+- `_fix_reserved_keywords()`: Append _var to reserved words
+- `_fix_ternary_syntax()`: Convert if/else to select()
+- `_fix_underscore_identifier()`: Replace _ with _unused
+
+## Testing Validation
+
+After implementing fixes, test on these known-failing problems:
+1. `ackermann_function_growth` - Numeric overflow
+2. `al_khwarizmi_geometric_algebra` - mod() function
+3. `apollonius_conic_sections` - Reserved keyword 'target'
+4. `collatz_sequence_heatmap` - Invalid ternary syntax
+5. `chinese_remainder_theorem` - Underscore identifier
+
+Expected improvement: 40% → 70%+ success rate

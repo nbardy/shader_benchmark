@@ -1,0 +1,92 @@
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+};
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+fn hash12(p: vec2<f32>) -> f32 {
+    return fract(sin(dot(p, vec2<f32>(127.1, 311.7))) * 43758.5453123);
+}
+
+fn noise(p: vec2<f32>) -> f32 {
+    var i: vec2<f32> = floor(p);
+    var f: vec2<f32> = p - i;
+    let a: f32 = hash12(i);
+    let b: f32 = hash12(i + vec2<f32>(1.0, 0.0));
+    let c: f32 = hash12(i + vec2<f32>(0.0, 1.0));
+    let d: f32 = hash12(i + vec2<f32>(1.0, 1.0));
+    let u: f32 = f.x * f.x * (3.0 - 2.0 * f.x);
+    let v: f32 = f.y * f.y * (3.0 - 2.0 * f.y);
+    return mix(mix(a, b, u), mix(c, d, u), v);
+}
+
+fn fbm(p: vec2<f32>) -> f32 {
+    var value: f32 = 0.0;
+    var amplitude: f32 = 1.0;
+    var frequency: f32 = 1.0;
+    for (var i: u32 = 0u; i < 4u; i = i + 1u) {
+        value = value + amplitude * noise(p * frequency);
+        amplitude = amplitude * 0.5;
+        frequency = frequency * 2.0;
+    }
+    return value;
+}
+
+fn wrap(diff: f32) -> f32 {
+    let twopi: f32 = 6.283185307179586;
+    return diff - twopi * round(diff / twopi);
+}
+
+fn blackbody_temp(r_in: f32) -> vec3<f32> {
+    let T: f32 = 7200.0 - 250.0 * clamp(r_in, 0.0, 10.0);
+    let tf: f32 = clamp((T - 4700.0) / 2500.0, 0.0, 1.0);
+    return mix(vec3<f32>(1.0, 0.55, 0.35), vec3<f32>(0.8, 0.85, 1.0), tf) * 1.1;
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let PI: f32 = 3.141592653589793;
+    let a: f32 = 0.25;
+    let sigma_theta: f32 = 0.035;
+    let sigma_r_mult: f32 = 0.025;
+    let world_x: f32 = (2.0 * pos.x / params.resolution.x - 1.0) * 10.0;
+    let world_y: f32 = (2.0 * pos.y / params.resolution.y - 1.0) * 10.0;
+    let world_xy: vec2<f32> = vec2<f32>(world_x, world_y);
+    let r: f32 = length(world_xy);
+    let phi: f32 = atan2(world_y, world_x);
+    let spiral_theta: f32 = r / a;
+    let phase_diff: f32 = phi - spiral_theta;
+    let wrapped_diff: f32 = wrap(phase_diff);
+    let abs_diff: f32 = abs(wrapped_diff);
+    let arm_ang_dist: f32 = min(abs_diff, PI - abs_diff);
+    let perp_dist: f32 = r * arm_ang_dist;
+    let sigma_perp: f32 = max(r * sigma_theta, 0.001);
+    let sigma_rad: f32 = sigma_r_mult * (1.0 + 0.5 * spiral_theta);
+    let arm_gauss: f32 = exp(-0.5 * (perp_dist * perp_dist / (sigma_perp * sigma_perp)));
+    let falloff: f32 = exp(-r / 3.0);
+    let bright: f32 = exp(-0.5 * r);
+    var total: vec3<f32> = vec3<f32>(0.0, 0.0, 0.0);
+    // Core glow
+    let core_rad: f32 = 0.4;
+    let core_gauss: f32 = exp(-0.5 * (r * r / (core_rad * core_rad)));
+    total = total + vec3<f32>(1.0, 1.0, 0.6667) * core_gauss * 0.6;
+    // Spiral arms stars
+    let arm_color: vec3<f32> = blackbody_temp(r);
+    let arm_noise: f32 = fbm(world_xy * 85.0);
+    let arm_sparkle: f32 = pow(arm_noise, 2.3);
+    total = total + arm_color * arm_gauss * falloff * bright * arm_sparkle * 9.5;
+    // Halo stars
+    let halo_noise: f32 = fbm(world_xy * 140.0 + vec2<f32>(92.1, 51.7));
+    let halo_sparkle: f32 = pow(halo_noise, 3.8);
+    total = total + vec3<f32>(0.92, 0.96, 1.02) * falloff * bright * halo_sparkle * 1.2;
+    let clamped: vec3<f32> = clamp(total, vec3<f32>(0.0, 0.0, 0.0), vec3<f32>(3.0, 3.0, 3.0));
+    return vec4<f32>(clamped, 1.0);
+}

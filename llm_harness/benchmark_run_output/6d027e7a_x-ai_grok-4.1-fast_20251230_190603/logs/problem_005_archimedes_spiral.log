@@ -1,0 +1,50 @@
+2025-12-30 19:16:42.257 [INFO] Logger initialized for problem 5: archimedes_spiral
+2025-12-30 19:16:42.257 [INFO] ========== PROBLEM START ==========
+2025-12-30 19:16:42.257 [INFO] Index: 5
+2025-12-30 19:16:42.257 [INFO] Name: archimedes_spiral
+2025-12-30 19:16:42.258 [INFO] ---------- STAGE START: GENERATE ----------
+2025-12-30 19:16:42.258 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-12-30 19:16:42.259 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/checkpoints/problem_005.json
+2025-12-30 19:16:42.259 [INFO] Loading request prompt
+2025-12-30 19:16:42.259 [INFO] API call: LLM generation model=x-ai/grok-4.1-fast, language=wgsl
+2025-12-30 19:19:08.419 [INFO] API response: LLM generation - success, size=6159 bytes
+2025-12-30 19:19:08.421 [INFO] Parsing shader response
+2025-12-30 19:19:08.421 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2025-12-30 19:19:08.424 [INFO] Checkpoint saved successfully: stage=generate, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/checkpoints/problem_005.json
+2025-12-30 19:19:08.424 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2025-12-30 19:19:08.425 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2025-12-30 19:19:08.427 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/checkpoints/problem_005.json
+2025-12-30 19:19:08.427 [INFO] Attempting to save checkpoint: stage=compile, status=complete
+2025-12-30 19:19:08.428 [INFO] Checkpoint saved successfully: stage=compile, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/checkpoints/problem_005.json
+2025-12-30 19:19:08.428 [INFO] Attempting to save checkpoint: stage=render, status=in_progress
+2025-12-30 19:19:08.429 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/checkpoints/problem_005.json
+2025-12-30 19:27:24.297 [INFO] Attempting to save checkpoint: stage=render, status=failed
+2025-12-30 19:27:24.298 [INFO] Checkpoint saved successfully: stage=render, file=/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/checkpoints/problem_005.json
+2025-12-30 19:27:24.298 [ERROR] EXCEPTION in run_single_problem:
+2025-12-30 19:27:24.298 [ERROR]   Type: RuntimeError
+2025-12-30 19:27:24.298 [ERROR]   Message: Shader execution failed: 
+thread 'main' panicked at /Users/nicholasbardy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-0.20.1/src/backend/wgpu_core.rs:2996:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_shader_module
+      note: label = `user_shader`
+    
+Shader validation error: 
+   ┌─ user_shader:19:1
+   │  
+19 │ ╭ fn papyrus_uv(frag_uv: vec2<f32>) -> vec3<f32> {
+20 │ │     var col: vec3<f32> = vec3<f32>(0.96, 0.902, 0.827);
+21 │ │     let center_uv = vec2<f32>(0.5, 0.5);
+22 │ │     let 
+2025-12-30 19:27:24.298 [ERROR]   Traceback:
+2025-12-30 19:27:24.299 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 386, in run_single_problem
+    result_image = await test_runner.render_shader(test_folder)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-12-30 19:27:24.299 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_runner.py", line 277, in render_shader
+    return await self.render_shader_wgpu(test_folder)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-12-30 19:27:24.299 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/test_runner.py", line 373, in render_shader_wgpu
+    raise RuntimeError(f"Shader execution failed: {result.stderr[:500]}")
+2025-12-30 19:27:24.300 [INFO] ========== PROBLEM END: FAILED ==========
+2025-12-30 19:27:24.300 [INFO] Execution time: 642.04s

@@ -1,0 +1,42 @@
+{
+  "run_id": "harness_anthropic_claude-3.5-haiku_20251023_145739",
+  "model": "anthropic/claude-3.5-haiku",
+  "judge_model": "anthropic/claude-3.5-haiku",
+  "total_problems": 2,
+  "completed_problems": [
+    "geometric_cube",
+    "archimedes_spiral"
+  ],
+  "results": [
+    {
+      "problem": "archimedes_spiral",
+      "success": false,
+      "error": "Problem directory not found",
+      "scores": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "image_path": null,
+      "execution_time": 0
+    },
+    {
+      "problem": "geometric_cube",
+      "success": false,
+      "error": "Compiled binary not found at target/release/shader_harness",
+      "scores": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "image_path": null,
+      "execution_time": 69.462442,
+      "test_dir": "test_20251023_145827_a9cd27c8-437b-4c5d-b4b3-ce6cc87ba87c_results"
+    }
+  ],
+  "last_updated": "2025-10-23T14:58:48.848932"
+}

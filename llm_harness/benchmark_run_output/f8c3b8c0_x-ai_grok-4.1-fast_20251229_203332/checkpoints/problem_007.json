@@ -1,0 +1,15 @@
+{
+  "problem_index": 7,
+  "problem_name": "binary_tree_fractal",
+  "stages": {
+    "generate": {
+      "status": "failed",
+      "timestamp": "2025-12-29T20:53:47.503307",
+      "data": {
+        "error": "No shader files found"
+      }
+    }
+  },
+  "created": "2025-12-29T20:51:47.740854",
+  "last_updated": "2025-12-29T20:53:47.503310"
+}

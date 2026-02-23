@@ -1,0 +1,12 @@
+2025-12-29 19:37:15.113 [INFO] Logger initialized for problem 1: al_khwarizmi_geometric_algebra
+2025-12-29 19:37:15.114 [INFO] ========== PROBLEM START ==========
+2025-12-29 19:37:15.114 [INFO] Index: 1
+2025-12-29 19:37:15.114 [INFO] Name: al_khwarizmi_geometric_algebra
+2025-12-29 19:37:15.114 [ERROR] EXCEPTION in run_single_problem:
+2025-12-29 19:37:15.114 [ERROR]   Type: RuntimeError
+2025-12-29 19:37:15.114 [ERROR]   Message: Resume from checkpoint not yet implemented
+2025-12-29 19:37:15.114 [ERROR]   Traceback:
+2025-12-29 19:37:15.115 [ERROR]       File "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_harness.py", line 343, in run_single_problem
+    raise RuntimeError("Resume from checkpoint not yet implemented")
+2025-12-29 19:37:15.115 [INFO] ========== PROBLEM END: FAILED ==========
+2025-12-29 19:37:15.115 [INFO] Execution time: 0.00s

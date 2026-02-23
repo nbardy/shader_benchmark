@@ -1,0 +1,395 @@
+```wgsl
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+    time: f32,
+    _padding: f32,
+}
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+// Signed distance to sphere
+fn sd_sphere(p: vec3<f32>, r: f32) -> f32 {
+    return length(p) - r;
+}
+
+// Signed distance to cylinder (axis-aligned with x-axis)
+fn sd_cylinder_x(p: vec3<f32>, r: f32, h: f32) -> f32 {
+    let d = abs(vec2<f32>(length(p.yz), p.x)) - vec2<f32>(r, h);
+    return min(max(d.x, d.y), 0.0) + length(max(d, vec2<f32>(0.0)));
+}
+
+// Smooth minimum function for blending
+fn smin(d1: f32, d2: f32, k: f32) -> f32 {
+    let h = max(k - abs(d1 - d2), 0.0) / k;
+    return min(d1, d2) - h * h * k * 0.25;
+}
+
+// Barbell signed distance function
+fn sd_barbell(p: vec3<f32>) -> f32 {
+    let sphere_radius = 0.8;
+    let cylinder_radius = 0.3;
+    let half_cylinder_length = 1.7;
+    
+    // Left sphere at (-2.5, 0, 0)
+    let d_left_sphere = sd_sphere(p - vec3<f32>(-2.5, 0.0, 0.0), sphere_radius);
+    
+    // Right sphere at (2.5, 0, 0)
+    let d_right_sphere = sd_sphere(p - vec3<f32>(2.5, 0.0, 0.0), sphere_radius);
+    
+    // Cylinder connecting them
+    let d_cylinder = sd_cylinder_x(p, cylinder_radius, half_cylinder_length);
+    
+    // Blend cylinder with left sphere
+    let d_left_blend = smin(d_left_sphere, d_cylinder, 2.0);
+    
+    // Blend cylinder with right sphere
+    let d_right_blend = smin(d_right_sphere, d_cylinder, 2.0);
+    
+    // Final blend
+    return smin(d_left_blend, d_right_blend, 2.0);
+}
+
+// Get material for shading
+fn get_material(p: vec3<f32>) -> vec3<f32> {
+    let sphere_radius = 0.8;
+    
+    // Check if point is near spheres (polished chrome)
+    let left_dist = length(p - vec3<f32>(-2.5, 0.0, 0.0)) - sphere_radius;
+    let right_dist = length(p - vec3<f32>(2.5, 0.0, 0.0)) - sphere_radius;
+    
+    // Polished chrome on spheres
+    if abs(left_dist) < 0.1 || abs(right_dist) < 0.1 {
+        return vec3<f32>(0.8, 0.8, 0.9);
+    }
+    
+    // Brushed metal on cylinder
+    return vec3<f32>(0.6, 0.6, 0.7);
+}
+
+// Raymarching
+fn raymarch(ro: vec3<f32>, rd: vec3<f32>) -> vec4<f32> {
+    var dist_traveled = 0.0;
+    var steps = 0u;
+    let max_steps = 128u;
+    let max_distance = 50.0;
+    let surface_distance = 0.001;
+    
+    var p = ro;
+    
+    loop {
+        if steps >= max_steps || dist_traveled > max_distance {
+            break;
+        }
+        
+        let d = sd_barbell(p);
+        
+        if d < surface_distance {
+            let material = get_material(p);
+            
+            // Normal calculation via finite differences
+            let eps = 0.001;
+            let normal = normalize(vec3<f32>(
+                sd_barbell(p + vec3<f32>(eps, 0.0, 0.0)) - sd_barbell(p - vec3<f32>(eps, 0.0, 0.0)),
+                sd_barbell(p + vec3<f32>(0.0, eps, 0.0)) - sd_barbell(p - vec3<f32>(0.0, eps, 0.0)),
+                sd_barbell(p + vec3<f32>(0.0, 0.0, eps)) - sd_barbell(p - vec3<f32>(0.0, 0.0, eps))
+            ));
+            
+            // Lighting calculation
+            let light_dir = normalize(vec3<f32>(1.0, 2.0, 1.0));
+            let light_intensity = 0.8;
+            let diffuse = max(dot(normal, light_dir), 0.0) * light_intensity;
+            
+            let fill_light_dir = normalize(vec3<f32>(-3.0, 1.0, 2.0) - p);
+            let fill_light = max(dot(normal, fill_light_dir), 0.0) * 0.4;
+            
+            let rim_light_dir = normalize(vec3<f32>(-1.0, 0.0, -1.0));
+            let rim = max(dot(normal, -rim_light_dir), 0.0) * 0.3;
+            
+            let lighting = diffuse + fill_light + rim;
+            
+            // Specular reflection
+            let view_dir = -normalize(rd);
+            let half_dir = normalize(light_dir + view_dir);
+            let roughness = 0.2;
+            let spec = pow(max(dot(normal, half_dir), 0.0), 1.0 / (roughness * roughness)) * 0.6;
+            
+            let color = material * (lighting + 0.2) + spec;
+            
+            return vec4<f32>(color, 1.0);
+        }
+        
+        dist_traveled += d;
+        p = ro + rd * dist_traveled;
+        steps = steps + 1u;
+    }
+    
+    // Background gradient
+    let bg_bottom = vec3<f32>(0.9, 0.9, 0.95);
+    let bg_top = vec3<f32>(1.0, 1.0, 1.0);
+    let bg = mix(bg_bottom, bg_top, (rd.y + 1.0) * 0.5);
+    
+    return vec4<f32>(bg, 1.0);
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = (pos.xy - params.resolution * 0.5) / params.resolution.y;
+    
+    // Camera setup
+    let camera_pos = vec3<f32>(4.0, 3.0, 5.0);
+    let target = vec3<f32>(0.0, 0.0, 0.0);
+    let up = vec3<f32>(0.0, 1.0, 0.0);
+    
+    // Build camera basis
+    let forward = normalize(target - camera_pos);
+    let right = normalize(cross(forward, up));
+    let camera_up = cross(right, forward);
+    
+    // Ray direction
+    let rd = normalize(forward + right * uv.x + camera_up * uv.y);
+    
+    // Apply rotation to barbell
+    let rotation_time = params.time / 6.0;
+    let rotation_angle = rotation_time * 6.28318;
+    
+    let cos_rot = cos(rotation_angle);
+    let sin_rot = sin(rotation_angle);
+    
+    let rotated_rd = vec3<f32>(
+        rd.x * cos_rot - rd.z * sin_rot,
+        rd.y,
+        rd.x * sin_rot + rd.z * cos_rot
+    );
+    
+    let rotated_ro = vec3<f32>(
+        camera_pos.x * cos_rot - camera_pos.z * sin_rot,
+        camera_pos.y,
+        camera_pos.x * sin_rot + camera_pos.z * cos_rot
+    );
+    
+    // Apply initial tilt around z-axis (15 degrees)
+    let tilt_angle = 0.2617993877991494; // 15 degrees in radians
+    let cos_tilt = cos(tilt_angle);
+    let sin_tilt = sin(tilt_angle);
+    
+    let tilted_ro = vec3<f32>(
+        rotated_ro.x,
+        rotated_ro.y * cos_tilt - rotated_ro.z * sin_tilt,
+        rotated_ro.y * sin_tilt + rotated_ro.z * cos_tilt
+    );
+    
+    let tilted_rd = vec3<f32>(
+        rotated_rd.x,
+        rotated_rd.y * cos_tilt - rotated_rd.z * sin_tilt,
+        rotated_rd.y * sin_tilt + rotated_rd.z * cos_tilt
+    );
+    
+    return raymarch(tilted_ro, tilted_rd);
+}
+```
+
+<shader file="barbell.wgsl">
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+    let vertex_id = vertex_index % 3u;
+    let x = f32(i32(vertex_id & 1u) << 2u) - 1.0;
+    let y = f32(i32((vertex_id >> 1u) & 1u) << 2u) - 1.0;
+    return vec4<f32>(x, y, 0.0, 1.0);
+}
+
+struct Params {
+    resolution: vec2<f32>,
+    time: f32,
+    _padding: f32,
+}
+
+@group(0) @binding(0) var<uniform> params: Params;
+
+// Signed distance to sphere
+fn sd_sphere(p: vec3<f32>, r: f32) -> f32 {
+    return length(p) - r;
+}
+
+// Signed distance to cylinder (axis-aligned with x-axis)
+fn sd_cylinder_x(p: vec3<f32>, r: f32, h: f32) -> f32 {
+    let d = abs(vec2<f32>(length(p.yz), p.x)) - vec2<f32>(r, h);
+    return min(max(d.x, d.y), 0.0) + length(max(d, vec2<f32>(0.0)));
+}
+
+// Smooth minimum function for blending
+fn smin(d1: f32, d2: f32, k: f32) -> f32 {
+    let h = max(k - abs(d1 - d2), 0.0) / k;
+    return min(d1, d2) - h * h * k * 0.25;
+}
+
+// Barbell signed distance function
+fn sd_barbell(p: vec3<f32>) -> f32 {
+    let sphere_radius = 0.8;
+    let cylinder_radius = 0.3;
+    let half_cylinder_length = 1.7;
+    
+    // Left sphere at (-2.5, 0, 0)
+    let d_left_sphere = sd_sphere(p - vec3<f32>(-2.5, 0.0, 0.0), sphere_radius);
+    
+    // Right sphere at (2.5, 0, 0)
+    let d_right_sphere = sd_sphere(p - vec3<f32>(2.5, 0.0, 0.0), sphere_radius);
+    
+    // Cylinder connecting them
+    let d_cylinder = sd_cylinder_x(p, cylinder_radius, half_cylinder_length);
+    
+    // Blend cylinder with left sphere
+    let d_left_blend = smin(d_left_sphere, d_cylinder, 2.0);
+    
+    // Blend cylinder with right sphere
+    let d_right_blend = smin(d_right_sphere, d_cylinder, 2.0);
+    
+    // Final blend
+    return smin(d_left_blend, d_right_blend, 2.0);
+}
+
+// Get material for shading
+fn get_material(p: vec3<f32>) -> vec3<f32> {
+    let sphere_radius = 0.8;
+    
+    // Check if point is near spheres (polished chrome)
+    let left_dist = length(p - vec3<f32>(-2.5, 0.0, 0.0)) - sphere_radius;
+    let right_dist = length(p - vec3<f32>(2.5, 0.0, 0.0)) - sphere_radius;
+    
+    // Polished chrome on spheres
+    if abs(left_dist) < 0.1 || abs(right_dist) < 0.1 {
+        return vec3<f32>(0.8, 0.8, 0.9);
+    }
+    
+    // Brushed metal on cylinder
+    return vec3<f32>(0.6, 0.6, 0.7);
+}
+
+// Raymarching
+fn raymarch(ro: vec3<f32>, rd: vec3<f32>) -> vec4<f32> {
+    var dist_traveled = 0.0;
+    var steps = 0u;
+    let max_steps = 128u;
+    let max_distance = 50.0;
+    let surface_distance = 0.001;
+    
+    var p = ro;
+    
+    loop {
+        if steps >= max_steps || dist_traveled > max_distance {
+            break;
+        }
+        
+        let d = sd_barbell(p);
+        
+        if d < surface_distance {
+            let material = get_material(p);
+            
+            // Normal calculation via finite differences
+            let eps = 0.001;
+            let normal = normalize(vec3<f32>(
+                sd_barbell(p + vec3<f32>(eps, 0.0, 0.0)) - sd_barbell(p - vec3<f32>(eps, 0.0, 0.0)),
+                sd_barbell(p + vec3<f32>(0.0, eps, 0.0)) - sd_barbell(p - vec3<f32>(0.0, eps, 0.0)),
+                sd_barbell(p + vec3<f32>(0.0, 0.0, eps)) - sd_barbell(p - vec3<f32>(0.0, 0.0, eps))
+            ));
+            
+            // Lighting calculation
+            let light_dir = normalize(vec3<f32>(1.0, 2.0, 1.0));
+            let light_intensity = 0.8;
+            let diffuse = max(dot(normal, light_dir), 0.0) * light_intensity;
+            
+            let fill_light_dir = normalize(vec3<f32>(-3.0, 1.0, 2.0) - p);
+            let fill_light = max(dot(normal, fill_light_dir), 0.0) * 0.4;
+            
+            let rim_light_dir = normalize(vec3<f32>(-1.0, 0.0, -1.0));
+            let rim = max(dot(normal, -rim_light_dir), 0.0) * 0.3;
+            
+            let lighting = diffuse + fill_light + rim;
+            
+            // Specular reflection
+            let view_dir = -normalize(rd);
+            let half_dir = normalize(light_dir + view_dir);
+            let roughness = 0.2;
+            let spec = pow(max(dot(normal, half_dir), 0.0), 1.0 / (roughness * roughness)) * 0.6;
+            
+            let color = material * (lighting + 0.2) + spec;
+            
+            return vec4<f32>(color, 1.0);
+        }
+        
+        dist_traveled += d;
+        p = ro + rd * dist_traveled;
+        steps = steps + 1u;
+    }
+    
+    // Background gradient
+    let bg_bottom = vec3<f32>(0.9, 0.9, 0.95);
+    let bg_top = vec3<f32>(1.0, 1.0, 1.0);
+    let bg = mix(bg_bottom, bg_top, (rd.y + 1.0) * 0.5);
+    
+    return vec4<f32>(bg, 1.0);
+}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+    let uv = (pos.xy - params.resolution * 0.5) / params.resolution.y;
+    
+    // Camera setup
+    let camera_pos = vec3<f32>(4.0, 3.0, 5.0);
+    let target = vec3<f32>(0.0, 0.0, 0.0);
+    let up = vec3<f32>(0.0, 1.0, 0.0);
+    
+    // Build camera basis
+    let forward = normalize(target - camera_pos);
+    let right = normalize(cross(forward, up));
+    let camera_up = cross(right, forward);
+    
+    // Ray direction
+    let rd = normalize(forward + right * uv.x + camera_up * uv.y);
+    
+    // Apply rotation to barbell
+    let rotation_time = params.time / 6.0;
+    let rotation_angle = rotation_time * 6.28318;
+    
+    let cos_rot = cos(rotation_angle);
+    let sin_rot = sin(rotation_angle);
+    
+    let rotated_rd = vec3<f32>(
+        rd.x * cos_rot - rd.z * sin_rot,
+        rd.y,
+        rd.x * sin_rot + rd.z * cos_rot
+    );
+    
+    let rotated_ro = vec3<f32>(
+        camera_pos.x * cos_rot - camera_pos.z * sin_rot,
+        camera_pos.y,
+        camera_pos.x * sin_rot + camera_pos.z * cos_rot
+    );
+    
+    // Apply initial tilt around z-axis (15 degrees)
+    let tilt_angle = 0.2617993877991494;
+    let cos_tilt = cos(tilt_angle);
+    let sin_tilt = sin(tilt_angle);
+    
+    let tilted_ro = vec3<f32>(
+        rotated_ro.x,
+        rotated_ro.y * cos_tilt - rotated_ro.z * sin_tilt,
+        rotated_ro.y * sin_tilt + rotated_ro.z * cos_tilt
+    );
+    
+    let tilted_rd = vec3<f32>(
+        rotated_rd.x,
+        rotated_rd.y * cos_tilt - rotated_rd.z * sin_tilt,
+        rotated_rd.y * sin_tilt + rotated_rd.z * cos_tilt
+    );
+    
+    return raymarch(tilted_ro, tilted_rd);
+}
+</shader>

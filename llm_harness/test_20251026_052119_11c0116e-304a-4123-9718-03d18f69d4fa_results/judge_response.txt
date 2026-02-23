@@ -1,0 +1,184 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+**Euler angle precision (0-3 pts)**
+- Measure rotation angles about orthogonal axes
+- Must be exactly 30° ± 2° for each ring
+- Verify axes are truly orthogonal (dot product < 0.01)
+- Check that rotations compose correctly
+
+**Geometric centering (0-2 pts)**
+- All rings must share common center within 0.5%
+- Measure center-of-mass deviation from origin
+- Verify radial symmetry preservation
+- Check for uniform ring distribution
+
+##
+
+**S4: Visual Implementation Section**  
+**Ring intersection handling (0-2 pts)**
+- No ring intersections allowed (clearance ≥ 0.05)
+- Measure minimum distance between ring surfaces
+- Verify proper depth ordering and occlusion
+- Check for visual artifacts at near-intersections
+
+**Color specification compliance (0-1 pts)**
+- Ring colors must match exactly: #f66, #6f6, #66f
+- Verify consistent color assignment per axis
+- Check for proper gamma correction and color space
+
+**Rendering quality (0-2 pts)**
+- Camera positioning and orientation correctness
+- Proper lighting and shading on cylindrical surfaces
+- Anti-aliasing and edge quality assessment
+- Overall image clarity and resolution
+
+##
+
+**S5: Completeness & Specifications Section**
+**Output format**
+
+```
+Score: S/10
+Rationale: <text>
+```
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+**Objective**
+Create three concentric rings representing a gyroscopic system with orthogonal rotation axes.
+
+**Construction**
+Three concentric rings radii 1, 1.5, 2. Each rotated 30° about mutually orthogonal x, y, z axes respectively. Show instantaneous orientation.
+
+**Styling**
+Colour rings #f66, #6f6, #66f. Camera (4,3,3). 2200×1600 PNG.
+
+**Deliverable** PNG.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Evaluation
+
+## Detailed Assessment
+
+### Critical Observations
+
+The provided image is essentially a **uniform dark gray rectangle** with no visible geometric content, mathematical structures, or shader-rendered elements. This represents a complete failure to deliver the specified gyroscopic ring visualization.
+
+---
+
+## Criterion-by-Criterion Analysis
+
+### **S1: Problem Accuracy (Generic)** → **5/100**
+
+**Findings:**
+- The image contains **no visible rings, rotations, or 3D geometry**
+- No evidence of three concentric tori with specified radii (1, 1.5, 2)
+- No Euler angle rotations (30° about x, y, z axes) are apparent
+- Core mathematical requirements are entirely unmet
+- The output is not a mathematical visualization at all
+
+**Rationale:** Complete failure to implement the basic geometric structure.
+
+---
+
+### **S2: Visual Quality (Generic)** → **8/100**
+
+**Findings:**
+- Image resolution appears correct (2200×1600 PNG format)
+- No visual glitches, artifacts, or rendering errors visible
+- Uniform color grading is technically clean
+- However, the absence of any content makes visual quality assessment moot
+- The technical execution of "nothing" is flawless but irrelevant
+
+**Rationale:** While technically sound in isolation, the emptiness negates any meaningful visual quality assessment.
+
+---
+
+### **S3: Mathematical Accuracy Section** → **0/5**
+
+**Euler angle precision (0/3 pts):**
+- No rotations visible; cannot measure 30° ± 2° deviations
+- No axes detectable; orthogonality verification impossible
+- No ring geometry to verify rotation composition
+
+**Geometric centering (0/2 pts):**
+- No rings present to assess centering
+- No radial symmetry to evaluate
+- Cannot verify ring distribution
+
+---
+
+### **S4: Visual Implementation Section** → **1/5**
+
+**Ring intersection handling (0/2 pts):**
+- No rings rendered; intersection handling not applicable
+- No depth ordering or occlusion to verify
+
+**Color specification compliance (0/1 pts):**
+- Required colors (#f66 red, #6f6 green, #66f blue) are completely absent
+- Background is neutral gray instead
+
+**Rendering quality (1/2 pts):**
+- Camera positioning: Specified camera at (4,3,3) is not demonstrable
+- Lighting/shading: No cylindrical surfaces present
+- Anti-aliasing: Not applicable without geometry
+- Only credit: PNG format is technically correct
+
+---
+
+### **S5: Completeness & Specifications Section** → **1/10**
+
+**Output format:**
+- ✗ Three rings with orthogonal axes: **Not present**
+- ✗ Radii 1, 1.5, 2: **Not rendered**
+- ✗ 30° rotations: **Not visible**
+- ✗ Color scheme (#f66, #6f6, #66f): **Absent**
+- ✗ Camera (4,3,3): **Not demonstrable**
+- ✓ Format PNG: **Correct**
+
+**Rationale:** Only 1/6 specifications met (file format).
+
+---
+
+## Summary
+
+This image appears to be either:
+1. A failed render with no output
+2. A placeholder background
+3. An incomplete shader execution
+4. A transmission/encoding error
+
+**The visualization is non-existent.** There is no mathematical content, no geometric structure, and no evidence of shader implementation.
+
+---
+
+<scores><S1>5</S1><S2>8</S2><S3>0</S3><S4>1</S4><S5>1</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[5, 8, 1, 1, 1]
+

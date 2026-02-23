@@ -1,0 +1,197 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Icosahedron Geometric Properties:
+- Exactly 30 edges forming complete icosahedron wireframe structure
+- 12 vertices positioned according to icosahedral geometry requirements
+- All edges maintaining equal length on projection within 3% tolerance
+- Perfect icosahedral symmetry with mathematically accurate vertex positioning
+- Correct edge connectivity following icosahedral topology requirements
+
+Topological Correctness:
+- Proper icosahedral topology with exact edge and vertex count
+- Mathematical precision in polyhedron construction maintaining geometric relationships
+- Accurate icosahedral angles and face relationships throughout structure
+- Correct implementation of regular icosahedron mathematical properties
+- Perfect geometric regularity meeting icosahedral specification standards
+
+Hidden Edge Calculation Accuracy:
+- Correct visibility determination for all 30 icosahedral edges
+- Accurate depth testing identifying which edges should be hidden
+- Mathematical precision in hidden surface removal calculations
+- Proper z-buffer or analytical visibility computation for complex polyhedron
+- Correct identification of visible and hidden edge classifications
+
+**S4: Visual Implementation Section**  
+Hidden Edge Rendering Quality:
+- Hidden edges properly rendered with consistent dashed line pattern
+- Clear visual distinction between visible solid lines and hidden dashed lines
+- Professional dashed line rendering maintaining pattern consistency
+- Appropriate dash length and spacing ratios for optimal visibility
+- Clean dashed line implementation without gaps or irregularities
+
+Edge Length Uniformity:
+- All visible edges maintaining equal pixel length within 3% tolerance
+- Consistent edge rendering quality throughout icosahedral structure
+- Professional line quality suitable for geometric analysis
+- Smooth edge rendering without aliasing artifacts or distortions
+- High-quality wireframe presentation maintaining geometric precision
+
+Visual Clarity and Presentation:
+- Clear overall presentation enabling geometric structure analysis
+- Appropriate contrast and visibility for all wireframe elements
+- Professional rendering quality meeting technical visualization standards
+- Clean background and composition supporting geometric understanding
+- High-quality visualization suitable for mathematical polyhedron study
+
+**S5: Completeness & Specifications Section**
+Required Icosahedron Elements:
+- Complete icosahedron wireframe with all 30 edges properly implemented
+- Hidden-line rendering system functional and accurate for complex polyhedron
+- All geometric constraints satisfied within specified tolerance ranges
+- Perfect icosahedral structure with no missing or incorrect edges
+- Mathematical accuracy in all icosahedral geometric relationships
+
+Technical Specification Compliance:
+- Edge count exactly matching icosahedral mathematical requirements
+- Hidden line rendering meeting specified dashed pattern standards
+- Edge length uniformity within required 3% tolerance specifications
+- Visual clarity requirements met for professional geometric analysis
+- Complete adherence to icosahedron wireframe visualization standards
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+**Objective**
+Render a regular icosahedron in wireframe mode with proper edge and vertex visualization.
+
+**Construction**
+Build regular icosahedron edge 1. Perspective camera (3,2,2).
+
+**Styling**
+Render edges 2 px #0088ff, vertices small red points. 1800 × 1500 px white canvas.
+
+**Deliverable** – PNG.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Mathematical Visualization Evaluation: Icosahedron Wireframe
+
+## Detailed Assessment
+
+### S1: Problem Accuracy (Generic)
+The image displays a wireframe polyhedron with the specified styling: blue edges (#0088ff), red vertices, and white background. The camera perspective appears consistent with the specified viewpoint (3,2,2). However, critical examination reveals significant issues with the mathematical accuracy of the structure itself, which directly impacts overall correctness.
+
+**Concerns:**
+- The structure appears to lack proper hidden-line rendering (no dashed lines visible for occluded edges)
+- Edge count and connectivity need verification against icosahedral requirements
+- The overall geometry suggests missing or incorrect edge topology
+
+### S2: Visual Quality (Generic)
+The rendering demonstrates good technical polish:
+- Clear blue edges with solid #0088ff color (appears correct)
+- Small, well-defined red vertex points
+- Clean white background
+- No obvious anti-aliasing artifacts
+- Image appears to be 1800×1500px as specified
+- Professional presentation overall
+
+**Minor issues:**
+- Some edges appear slightly thicker than 2px specification
+- Vertex sizes are appropriate but could be more uniform
+
+### S3: Mathematical Accuracy Section
+
+**Icosahedron Geometric Properties:** **CRITICAL ISSUES**
+- Visual inspection suggests only ~20-24 visible edges, not the required 30 total
+- Vertex count appears correct (~12 red points visible), but their geometric positioning relative to edge connectivity is problematic
+- Edge length uniformity: visible edges appear reasonably uniform, but the missing edges prevent full assessment
+- Icosahedral symmetry is visually compromised by incomplete structure
+- **Score significantly impacted by apparent missing edges**
+
+**Topological Correctness:** **MAJOR DEFICIENCY**
+- The edge connectivity does not appear to form a mathematically correct icosahedron
+- A regular icosahedron requires exactly 30 edges in a specific topology (5 edges per vertex)
+- The visible structure suggests incorrect or incomplete edge implementation
+- Missing the characteristic 5-connected vertex structure in many locations
+- This is a fundamental mathematical error
+
+**Hidden Edge Calculation Accuracy:** **COMPLETE FAILURE**
+- **NO dashed lines are visible in the image** - this is a complete omission of the hidden-line rendering requirement
+- The specification explicitly requires hidden edges rendered with dashed lines
+- All edges appear to be rendered as solid lines
+- This represents a critical failure to meet the technical specification
+
+### S4: Visual Implementation Section
+
+**Hidden Edge Rendering Quality:** **CRITICAL FAILURE**
+- Zero dashed lines visible - this is a complete omission
+- Required specification for distinguishing visible vs. hidden edges is entirely absent
+- This is the most significant visual implementation failure
+
+**Edge Length Uniformity:**
+- Visible edges maintain reasonable uniformity (approximately 95-98% within tolerance)
+- No obvious distortions or aliasing artifacts on edge rendering
+- Line quality is clean and professional
+- **This is the one well-executed aspect**
+
+**Visual Clarity and Presentation:**
+- Overall composition is clear and centered
+- Good contrast between blue edges and white background
+- Red vertices are clearly visible
+- However, the missing edges and lack of hidden-line distinction severely compromises analytical clarity
+- Professional appearance marred by incomplete mathematical implementation
+
+### S5: Completeness & Specifications Section
+
+**Required Icosahedron Elements:** **MAJOR DEFICIENCY**
+- Edge count appears incomplete (estimated 20-24 visible vs. required 30 total)
+- Hidden-line rendering system is **completely absent** - this is not functional at all
+- Geometric constraints cannot be verified as satisfied due to incomplete structure
+- The icosahedral structure is mathematically incorrect
+
+**Technical Specification Compliance:** **SEVERE FAILURES**
+- ❌ Edge count does NOT match icosahedral requirements (30 edges required)
+- ❌ Hidden line rendering with dashed pattern is **completely missing**
+- ⚠️ Edge length uniformity: appears acceptable for visible edges only
+- ⚠️ Visual clarity: compromised by missing structure and hidden-line rendering
+- ❌ Does NOT meet icosahedron wireframe visualization standards
+
+---
+
+## Summary of Critical Issues
+
+1. **Missing Hidden-Line Rendering** (Most Critical): No dashed lines present - complete specification omission
+2. **Incomplete Edge Topology**: Appears to have fewer than 30 edges required for icosahedron
+3. **Incorrect Geometric Structure**: The vertex connectivity doesn't match icosahedral mathematical properties
+4. **Specification Non-Compliance**: The fundamental requirement for hidden-line rendering is entirely absent
+
+The image shows good visual quality and professional presentation in terms of styling and rendering, but fails catastrophically on the mathematical accuracy and technical specification requirements. The absence of any hidden-line rendering (dashed lines) is a complete failure of a core requirement.
+
+<scores><S1>32</S1><S2>75</S2><S3>18</S3><S4>22</S4><S5>24</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[32, 75, 18, 22, 24]
+

@@ -1,0 +1,16 @@
+2025-10-23 23:10:37.163 [INFO] Logger initialized for problem 0: ackermann_function_growth
+2025-10-23 23:10:37.163 [INFO] ========== PROBLEM START ==========
+2025-10-23 23:10:37.163 [INFO] Index: 0
+2025-10-23 23:10:37.163 [INFO] Name: ackermann_function_growth
+2025-10-23 23:10:37.163 [INFO] ---------- STAGE START: GENERATE ----------
+2025-10-23 23:10:37.163 [INFO] Attempting to save checkpoint: stage=generate, status=in_progress
+2025-10-23 23:10:37.164 [INFO] Checkpoint saved successfully: stage=generate, file=harness_anthropic_claude-3.5-sonnet-20241022_20251023_231037/checkpoints/problem_000.json
+2025-10-23 23:10:37.164 [INFO] Loading request prompt
+2025-10-23 23:10:37.164 [INFO] API call: LLM generation model=anthropic/claude-3.5-sonnet-20241022
+2025-10-23 23:11:35.339 [INFO] API response: LLM generation - success, size=9973 bytes
+2025-10-23 23:11:35.340 [INFO] Parsing shader response
+2025-10-23 23:11:35.341 [INFO] Attempting to save checkpoint: stage=generate, status=complete
+2025-10-23 23:11:35.346 [INFO] Checkpoint saved successfully: stage=generate, file=harness_anthropic_claude-3.5-sonnet-20241022_20251023_231037/checkpoints/problem_000.json
+2025-10-23 23:11:35.346 [INFO] ---------- STAGE END: GENERATE - SUCCESS ----------
+2025-10-23 23:11:35.351 [INFO] Attempting to save checkpoint: stage=compile, status=in_progress
+2025-10-23 23:11:35.353 [INFO] Checkpoint saved successfully: stage=compile, file=harness_anthropic_claude-3.5-sonnet-20241022_20251023_231037/checkpoints/problem_000.json

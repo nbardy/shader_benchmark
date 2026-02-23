@@ -1,0 +1,147 @@
+=== JUDGE EVALUATION LOG ===
+
+PROMPT:
+Evaluate this shader-generated image based on the mathematical visualization requirements.
+
+You are an expert mathematical visualization judge. Examine the provided image carefully and score it on 5 criteria using a scale of 1-100 (where 1 is completely incorrect/poor and 100 is perfect).
+
+**SCORING CRITERIA (1-100 scale each):**
+
+**S1: Problem Accuracy (Generic)**
+How accurately does the result match the mathematical and technical requirements specified in the problem? Consider correctness of mathematical concepts, adherence to specifications, and proper implementation of the core mathematical visualization.
+
+**S2: Visual Quality (Generic)** 
+How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
+
+**S3: Mathematical Accuracy Section**
+Tetrahedral Edge Equality:
+- All 6 edges must have equal length within 2% tolerance for geometric precision
+- Mathematical precision in edge length uniformity maintaining tetrahedral regularity
+- Perfect geometric accuracy in simplest Platonic solid edge construction
+- Consistent edge measurements throughout entire tetrahedral structure
+- Accurate implementation of regular tetrahedron edge equality requirements
+
+Face Normal Angular Relationships:
+- Face normal angles between any pair must equal 70.53° ± 1° (arccos(1/3))
+- Mathematical precision in angular relationships maintaining tetrahedral geometry
+- Correct implementation of three-dimensional symmetry properties
+- Accurate face normal calculations demonstrating proper tetrahedral construction
+- Perfect angular accuracy in minimum-face polyhedron geometric relationships
+
+Circumsphere Mathematical Properties:
+- Circumscribed sphere radius must equal 1 ± 2% when properly normalized
+- Mathematical relationship: circumsphere radius = √(3/8) when edge length = 1
+- Proper geometric normalization maintaining tetrahedral proportional accuracy
+- Accurate implementation of tetrahedral circumsphere mathematical properties
+- Perfect geometric accuracy in circumscribed sphere radius calculations
+
+**S4: Visual Implementation Section**  
+Golden Material Rendering:
+- Golden material properties with appropriate metallic appearance enhancing geometric visibility
+- Professional material rendering supporting three-dimensional form perception
+- High-quality surface properties demonstrating tetrahedral geometric beauty
+- Material characteristics supporting geometric structure understanding
+- Visual appeal appropriate for fundamental Platonic solid representation
+
+Lighting and Three-Dimensional Presentation:
+- Appropriate lighting setup revealing tetrahedral three-dimensional symmetry properties
+- Professional lighting enhancing four equilateral triangular face visibility
+- Lighting effects supporting geometric understanding and visual clarity
+- High-quality illumination demonstrating perfect three-dimensional symmetry
+- Visual presentation meeting geometric visualization and aesthetic standards
+
+**S5: Completeness & Specifications Section**
+Required Tetrahedral Elements:
+- Complete regular tetrahedron with all four equilateral triangular faces properly implemented
+- All 6 edges correctly positioned and sized meeting equality requirements
+- Perfect geometric accuracy in edge lengths, face angles, and circumsphere radius
+- Proper tetrahedral symmetry maintained throughout entire geometric structure
+- Full adherence to regular tetrahedron Platonic solid mathematical requirements
+
+Technical and Geometric Standards:
+- All geometric perfection tests satisfied within specified tolerances
+- Professional rendering quality meeting crystallographic and mathematical visualization standards
+- Complete implementation of tetrahedral mathematical properties and relationships
+- All edge equality, angular, and circumsphere radius standards met
+- Full adherence to perfect tetrahedron specification requirements
+
+**EVALUATION INSTRUCTIONS:**
+1. Examine the image thoroughly against each criterion
+2. Provide detailed reasoning for each score
+3. Consider the mathematical accuracy as the highest priority
+4. End your response with the exact format: <scores><S1>XX</S1><S2>XX</S2><S3>XX</S3><S4>XX</S4><S5>XX</S5></scores>
+
+**PROBLEM CONTEXT:**
+Regular tetrahedron edge = 2. Vertices: (1,1,1), (-1,-1,1), (-1,1,-1), (1,-1,-1) divided by √3 to keep circumsphere radius 1.
+
+Visuals:
+- Matte golden material (#ffcc55) with anisotropic highlights
+- Softbox light (-4,4,6)
+- Ground plane mirror 30% reflective
+- Camera (3,-4,2.5), FOV 35°
+
+File: 2200×1600
+Deliverable: Outputs a single image.
+
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+==================================================
+
+RAW RESPONSE:
+# Evaluation of Shader-Generated Regular Tetrahedron Image
+
+## Detailed Assessment
+
+### S1: Problem Accuracy (Generic)
+**Critical Issue:** The provided image is a completely blank, uniform beige/tan colored canvas with no visible geometric content whatsoever. There is no tetrahedron, no geometric structure, no vertices, edges, or faces rendered. This represents a complete failure to implement the core mathematical visualization requirement. The shader has either failed to render, produced a null output, or there is a fundamental execution error.
+
+**Score Reasoning:** The specification explicitly requires a regular tetrahedron with specific vertices, edges, circumsphere properties, and material rendering. The complete absence of any geometric content results in a total failure to meet accuracy requirements.
+
+### S2: Visual Quality (Generic)
+**Critical Issue:** While the image itself is technically clean (2200×1600 resolution, no artifacts), it contains zero content relevant to the assignment. A blank canvas, however technically sound, provides no mathematical visualization whatsoever. The visual quality criterion requires an aesthetic and polished result—this is neither aesthetic nor a result of the specified visualization.
+
+**Score Reasoning:** Technical execution (resolution, anti-aliasing setup) may be functional, but without any content to visualize, visual quality cannot be meaningfully assessed. The absence of the required geometry makes this criterion entirely unmet.
+
+### S3: Mathematical Accuracy Section
+**All subcriteria fail catastrophically:**
+
+- **Tetrahedral Edge Equality:** No edges visible. Cannot verify the 2% tolerance requirement for equal edge lengths.
+- **Face Normal Angular Relationships:** No faces or normals present. The 70.53° ± 1° angular requirement cannot be evaluated.
+- **Circumsphere Mathematical Properties:** No circumsphere visible. Cannot verify the √(3/8) ≈ 0.612 relationship or the normalized radius of 1 ± 2%.
+
+**Score Reasoning:** Mathematical accuracy cannot be assessed when there is no geometric content. This is a fundamental failure across all three sub-requirements.
+
+### S4: Visual Implementation Section
+**All subcriteria fail:**
+
+- **Golden Material Rendering:** The expected matte golden material (#ffcc55) with anisotropic highlights is completely absent. The uniform beige background is either a default or error state, not the specified golden material.
+- **Lighting and Three-Dimensional Presentation:** No tetrahedral geometry exists to receive lighting from the specified softbox at (-4,4,6). No three-dimensional form, symmetry revelation, or lighting effects are visible.
+
+**Score Reasoning:** Professional material and lighting implementation cannot occur without geometry. The specifications for golden rendering and softbox illumination are entirely unmet.
+
+### S5: Completeness & Specifications Section
+**Complete failure across all requirements:**
+
+- **Required Tetrahedral Elements:** Zero of the required elements are present. No four triangular faces, no six edges, no vertices rendered. Complete absence of the fundamental geometric structure.
+- **Technical and Geometric Standards:** No mathematical verification possible. No crystallographic standards met. No geometric perfection tests can be evaluated without geometry.
+
+**Score Reasoning:** The deliverable is incomplete—it is a blank canvas rather than a complete tetrahedron visualization. All specifications remain unimplemented.
+
+## Root Cause Analysis
+This appears to be a shader compilation failure, rendering pipeline error, or incorrect output export. Possible causes:
+- Shader compilation error preventing geometry rendering
+- Camera clipping plane incorrectly configured
+- Geometry transformation error (scale/position)
+- Output to wrong render target
+- File export failure
+
+## Summary
+The image fails to deliver any aspect of the required mathematical visualization. A regular tetrahedron with the specified properties, materials, lighting, and camera setup should be clearly visible, featuring four triangular golden faces with proper reflections on a ground plane. Instead, a blank canvas is provided.
+
+<scores><S1>2</S1><S2>15</S2><S3>1</S3><S4>2</S4><S5>1</S5></scores>
+
+==================================================
+
+PARSED SCORES:
+[2, 15, 1, 2, 1]
+

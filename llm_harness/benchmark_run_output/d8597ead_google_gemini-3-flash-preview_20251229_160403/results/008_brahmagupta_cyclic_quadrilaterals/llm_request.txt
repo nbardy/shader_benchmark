@@ -1,0 +1,23 @@
+Create a single-file HTML shader that visualizes Brahmagupta's Cyclic Quadrilaterals and his formula for their area. The visualization should:
+
+1. Display a cyclic quadrilateral inscribed in a circle
+2. Animate the quadrilateral vertices moving along the circle while maintaining the cyclic property
+3. Calculate and display the area using Brahmagupta's formula:
+   - Area = √[(s-a)(s-b)(s-c)(s-d)]
+   - Where s = (a+b+c+d)/2 (semiperimeter)
+   - And a, b, c, d are the side lengths
+4. Show real-time updates of:
+   - Side lengths (a, b, c, d)
+   - Semiperimeter (s)
+   - Area calculation
+5. Demonstrate that the formula works for any cyclic quadrilateral configuration
+6. Include special cases:
+   - Square (maximum area for given perimeter)
+   - Rectangle
+   - Irregular cyclic quadrilateral
+7. Canvas size should be 2000×2000 pixels
+8. Use color coding for sides and corresponding values in the formula
+9. Add smooth transitions between different quadrilateral configurations
+10. Include Ptolemy's theorem visualization as a bonus (ac + bd = ef for diagonals e, f)
+
+The implementation should be a complete, self-contained HTML file with embedded WebGL shader code. The visualization should elegantly demonstrate this beautiful result from ancient Indian mathematics.
