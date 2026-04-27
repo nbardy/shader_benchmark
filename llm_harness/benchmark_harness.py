@@ -24,17 +24,19 @@ from llm_client import LLMClient
 from prompt_loader import PromptLoader
 from shader_parser import ShaderParser
 from test_runner import TestRunner
-from judge import Judge
+from judge import Judge, EvaluationContext
 from debug_logger import DebugLogger
 from language_specs import get_language_spec
+from runtimes import get_runtime, default_runtime_for_language
 
 class BenchmarkHarness:
-    def __init__(self, model: str, problems: List[str], max_parallel: int = 100, judge_model: str = "anthropic/claude-opus-4-6", run_id: str = None, language: str = "wgsl"):
+    def __init__(self, model: str, problems: List[str], max_parallel: int = 100, judge_model: str = "anthropic/claude-opus-4-6", run_id: str = None, language: str = "wgsl", runtime: str = None):
         self.model = model
         self.judge_model = judge_model
         self.problems = problems
         self.max_parallel = max_parallel
         self.language = language
+        self.runtime_name = runtime  # None → derive from language
         self.results = []
         self.start_time = None
         self.end_time = None
@@ -79,18 +81,30 @@ class BenchmarkHarness:
 
         self.manifest_file = self.checkpoint_dir / "manifest.json"
 
-        # NEW STRUCTURE: Create config.json at run root
         self.config_file = self.run_dir / "config.json"
-        self._save_config()
 
-        # Pipeline stage semaphores for resource optimization
-        self.llm_semaphore = asyncio.Semaphore(max_parallel)  # LLM generation (API limited)
-        self.compile_semaphore = asyncio.Semaphore(os.cpu_count() or 8)  # Compilation (CPU cores)
-        self.render_semaphore = asyncio.Semaphore(4)  # Rendering (GPU slots)
-        self.judge_semaphore = asyncio.Semaphore(50)  # Judge evaluation (API limited)
+        # Pipeline stage semaphores for resource optimization.
+        # CLI judges (cli/codex, cli/claude) spawn local subprocesses, each
+        # holding hundreds of MB of node/agent state, so 50 concurrent would
+        # crush the host. Cap at 4 when the judge is a CLI; OpenRouter
+        # judges keep the higher API-bound limit.
+        self.llm_semaphore = asyncio.Semaphore(max_parallel)
+        self.compile_semaphore = asyncio.Semaphore(os.cpu_count() or 8)
+        self.render_semaphore = asyncio.Semaphore(4)
+        judge_concurrency = 4 if self.judge_model.startswith("cli/") else 50
+        self.judge_semaphore = asyncio.Semaphore(judge_concurrency)
 
         # Get language specification
         self.language_spec = get_language_spec(self.language)
+
+        # Resolve runtime: explicit --runtime wins, otherwise derive from language.
+        if self.runtime_name:
+            self.runtime = get_runtime(self.runtime_name)
+        else:
+            self.runtime = default_runtime_for_language(self.language_spec)
+
+        # Save config AFTER runtime is resolved so it's recorded for resume.
+        self._save_config()
 
         # PRE-BUILD FIX: Create shared TestRunner for all problems
         # This ensures shader-bench binary is built once and reused across all problems
@@ -106,7 +120,8 @@ class BenchmarkHarness:
         self.test_runner = TestRunner(
             compile_semaphore=self.compile_semaphore,
             render_semaphore=self.render_semaphore,
-            language_spec=self.language_spec
+            language_spec=self.language_spec,
+            runtime=self.runtime,
         )
 
         # Load checkpoints if resuming
@@ -123,6 +138,7 @@ class BenchmarkHarness:
             'model': self.model,
             'judge_model': self.judge_model,
             'language': self.language,
+            'runtime': self.runtime.name if hasattr(self, 'runtime') and self.runtime else None,
             'problems': self.problems,
             'total_problems': len(self.problems),
             'max_parallel': self.max_parallel,
@@ -358,9 +374,12 @@ class BenchmarkHarness:
                         prompt_loader = PromptLoader()
                         request_prompt = prompt_loader.load_request_prompt(str(problem_path))
 
+                        reference_image_path = problem_path / "reference.png"
+                        ref_img_str = str(reference_image_path) if reference_image_path.exists() else None
+
                         self.logger.log_api_call(problem_index, problem, "LLM generation", f"model={self.model}, language={self.language}")
                         llm_client = LLMClient(language_spec=self.language_spec)
-                        llm_response, generation_usage = await llm_client.generate_shaders(self.model, request_prompt)
+                        llm_response, generation_usage = await llm_client.generate_shaders(self.model, request_prompt, ref_img_str)
                         self.logger.log_api_response(problem_index, problem, "LLM generation", len(llm_response), True)
                         self.logger.log_info(problem_index, problem, f"Generation cost: ${generation_usage.get('cost', 0):.4f} ({generation_usage.get('total_tokens', 0)} tokens)")
 
@@ -486,7 +505,26 @@ class BenchmarkHarness:
                         judge = Judge(judge_model=self.judge_model)
                         critic_path = problem_path / 'critic.txt'
                         request_path = problem_path / 'request.txt'
-                        scores, failure_reason, judge_usage = await judge.evaluate_with_template(critic_path, request_path, result_image, test_folder)
+                        
+                        # setup_test_files writes shaders to test_folder/shaders/
+                        # — the top-level test_folder/shader.{language} does not
+                        # normally exist; pointing the judge there gave a silent
+                        # "no code" check, and worse, picked up rogue files from
+                        # a prior cwd-leak race.
+                        code_path = test_folder / "shaders" / f"shader.{self.language}"
+                        reference_image_path = problem_path / "reference.png"
+                        if not reference_image_path.exists():
+                            reference_image_path = None
+                            
+                        context = EvaluationContext(
+                            critic_path=critic_path,
+                            request_path=request_path,
+                            result_image_path=result_image,
+                            save_dir=test_folder,
+                            code_path=code_path,
+                            reference_image_path=reference_image_path
+                        )
+                        scores, failure_reason, judge_usage = await judge.evaluate_with_template(context)
                         self.logger.log_info(problem_index, problem, f"Judge cost: ${judge_usage.get('cost', 0):.4f} ({judge_usage.get('total_tokens', 0)} tokens)")
                         checkpoint_data = {'scores': scores, 'judge_usage': judge_usage}
                         if failure_reason:
@@ -621,19 +659,18 @@ class BenchmarkHarness:
         print(f"🔀 Pipeline limits: LLM={self.max_parallel}, Compile={self.compile_semaphore._value}, Render={self.render_semaphore._value}, Judge={self.judge_semaphore._value}")
         print("=" * 60)
 
-        # PRE-BUILD FIX: Build shader-bench binary once before running any problems
-        # Skip prebuild if all problems are fully completed (nothing to render)
+        # Runtime prepare: WGPU compiles the cargo binary here; Shadertoy is a no-op.
+        # Skip prepare if every problem already has a cached judge result.
         if fully_completed < len(self.problems):
-            print("🔨 Pre-building shader-bench binary...")
+            print(f"🔨 Preparing runtime ({self.runtime.name})...")
             try:
-                await self.test_runner.prebuild_shader_binary()
-                print("✅ Pre-build complete - binary ready for all problems")
+                await self.test_runner.prepare_runtime()
+                print("✅ Runtime ready")
             except Exception as e:
-                print(f"❌ Pre-build failed: {e}")
-                print("Cannot proceed without working shader-bench binary")
+                print(f"❌ Runtime prepare failed: {e}")
                 raise
         else:
-            print("✅ All problems already complete - skipping shader binary prebuild")
+            print("✅ All problems already complete - skipping runtime prepare")
 
         self.start_time = datetime.now()
 
@@ -718,6 +755,9 @@ def main():
     parser.add_argument('--language', type=str, default='wgsl',
                        choices=['wgsl', 'glsl', 'shadertoy', 'hlsl_unity'],
                        help='Shader language specification (default: wgsl)')
+    parser.add_argument('--runtime', type=str, default=None,
+                       choices=['wgpu', 'shadertoy'],
+                       help='Rendering runtime (default: derived from --language: shadertoy→shadertoy, else wgpu)')
     parser.add_argument('--resume', type=str, default=None,
                        help='Resume an interrupted benchmark run from the specified run folder (e.g., benchmark_run_output/abc123_model_timestamp)')
 
@@ -762,8 +802,9 @@ def main():
         problems = args.problems or config['problems']
         max_parallel = args.max_parallel if args.max_parallel != 100 else config.get('max_parallel', 100)
         language = args.language if args.language != 'wgsl' else config.get('language', 'wgsl')
+        runtime = args.runtime or config.get('runtime')
 
-        harness = BenchmarkHarness(model, problems, max_parallel, judge_model, run_id, language)
+        harness = BenchmarkHarness(model, problems, max_parallel, judge_model, run_id, language, runtime)
     else:
         # Standard mode - require model and problems
         if not args.model:
@@ -778,7 +819,7 @@ def main():
         if not args.problems:
             parser.error("--problems or --all is required (unless using --resume)")
 
-        harness = BenchmarkHarness(args.model, args.problems, args.max_parallel, args.judge_model, args.run_id, args.language)
+        harness = BenchmarkHarness(args.model, args.problems, args.max_parallel, args.judge_model, args.run_id, args.language, args.runtime)
 
     report_path = asyncio.run(harness.run_benchmark())
 

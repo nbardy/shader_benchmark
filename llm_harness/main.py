@@ -13,8 +13,9 @@ from llm_client import LLMClient
 from prompt_loader import PromptLoader
 from shader_parser import ShaderParser
 from test_runner import TestRunner
-from judge import Judge
+from judge import Judge, EvaluationContext
 from language_specs import get_language_spec, SUPPORTED_LANGUAGES
+from runtimes import get_runtime, default_runtime_for_language, SUPPORTED_RUNTIMES
 
 async def main():
     parser = argparse.ArgumentParser(description='LLM Shader Harness - Language-Agnostic Pipeline')
@@ -23,6 +24,9 @@ async def main():
     parser.add_argument('--language-spec', default='wgsl',
                        choices=SUPPORTED_LANGUAGES,
                        help=f'Shader language specification (default: wgsl). Options: {", ".join(SUPPORTED_LANGUAGES)}')
+    parser.add_argument('--runtime', default=None,
+                       choices=sorted(SUPPORTED_RUNTIMES),
+                       help='Rendering runtime (default: derived from --language-spec)')
     parser.add_argument('--judge-model', default='anthropic/claude-opus-4.5',
                        help='Judge model for evaluation (default: anthropic/claude-opus-4.5)')
     parser.add_argument('--no-report', action='store_true', help='Skip individual test report generation')
@@ -32,6 +36,7 @@ async def main():
 
     # Get language specification
     language_spec = get_language_spec(args.language_spec)
+    runtime = get_runtime(args.runtime) if args.runtime else default_runtime_for_language(language_spec)
 
     print(f"Running LLM Shader Harness with model: {args.model}")
     print(f"Using prompt folder: {args.prompt_folder}")
@@ -53,7 +58,7 @@ async def main():
     shaders, main_rs = shader_parser.parse_response(llm_response)
     
     # Create test folder and run
-    test_runner = TestRunner()
+    test_runner = TestRunner(language_spec=language_spec, runtime=runtime)
     test_folder = test_runner.create_test_folder()
     test_runner.setup_test_files(test_folder, shaders, main_rs)
     
@@ -70,7 +75,13 @@ async def main():
             judge = Judge(judge_model=args.judge_model)
             critic_path = Path(args.prompt_folder) / 'critic.txt'
             request_path = Path(args.prompt_folder) / 'request.txt'
-            scores = await judge.evaluate_with_template(critic_path, request_path, result_image, test_folder)
+            context = EvaluationContext(
+                critic_path=critic_path,
+                request_path=request_path,
+                result_image_path=result_image,
+                save_dir=test_folder
+            )
+            scores, failure_reason, usage = await judge.evaluate_with_template(context)
             print(f"Judge evaluation completed. Scores: {scores}")
         else:
             if args.no_judge:

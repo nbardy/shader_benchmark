@@ -1,0 +1,16 @@
+__VISUAL_MATCH__
+Image Reproduction Fidelity:
+- Recreates the shapes and structures from the reference image accurately
+- Colors match the reference image closely
+- Proportions and scales of objects in the scene match
+
+__PROCEDURAL_INTEGRITY__
+No Cheating Allowed:
+- The shader MUST NOT hardcode arrays of pixel data
+- The shader MUST NOT attempt to load external textures/images to bypass the procedural requirement
+- The code relies on mathematical functions (SDFs, fractals, noise, loops, etc.) to construct the image
+
+__COMPLETENESS__
+Overall Execution:
+- The resulting image is a complete reproduction of the target
+- No missing major elements compared to the reference image

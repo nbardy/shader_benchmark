@@ -1,0 +1,5 @@
+Reproduce the provided reference image using a shader.
+Your shader must analytically or mathematically recreate the scene.
+CRITICAL: Do NOT just read the actual image pixels or hardcode pixel arrays. If you do this, you will receive a 0% score. You must re-create the underlying procedural shapes, colors, and patterns.
+
+Deliverable: Outputs a single image that matches the reference image as closely as possible.

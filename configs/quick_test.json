@@ -1,28 +1,21 @@
 {
-  "name": "Quick Test - 2 Models",
-  "description": "Quick validation test with 2 models on 2 problems",
-  "timestamp": "2025-07-31",
+  "name": "Quick Test - CLI Harnesses",
+  "description": "Smoke test for the CLI harnesses on a small problem set. NB: cli/gemini may 429 if Google capacity is tight.",
+  "timestamp": "2026-04-27",
   "models": [
-    "anthropic/claude-sonnet-4",
-    "qwen/qwen3-coder"
+    "cli/claude",
+    "cli/codex",
+    "cli/gemini"
   ],
   "problems": [
     "geometric_cube",
-    "regular_tetrahedron"
+    "reproduce_image_andrew_pons"
   ],
   "settings": {
-    "timeout_minutes": 5,
+    "timeout_minutes": 30,
     "pause_between_tests": 1,
     "pause_between_models": 2,
     "embed_images": true,
     "output_directory": "output/quick_test"
-  },
-  "progress": {
-    "completed_models": [],
-    "failed_models": [],
-    "total_tests": 4,
-    "completed_tests": 0,
-    "start_time": null,
-    "end_time": null
   }
 }

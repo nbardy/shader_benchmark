@@ -1,0 +1,33 @@
+{
+  "name": "Benchmark Images - Image Reproduction Set",
+  "description": "A set of 6 photographic images from Unsplash to test shader reproduction capabilities.",
+  "timestamp": "2026-03-13",
+  "models": [
+    "cli/claude",
+    "cli/codex",
+    "cli/gemini"
+  ],
+  "problems": [
+    "reproduce_image_sebastien_gabriel",
+    "reproduce_image_rayul",
+    "reproduce_image_andrew_pons",
+    "reproduce_image_photoholgic",
+    "reproduce_image_jason_leung",
+    "reproduce_image_fabrice_villard"
+  ],
+  "settings": {
+    "timeout_minutes": 5,
+    "pause_between_tests": 1,
+    "pause_between_models": 2,
+    "embed_images": true,
+    "output_directory": "output/benchmark_images"
+  },
+  "progress": {
+    "completed_models": [],
+    "failed_models": [],
+    "total_tests": 12,
+    "completed_tests": 0,
+    "start_time": null,
+    "end_time": null
+  }
+}

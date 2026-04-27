@@ -3,11 +3,19 @@ import base64
 import re
 import aiohttp
 import json
+import subprocess
+import tempfile
 import xml.etree.ElementTree as ET
+from dataclasses import dataclass
 from typing import List, Tuple, Optional, Dict, Any
 from pathlib import Path
 from dotenv import load_dotenv
 from critic_template import CriticTemplate
+
+_ZERO_USAGE: Dict[str, Any] = {
+    'prompt_tokens': 0, 'completion_tokens': 0, 'total_tokens': 0,
+    'cost': 0.0, 'cached_tokens': 0,
+}
 
 
 def extract_usage_data(api_response: dict) -> Dict[str, Any]:
@@ -36,18 +44,59 @@ except ImportError:
     HAS_PIL = False
     print("⚠️ Warning: PIL/numpy not available - image analysis disabled")
 
-class Judge:
-    def __init__(self, judge_model: str = "anthropic/claude-opus-4-6"):
-        self.api_key = os.getenv('OPENROUTER_API_KEY')
-        if not self.api_key:
-            raise ValueError("OPENROUTER_API_KEY environment variable not set")
 
+@dataclass
+class EvaluationContext:
+    critic_path: Path
+    request_path: Path
+    result_image_path: Path
+    save_dir: Optional[Path] = None
+    code_path: Optional[Path] = None
+    reference_image_path: Optional[Path] = None
+
+class Judge:
+    """Score a generated shader image against the problem's critic rubric.
+
+    Supports two backends:
+      * `<provider>/<model>` (default `anthropic/claude-opus-4-6`) — call
+        OpenRouter. Requires `OPENROUTER_API_KEY`.
+      * `cli/<tool>` (`cli/claude`, `cli/codex`) — invoke the local agentic
+        CLI as the judge, billed against the user's subscription. The CLI
+        is run with the same anti-write hardening as the gen path so it
+        can't escape into the workspace.
+
+    The CLI judge path is best used to remove OpenRouter spend on the judge
+    side of a benchmark when the user has a Max / ChatGPT plan that absorbs
+    the calls.
+    """
+
+    SUPPORTED_CLI_JUDGES = ("claude", "codex")
+
+    def __init__(self, judge_model: str = "anthropic/claude-opus-4-6"):
         self.judge_model = judge_model
-        self.base_url = "https://openrouter.ai/api/v1"
-        self.headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
-        }
+        self.is_cli_judge = judge_model.startswith("cli/")
+
+        if self.is_cli_judge:
+            cli_name = judge_model[4:]
+            if cli_name not in self.SUPPORTED_CLI_JUDGES:
+                raise ValueError(
+                    f"Unsupported CLI judge 'cli/{cli_name}'. Supported: "
+                    f"{['cli/' + n for n in self.SUPPORTED_CLI_JUDGES]}"
+                )
+            # No OpenRouter key needed for CLI path.
+            self.api_key = None
+            self.base_url = None
+            self.headers = None
+        else:
+            self.api_key = os.getenv('OPENROUTER_API_KEY')
+            if not self.api_key:
+                raise ValueError("OPENROUTER_API_KEY environment variable not set")
+            self.base_url = "https://openrouter.ai/api/v1"
+            self.headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+            }
+
         self.critic_template = CriticTemplate()
 
     def analyze_image_quality(self, image_path: Path) -> Tuple[bool, Optional[str]]:
@@ -105,7 +154,7 @@ class Judge:
             print(f"Warning: Failed to analyze image quality: {e}")
             return (False, None)  # Don't skip on analysis errors
 
-    async def evaluate_with_template(self, critic_path: Path, request_path: Path, result_image_path: Path, save_dir: Path = None) -> Tuple[List[int], Optional[str], Dict[str, Any]]:
+    async def evaluate_with_template(self, context: EvaluationContext) -> Tuple[List[int], Optional[str], Dict[str, Any]]:
         """
         Evaluate using structured critic template system.
 
@@ -118,10 +167,10 @@ class Judge:
         empty_usage = {'prompt_tokens': 0, 'completion_tokens': 0, 'total_tokens': 0, 'cost': 0.0, 'cached_tokens': 0}
 
         # Only skip if there's literally no image file to judge
-        if not result_image_path or not result_image_path.exists():
+        if not context.result_image_path or not context.result_image_path.exists():
             print(f"⏭️  Skipping LLM judge - NO IMAGE GENERATED (0/500)")
-            if save_dir and save_dir.exists():
-                skip_log = save_dir / "judge_skipped.txt"
+            if context.save_dir and context.save_dir.exists():
+                skip_log = context.save_dir / "judge_skipped.txt"
                 with open(skip_log, 'w') as f:
                     f.write("JUDGE SKIPPED - NO IMAGE GENERATED\n")
                     f.write("Reason: No result image file found\n")
@@ -130,31 +179,69 @@ class Judge:
 
         # Always send to LLM judge - let it score everything
         # (removed "smart skip" for black/white images - caused false positives)
-        judge_prompt = self.critic_template.format_critic_prompt(critic_path, request_path)
-        scores, usage = await self.evaluate(judge_prompt, result_image_path, save_dir)
+        judge_prompt = self.critic_template.format_critic_prompt(context.critic_path, context.request_path)
+        scores, usage = await self.evaluate(judge_prompt, context)
         return (scores, None, usage)
     
-    async def evaluate(self, judge_prompt: str, result_image_path: Path, save_dir: Path = None) -> Tuple[List[int], Dict[str, Any]]:
-        """Evaluate the shader result using configured judge model via OpenRouter.
+    async def evaluate(self, judge_prompt: str, context: EvaluationContext) -> Tuple[List[int], Dict[str, Any]]:
+        """Score the shader image. Routes to OpenRouter or a local CLI based
+        on `judge_model` (`cli/...` → CLI). Returns (scores, usage)."""
+        if self.is_cli_judge:
+            return self._evaluate_via_cli(judge_prompt, context)
+        return await self._evaluate_via_openrouter(judge_prompt, context)
 
-        Returns:
-            Tuple of (scores: List[int], usage: Dict) where usage contains cost data.
-        """
-        empty_usage = {'prompt_tokens': 0, 'completion_tokens': 0, 'total_tokens': 0, 'cost': 0.0, 'cached_tokens': 0}
+    async def _evaluate_via_openrouter(self, judge_prompt: str, context: EvaluationContext) -> Tuple[List[int], Dict[str, Any]]:
+        """Evaluate via OpenRouter chat-completions API (default path)."""
+        empty_usage = dict(_ZERO_USAGE)
 
-        if not result_image_path or not result_image_path.exists():
-            print(f"Error: Result image not found at {result_image_path}")
+        if not context.result_image_path or not context.result_image_path.exists():
+            print(f"Error: Result image not found at {context.result_image_path}")
             return [1, 1, 1, 1, 1], empty_usage
         
         # Encode image to base64
         try:
-            image_base64 = self._encode_image(result_image_path)
+            image_base64 = self._encode_image(context.result_image_path)
         except Exception as e:
             print(f"Error encoding image: {e}")
             return [1, 1, 1, 1, 1], empty_usage
         
         # The judge_prompt from template already contains instructions
         full_prompt = judge_prompt
+
+        if context.code_path and context.code_path.exists():
+            try:
+                with open(context.code_path, 'r', encoding='utf-8') as f:
+                    code_content = f.read()
+                full_prompt += f"\n\nHere is the source code of the shader:\n```\n{code_content}\n```\nPlease evaluate if the code cheats by reading actual pixel values instead of using procedural generation."
+            except Exception as e:
+                print(f"Error reading code file: {e}")
+
+        content_payload = [
+            {
+                "type": "text",
+                "text": full_prompt
+            },
+            {
+                "type": "image_url",
+                "image_url": {
+                    "url": f"data:image/png;base64,{image_base64}"
+                }
+            }
+        ]
+
+        if context.reference_image_path and context.reference_image_path.exists():
+            try:
+                ref_base64 = self._encode_image(context.reference_image_path)
+                content_payload.append({
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/png;base64,{ref_base64}"
+                    }
+                })
+                full_prompt += "\n\nA reference image has been provided. The first image is the generated result, the second image is the reference image."
+                content_payload[0]["text"] = full_prompt
+            except Exception as e:
+                print(f"Error encoding reference image: {e}")
         
         try:
             payload = {
@@ -162,18 +249,7 @@ class Judge:
                 "messages": [
                     {
                         "role": "user",
-                        "content": [
-                            {
-                                "type": "text",
-                                "text": full_prompt
-                            },
-                            {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": f"data:image/png;base64,{image_base64}"
-                                }
-                            }
-                        ]
+                        "content": content_payload
                     }
                 ]
             }
@@ -198,8 +274,8 @@ class Judge:
                     print(f"Judge cost: ${usage['cost']:.4f} ({usage['total_tokens']} tokens)")
 
                     # Save raw judge response if save directory provided
-                    if save_dir and save_dir.exists():
-                        judge_log_file = save_dir / "judge_response.txt"
+                    if context.save_dir and context.save_dir.exists():
+                        judge_log_file = context.save_dir / "judge_response.txt"
                         with open(judge_log_file, 'w', encoding='utf-8') as f:
                             f.write("=== JUDGE EVALUATION LOG ===\n\n")
                             f.write("PROMPT:\n")
@@ -215,8 +291,8 @@ class Judge:
                     scores = self._parse_scores(response_text)
 
                     # Add parsed scores to log file if it exists
-                    if save_dir and save_dir.exists():
-                        judge_log_file = save_dir / "judge_response.txt"
+                    if context.save_dir and context.save_dir.exists():
+                        judge_log_file = context.save_dir / "judge_response.txt"
                         with open(judge_log_file, 'a', encoding='utf-8') as f:
                             f.write(f"PARSED SCORES:\n{scores}\n\n")
                             if scores == [1, 1, 1, 1, 1]:
@@ -229,8 +305,8 @@ class Judge:
             print(f"Error calling judge ({self.judge_model}): {e}")
 
             # Save error log if save directory provided
-            if save_dir and save_dir.exists():
-                error_log_file = save_dir / "judge_error.txt"
+            if context.save_dir and context.save_dir.exists():
+                error_log_file = context.save_dir / "judge_error.txt"
                 with open(error_log_file, 'w', encoding='utf-8') as f:
                     f.write("=== JUDGE ERROR LOG ===\n\n")
                     f.write(f"ERROR: {str(e)}\n\n")
@@ -242,7 +318,156 @@ class Judge:
 
             # Return default scores on error
             return [1, 1, 1, 1, 1], empty_usage
-    
+
+    # ------------------------------------------------------------------
+    # CLI judge path
+    # ------------------------------------------------------------------
+    @staticmethod
+    def _judge_cli_env() -> Dict[str, str]:
+        """Same env hygiene as LLMClient.CliExecutor: drop nested-session vars
+        and provider API keys so the CLI uses subscription auth, not a key."""
+        env = os.environ.copy()
+        for k in (
+            'CLAUDECODE', 'CLAUDECODE_SESSION_ID',
+            'ANTHROPIC_API_KEY', 'OPENAI_API_KEY',
+            'GEMINI_API_KEY', 'GOOGLE_API_KEY',
+        ):
+            env.pop(k, None)
+        return env
+
+    def _evaluate_via_cli(self, judge_prompt: str, context: EvaluationContext) -> Tuple[List[int], Dict[str, Any]]:
+        """Run the configured CLI tool as the judge. Returns (scores, zero-usage).
+
+        We append the shader source (when available) to the prompt the same
+        way the OpenRouter path does, so the cheating-check still works.
+        Reference + result images are passed natively via the CLI flag for
+        codex (`-i <FILE>`) or via Read-tool absolute-path instructions for
+        claude.
+        """
+        empty_usage = dict(_ZERO_USAGE)
+
+        if not context.result_image_path or not context.result_image_path.exists():
+            print(f"Error: Result image not found at {context.result_image_path}")
+            return [1, 1, 1, 1, 1], empty_usage
+
+        full_prompt = judge_prompt
+        if context.code_path and context.code_path.exists():
+            try:
+                code_content = context.code_path.read_text(encoding='utf-8')
+                full_prompt += (
+                    f"\n\nHere is the source code of the shader:\n```\n{code_content}\n```\n"
+                    "Please evaluate if the code cheats by reading actual pixel values "
+                    "instead of using procedural generation."
+                )
+            except Exception as e:
+                print(f"Error reading code file: {e}")
+
+        if context.reference_image_path and context.reference_image_path.exists():
+            full_prompt += (
+                "\n\nA reference image has been provided. The first image is the "
+                "generated result, the second image is the reference image."
+            )
+
+        cli_command = self.judge_model[4:]
+        print(f"Calling cli/{cli_command} for evaluation...")
+
+        try:
+            if cli_command == 'codex':
+                response_text = self._run_codex_judge(full_prompt, context)
+            elif cli_command == 'claude':
+                response_text = self._run_claude_judge(full_prompt, context)
+            else:
+                raise ValueError(f"unsupported CLI judge cli/{cli_command}")
+        except Exception as e:
+            print(f"Error calling judge ({self.judge_model}): {e}")
+            if context.save_dir and context.save_dir.exists():
+                error_log = context.save_dir / "judge_error.txt"
+                with open(error_log, 'w', encoding='utf-8') as f:
+                    f.write(f"=== JUDGE ERROR LOG (cli/{cli_command}) ===\n\n")
+                    f.write(f"ERROR: {e}\n\nPROMPT USED:\n{full_prompt}\n")
+            return [1, 1, 1, 1, 1], empty_usage
+
+        # Persist the raw response for debugging.
+        if context.save_dir and context.save_dir.exists():
+            judge_log = context.save_dir / "judge_response.txt"
+            with open(judge_log, 'w', encoding='utf-8') as f:
+                f.write(f"=== JUDGE EVALUATION LOG (cli/{cli_command}) ===\n\nPROMPT:\n")
+                f.write(full_prompt)
+                f.write("\n\n" + "=" * 50 + "\n\nRAW RESPONSE:\n")
+                f.write(response_text)
+                f.write("\n\n" + "=" * 50 + "\n\nUSAGE: (CLI judge — billed to subscription, not OpenRouter)\n\n")
+            scores = self._parse_scores(response_text)
+            with open(judge_log, 'a', encoding='utf-8') as f:
+                f.write(f"PARSED SCORES:\n{scores}\n\n")
+                if scores == [1, 1, 1, 1, 1]:
+                    f.write("⚠️ WARNING: Default fallback scores - parsing may have failed!\n")
+            print(f"Parsed scores: {scores}")
+            return scores, empty_usage
+
+        scores = self._parse_scores(response_text)
+        print(f"Parsed scores: {scores}")
+        return scores, empty_usage
+
+    def _run_codex_judge(self, full_prompt: str, context: EvaluationContext) -> str:
+        """codex exec with -i for each image; final assistant message via -o file."""
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as out_f:
+            out_path = out_f.name
+        try:
+            cmd = [
+                'codex', '-a', 'never', 'exec',
+                '-s', 'read-only',
+                '--skip-git-repo-check',
+                '--ephemeral',
+                '--color', 'never',
+                '-o', out_path,
+                '-i', str(context.result_image_path.absolute()),
+            ]
+            if context.reference_image_path and context.reference_image_path.exists():
+                cmd += ['-i', str(context.reference_image_path.absolute())]
+            cmd += ['-']
+
+            try:
+                result = subprocess.run(
+                    cmd, input=full_prompt, capture_output=True, text=True,
+                    timeout=900, env=self._judge_cli_env(),
+                )
+            except subprocess.TimeoutExpired:
+                raise Exception("codex judge timed out after 900s")
+            if result.returncode != 0:
+                raise Exception(f"codex judge failed (exit {result.returncode}): {(result.stderr or '')[:500]}")
+            with open(out_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        finally:
+            try:
+                os.unlink(out_path)
+            except OSError:
+                pass
+
+    def _run_claude_judge(self, full_prompt: str, context: EvaluationContext) -> str:
+        """claude -p with Read tool authorized so it can load the images by path."""
+        prompt = full_prompt + "\n\nThe images you need to evaluate are at these absolute paths — use your Read tool to view them:\n"
+        prompt += f"- generated result: {context.result_image_path.absolute()}\n"
+        if context.reference_image_path and context.reference_image_path.exists():
+            prompt += f"- reference: {context.reference_image_path.absolute()}\n"
+
+        cmd = [
+            'claude', '-p',
+            '--dangerously-skip-permissions',
+            '--output-format', 'text',
+            '--no-session-persistence',
+            '--allowedTools', 'Read',
+        ]
+        try:
+            result = subprocess.run(
+                cmd, input=prompt, capture_output=True, text=True,
+                timeout=900, env=self._judge_cli_env(),
+            )
+        except subprocess.TimeoutExpired:
+            raise Exception("claude judge timed out after 900s")
+        if result.returncode != 0:
+            raise Exception(f"claude judge failed (exit {result.returncode}): {(result.stderr or '')[:500]}")
+        return result.stdout
+
     def _encode_image(self, image_path: Path) -> str:
         """Encode image to base64 for OpenAI API"""
         with open(image_path, "rb") as image_file:

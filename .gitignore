@@ -13,6 +13,7 @@ shader_harness/target/
 llm_harness/test_*_results/      # Legacy single-problem test outputs
 llm_harness/harness_*/*          # Legacy multi-problem harness outputs
 llm_harness/benchmark_run_output/  # New multi-problem benchmark outputs (UUID-based)
+benchmark_run_output/              # Same outputs if harness was invoked from repo root
 output/                          # Generic output directory
 archive/                         # Archived results
 

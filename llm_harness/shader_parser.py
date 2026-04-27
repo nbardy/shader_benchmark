@@ -219,6 +219,17 @@ class ShaderParser:
                     shaders[filename] = content.strip()
 
         if not shaders:
+            # Final fallback: bare shader source with no wrapper / no fence.
+            # Some CLI agents (notably codex exec) strip ceremonial markdown
+            # and just emit the shader code directly. If the response contains
+            # the language's distinctive entrypoint markers, treat the whole
+            # text as a single shader file.
+            stripped = llm_response.strip()
+            wgsl_markers = ('@vertex', '@fragment', 'fn fs_main', 'fn vs_main')
+            if any(m in stripped for m in wgsl_markers):
+                shaders[f"shader{self.language_spec.file_extension}"] = stripped
+
+        if not shaders:
             raise ValueError("No shader files found")
 
         return shaders, main_rs

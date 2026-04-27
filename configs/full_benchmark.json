@@ -1,33 +1,30 @@
 {
-  "name": "Full Benchmark - All Models",
-  "description": "Complete benchmark testing all 4 models on 5 geometric problems",
-  "timestamp": "2025-07-31",
+  "name": "Full Benchmark - CLI Harnesses",
+  "description": "Three-way head-to-head: claude / codex / gemini CLIs on subscription, no OpenRouter gen spend. NB: cli/gemini depends on Google API capacity (intermittent 429s) and on a non-bloated ~/.gemini/tmp/ — see _gemini_preflight in llm_client.py.",
+  "timestamp": "2026-04-27",
   "models": [
-    "openai/o3",
-    "anthropic/claude-sonnet-4",
-    "qwen/qwen3-coder",
-    "moonshotai/kimi-vl-a3b-thinking"
+    "cli/claude",
+    "cli/codex",
+    "cli/gemini"
   ],
   "problems": [
     "geometric_cube",
     "regular_tetrahedron",
     "regular_octahedron",
     "rounded_box",
-    "torus_donut_parametric"
+    "torus_donut_parametric",
+    "reproduce_image_andrew_pons",
+    "reproduce_image_rayul",
+    "reproduce_image_photoholgic",
+    "reproduce_image_jason_leung",
+    "reproduce_image_fabrice_villard",
+    "reproduce_image_sebastien_gabriel"
   ],
   "settings": {
-    "timeout_minutes": 5,
+    "timeout_minutes": 30,
     "pause_between_tests": 1,
     "pause_between_models": 3,
     "embed_images": true,
     "output_directory": "output/full_benchmark"
-  },
-  "progress": {
-    "completed_models": [],
-    "failed_models": [],
-    "total_tests": 20,
-    "completed_tests": 0,
-    "start_time": "2025-07-31T22:12:36.564949",
-    "end_time": "2025-07-31T22:12:36.696202"
   }
 }

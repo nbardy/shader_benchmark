@@ -47,9 +47,12 @@ from typing import Dict, Tuple
 from error_handler import use_safe, save_subprocess_output
 from shader_parser import ShaderParser, WGSLRepair
 from language_specs import ShaderLanguageSpec, ShadertoySpec
+from runtimes import ShaderRuntime, default_runtime_for_language
 
 class TestRunner:
-    def __init__(self, compile_semaphore=None, render_semaphore=None, language_spec: ShaderLanguageSpec = None):
+    def __init__(self, compile_semaphore=None, render_semaphore=None,
+                 language_spec: ShaderLanguageSpec = None,
+                 runtime: ShaderRuntime = None):
         # CRITICAL FIX: Use absolute path based on script location, not relative to CWD
         # This ensures shader_harness directory is found regardless of where the script is invoked from
         script_dir = Path(__file__).parent.absolute()
@@ -63,8 +66,14 @@ class TestRunner:
         self.compile_semaphore = compile_semaphore or asyncio.Semaphore(os.cpu_count() or 8)
         self.render_semaphore = render_semaphore or asyncio.Semaphore(4)
 
-        # Language specification (determines rendering backend)
+        # Language specification (used by prompts/parsers — runtime is now
+        # an independent slot, see `runtime` below).
         self.language_spec = language_spec
+
+        # Runtime decides which renderer is invoked. Defaults to whichever
+        # backend used to be implicitly tied to the language. Override by
+        # passing an explicit ShaderRuntime (e.g. when --runtime is given).
+        self.runtime: ShaderRuntime = runtime or default_runtime_for_language(language_spec)
 
         # PRE-BUILD FIX: Store path to pre-built shader-bench binary
         # This binary is built ONCE at initialization, not per-problem
@@ -256,25 +265,17 @@ class TestRunner:
                     "pip install playwright && python -m playwright install chromium"
                 )
 
+    async def prepare_runtime(self) -> None:
+        """One-time runtime setup. WGPU prebuilds the cargo binary; Shadertoy is a no-op."""
+        await self.runtime.prepare(self)
+
     async def render_shader(self, test_folder: Path) -> Path:
+        """Stage 2: render via the configured runtime backend.
+
+        See runtimes.py for the registry; pass an explicit `runtime=` to
+        TestRunner to override the language-derived default.
         """
-        Stage 2: Execute shader (routing to appropriate backend).
-
-        Routes to either:
-        - render_shader_shadertoy() for Shadertoy spec
-        - render_shader_wgpu() for WGSL/standard shaders
-
-        Args:
-            test_folder: Path to test folder containing shaders/ subdirectory
-
-        Returns: Absolute path to generated result.png
-        """
-        # Route to Shadertoy runtime if using Shadertoy spec
-        if self.language_spec and isinstance(self.language_spec, ShadertoySpec):
-            return await self.render_shader_shadertoy(test_folder)
-
-        # Default to WGPU rendering
-        return await self.render_shader_wgpu(test_folder)
+        return await self.runtime.render(self, test_folder)
 
     async def render_shader_wgpu(self, test_folder: Path) -> Path:
         """
@@ -289,98 +290,101 @@ class TestRunner:
         Returns: Absolute path to generated result.png
         """
         async with self.render_semaphore:
-            original_cwd = os.getcwd()
-            try:
-                os.chdir(test_folder)
+            # NOTE: Do NOT use os.chdir() here. The harness runs problems
+            # concurrently in one Python process; chdir is process-wide and
+            # will leak into any subprocess (e.g. a still-running `claude` LLM
+            # call) that starts during the render window — that subprocess
+            # then resolves relative paths against the wrong directory and
+            # can write files into another problem's results dir.
+            shaders_dir = test_folder / "shaders"
+            artifacts_dir = test_folder / "artifacts"
+            artifacts_dir.mkdir(exist_ok=True)
 
-                # Ensure artifacts directory exists
-                Path("artifacts").mkdir(exist_ok=True)
+            # Find the main shader file to use (support both .wgsl and .glsl)
+            shader_files = list(shaders_dir.glob("*.wgsl")) + list(shaders_dir.glob("*.glsl"))
+            main_shader = None
 
-                # Find the main shader file to use (support both .wgsl and .glsl)
-                shader_files = list(Path("shaders").glob("*.wgsl")) + list(Path("shaders").glob("*.glsl"))
-                main_shader = None
+            # Look for specific shader names first
+            for shader_file in shader_files:
+                if "hopf" in shader_file.name.lower() or "main" in shader_file.name.lower():
+                    main_shader = shader_file
+                    break
 
-                # Look for specific shader names first
-                for shader_file in shader_files:
-                    if "hopf" in shader_file.name.lower() or "main" in shader_file.name.lower():
-                        main_shader = shader_file
-                        break
+            # Use first shader as fallback
+            if not main_shader and shader_files:
+                main_shader = shader_files[0]
 
-                # Use first shader as fallback
-                if not main_shader and shader_files:
-                    main_shader = shader_files[0]
+            if not main_shader:
+                raise FileNotFoundError("No shader files found to execute")
 
-                if not main_shader:
-                    raise FileNotFoundError("No shader files found to execute")
-
-                # PRE-BUILD FIX: Use pre-built binary (absolute path)
-                if not self.shader_bench_binary or not self.shader_bench_binary.exists():
-                    raise FileNotFoundError(
-                        f"Pre-built shader-bench binary not found. "
-                        f"Call prebuild_shader_binary() first. "
-                        f"Expected path: {self.shader_bench_binary}"
-                    )
-
-                # Run shader using pre-built binary with absolute paths
-                output_path = test_folder / "artifacts" / "result.png"
-                main_shader_absolute = (test_folder / main_shader).resolve()
-
-                run_cmd = f"{self.shader_bench_binary} --shader {main_shader_absolute} --output {output_path}"
-
-                loop = asyncio.get_event_loop()
-
-                # First attempt: try to run as-is
-                result = await loop.run_in_executor(
-                    None,
-                    lambda: subprocess.run(
-                        ["bash", "-c", run_cmd],
-                        capture_output=True,
-                        text=True,
-                        timeout=60
-                    )
+            # PRE-BUILD FIX: Use pre-built binary (absolute path)
+            if not self.shader_bench_binary or not self.shader_bench_binary.exists():
+                raise FileNotFoundError(
+                    f"Pre-built shader-bench binary not found. "
+                    f"Call prebuild_shader_binary() first. "
+                    f"Expected path: {self.shader_bench_binary}"
                 )
 
-                # Save logs (automatically saves error_log if failed)
-                save_subprocess_output(test_folder, "render", result, run_cmd)
+            # Run shader using pre-built binary with absolute paths
+            output_path = artifacts_dir / "result.png"
+            main_shader_absolute = main_shader.resolve()
 
-                if result.returncode != 0:
-                    # COMPILE FAILED: Try to repair based on actual compiler error
-                    error_output = result.stderr + result.stdout
-                    print(f"\n  ⚠️ Shader execution failed, attempting repair...")
-                    print(f"  Error message (first 200 chars): {error_output[:200]}")
+            run_cmd = f"{self.shader_bench_binary} --shader {main_shader_absolute} --output {output_path}"
 
-                    # Try repair if we detect a compilable error
-                    if self._attempt_repair_and_retry(
-                        test_folder, main_shader, error_output, run_cmd
-                    ):
-                        # Retry after repair
-                        result = await loop.run_in_executor(
-                            None,
-                            lambda: subprocess.run(
-                                ["bash", "-c", run_cmd],
-                                capture_output=True,
-                                text=True,
-                                timeout=60
-                            )
+            loop = asyncio.get_event_loop()
+
+            # First attempt: try to run as-is. Pass cwd=test_folder so the
+            # binary's working dir is per-task without polluting the parent.
+            result = await loop.run_in_executor(
+                None,
+                lambda: subprocess.run(
+                    ["bash", "-c", run_cmd],
+                    capture_output=True,
+                    text=True,
+                    timeout=60,
+                    cwd=str(test_folder),
+                )
+            )
+
+            # Save logs (automatically saves error_log if failed)
+            save_subprocess_output(test_folder, "render", result, run_cmd)
+
+            if result.returncode != 0:
+                # COMPILE FAILED: Try to repair based on actual compiler error
+                error_output = result.stderr + result.stdout
+                print(f"\n  ⚠️ Shader execution failed, attempting repair...")
+                print(f"  Error message (first 200 chars): {error_output[:200]}")
+
+                # Try repair if we detect a compilable error
+                if self._attempt_repair_and_retry(
+                    test_folder, main_shader, error_output, run_cmd
+                ):
+                    # Retry after repair
+                    result = await loop.run_in_executor(
+                        None,
+                        lambda: subprocess.run(
+                            ["bash", "-c", run_cmd],
+                            capture_output=True,
+                            text=True,
+                            timeout=60,
+                            cwd=str(test_folder),
                         )
-                        save_subprocess_output(test_folder, "render_retry", result, run_cmd)
+                    )
+                    save_subprocess_output(test_folder, "render_retry", result, run_cmd)
 
-                        if result.returncode != 0:
-                            raise RuntimeError(
-                                f"Shader execution still failing after repair: {result.stderr[:500]}"
-                            )
-                    else:
-                        raise RuntimeError(f"Shader execution failed: {result.stderr[:500]}")
+                    if result.returncode != 0:
+                        raise RuntimeError(
+                            f"Shader execution still failing after repair: {result.stderr[:500]}"
+                        )
+                else:
+                    raise RuntimeError(f"Shader execution failed: {result.stderr[:500]}")
 
-                # Check output was generated
-                if not output_path.exists():
-                    raise FileNotFoundError(f"{output_path} not found - shader execution failed")
+            # Check output was generated
+            if not output_path.exists():
+                raise FileNotFoundError(f"{output_path} not found - shader execution failed")
 
-                # Return absolute path
-                return output_path.resolve()
-
-            finally:
-                os.chdir(original_cwd)
+            # Return absolute path
+            return output_path.resolve()
 
     def _attempt_repair_and_retry(
         self, test_folder: Path, main_shader: Path, error_output: str, run_cmd: str
@@ -412,9 +416,9 @@ class TestRunner:
 
         Returns: Absolute path to generated result.png
         """
-        # Stage 0: Ensure pre-built binary exists (only runs once)
-        if not self._prebuild_complete:
-            await self.prebuild_shader_binary()
+        # Stage 0: Runtime prepare (idempotent: WGPU caches the cargo build,
+        # Shadertoy is a no-op).
+        await self.prepare_runtime()
 
         # Stage 1: Compile (now a no-op, returns immediately)
         compile_success, compile_msg = await self.compile_shader(test_folder)
