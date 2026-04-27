@@ -759,52 +759,79 @@ def main():
                        choices=['wgpu', 'shadertoy'],
                        help='Rendering runtime (default: derived from --language: shadertoy→shadertoy, else wgpu)')
     parser.add_argument('--resume', type=str, default=None,
-                       help=('Resume an interrupted run. Either pass the run folder directly '
-                             '(e.g. benchmark_run_output/abc123_model_timestamp) or pass '
-                             '"latest" to auto-pick the most recent matching run for the '
-                             'given --model + --language + --runtime. With "latest", if '
-                             'no prior run matches, a fresh run is started.'))
+                       help=('Resume a specific run folder (e.g. benchmark_run_output/abc123_…). '
+                             'Pass "latest" as an explicit alias for default auto-detect.'))
+    parser.add_argument('--new', action='store_true',
+                       help=('Force a fresh run even if a matching prior run exists. '
+                             'Without this flag, the harness auto-resumes the most recent '
+                             'run matching --model + --language + --runtime, and prints DONE '
+                             'if that run is already fully complete.'))
 
     args = parser.parse_args()
 
-    # `--resume latest` → auto-pick the most recent run dir whose config.json
-    # matches this invocation's model + language (+ runtime, if both sides
-    # specify one). Falls back to fresh start with a warning if nothing
-    # matches, so day-2 invocations don't error out before any run exists.
-    if args.resume == 'latest':
+    # Default behavior: auto-resume the most recent matching run unless the
+    # user opted out with --new or named a specific run with --resume <path>.
+    # `--resume latest` is treated identically to leaving --resume unset.
+    auto_detect = (not args.new) and (args.resume in (None, 'latest'))
+    if auto_detect:
         if not args.model:
-            parser.error("--resume latest requires --model so we can match against prior runs")
-        script_dir = Path(__file__).parent.absolute()
-        output_root = script_dir / 'benchmark_run_output'
-        matches = []
-        if output_root.exists():
-            for d in output_root.iterdir():
-                if not d.is_dir():
-                    continue
-                cfg_file = d / 'config.json'
-                if not cfg_file.exists():
-                    continue
-                try:
-                    with open(cfg_file) as f:
-                        cfg = json.load(f)
-                except (OSError, json.JSONDecodeError):
-                    continue
-                if cfg.get('model') != args.model:
-                    continue
-                if cfg.get('language', 'wgsl') != args.language:
-                    continue
-                # Runtime is optional in older configs; only enforce when both sides set it.
-                cfg_runtime = cfg.get('runtime')
-                if args.runtime and cfg_runtime and cfg_runtime != args.runtime:
-                    continue
-                matches.append((d.stat().st_mtime, d))
-        if matches:
-            matches.sort(reverse=True)
-            args.resume = str(matches[0][1])
-            print(f"🔄 --resume latest matched {len(matches)} prior run(s); resuming most recent: {matches[0][1].name}")
-        else:
-            print(f"ℹ️  --resume latest: no prior run for model={args.model} language={args.language} — starting fresh")
+            # No model means we can't match — fall through to standard fresh-mode
+            # error handling below.
             args.resume = None
+        else:
+            script_dir = Path(__file__).parent.absolute()
+            output_root = script_dir / 'benchmark_run_output'
+            matches = []
+            if output_root.exists():
+                for d in output_root.iterdir():
+                    if not d.is_dir():
+                        continue
+                    cfg_file = d / 'config.json'
+                    if not cfg_file.exists():
+                        continue
+                    try:
+                        with open(cfg_file) as f:
+                            cfg = json.load(f)
+                    except (OSError, json.JSONDecodeError):
+                        continue
+                    if cfg.get('model') != args.model:
+                        continue
+                    if cfg.get('language', 'wgsl') != args.language:
+                        continue
+                    cfg_runtime = cfg.get('runtime')
+                    if args.runtime and cfg_runtime and cfg_runtime != args.runtime:
+                        continue
+                    matches.append((d.stat().st_mtime, d))
+            if matches:
+                matches.sort(reverse=True)
+                latest_dir = matches[0][1]
+                # Check completeness: a problem is fully complete when all four
+                # stages are 'complete' in its checkpoint file.
+                cfg = json.load(open(latest_dir / 'config.json'))
+                expected = cfg.get('total_problems', len(cfg.get('problems', [])))
+                cp_dir = latest_dir / 'checkpoints'
+                done = 0
+                if cp_dir.exists():
+                    for f in sorted(cp_dir.glob('problem_*.json')):
+                        try:
+                            pdata = json.load(open(f))
+                        except (OSError, json.JSONDecodeError):
+                            continue
+                        stages = pdata.get('stages', {})
+                        if all(stages.get(s, {}).get('status') == 'complete'
+                               for s in ('generate', 'compile', 'render', 'judge')):
+                            done += 1
+                if expected and done >= expected:
+                    print(f"✅ DONE — {latest_dir.name} is fully complete ({done}/{expected} problems).")
+                    print(f"   Report: {latest_dir / 'benchmark_report.md'}")
+                    print(f"   To start a NEW run for this model, re-invoke with --new.")
+                    sys.exit(0)
+                args.resume = str(latest_dir)
+                print(f"🔄 Auto-resuming {latest_dir.name} ({done}/{expected} problems already complete)")
+            else:
+                # No prior run for this model — fall through to fresh mode.
+                args.resume = None
+                print(f"ℹ️  No prior run for model={args.model} language={args.language} — starting fresh.")
 
     # Handle resume mode
     if args.resume:
