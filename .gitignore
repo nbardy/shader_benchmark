@@ -10,12 +10,21 @@ venv/
 shader_harness/target/
 
 # Generated test outputs
-llm_harness/test_*_results/      # Legacy single-problem test outputs
-llm_harness/harness_*/*          # Legacy multi-problem harness outputs
-llm_harness/benchmark_run_output/  # New multi-problem benchmark outputs (UUID-based)
-benchmark_run_output/              # Same outputs if harness was invoked from repo root
-output/                          # Generic output directory
-archive/                         # Archived results
+# NOTE: gitignore does NOT support inline `# comment` after a pattern — the
+# whole line becomes the pattern and matches nothing. Keep comments on
+# their own lines.
+# Legacy single-problem test outputs
+llm_harness/test_*_results/
+# Legacy multi-problem harness outputs
+llm_harness/harness_*/*
+# New multi-problem benchmark outputs (UUID-based)
+llm_harness/benchmark_run_output/
+# Same outputs if harness was invoked from repo root
+benchmark_run_output/
+# Generic output directory
+output/
+# Archived results
+archive/
 
 # MAINTENANCE NOTE: When adding new output directories, add them here immediately
 # to prevent accidental commits of large result files (PNGs, logs, etc.)
