@@ -759,9 +759,52 @@ def main():
                        choices=['wgpu', 'shadertoy'],
                        help='Rendering runtime (default: derived from --language: shadertoy→shadertoy, else wgpu)')
     parser.add_argument('--resume', type=str, default=None,
-                       help='Resume an interrupted benchmark run from the specified run folder (e.g., benchmark_run_output/abc123_model_timestamp)')
+                       help=('Resume an interrupted run. Either pass the run folder directly '
+                             '(e.g. benchmark_run_output/abc123_model_timestamp) or pass '
+                             '"latest" to auto-pick the most recent matching run for the '
+                             'given --model + --language + --runtime. With "latest", if '
+                             'no prior run matches, a fresh run is started.'))
 
     args = parser.parse_args()
+
+    # `--resume latest` → auto-pick the most recent run dir whose config.json
+    # matches this invocation's model + language (+ runtime, if both sides
+    # specify one). Falls back to fresh start with a warning if nothing
+    # matches, so day-2 invocations don't error out before any run exists.
+    if args.resume == 'latest':
+        if not args.model:
+            parser.error("--resume latest requires --model so we can match against prior runs")
+        script_dir = Path(__file__).parent.absolute()
+        output_root = script_dir / 'benchmark_run_output'
+        matches = []
+        if output_root.exists():
+            for d in output_root.iterdir():
+                if not d.is_dir():
+                    continue
+                cfg_file = d / 'config.json'
+                if not cfg_file.exists():
+                    continue
+                try:
+                    with open(cfg_file) as f:
+                        cfg = json.load(f)
+                except (OSError, json.JSONDecodeError):
+                    continue
+                if cfg.get('model') != args.model:
+                    continue
+                if cfg.get('language', 'wgsl') != args.language:
+                    continue
+                # Runtime is optional in older configs; only enforce when both sides set it.
+                cfg_runtime = cfg.get('runtime')
+                if args.runtime and cfg_runtime and cfg_runtime != args.runtime:
+                    continue
+                matches.append((d.stat().st_mtime, d))
+        if matches:
+            matches.sort(reverse=True)
+            args.resume = str(matches[0][1])
+            print(f"🔄 --resume latest matched {len(matches)} prior run(s); resuming most recent: {matches[0][1].name}")
+        else:
+            print(f"ℹ️  --resume latest: no prior run for model={args.model} language={args.language} — starting fresh")
+            args.resume = None
 
     # Handle resume mode
     if args.resume:
