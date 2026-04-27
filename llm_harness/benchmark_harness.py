@@ -781,6 +781,22 @@ def main():
         else:
             script_dir = Path(__file__).parent.absolute()
             output_root = script_dir / 'benchmark_run_output'
+
+            # Resolve which problem set this invocation is asking for, so we
+            # don't auto-resume a 1-problem smoke run when the user passed
+            # --all (or vice versa). If neither --all nor --problems is set,
+            # we don't have an explicit problem set to compare against and
+            # fall back to model/language matching only.
+            requested_problems = None
+            if args.all:
+                base_set = script_dir.parent / "problems" / "base_set"
+                if base_set.exists():
+                    requested_problems = sorted(
+                        d.name for d in base_set.iterdir() if d.is_dir()
+                    )
+            elif args.problems:
+                requested_problems = sorted(args.problems)
+
             matches = []
             if output_root.exists():
                 for d in output_root.iterdir():
@@ -801,6 +817,10 @@ def main():
                     cfg_runtime = cfg.get('runtime')
                     if args.runtime and cfg_runtime and cfg_runtime != args.runtime:
                         continue
+                    if requested_problems is not None:
+                        cfg_problems = sorted(cfg.get('problems', []))
+                        if cfg_problems != requested_problems:
+                            continue
                     matches.append((d.stat().st_mtime, d))
             if matches:
                 matches.sort(reverse=True)
