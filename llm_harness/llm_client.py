@@ -40,6 +40,28 @@ _ZERO_USAGE: Dict[str, Any] = {
 }
 
 
+def parse_cli_spec(spec: str) -> Tuple[str, Optional[str], Optional[str]]:
+    """Parse `cli/<tool>[:<model>[:<extra>]]` into (tool, model, extra).
+
+    Examples:
+      cli/claude                       -> ('claude', None, None)
+      cli/claude:claude-opus-4-7       -> ('claude', 'claude-opus-4-7', None)
+      cli/codex                        -> ('codex', None, None)
+      cli/codex:gpt-5.5:high           -> ('codex', 'gpt-5.5', 'high')
+
+    The tool's per-CLI handler decides what `model`/`extra` mean (e.g. for
+    codex: `-m <model>` and `-c reasoning_effort=<extra>`).
+    """
+    if not spec.startswith('cli/'):
+        raise ValueError(f"Not a CLI spec: {spec!r}")
+    tail = spec[4:]
+    parts = tail.split(':')
+    tool = parts[0]
+    model = parts[1] if len(parts) >= 2 and parts[1] else None
+    extra = parts[2] if len(parts) >= 3 and parts[2] else None
+    return tool, model, extra
+
+
 class CliExecutor(LLMExecutor):
     """Run a local CLI tool (claude / codex / gemini) as the LLM backend.
 
@@ -70,16 +92,17 @@ class CliExecutor(LLMExecutor):
     """
 
     async def execute(self, model_name: str, payload_content: List[Dict[str, Any]], full_prompt: str, reference_image_path: Optional[str] = None) -> Tuple[str, Dict[str, Any]]:
-        cli_command = model_name[4:]  # 'claude', 'codex', 'gemini', ...
-        print(f"🚀 Using local CLI runner: {cli_command}")
+        tool, model, extra = parse_cli_spec(model_name)
+        label = f"cli/{tool}" + (f":{model}" if model else "") + (f":{extra}" if extra else "")
+        print(f"🚀 Using local CLI runner: {label}")
 
-        if cli_command == 'claude':
-            return self._run_claude(full_prompt, reference_image_path)
-        if cli_command == 'codex':
-            return self._run_codex(full_prompt, reference_image_path)
-        if cli_command == 'gemini':
-            return self._run_gemini(full_prompt, reference_image_path)
-        raise Exception(f"Unsupported CLI runner: cli/{cli_command}")
+        if tool == 'claude':
+            return self._run_claude(full_prompt, reference_image_path, model)
+        if tool == 'codex':
+            return self._run_codex(full_prompt, reference_image_path, model, extra)
+        if tool == 'gemini':
+            return self._run_gemini(full_prompt, reference_image_path, model)
+        raise Exception(f"Unsupported CLI runner: cli/{tool}")
 
     def _base_env(self) -> Dict[str, str]:
         """Strip nested-session vars + provider API keys so each CLI uses
@@ -101,7 +124,8 @@ class CliExecutor(LLMExecutor):
             "to reproduce it as closely as possible procedurally.\n"
         )
 
-    def _run_claude(self, full_prompt: str, reference_image_path: Optional[str]) -> Tuple[str, Dict[str, Any]]:
+    def _run_claude(self, full_prompt: str, reference_image_path: Optional[str],
+                    model: Optional[str] = None) -> Tuple[str, Dict[str, Any]]:
         prompt = full_prompt
         if reference_image_path:
             prompt = self._append_image_instruction(prompt, str(Path(reference_image_path).absolute()), 'Read')
@@ -114,6 +138,8 @@ class CliExecutor(LLMExecutor):
             '--no-session-persistence',
             '--allowedTools', 'Read',
         ]
+        if model:
+            cmd += ['--model', model]
         try:
             result = subprocess.run(
                 cmd, input=prompt, capture_output=True, text=True,
@@ -125,7 +151,8 @@ class CliExecutor(LLMExecutor):
             raise Exception(f"claude CLI failed (exit {result.returncode}): {(result.stderr or '')[:1000]}")
         return result.stdout, dict(_ZERO_USAGE)
 
-    def _run_codex(self, full_prompt: str, reference_image_path: Optional[str]) -> Tuple[str, Dict[str, Any]]:
+    def _run_codex(self, full_prompt: str, reference_image_path: Optional[str],
+                   model: Optional[str] = None, reasoning_effort: Optional[str] = None) -> Tuple[str, Dict[str, Any]]:
         # codex stdout is TUI-decorated even with `--color never` (Unicode
         # borders, banners, "tokens used" footer). The supported way to get
         # ONLY the final assistant message is `-o <file>`, which we then read.
@@ -147,6 +174,10 @@ class CliExecutor(LLMExecutor):
                 '--color', 'never',             # disable ANSI in stdout (banner remains)
                 '-o', out_path,                 # write final assistant msg here
             ]
+            if model:
+                cmd += ['-m', model]
+            if reasoning_effort:
+                cmd += ['-c', f'reasoning_effort={reasoning_effort}']
             if reference_image_path:
                 cmd += ['-i', str(Path(reference_image_path).absolute())]
             cmd += ['-']  # read prompt from stdin
@@ -193,7 +224,8 @@ class CliExecutor(LLMExecutor):
                 "rm -rf ~/.gemini/tmp/*"
             )
 
-    def _run_gemini(self, full_prompt: str, reference_image_path: Optional[str]) -> Tuple[str, Dict[str, Any]]:
+    def _run_gemini(self, full_prompt: str, reference_image_path: Optional[str],
+                    model: Optional[str] = None) -> Tuple[str, Dict[str, Any]]:
         self._gemini_preflight()
         # gemini-cli walks the workspace recursively on startup. Two specific
         # things will OOM the node heap (verified on 0.35.0-nightly):
@@ -233,6 +265,8 @@ class CliExecutor(LLMExecutor):
                 '--approval-mode', 'plan',
                 '--include-directories', workspace,
             ]
+            if model:
+                cmd += ['-m', model]
             env = self._base_env()
             # 4GB default heap can still OOM during workspace seeding even
             # with the isolated workspace; 8GB has been verified sufficient.

@@ -11,6 +11,7 @@ from typing import List, Tuple, Optional, Dict, Any
 from pathlib import Path
 from dotenv import load_dotenv
 from critic_template import CriticTemplate
+from llm_client import parse_cli_spec
 
 _ZERO_USAGE: Dict[str, Any] = {
     'prompt_tokens': 0, 'completion_tokens': 0, 'total_tokens': 0,
@@ -77,10 +78,11 @@ class Judge:
         self.is_cli_judge = judge_model.startswith("cli/")
 
         if self.is_cli_judge:
-            cli_name = judge_model[4:]
-            if cli_name not in self.SUPPORTED_CLI_JUDGES:
+            tool, self.cli_judge_model_q, self.cli_judge_extra = parse_cli_spec(judge_model)
+            self.cli_judge_tool = tool
+            if tool not in self.SUPPORTED_CLI_JUDGES:
                 raise ValueError(
-                    f"Unsupported CLI judge 'cli/{cli_name}'. Supported: "
+                    f"Unsupported CLI judge 'cli/{tool}'. Supported: "
                     f"{['cli/' + n for n in self.SUPPORTED_CLI_JUDGES]}"
                 )
             # No OpenRouter key needed for CLI path.
@@ -368,22 +370,22 @@ class Judge:
                 "generated result, the second image is the reference image."
             )
 
-        cli_command = self.judge_model[4:]
-        print(f"Calling cli/{cli_command} for evaluation...")
+        tool = self.cli_judge_tool
+        print(f"Calling {self.judge_model} for evaluation...")
 
         try:
-            if cli_command == 'codex':
+            if tool == 'codex':
                 response_text = self._run_codex_judge(full_prompt, context)
-            elif cli_command == 'claude':
+            elif tool == 'claude':
                 response_text = self._run_claude_judge(full_prompt, context)
             else:
-                raise ValueError(f"unsupported CLI judge cli/{cli_command}")
+                raise ValueError(f"unsupported CLI judge cli/{tool}")
         except Exception as e:
             print(f"Error calling judge ({self.judge_model}): {e}")
             if context.save_dir and context.save_dir.exists():
                 error_log = context.save_dir / "judge_error.txt"
                 with open(error_log, 'w', encoding='utf-8') as f:
-                    f.write(f"=== JUDGE ERROR LOG (cli/{cli_command}) ===\n\n")
+                    f.write(f"=== JUDGE ERROR LOG ({self.judge_model}) ===\n\n")
                     f.write(f"ERROR: {e}\n\nPROMPT USED:\n{full_prompt}\n")
             return [1, 1, 1, 1, 1], empty_usage
 
@@ -391,7 +393,7 @@ class Judge:
         if context.save_dir and context.save_dir.exists():
             judge_log = context.save_dir / "judge_response.txt"
             with open(judge_log, 'w', encoding='utf-8') as f:
-                f.write(f"=== JUDGE EVALUATION LOG (cli/{cli_command}) ===\n\nPROMPT:\n")
+                f.write(f"=== JUDGE EVALUATION LOG ({self.judge_model}) ===\n\nPROMPT:\n")
                 f.write(full_prompt)
                 f.write("\n\n" + "=" * 50 + "\n\nRAW RESPONSE:\n")
                 f.write(response_text)
@@ -420,8 +422,12 @@ class Judge:
                 '--ephemeral',
                 '--color', 'never',
                 '-o', out_path,
-                '-i', str(context.result_image_path.absolute()),
             ]
+            if self.cli_judge_model_q:
+                cmd += ['-m', self.cli_judge_model_q]
+            if self.cli_judge_extra:
+                cmd += ['-c', f'reasoning_effort={self.cli_judge_extra}']
+            cmd += ['-i', str(context.result_image_path.absolute())]
             if context.reference_image_path and context.reference_image_path.exists():
                 cmd += ['-i', str(context.reference_image_path.absolute())]
             cmd += ['-']
@@ -457,6 +463,8 @@ class Judge:
             '--no-session-persistence',
             '--allowedTools', 'Read',
         ]
+        if self.cli_judge_model_q:
+            cmd += ['--model', self.cli_judge_model_q]
         try:
             result = subprocess.run(
                 cmd, input=prompt, capture_output=True, text=True,
