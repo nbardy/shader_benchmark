@@ -30,13 +30,14 @@ from language_specs import get_language_spec
 from runtimes import get_runtime, default_runtime_for_language
 
 class BenchmarkHarness:
-    def __init__(self, model: str, problems: List[str], max_parallel: int = 100, judge_model: str = "anthropic/claude-opus-4-6", run_id: str = None, language: str = "wgsl", runtime: str = None):
+    def __init__(self, model: str, problems: List[str], max_parallel: int = 100, judge_model: str = "anthropic/claude-opus-4-6", run_id: str = None, language: str = "wgsl", runtime: str = None, skip_judge: bool = False):
         self.model = model
         self.judge_model = judge_model
         self.problems = problems
         self.max_parallel = max_parallel
         self.language = language
         self.runtime_name = runtime  # None → derive from language
+        self.skip_judge = skip_judge
         self.results = []
         self.start_time = None
         self.end_time = None
@@ -550,7 +551,18 @@ class BenchmarkHarness:
 
             # Stage 4: Judge (with smart skipping for obvious failures)
             failure_reason = None
-            if not self._is_stage_complete(problem_index, 'judge'):
+            judge_usage = {'cost': 0.0, 'total_tokens': 0}
+            if self.skip_judge:
+                # Wave-1 mode: stop after render. Leaves the judge stage
+                # 'missing' so a later resume (without --skip-judge) picks
+                # up exactly those problems and runs only the judge with
+                # the cached render image. This decouples gen-side quotas
+                # (Anthropic / Google) from judge-side quotas (codex).
+                self.logger.log_info(problem_index, problem,
+                                     "Skipping judge stage (--skip-judge); will be picked up on next resume")
+                scores = [0, 0, 0, 0, 0]
+                failure_reason = 'JUDGE_DEFERRED'
+            elif not self._is_stage_complete(problem_index, 'judge'):
                 async with self.judge_semaphore:
                     self._save_stage_checkpoint(problem_index, 'judge', 'in_progress')
                     try:
@@ -818,6 +830,12 @@ def main():
                              'Without this flag, the harness auto-resumes the most recent '
                              'run matching --model + --language + --runtime, and prints DONE '
                              'if that run is already fully complete.'))
+    parser.add_argument('--skip-judge', action='store_true',
+                       help=('Wave-1 mode: stop after the render stage and skip the judge. '
+                             'Leaves the judge stage missing in checkpoints so a later '
+                             'resume (without --skip-judge) re-judges only those problems '
+                             'using the cached render image. Lets you decouple gen-side '
+                             'quotas (Anthropic, Google) from judge-side quotas (codex).'))
 
     args = parser.parse_args()
 
@@ -965,7 +983,7 @@ def main():
         language = args.language if args.language != 'wgsl' else config.get('language', 'wgsl')
         runtime = args.runtime or config.get('runtime')
 
-        harness = BenchmarkHarness(model, problems, max_parallel, judge_model, run_id, language, runtime)
+        harness = BenchmarkHarness(model, problems, max_parallel, judge_model, run_id, language, runtime, args.skip_judge)
     else:
         # Standard mode - require model and problems
         if not args.model:
@@ -980,7 +998,7 @@ def main():
         if not args.problems:
             parser.error("--problems or --all is required (unless using --resume)")
 
-        harness = BenchmarkHarness(args.model, args.problems, args.max_parallel, args.judge_model, args.run_id, args.language, args.runtime)
+        harness = BenchmarkHarness(args.model, args.problems, args.max_parallel, args.judge_model, args.run_id, args.language, args.runtime, args.skip_judge)
 
     report_path = asyncio.run(harness.run_benchmark())
 
