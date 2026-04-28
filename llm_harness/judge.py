@@ -306,7 +306,9 @@ class Judge:
         except Exception as e:
             print(f"Error calling judge ({self.judge_model}): {e}")
 
-            # Save error log if save directory provided
+            # Save error log; then re-raise so the harness saves judge
+            # stage='failed' and the next resume re-judges this problem
+            # (using the cached render image — generation is NOT redone).
             if context.save_dir and context.save_dir.exists():
                 error_log_file = context.save_dir / "judge_error.txt"
                 with open(error_log_file, 'w', encoding='utf-8') as f:
@@ -314,12 +316,10 @@ class Judge:
                     f.write(f"ERROR: {str(e)}\n\n")
                     f.write("PROMPT USED:\n")
                     f.write(full_prompt)
-                    f.write("\n\n")
-                    f.write("RETURNING DEFAULT SCORES: [1, 1, 1, 1, 1]\n")
+                    f.write("\n\nThis judge call failed; the harness will mark judge=failed and re-judge on the next resume.\n")
                 print(f"Judge error logged to: {error_log_file}")
 
-            # Return default scores on error
-            return [1, 1, 1, 1, 1], empty_usage
+            raise
 
     # ------------------------------------------------------------------
     # CLI judge path
@@ -381,13 +381,18 @@ class Judge:
             else:
                 raise ValueError(f"unsupported CLI judge cli/{tool}")
         except Exception as e:
+            # Save error context for postmortem, then re-raise. The
+            # harness's judge-stage handler catches this, saves
+            # status='failed' on the checkpoint, and re-running the
+            # benchmark resumes by re-judging only the failed problems
+            # (cached render image is reused — generation is NOT redone).
             print(f"Error calling judge ({self.judge_model}): {e}")
             if context.save_dir and context.save_dir.exists():
                 error_log = context.save_dir / "judge_error.txt"
                 with open(error_log, 'w', encoding='utf-8') as f:
                     f.write(f"=== JUDGE ERROR LOG ({self.judge_model}) ===\n\n")
                     f.write(f"ERROR: {e}\n\nPROMPT USED:\n{full_prompt}\n")
-            return [1, 1, 1, 1, 1], empty_usage
+            raise
 
         # Persist the raw response for debugging.
         if context.save_dir and context.save_dir.exists():
