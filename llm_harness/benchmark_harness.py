@@ -300,8 +300,55 @@ class BenchmarkHarness:
                 self._is_stage_complete(problem_index, 'render') and
                 self._is_stage_complete(problem_index, 'judge'))
 
+    def _permanent_fail_stage(self, problem_index: int):
+        """Return the stage name where this problem permanently failed, or None.
+
+        A problem is "permanently failed" when retrying won't help: render
+        failures (the model produced WGSL that doesn't compile, even after
+        the WGSL repair pass) and any stage explicitly tagged with
+        `permanent=True` in its checkpoint data. Resume should skip these
+        instead of redoing the LLM call.
+
+        Render failures from runs predating the explicit `permanent` flag
+        are still treated as permanent retroactively — they're never the
+        kind of error a retry fixes.
+        """
+        pdata = self.problem_checkpoints.get(problem_index)
+        if not pdata:
+            return None
+        stages = pdata.get('stages', {})
+        for name, sdata in stages.items():
+            if sdata.get('data', {}).get('permanent') is True:
+                return name
+        if stages.get('render', {}).get('status') == 'failed':
+            return 'render'
+        return None
+
     async def run_single_problem(self, problem: str, problem_index: int, pbar: tqdm = None) -> Dict:
         """Run full pipeline for a single problem with stage-level checkpointing"""
+        # Skip retries for problems that hit a permanent failure on a prior
+        # attempt — render-stage failures are model-quality issues, not
+        # transient API problems, and re-running just spends more tokens to
+        # produce the same broken WGSL.
+        perm_stage = self._permanent_fail_stage(problem_index)
+        if perm_stage:
+            err = self._get_stage_data(problem_index, perm_stage).get('error', 'unknown')
+            self.logger.log_info(problem_index, problem,
+                                 f"Permanent {perm_stage} failure on prior attempt — skipping retry")
+            if pbar:
+                pbar.set_postfix_str(f"{problem}: 0/500 ({perm_stage} fail)")
+                pbar.update(1)
+            return {
+                'problem': problem,
+                'success': False,
+                'error': f'Permanent {perm_stage} failure (not retried): {err[:200]}',
+                'scores': [0, 0, 0, 0, 0],
+                'image_path': None,
+                'execution_time': 0,
+                'resumed_from_checkpoint': True,
+                'permanent_fail_stage': perm_stage,
+            }
+
         # RESUME OPTIMIZATION: If all stages are complete, return cached results immediately
         # This avoids re-parsing/re-loading files for fully completed problems
         if self._is_problem_fully_complete(problem_index):
@@ -481,8 +528,13 @@ class BenchmarkHarness:
                     self._save_stage_checkpoint(problem_index, 'render', 'complete', {'image_path': str(result_image)})
                 except Exception as e:
                     error_msg = str(e)[:500]
-                    self._save_stage_checkpoint(problem_index, 'render', 'failed', {'error': error_msg})
-                    print(f"❌ Render stage failed for {problem}: {error_msg}")
+                    # Render failures are the model's fault — the WGSL it
+                    # emitted didn't compile, even after the WGSL repair
+                    # pass. Retrying just regenerates the same bad shader.
+                    # Mark permanent so resume skips this problem.
+                    self._save_stage_checkpoint(problem_index, 'render', 'failed',
+                                                {'error': error_msg, 'permanent': True})
+                    print(f"❌ Render stage failed for {problem} (permanent — model produced invalid WGSL): {error_msg}")
                     raise
             else:
                 # RESUME: Load result_image path from checkpoint
@@ -830,7 +882,14 @@ def main():
                 cfg = json.load(open(latest_dir / 'config.json'))
                 expected = cfg.get('total_problems', len(cfg.get('problems', [])))
                 cp_dir = latest_dir / 'checkpoints'
+                # "Settled" = will not be retried on resume = either fully
+                # complete OR permanently failed (render-stage fail, or any
+                # stage tagged permanent=True). "Pending" includes 'failed'
+                # generate stages from transient causes (rate limits, quota)
+                # which the next pass should re-attempt.
+                settled = 0
                 done = 0
+                perm_fail = 0
                 if cp_dir.exists():
                     for f in sorted(cp_dir.glob('problem_*.json')):
                         try:
@@ -841,13 +900,25 @@ def main():
                         if all(stages.get(s, {}).get('status') == 'complete'
                                for s in ('generate', 'compile', 'render', 'judge')):
                             done += 1
-                if expected and done >= expected:
-                    print(f"✅ DONE — {latest_dir.name} is fully complete ({done}/{expected} problems).")
+                            settled += 1
+                        elif (any(sd.get('data', {}).get('permanent') is True for sd in stages.values())
+                              or stages.get('render', {}).get('status') == 'failed'):
+                            perm_fail += 1
+                            settled += 1
+                if expected and settled >= expected:
+                    msg = f"✅ DONE — {latest_dir.name} is fully settled ({done}/{expected} ok"
+                    if perm_fail:
+                        msg += f", {perm_fail} permanent fail"
+                    msg += ")."
+                    print(msg)
                     print(f"   Report: {latest_dir / 'benchmark_report.md'}")
                     print(f"   To start a NEW run for this model, re-invoke with --new.")
                     sys.exit(0)
                 args.resume = str(latest_dir)
-                print(f"🔄 Auto-resuming {latest_dir.name} ({done}/{expected} problems already complete)")
+                summary = f"{done}/{expected} ok"
+                if perm_fail:
+                    summary += f", {perm_fail} permanent fail"
+                print(f"🔄 Auto-resuming {latest_dir.name} ({summary}; will retry the rest)")
             else:
                 # No prior run for this model — fall through to fresh mode.
                 args.resume = None
