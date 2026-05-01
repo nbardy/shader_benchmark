@@ -276,6 +276,24 @@ def color_for_total(total: int | None) -> str:
     return f"hsl({hue}, 60%, 35%)"
 
 
+def pct_from_total(total: float | int | None) -> int | None:
+    """Final-score percentage: (total - 200) / 300, clamped to 0..100.
+
+    Below 200 collapses to 0% — judge floors are around 200 even for pure
+    failures, so the interesting range is 200..500. None passes through.
+    """
+    if total is None:
+        return None
+    return max(0, min(100, round((total - 200) * 100 / 300)))
+
+
+def bar_html(pct: int | None) -> str:
+    """Inline bar markup. Empty string if no score."""
+    if pct is None:
+        return ""
+    return f"<div class='barwrap'><div class='bar' style='width:{pct}%'></div></div>"
+
+
 def find_image_filename(run_dir: Path, idx: int, problem: str) -> str | None:
     """Return the actual filename inside images/ for this problem, if present."""
     src = run_dir / "images"
@@ -309,22 +327,49 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
     summary_rows = []
     for m in models:
         s = summary[m["key"]]
-        avg_f = f"{s['avg_total_filtered']:.1f}" if s["avg_total_filtered"] is not None else "—"
-        avg_z = f"{s['avg_total_with_zeros']:.1f}" if s["avg_total_with_zeros"] is not None else "—"
+        avg_f_raw = s["avg_total_filtered"]
+        avg_z_raw = s["avg_total_with_zeros"]
+        avg_f = f"{avg_f_raw:.1f}" if avg_f_raw is not None else "—"
+        avg_z = f"{avg_z_raw:.1f}" if avg_z_raw is not None else "—"
+        avg_f_pct = pct_from_total(avg_f_raw)
+        avg_z_pct = pct_from_total(avg_z_raw)
+        avg_f_html = (
+            f"{avg_f} / 500 <span class='pct'>{avg_f_pct}%</span>{bar_html(avg_f_pct)}"
+            if avg_f_pct is not None else "—"
+        )
+        avg_z_html = (
+            f"{avg_z} / 500 <span class='pct'>{avg_z_pct}%</span>{bar_html(avg_z_pct)}"
+            if avg_z_pct is not None else "—"
+        )
         best = s["best_problem"]
         worst = s["worst_problem"]
-        best_s = f"{best['name']} ({best['total']})" if best else "—"
         worst_s = f"{worst['name']} ({worst['total']})" if worst else "—"
+        # Best gets a hover-preview tooltip showing that problem's rendered
+        # image. Image filename is whatever build_image_lookup found for
+        # this (model, problem) tuple.
+        if best:
+            best_img = img_lookup.get(m["key"], {}).get(best["name"])
+            label = f"{best['name']} ({best['total']})"
+            if best_img:
+                best_s = (
+                    f"<span class='hoverimg'>{label}"
+                    f"<img src='images/{m['key']}/{best_img}' alt='{best['name']}' loading='lazy'>"
+                    f"</span>"
+                )
+            else:
+                best_s = label
+        else:
+            best_s = "—"
         summary_rows.append(
             f"<tr>"
-            f"<td><strong>{m['label']}</strong><br><span class='dim'>{m.get('model','')}</span></td>"
+            f"<td class='mname'><strong>{m['label']}</strong></td>"
             f"<td>{s['ok']}</td>"
             f"<td>{s['permanent_fail']}</td>"
-            f"<td>{avg_f} / 500</td>"
-            f"<td>{avg_z} / 500</td>"
-            f"<td>{best_s}</td>"
+            f"<td class='avgcell'>{avg_f_html}</td>"
+            f"<td class='avgcell'>{avg_z_html}</td>"
+            f"<td class='nowrap'>{best_s}</td>"
             f"<td>{worst_s}</td>"
-            f"<td><a href='{m['key']}/benchmark_report.html'>View detail report &rarr;</a></td>"
+            f"<td class='nowrap'><a href='{m['key']}/benchmark_report.html'>View detail report &rarr;</a></td>"
             f"</tr>"
         )
     summary_html = "\n".join(summary_rows)
@@ -340,9 +385,14 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
             total = cell["total"]
             status = cell["status"]
             color = color_for_total(total if status == "ok" else None)
-            disp = f"{total}" if total is not None else (
-                "render fail" if status == "render_fail" else "—"
-            )
+            if total is not None:
+                pct = pct_from_total(total)
+                disp = (
+                    f"<div class='cellnum'>{total}<span class='cellpct'> · {pct}%</span></div>"
+                    f"{bar_html(pct)}"
+                )
+            else:
+                disp = "render fail" if status == "render_fail" else "—"
             cells.append(
                 f"<td class='cell' style='background:{color}' "
                 f"data-problem='{problem}' data-model='{m['key']}'>{disp}</td>"
@@ -395,15 +445,51 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
   .sub  {{ color: var(--dim); font-size: 12px; margin: 0; }}
   a {{ color: var(--accent); text-decoration: none; }}
   a:hover {{ text-decoration: underline; }}
-  table {{ width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }}
+  /* NOTE: do NOT use overflow:hidden here. The hover-preview <img> in the
+     model summary is absolute-positioned and would get clipped to the
+     table boundary. The border-radius still applies to the table outline;
+     row backgrounds may bleed slightly past the rounded corners but it's
+     visually fine. */
+  table {{ width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }}
   th, td {{ padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }}
   th {{ background: #1c2030; font-weight: 600; color: #c8cfdb; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }}
   td.dim, .dim {{ color: var(--dim); font-size: 12px; }}
+  /* model summary: keep the model name on a single row */
+  td.mname {{ white-space: nowrap; min-width: 220px; }}
+  /* hover-preview tooltip: shows a thumbnail of the referenced shader
+     when hovering the best-cell text. Pure CSS, no JS. */
+  .hoverimg {{ position: relative; cursor: help; border-bottom: 1px dotted var(--dim); }}
+  .hoverimg > img {{
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 10;
+    margin-top: 6px;
+    width: 280px;
+    height: auto;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: #000;
+    box-shadow: 0 6px 20px rgba(0,0,0,.6);
+  }}
+  .hoverimg:hover > img {{ display: block; }}
   /* comparison table */
-  table.cmp td.cell {{ text-align: center; cursor: pointer; font-weight: 600; min-width: 110px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.4); }}
+  table.cmp td.cell {{ text-align: center; cursor: pointer; font-weight: 600; min-width: 110px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.4); padding-bottom: 12px; }}
   table.cmp td.cell:hover {{ outline: 2px solid var(--accent); outline-offset: -2px; }}
   table.cmp td.pname {{ font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: #c0c8d6; max-width: 280px; word-break: break-word; }}
   table.cmp th.mh {{ text-align: center; }}
+  /* "% of way from 200 to 500" bars. Live in score cells (per-problem)
+     and in the model-summary avg cells. */
+  .cellnum {{ line-height: 1.1; }}
+  .cellpct {{ font-weight: 400; opacity: .85; font-size: 11px; }}
+  .barwrap {{ margin-top: 4px; height: 4px; background: rgba(0,0,0,.4); border-radius: 2px; overflow: hidden; }}
+  .bar {{ height: 100%; background: rgba(255,255,255,.78); border-radius: 2px; }}
+  td.nowrap {{ white-space: nowrap; }}
+  td.avgcell {{ min-width: 140px; white-space: nowrap; }}
+  td.avgcell .pct {{ color: var(--dim); font-size: 12px; margin-left: 4px; }}
+  td.avgcell .barwrap {{ background: #222633; }}
+  td.avgcell .bar {{ background: var(--accent); }}
   /* drawer */
   tr.drawer-row td {{ padding: 0; background: #0c0e14; }}
   .drawer {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; padding: 18px; border-top: 1px solid var(--line); }}
@@ -443,7 +529,7 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
     <span class="swatch" style="background:hsl(0,60%,35%)"></span> low
     <span class="swatch" style="background:hsl(60,60%,35%)"></span> mid
     <span class="swatch" style="background:hsl(120,60%,35%)"></span> high
-    <span style="margin-left:8px">— click any cell to expand reference + rendered shaders + sub-scores. Score is sum of 5 categories (max 500).</span>
+    <span style="margin-left:8px">— click any cell to expand reference + rendered shaders + sub-scores. Score is sum of 5 categories (max 500). Bar shows final score: <code>(score &minus; 200) / 300</code>, clamped 0&ndash;100%.</span>
   </div>
   <table class="cmp">
     <thead>
