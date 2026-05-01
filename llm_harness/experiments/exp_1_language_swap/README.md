@@ -186,8 +186,8 @@ Experiment is successful if:
 
 ## Related Documents
 
-- [ABLATION_EXPERIMENTS.md](../../../ABLATION_EXPERIMENTS.md) - Overall experiment plan
-- [WGSL_CONSTRAINT_SPEC.md](../../WGSL_CONSTRAINT_SPEC.md) - WGSL baseline spec
+- [ABLATION_EXPERIMENTS.md](../../../agent_notes/ABLATION_EXPERIMENTS.md) - Overall experiment plan
+- [WGSL_CONSTRAINT_SPEC.md](../../../agent_notes/WGSL_CONSTRAINT_SPEC.md) - WGSL baseline spec
 - [glsl_constraints.txt](glsl_constraints.txt) - GLSL variant spec
 
 ## Notes

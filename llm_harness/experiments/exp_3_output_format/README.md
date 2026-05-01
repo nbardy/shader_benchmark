@@ -191,7 +191,7 @@ Test HDR vs LDR color space:
 
 ## Related Documents
 
-- [ABLATION_EXPERIMENTS.md](../../../ABLATION_EXPERIMENTS.md) - Overall experiment plan
+- [ABLATION_EXPERIMENTS.md](../../../agent_notes/ABLATION_EXPERIMENTS.md) - Overall experiment plan
 - Shader harness documentation - `--size` flag usage
 
 ## Notes

@@ -347,7 +347,7 @@ Experiment with adaptive few-shot:
 ## Related Documents
 
 - [prompt_template.txt](../../prompt_template.txt) - Current one-shot template
-- [ABLATION_EXPERIMENTS.md](../../../ABLATION_EXPERIMENTS.md) - Overall experiment plan
+- [ABLATION_EXPERIMENTS.md](../../../agent_notes/ABLATION_EXPERIMENTS.md) - Overall experiment plan
 
 ## Notes
 

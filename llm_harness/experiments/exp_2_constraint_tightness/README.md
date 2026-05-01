@@ -179,8 +179,8 @@ This creates a spectrum: **Minimal < Standard < Ultra-Strict**
 
 ## Related Documents
 
-- [WGSL_CONSTRAINT_SPEC.md](../../WGSL_CONSTRAINT_SPEC.md) - Current standard constraints
-- [ABLATION_EXPERIMENTS.md](../../../ABLATION_EXPERIMENTS.md) - Overall experiment plan
+- [WGSL_CONSTRAINT_SPEC.md](../../../agent_notes/WGSL_CONSTRAINT_SPEC.md) - Current standard constraints
+- [ABLATION_EXPERIMENTS.md](../../../agent_notes/ABLATION_EXPERIMENTS.md) - Overall experiment plan
 
 ## Notes
 

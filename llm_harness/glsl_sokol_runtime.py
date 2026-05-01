@@ -52,7 +52,7 @@ class GLSLSokolRuntime:
                 f"Please build it first using:\n"
                 f"  cd shader_harness/glsl_sokol_src\n"
                 f"  ./build.sh\n"
-                f"See GLSL_SOKOL_INSTALL.md for setup instructions."
+                f"See agent_notes/GLSL_SOKOL_INSTALL.md for setup instructions."
             )
 
         # Verify it's executable

@@ -268,7 +268,7 @@ Combine metrics with semantic understanding:
 
 ## Related Documents
 
-- [ABLATION_EXPERIMENTS.md](../../../ABLATION_EXPERIMENTS.md) - Overall experiment plan
+- [ABLATION_EXPERIMENTS.md](../../../agent_notes/ABLATION_EXPERIMENTS.md) - Overall experiment plan
 - [scoring_system_technical.md](../../../claude_code/scoring_system_technical.md) - Current scoring system
 
 ## Notes

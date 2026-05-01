@@ -515,8 +515,8 @@ The ablation study is successful if:
 
 ## Related Documents
 
-- [ABLATION_EXPERIMENTS.md](../../ABLATION_EXPERIMENTS.md) - Original experiment planning
-- [WGSL_CONSTRAINT_SPEC.md](../WGSL_CONSTRAINT_SPEC.md) - Current constraint specification
+- [ABLATION_EXPERIMENTS.md](../../agent_notes/ABLATION_EXPERIMENTS.md) - Original experiment planning
+- [WGSL_CONSTRAINT_SPEC.md](../../agent_notes/WGSL_CONSTRAINT_SPEC.md) - Current constraint specification
 - [scoring_system_technical.md](../../claude_code/scoring_system_technical.md) - Evaluation system
 - [benchmark_harness.py](../benchmark_harness.py) - Pipeline orchestration
 
