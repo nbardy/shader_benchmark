@@ -1,0 +1,4058 @@
+{
+  "generated": "2026-05-01T12:48:27.005127+00:00",
+  "models": [
+    {
+      "key": "claude-opus-4-7",
+      "label": "Claude Opus 4.7",
+      "run_id": "65ab97ac_cli_claude_claude-opus-4-7_20260427_183924",
+      "model": "cli/claude:claude-opus-4-7",
+      "judge_model": "cli/codex:gpt-5.5:high",
+      "language": "wgsl",
+      "runtime": "wgpu"
+    },
+    {
+      "key": "gemini-3.1-pro-preview",
+      "label": "Gemini 3.1-pro-preview",
+      "run_id": "f995b01e_cli_gemini_20260427_184028",
+      "model": "cli/gemini",
+      "judge_model": "cli/codex:gpt-5.5:high",
+      "language": "wgsl",
+      "runtime": "wgpu"
+    },
+    {
+      "key": "codex-gpt-5.5-high",
+      "label": "Codex GPT-5.5 high",
+      "run_id": "68ca3b4b_cli_codex_gpt-5.5_high_20260428_170724",
+      "model": "cli/codex:gpt-5.5:high",
+      "judge_model": "cli/codex:gpt-5.5:high",
+      "language": "wgsl",
+      "runtime": "wgpu"
+    }
+  ],
+  "problems": [
+    "ackermann_function_growth",
+    "al_khwarizmi_geometric_algebra",
+    "apollonian_gasket",
+    "apollonius_conic_sections",
+    "archimedean_spiral_galaxy",
+    "archimedes_spiral",
+    "barbell_dumbbell_shape",
+    "binary_tree_fractal",
+    "brahmagupta_cyclic_quadrilaterals",
+    "braided_rope",
+    "butterfly_curve",
+    "calabi_yau_manifold",
+    "capsule_shape",
+    "cardioid_limacon_collection",
+    "catenoid_helicoid_minimal",
+    "chinese_remainder_sunzi",
+    "chinese_remainder_theorem",
+    "chladni_patterns",
+    "complex_analysis_stained_glass",
+    "compound_polyhedra_stella_octangula",
+    "conformal_spiral_mapping",
+    "costa_minimal_surface",
+    "crystal_lattice_diffraction",
+    "cycloid_wave_patterns",
+    "cylindrical_bend_deformation",
+    "differential_equations_water",
+    "dna_double_helix",
+    "epicycloids",
+    "euler_polyhedron_formula",
+    "euler_polyhedron_platonic",
+    "fermat_parabolic_spiral",
+    "five_pointed_star_polygon",
+    "fourier_architectural_blueprint",
+    "fourier_epicycles_drawing",
+    "fractal_loxodromic_patterns",
+    "fractal_tree_2d",
+    "gauss_complex_plane",
+    "geometric_cube",
+    "glass_sphere_red_core",
+    "group_theory_kaleidoscope",
+    "gyroscopic_nested_rings",
+    "helical_twist_deformation",
+    "helical_twisted_cube_advanced",
+    "holographic_interference",
+    "hopf_fibration_base_loops",
+    "hyper_menger_cube_3sphere",
+    "hyperbolic_heat_kernel",
+    "icosahedron_wireframe",
+    "klein_bottle",
+    "lissajous_curve_garden",
+    "logarithmic_spiral_motion",
+    "lorenz_attractor_poincare",
+    "loxodromic_sphere_spirals",
+    "mandala_circles",
+    "mandelbulb_fractal",
+    "menger_cube_fractal",
+    "menger_sponge_fractal",
+    "mobius_strip_half_twist",
+    "mobius_strip_triple_twist",
+    "mobius_transformation_3d",
+    "number_theory_music",
+    "octagram_star_polygon",
+    "parametric_gear_train",
+    "parametric_seashell",
+    "penrose_tiling_p3",
+    "phyllotaxis_spiral",
+    "poincare_disc",
+    "prime_crystal_lattice",
+    "probability_weather_patterns",
+    "quantum_probability_waves",
+    "ramanujan_mock_theta",
+    "reaction_diffusion_patterns",
+    "regular_dodecahedron",
+    "regular_icosahedron",
+    "regular_octahedron",
+    "regular_tetrahedron",
+    "reproduce_image",
+    "reproduce_image_andrew_pons",
+    "reproduce_image_fabrice_villard",
+    "reproduce_image_jason_leung",
+    "reproduce_image_photoholgic",
+    "reproduce_image_rayul",
+    "reproduce_image_sebastien_gabriel",
+    "riemann_surface_branch_cuts",
+    "riemann_zeta_zeros",
+    "rose_curves",
+    "rotating_hypercube_projection",
+    "rounded_box",
+    "schwarzschild_black_hole",
+    "sierpinski_tetrahedron",
+    "sierpinski_triangle_6_iterations",
+    "spherical_inversion_mapping",
+    "spinning_gear_assembly",
+    "spinning_vortex_funnel",
+    "spiral_staircase_tower",
+    "stella_octangula",
+    "superformula_explorer",
+    "taper_shear_transformation",
+    "topology_fabric_texture",
+    "torus_donut_parametric",
+    "trefoil_alexander_polynomial",
+    "trigonometric_mandalas",
+    "truncated_icosahedron",
+    "twisted_stellated_polyhedron",
+    "voronoi_diagram",
+    "wave_deformation_field",
+    "weierstrass_function"
+  ],
+  "scores": {
+    "ackermann_function_growth": {
+      "claude-opus-4-7": {
+        "scores": [
+          36,
+          42,
+          16,
+          45,
+          39
+        ],
+        "total": 178,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          28,
+          46,
+          15,
+          35,
+          30
+        ],
+        "total": 154,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          43,
+          68,
+          18,
+          58,
+          43
+        ],
+        "total": 230,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "al_khwarizmi_geometric_algebra": {
+      "claude-opus-4-7": {
+        "scores": [
+          18,
+          72,
+          22,
+          34,
+          20
+        ],
+        "total": 166,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          8,
+          28,
+          5,
+          10,
+          4
+        ],
+        "total": 55,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          44,
+          67,
+          39,
+          50,
+          35
+        ],
+        "total": 235,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "apollonian_gasket": {
+      "claude-opus-4-7": {
+        "scores": [
+          38,
+          62,
+          22,
+          39,
+          43
+        ],
+        "total": 204,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          45,
+          88,
+          42,
+          63,
+          49
+        ],
+        "total": 287,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          35,
+          78,
+          18,
+          42,
+          28
+        ],
+        "total": 201,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "apollonius_conic_sections": {
+      "claude-opus-4-7": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          70,
+          78,
+          62,
+          73,
+          48
+        ],
+        "total": 331,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          72,
+          78,
+          73,
+          82,
+          74
+        ],
+        "total": 379,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "archimedean_spiral_galaxy": {
+      "claude-opus-4-7": {
+        "scores": [
+          58,
+          76,
+          52,
+          48,
+          54
+        ],
+        "total": 288,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          85,
+          82,
+          88,
+          72,
+          78
+        ],
+        "total": 405,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          4,
+          18,
+          1,
+          3,
+          2
+        ],
+        "total": 28,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "archimedes_spiral": {
+      "claude-opus-4-7": {
+        "scores": [
+          38,
+          67,
+          28,
+          45,
+          31
+        ],
+        "total": 209,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          4,
+          36,
+          1,
+          10,
+          2
+        ],
+        "total": 53,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          54,
+          76,
+          45,
+          70,
+          48
+        ],
+        "total": 293,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "barbell_dumbbell_shape": {
+      "claude-opus-4-7": {
+        "scores": [
+          8,
+          22,
+          5,
+          7,
+          5
+        ],
+        "total": 47,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          76,
+          42,
+          78,
+          46,
+          58
+        ],
+        "total": 300,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "binary_tree_fractal": {
+      "claude-opus-4-7": {
+        "scores": [
+          2,
+          8,
+          1,
+          1,
+          1
+        ],
+        "total": 13,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          35,
+          42,
+          28,
+          30,
+          25
+        ],
+        "total": 160,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          5,
+          1,
+          8,
+          1,
+          4
+        ],
+        "total": 19,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "brahmagupta_cyclic_quadrilaterals": {
+      "claude-opus-4-7": {
+        "scores": [
+          66,
+          84,
+          82,
+          72,
+          48
+        ],
+        "total": 352,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          74,
+          82,
+          76,
+          78,
+          63
+        ],
+        "total": 373,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          2,
+          4,
+          1,
+          1,
+          1
+        ],
+        "total": 9,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "braided_rope": {
+      "claude-opus-4-7": {
+        "scores": [
+          80,
+          77,
+          78,
+          75,
+          76
+        ],
+        "total": 386,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          76,
+          84,
+          72,
+          78,
+          70
+        ],
+        "total": 380,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          84,
+          88,
+          86,
+          82,
+          78
+        ],
+        "total": 418,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "butterfly_curve": {
+      "claude-opus-4-7": {
+        "scores": [
+          58,
+          52,
+          88,
+          24,
+          61
+        ],
+        "total": 283,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          45,
+          42,
+          88,
+          25,
+          50
+        ],
+        "total": 250,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          55,
+          70,
+          88,
+          28,
+          52
+        ],
+        "total": 293,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "calabi_yau_manifold": {
+      "claude-opus-4-7": {
+        "scores": [
+          6,
+          12,
+          1,
+          3,
+          2
+        ],
+        "total": 24,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          38,
+          76,
+          24,
+          55,
+          23
+        ],
+        "total": 216,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      }
+    },
+    "capsule_shape": {
+      "claude-opus-4-7": {
+        "scores": [
+          58,
+          66,
+          52,
+          60,
+          50
+        ],
+        "total": 286,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          58,
+          78,
+          42,
+          63,
+          72
+        ],
+        "total": 313,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          68,
+          86,
+          52,
+          82,
+          74
+        ],
+        "total": 362,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "cardioid_limacon_collection": {
+      "claude-opus-4-7": {
+        "scores": [
+          82,
+          88,
+          90,
+          76,
+          74
+        ],
+        "total": 410,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          76,
+          88,
+          80,
+          82,
+          68
+        ],
+        "total": 394,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          82,
+          88,
+          90,
+          78,
+          72
+        ],
+        "total": 410,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "catenoid_helicoid_minimal": {
+      "claude-opus-4-7": {
+        "scores": [
+          78,
+          66,
+          82,
+          62,
+          74
+        ],
+        "total": 362,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          18,
+          22,
+          35,
+          8,
+          10
+        ],
+        "total": 93,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "chinese_remainder_sunzi": {
+      "claude-opus-4-7": {
+        "scores": [
+          39,
+          74,
+          36,
+          47,
+          15
+        ],
+        "total": 211,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          22,
+          68,
+          10,
+          36,
+          8
+        ],
+        "total": 144,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          38,
+          42,
+          31,
+          45,
+          28
+        ],
+        "total": 184,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "chinese_remainder_theorem": {
+      "claude-opus-4-7": {
+        "scores": [
+          58,
+          70,
+          50,
+          72,
+          52
+        ],
+        "total": 302,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          2,
+          5,
+          3,
+          2,
+          2
+        ],
+        "total": 14,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      }
+    },
+    "chladni_patterns": {
+      "claude-opus-4-7": {
+        "scores": [
+          62,
+          78,
+          45,
+          67,
+          58
+        ],
+        "total": 310,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          78,
+          82,
+          88,
+          58,
+          70
+        ],
+        "total": 376,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "complex_analysis_stained_glass": {
+      "claude-opus-4-7": {
+        "scores": [
+          46,
+          67,
+          38,
+          44,
+          42
+        ],
+        "total": 237,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          34,
+          36,
+          38,
+          24,
+          16
+        ],
+        "total": 148,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          62,
+          78,
+          55,
+          70,
+          72
+        ],
+        "total": 337,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "compound_polyhedra_stella_octangula": {
+      "claude-opus-4-7": {
+        "scores": [
+          63,
+          58,
+          66,
+          32,
+          55
+        ],
+        "total": 274,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          48,
+          38,
+          46,
+          18,
+          42
+        ],
+        "total": 192,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          78,
+          84,
+          72,
+          61,
+          76
+        ],
+        "total": 371,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "conformal_spiral_mapping": {
+      "claude-opus-4-7": {
+        "scores": [
+          58,
+          74,
+          45,
+          62,
+          52
+        ],
+        "total": 291,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          58,
+          78,
+          46,
+          62,
+          43
+        ],
+        "total": 287,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          58,
+          67,
+          52,
+          55,
+          45
+        ],
+        "total": 277,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "costa_minimal_surface": {
+      "claude-opus-4-7": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          3,
+          1,
+          1,
+          1,
+          1
+        ],
+        "total": 7,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          28,
+          45,
+          12,
+          33,
+          8
+        ],
+        "total": 126,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "crystal_lattice_diffraction": {
+      "claude-opus-4-7": {
+        "scores": [
+          68,
+          86,
+          62,
+          84,
+          60
+        ],
+        "total": 360,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          72,
+          78,
+          66,
+          76,
+          61
+        ],
+        "total": 353,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          70,
+          82,
+          62,
+          74,
+          67
+        ],
+        "total": 355,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "cycloid_wave_patterns": {
+      "claude-opus-4-7": {
+        "scores": [
+          84,
+          78,
+          90,
+          82,
+          72
+        ],
+        "total": 406,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          82,
+          80,
+          88,
+          86,
+          72
+        ],
+        "total": 408,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          74,
+          86,
+          75,
+          88,
+          72
+        ],
+        "total": 395,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "cylindrical_bend_deformation": {
+      "claude-opus-4-7": {
+        "scores": [
+          18,
+          24,
+          30,
+          10,
+          14
+        ],
+        "total": 96,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          72,
+          74,
+          76,
+          51,
+          45
+        ],
+        "total": 318,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          83,
+          74,
+          88,
+          63,
+          72
+        ],
+        "total": 380,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "differential_equations_water": {
+      "claude-opus-4-7": {
+        "scores": [
+          24,
+          31,
+          18,
+          20,
+          22
+        ],
+        "total": 115,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          18,
+          42,
+          12,
+          16,
+          14
+        ],
+        "total": 102,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          34,
+          41,
+          27,
+          31,
+          26
+        ],
+        "total": 159,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "dna_double_helix": {
+      "claude-opus-4-7": {
+        "scores": [
+          55,
+          78,
+          52,
+          63,
+          38
+        ],
+        "total": 286,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          42,
+          76,
+          38,
+          58,
+          30
+        ],
+        "total": 244,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "epicycloids": {
+      "claude-opus-4-7": {
+        "scores": [
+          91,
+          94,
+          92,
+          96,
+          88
+        ],
+        "total": 461,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          90,
+          91,
+          88,
+          93,
+          86
+        ],
+        "total": 448,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          68,
+          76,
+          70,
+          73,
+          54
+        ],
+        "total": 341,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "euler_polyhedron_formula": {
+      "claude-opus-4-7": {
+        "scores": [
+          58,
+          78,
+          52,
+          50,
+          43
+        ],
+        "total": 281,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          8,
+          12,
+          5,
+          4,
+          6
+        ],
+        "total": 35,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          38,
+          45,
+          28,
+          32,
+          35
+        ],
+        "total": 178,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "euler_polyhedron_platonic": {
+      "claude-opus-4-7": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          8,
+          34,
+          3,
+          16,
+          2
+        ],
+        "total": 63,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      }
+    },
+    "fermat_parabolic_spiral": {
+      "claude-opus-4-7": {
+        "scores": [
+          82,
+          93,
+          76,
+          84,
+          75
+        ],
+        "total": 410,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          76,
+          93,
+          68,
+          86,
+          72
+        ],
+        "total": 395,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          78,
+          93,
+          70,
+          84,
+          72
+        ],
+        "total": 397,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "five_pointed_star_polygon": {
+      "claude-opus-4-7": {
+        "scores": [
+          86,
+          92,
+          91,
+          88,
+          84
+        ],
+        "total": 441,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          88,
+          84,
+          92,
+          86,
+          87
+        ],
+        "total": 437,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          88,
+          90,
+          91,
+          89,
+          88
+        ],
+        "total": 446,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "fourier_architectural_blueprint": {
+      "claude-opus-4-7": {
+        "scores": [
+          28,
+          58,
+          30,
+          24,
+          20
+        ],
+        "total": 160,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          45,
+          62,
+          35,
+          58,
+          38
+        ],
+        "total": 238,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          32,
+          78,
+          18,
+          62,
+          24
+        ],
+        "total": 214,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "fourier_epicycles_drawing": {
+      "claude-opus-4-7": {
+        "scores": [
+          68,
+          88,
+          56,
+          78,
+          58
+        ],
+        "total": 348,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          72,
+          68,
+          78,
+          65,
+          60
+        ],
+        "total": 343,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          74,
+          82,
+          78,
+          75,
+          70
+        ],
+        "total": 379,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "fractal_loxodromic_patterns": {
+      "claude-opus-4-7": {
+        "scores": [
+          18,
+          42,
+          10,
+          20,
+          14
+        ],
+        "total": 104,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          68,
+          82,
+          61,
+          63,
+          58
+        ],
+        "total": 332,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          42,
+          35,
+          24,
+          37,
+          27
+        ],
+        "total": 165,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "fractal_tree_2d": {
+      "claude-opus-4-7": {
+        "scores": [
+          70,
+          78,
+          62,
+          82,
+          58
+        ],
+        "total": 350,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          74,
+          82,
+          69,
+          84,
+          63
+        ],
+        "total": 372,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          78,
+          86,
+          72,
+          84,
+          68
+        ],
+        "total": 388,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "gauss_complex_plane": {
+      "claude-opus-4-7": {
+        "scores": [
+          74,
+          82,
+          91,
+          80,
+          61
+        ],
+        "total": 388,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          68,
+          83,
+          74,
+          78,
+          58
+        ],
+        "total": 361,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "geometric_cube": {
+      "claude-opus-4-7": {
+        "scores": [
+          8,
+          22,
+          6,
+          9,
+          5
+        ],
+        "total": 50,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          78,
+          88,
+          70,
+          84,
+          76
+        ],
+        "total": 396,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          58,
+          63,
+          54,
+          66,
+          45
+        ],
+        "total": 286,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "glass_sphere_red_core": {
+      "claude-opus-4-7": {
+        "scores": [
+          45,
+          42,
+          36,
+          34,
+          38
+        ],
+        "total": 195,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          55,
+          48,
+          58,
+          42,
+          45
+        ],
+        "total": 248,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          50,
+          58,
+          45,
+          42,
+          44
+        ],
+        "total": 239,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "group_theory_kaleidoscope": {
+      "claude-opus-4-7": {
+        "scores": [
+          58,
+          76,
+          42,
+          70,
+          39
+        ],
+        "total": 285,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          62,
+          78,
+          48,
+          72,
+          50
+        ],
+        "total": 310,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          45,
+          76,
+          28,
+          66,
+          34
+        ],
+        "total": 249,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "gyroscopic_nested_rings": {
+      "claude-opus-4-7": {
+        "scores": [
+          80,
+          91,
+          74,
+          88,
+          72
+        ],
+        "total": 405,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          76,
+          84,
+          82,
+          72,
+          55
+        ],
+        "total": 369,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          74,
+          82,
+          78,
+          58,
+          62
+        ],
+        "total": 354,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "helical_twist_deformation": {
+      "claude-opus-4-7": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          32,
+          48,
+          38,
+          22,
+          35
+        ],
+        "total": 175,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          45,
+          38,
+          30,
+          28,
+          42
+        ],
+        "total": 183,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "helical_twisted_cube_advanced": {
+      "claude-opus-4-7": {
+        "scores": [
+          8,
+          22,
+          5,
+          8,
+          20
+        ],
+        "total": 63,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          52,
+          68,
+          55,
+          22,
+          42
+        ],
+        "total": 239,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          45,
+          72,
+          42,
+          28,
+          45
+        ],
+        "total": 232,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "holographic_interference": {
+      "claude-opus-4-7": {
+        "scores": [
+          42,
+          68,
+          38,
+          45,
+          40
+        ],
+        "total": 233,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          55,
+          76,
+          40,
+          62,
+          58
+        ],
+        "total": 291,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          54,
+          82,
+          45,
+          50,
+          58
+        ],
+        "total": 289,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "hopf_fibration_base_loops": {
+      "claude-opus-4-7": {
+        "scores": [
+          46,
+          74,
+          41,
+          48,
+          38
+        ],
+        "total": 247,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          2,
+          15,
+          1,
+          3,
+          2
+        ],
+        "total": 23,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          72,
+          74,
+          76,
+          58,
+          57
+        ],
+        "total": 337,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "hyper_menger_cube_3sphere": {
+      "claude-opus-4-7": {
+        "scores": [
+          42,
+          28,
+          36,
+          24,
+          45
+        ],
+        "total": 175,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          8,
+          12,
+          5,
+          8,
+          10
+        ],
+        "total": 43,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          12,
+          35,
+          10,
+          18,
+          15
+        ],
+        "total": 90,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "hyperbolic_heat_kernel": {
+      "claude-opus-4-7": {
+        "scores": [
+          63,
+          70,
+          54,
+          58,
+          61
+        ],
+        "total": 306,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          66,
+          82,
+          58,
+          70,
+          62
+        ],
+        "total": 338,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          70,
+          84,
+          55,
+          78,
+          67
+        ],
+        "total": 354,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "icosahedron_wireframe": {
+      "claude-opus-4-7": {
+        "scores": [
+          10,
+          18,
+          8,
+          8,
+          7
+        ],
+        "total": 51,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          1,
+          4,
+          3,
+          1,
+          1
+        ],
+        "total": 10,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "klein_bottle": {
+      "claude-opus-4-7": {
+        "scores": [
+          4,
+          18,
+          1,
+          3,
+          1
+        ],
+        "total": 27,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          55,
+          72,
+          48,
+          45,
+          42
+        ],
+        "total": 262,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          58,
+          46,
+          55,
+          28,
+          40
+        ],
+        "total": 227,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "lissajous_curve_garden": {
+      "claude-opus-4-7": {
+        "scores": [
+          58,
+          70,
+          22,
+          12,
+          25
+        ],
+        "total": 187,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          78,
+          82,
+          35,
+          20,
+          42
+        ],
+        "total": 257,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          78,
+          84,
+          24,
+          14,
+          30
+        ],
+        "total": 230,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "logarithmic_spiral_motion": {
+      "claude-opus-4-7": {
+        "scores": [
+          2,
+          1,
+          3,
+          1,
+          2
+        ],
+        "total": 9,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          18,
+          20,
+          22,
+          8,
+          15
+        ],
+        "total": 83,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          74,
+          63,
+          78,
+          68,
+          72
+        ],
+        "total": 355,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "lorenz_attractor_poincare": {
+      "claude-opus-4-7": {
+        "scores": [
+          8,
+          12,
+          5,
+          4,
+          6
+        ],
+        "total": 35,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          66,
+          48,
+          70,
+          43,
+          58
+        ],
+        "total": 285,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          66,
+          58,
+          61,
+          55,
+          57
+        ],
+        "total": 297,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "loxodromic_sphere_spirals": {
+      "claude-opus-4-7": {
+        "scores": [
+          4,
+          18,
+          2,
+          6,
+          2
+        ],
+        "total": 32,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          70,
+          73,
+          78,
+          62,
+          67
+        ],
+        "total": 350,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          63,
+          72,
+          61,
+          58,
+          50
+        ],
+        "total": 304,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "mandala_circles": {
+      "claude-opus-4-7": {
+        "scores": [
+          82,
+          91,
+          74,
+          94,
+          78
+        ],
+        "total": 419,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          74,
+          88,
+          72,
+          91,
+          75
+        ],
+        "total": 400,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          81,
+          90,
+          78,
+          95,
+          80
+        ],
+        "total": 424,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "mandelbulb_fractal": {
+      "claude-opus-4-7": {
+        "scores": [
+          2,
+          3,
+          1,
+          2,
+          1
+        ],
+        "total": 9,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          2,
+          8,
+          1,
+          4,
+          1
+        ],
+        "total": 16,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          6,
+          12,
+          2,
+          8,
+          3
+        ],
+        "total": 31,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "menger_cube_fractal": {
+      "claude-opus-4-7": {
+        "scores": [
+          5,
+          8,
+          3,
+          4,
+          2
+        ],
+        "total": 22,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          58,
+          41,
+          45,
+          50,
+          39
+        ],
+        "total": 233,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          48,
+          34,
+          56,
+          25,
+          36
+        ],
+        "total": 199,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "menger_sponge_fractal": {
+      "claude-opus-4-7": {
+        "scores": [
+          8,
+          12,
+          1,
+          2,
+          1
+        ],
+        "total": 24,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          8,
+          6,
+          1,
+          2,
+          1
+        ],
+        "total": 18,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          35,
+          22,
+          18,
+          20,
+          18
+        ],
+        "total": 113,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "mobius_strip_half_twist": {
+      "claude-opus-4-7": {
+        "scores": [
+          76,
+          63,
+          70,
+          58,
+          60
+        ],
+        "total": 327,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          66,
+          70,
+          61,
+          63,
+          56
+        ],
+        "total": 316,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          12,
+          4,
+          15,
+          3,
+          5
+        ],
+        "total": 39,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "mobius_strip_triple_twist": {
+      "claude-opus-4-7": {
+        "scores": [
+          78,
+          82,
+          79,
+          63,
+          66
+        ],
+        "total": 368,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          76,
+          84,
+          72,
+          66,
+          68
+        ],
+        "total": 366,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          74,
+          68,
+          82,
+          54,
+          61
+        ],
+        "total": 339,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "mobius_transformation_3d": {
+      "claude-opus-4-7": {
+        "scores": [
+          12,
+          1,
+          45,
+          1,
+          3
+        ],
+        "total": 62,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          68,
+          72,
+          60,
+          64,
+          55
+        ],
+        "total": 319,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          5,
+          12,
+          8,
+          3,
+          2
+        ],
+        "total": 30,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "number_theory_music": {
+      "claude-opus-4-7": {
+        "scores": [
+          10,
+          12,
+          8,
+          7,
+          6
+        ],
+        "total": 43,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          24,
+          18,
+          19,
+          23,
+          17
+        ],
+        "total": 101,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      }
+    },
+    "octagram_star_polygon": {
+      "claude-opus-4-7": {
+        "scores": [
+          72,
+          90,
+          70,
+          64,
+          66
+        ],
+        "total": 362,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          64,
+          88,
+          58,
+          55,
+          60
+        ],
+        "total": 325,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          38,
+          72,
+          46,
+          42,
+          36
+        ],
+        "total": 234,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "parametric_gear_train": {
+      "claude-opus-4-7": {
+        "scores": [
+          76,
+          84,
+          75,
+          84,
+          76
+        ],
+        "total": 395,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          70,
+          86,
+          49,
+          82,
+          72
+        ],
+        "total": 359,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "parametric_seashell": {
+      "claude-opus-4-7": {
+        "scores": [
+          82,
+          76,
+          84,
+          75,
+          79
+        ],
+        "total": 396,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          42,
+          48,
+          36,
+          48,
+          52
+        ],
+        "total": 226,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          73,
+          70,
+          82,
+          58,
+          61
+        ],
+        "total": 344,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "penrose_tiling_p3": {
+      "claude-opus-4-7": {
+        "scores": [
+          58,
+          80,
+          67,
+          65,
+          48
+        ],
+        "total": 318,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          42,
+          55,
+          34,
+          52,
+          31
+        ],
+        "total": 214,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          22,
+          63,
+          18,
+          45,
+          20
+        ],
+        "total": 168,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "phyllotaxis_spiral": {
+      "claude-opus-4-7": {
+        "scores": [
+          10,
+          35,
+          18,
+          8,
+          10
+        ],
+        "total": 81,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          78,
+          88,
+          73,
+          74,
+          76
+        ],
+        "total": 389,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          8,
+          35,
+          42,
+          12,
+          10
+        ],
+        "total": 107,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "poincare_disc": {
+      "claude-opus-4-7": {
+        "scores": [
+          90,
+          92,
+          87,
+          93,
+          84
+        ],
+        "total": 446,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          89,
+          86,
+          97,
+          93,
+          88
+        ],
+        "total": 453,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          83,
+          87,
+          93,
+          87,
+          84
+        ],
+        "total": 434,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "prime_crystal_lattice": {
+      "claude-opus-4-7": {
+        "scores": [
+          63,
+          82,
+          59,
+          81,
+          50
+        ],
+        "total": 335,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          45,
+          78,
+          41,
+          76,
+          55
+        ],
+        "total": 295,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "probability_weather_patterns": {
+      "claude-opus-4-7": {
+        "scores": [
+          32,
+          46,
+          28,
+          26,
+          22
+        ],
+        "total": 154,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          31,
+          27,
+          18,
+          24,
+          22
+        ],
+        "total": 122,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          46,
+          57,
+          38,
+          43,
+          34
+        ],
+        "total": 218,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "quantum_probability_waves": {
+      "claude-opus-4-7": {
+        "scores": [
+          58,
+          76,
+          28,
+          50,
+          36
+        ],
+        "total": 248,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          68,
+          82,
+          42,
+          66,
+          48
+        ],
+        "total": 306,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          72,
+          78,
+          55,
+          61,
+          64
+        ],
+        "total": 330,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "ramanujan_mock_theta": {
+      "claude-opus-4-7": {
+        "scores": [
+          58,
+          80,
+          38,
+          68,
+          43
+        ],
+        "total": 287,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          72,
+          82,
+          48,
+          76,
+          55
+        ],
+        "total": 333,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          48,
+          78,
+          35,
+          55,
+          42
+        ],
+        "total": 258,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reaction_diffusion_patterns": {
+      "claude-opus-4-7": {
+        "scores": [
+          18,
+          55,
+          8,
+          25,
+          12
+        ],
+        "total": 118,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          35,
+          72,
+          28,
+          45,
+          32
+        ],
+        "total": 212,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          28,
+          63,
+          18,
+          48,
+          24
+        ],
+        "total": 181,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "regular_dodecahedron": {
+      "claude-opus-4-7": {
+        "scores": [
+          82,
+          72,
+          88,
+          68,
+          78
+        ],
+        "total": 388,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          78,
+          63,
+          82,
+          65,
+          72
+        ],
+        "total": 360,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          88,
+          73,
+          92,
+          76,
+          84
+        ],
+        "total": 413,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "regular_icosahedron": {
+      "claude-opus-4-7": {
+        "scores": [
+          91,
+          84,
+          96,
+          88,
+          82
+        ],
+        "total": 441,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          76,
+          73,
+          84,
+          79,
+          67
+        ],
+        "total": 379,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          88,
+          90,
+          92,
+          84,
+          82
+        ],
+        "total": 436,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "regular_octahedron": {
+      "claude-opus-4-7": {
+        "scores": [
+          82,
+          84,
+          91,
+          83,
+          78
+        ],
+        "total": 418,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          84,
+          88,
+          82,
+          87,
+          80
+        ],
+        "total": 421,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          88,
+          90,
+          84,
+          91,
+          86
+        ],
+        "total": 439,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "regular_tetrahedron": {
+      "claude-opus-4-7": {
+        "scores": [
+          22,
+          18,
+          32,
+          10,
+          12
+        ],
+        "total": 94,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          80,
+          58,
+          88,
+          55,
+          81
+        ],
+        "total": 362,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          12,
+          28,
+          25,
+          8,
+          10
+        ],
+        "total": 83,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reproduce_image": {
+      "claude-opus-4-7": {
+        "scores": [
+          42,
+          55,
+          58,
+          63,
+          35
+        ],
+        "total": 253,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          72,
+          74,
+          78,
+          76,
+          70
+        ],
+        "total": 370,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reproduce_image_andrew_pons": {
+      "claude-opus-4-7": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          36,
+          47,
+          42,
+          50,
+          32
+        ],
+        "total": 207,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reproduce_image_fabrice_villard": {
+      "claude-opus-4-7": {
+        "scores": [
+          58,
+          70,
+          63,
+          68,
+          55
+        ],
+        "total": 314,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          5,
+          12,
+          15,
+          10,
+          4
+        ],
+        "total": 46,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          28,
+          35,
+          42,
+          34,
+          25
+        ],
+        "total": 164,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reproduce_image_jason_leung": {
+      "claude-opus-4-7": {
+        "scores": [
+          20,
+          58,
+          32,
+          42,
+          24
+        ],
+        "total": 176,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          38,
+          61,
+          48,
+          58,
+          32
+        ],
+        "total": 237,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          34,
+          55,
+          42,
+          48,
+          30
+        ],
+        "total": 209,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reproduce_image_photoholgic": {
+      "claude-opus-4-7": {
+        "scores": [
+          35,
+          42,
+          38,
+          45,
+          36
+        ],
+        "total": 196,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          42,
+          58,
+          50,
+          56,
+          44
+        ],
+        "total": 250,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          52,
+          61,
+          55,
+          60,
+          54
+        ],
+        "total": 282,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reproduce_image_rayul": {
+      "claude-opus-4-7": {
+        "scores": [
+          43,
+          50,
+          58,
+          48,
+          42
+        ],
+        "total": 241,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          43,
+          56,
+          58,
+          57,
+          47
+        ],
+        "total": 261,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      }
+    },
+    "reproduce_image_sebastien_gabriel": {
+      "claude-opus-4-7": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          55,
+          68,
+          72,
+          64,
+          52
+        ],
+        "total": 311,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "riemann_surface_branch_cuts": {
+      "claude-opus-4-7": {
+        "scores": [
+          72,
+          70,
+          78,
+          73,
+          60
+        ],
+        "total": 353,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          52,
+          63,
+          45,
+          58,
+          43
+        ],
+        "total": 261,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          42,
+          28,
+          38,
+          35,
+          30
+        ],
+        "total": 173,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "riemann_zeta_zeros": {
+      "claude-opus-4-7": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          28,
+          62,
+          10,
+          55,
+          22
+        ],
+        "total": 177,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "rose_curves": {
+      "claude-opus-4-7": {
+        "scores": [
+          84,
+          90,
+          89,
+          86,
+          78
+        ],
+        "total": 427,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          88,
+          91,
+          87,
+          89,
+          86
+        ],
+        "total": 441,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          94,
+          93,
+          96,
+          92,
+          93
+        ],
+        "total": 468,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "rotating_hypercube_projection": {
+      "claude-opus-4-7": {
+        "scores": [
+          72,
+          68,
+          78,
+          55,
+          60
+        ],
+        "total": 333,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          58,
+          68,
+          52,
+          50,
+          45
+        ],
+        "total": 273,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          48,
+          58,
+          62,
+          38,
+          35
+        ],
+        "total": 241,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "rounded_box": {
+      "claude-opus-4-7": {
+        "scores": [
+          22,
+          38,
+          18,
+          42,
+          15
+        ],
+        "total": 135,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          88,
+          86,
+          90,
+          82,
+          84
+        ],
+        "total": 430,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          88,
+          84,
+          90,
+          80,
+          82
+        ],
+        "total": 424,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "schwarzschild_black_hole": {
+      "claude-opus-4-7": {
+        "scores": [
+          45,
+          53,
+          40,
+          56,
+          39
+        ],
+        "total": 233,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          5,
+          3,
+          8,
+          1,
+          2
+        ],
+        "total": 19,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          70,
+          76,
+          55,
+          72,
+          58
+        ],
+        "total": 331,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "sierpinski_tetrahedron": {
+      "claude-opus-4-7": {
+        "scores": [
+          38,
+          62,
+          30,
+          45,
+          25
+        ],
+        "total": 200,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          58,
+          48,
+          55,
+          42,
+          30
+        ],
+        "total": 233,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          63,
+          72,
+          55,
+          58,
+          45
+        ],
+        "total": 293,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "sierpinski_triangle_6_iterations": {
+      "claude-opus-4-7": {
+        "scores": [
+          88,
+          82,
+          91,
+          84,
+          78
+        ],
+        "total": 423,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          52,
+          68,
+          45,
+          66,
+          50
+        ],
+        "total": 281,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          8,
+          62,
+          4,
+          28,
+          12
+        ],
+        "total": 114,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "spherical_inversion_mapping": {
+      "claude-opus-4-7": {
+        "scores": [
+          5,
+          35,
+          2,
+          4,
+          12
+        ],
+        "total": 58,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          38,
+          18,
+          35,
+          20,
+          45
+        ],
+        "total": 156,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          63,
+          74,
+          48,
+          58,
+          82
+        ],
+        "total": 325,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "spinning_gear_assembly": {
+      "claude-opus-4-7": {
+        "scores": [
+          78,
+          86,
+          68,
+          82,
+          76
+        ],
+        "total": 390,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          68,
+          74,
+          55,
+          66,
+          62
+        ],
+        "total": 325,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          73,
+          86,
+          62,
+          78,
+          70
+        ],
+        "total": 369,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "spinning_vortex_funnel": {
+      "claude-opus-4-7": {
+        "scores": [
+          22,
+          28,
+          12,
+          14,
+          20
+        ],
+        "total": 96,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          58,
+          78,
+          35,
+          68,
+          51
+        ],
+        "total": 290,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          50,
+          10,
+          50,
+          18,
+          20
+        ],
+        "total": 148,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "spiral_staircase_tower": {
+      "claude-opus-4-7": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          45,
+          55,
+          42,
+          43,
+          48
+        ],
+        "total": 233,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      }
+    },
+    "stella_octangula": {
+      "claude-opus-4-7": {
+        "scores": [
+          91,
+          86,
+          94,
+          88,
+          90
+        ],
+        "total": 449,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          84,
+          78,
+          82,
+          76,
+          80
+        ],
+        "total": 400,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "superformula_explorer": {
+      "claude-opus-4-7": {
+        "scores": [
+          72,
+          76,
+          70,
+          78,
+          57
+        ],
+        "total": 353,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          72,
+          84,
+          70,
+          76,
+          58
+        ],
+        "total": 360,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          8,
+          28,
+          18,
+          10,
+          6
+        ],
+        "total": 70,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "taper_shear_transformation": {
+      "claude-opus-4-7": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          58,
+          54,
+          66,
+          43,
+          50
+        ],
+        "total": 271,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "topology_fabric_texture": {
+      "claude-opus-4-7": {
+        "scores": [
+          6,
+          24,
+          3,
+          4,
+          3
+        ],
+        "total": 40,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          46,
+          72,
+          34,
+          58,
+          43
+        ],
+        "total": 253,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          34,
+          57,
+          22,
+          42,
+          31
+        ],
+        "total": 186,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "torus_donut_parametric": {
+      "claude-opus-4-7": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          5,
+          18,
+          8,
+          6,
+          4
+        ],
+        "total": 41,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          82,
+          84,
+          86,
+          76,
+          72
+        ],
+        "total": 400,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "trefoil_alexander_polynomial": {
+      "claude-opus-4-7": {
+        "scores": [
+          38,
+          84,
+          42,
+          78,
+          36
+        ],
+        "total": 278,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          58,
+          88,
+          38,
+          84,
+          62
+        ],
+        "total": 330,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      }
+    },
+    "trigonometric_mandalas": {
+      "claude-opus-4-7": {
+        "scores": [
+          88,
+          92,
+          84,
+          86,
+          85
+        ],
+        "total": 435,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          78,
+          86,
+          74,
+          76,
+          75
+        ],
+        "total": 389,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          72,
+          74,
+          82,
+          68,
+          66
+        ],
+        "total": 362,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "truncated_icosahedron": {
+      "claude-opus-4-7": {
+        "scores": [
+          67,
+          58,
+          64,
+          52,
+          63
+        ],
+        "total": 304,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          58,
+          74,
+          38,
+          61,
+          55
+        ],
+        "total": 286,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          86,
+          82,
+          84,
+          78,
+          86
+        ],
+        "total": 416,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "twisted_stellated_polyhedron": {
+      "claude-opus-4-7": {
+        "scores": [
+          45,
+          58,
+          34,
+          36,
+          42
+        ],
+        "total": 215,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          52,
+          48,
+          38,
+          32,
+          42
+        ],
+        "total": 212,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "voronoi_diagram": {
+      "claude-opus-4-7": {
+        "scores": [
+          82,
+          86,
+          87,
+          84,
+          78
+        ],
+        "total": 417,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          88,
+          86,
+          94,
+          91,
+          84
+        ],
+        "total": 443,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "wave_deformation_field": {
+      "claude-opus-4-7": {
+        "scores": [
+          34,
+          42,
+          48,
+          30,
+          28
+        ],
+        "total": 182,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          74,
+          82,
+          68,
+          78,
+          72
+        ],
+        "total": 374,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          34,
+          22,
+          42,
+          18,
+          31
+        ],
+        "total": 147,
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "weierstrass_function": {
+      "claude-opus-4-7": {
+        "scores": [
+          58,
+          62,
+          41,
+          57,
+          39
+        ],
+        "total": 257,
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          74,
+          78,
+          61,
+          70,
+          63
+        ],
+        "total": 346,
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          66,
+          78,
+          35,
+          72,
+          42
+        ],
+        "total": 293,
+        "has_image": true,
+        "status": "ok"
+      }
+    }
+  },
+  "summary": {
+    "claude-opus-4-7": {
+      "ok": 97,
+      "permanent_fail": 10,
+      "total": 107,
+      "avg_total_filtered": 245.89690721649484,
+      "avg_total_with_zeros": 222.9158878504673,
+      "best_problem": {
+        "name": "epicycloids",
+        "total": 461
+      },
+      "worst_problem": {
+        "name": "logarithmic_spiral_motion",
+        "total": 9
+      }
+    },
+    "gemini-3.1-pro-preview": {
+      "ok": 91,
+      "permanent_fail": 16,
+      "total": 107,
+      "avg_total_filtered": 260.02197802197804,
+      "avg_total_with_zeros": 221.14018691588785,
+      "best_problem": {
+        "name": "poincare_disc",
+        "total": 453
+      },
+      "worst_problem": {
+        "name": "costa_minimal_surface",
+        "total": 7
+      }
+    },
+    "codex-gpt-5.5-high": {
+      "ok": 100,
+      "permanent_fail": 7,
+      "total": 107,
+      "avg_total_filtered": 266.59,
+      "avg_total_with_zeros": 249.14953271028037,
+      "best_problem": {
+        "name": "rose_curves",
+        "total": 468
+      },
+      "worst_problem": {
+        "name": "brahmagupta_cyclic_quadrilaterals",
+        "total": 9
+      }
+    }
+  }
+}
