@@ -29,6 +29,14 @@ shader_benchmark/
 └── claude_code/              # Technical documentation
 ```
 
+## Live results
+
+Benchmark results: https://nbardy.github.io/shader_benchmark/
+
+The site is auto-published from `docs/` on every push to `main` via
+`.github/workflows/publish-docs.yml`. Source for regenerating from the
+latest `benchmark_run_output/`: `python tools/build_docs.py`.
+
 ## Quick Start
 
 ### Prerequisites
@@ -64,7 +72,7 @@ python benchmark_harness.py \
   --problems $(ls ../problems/base_set)
 ```
 
-See [`BENCHMARK_QUICKSTART.md`](BENCHMARK_QUICKSTART.md) for detailed usage patterns.
+See [`agent_notes/BENCHMARK_QUICKSTART.md`](agent_notes/BENCHMARK_QUICKSTART.md) for detailed usage patterns.
 
 ## Evaluation Methodology
 
@@ -160,7 +168,7 @@ This benchmark enables investigation of:
 
 ## Documentation
 
-- **[BENCHMARK_QUICKSTART.md](BENCHMARK_QUICKSTART.md)** — Installation and usage guide
+- **[agent_notes/BENCHMARK_QUICKSTART.md](agent_notes/BENCHMARK_QUICKSTART.md)** — Installation and usage guide
 - **[claude_code/scoring_system_technical.md](claude_code/scoring_system_technical.md)** — Evaluation methodology
 - **[claude_code/testing_guide.md](claude_code/testing_guide.md)** — Development and troubleshooting
 - **[llm_harness/README.md](llm_harness/README.md)** — Harness architecture details
