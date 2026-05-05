@@ -1,6 +1,7 @@
 import os
 import base64
 import re
+import shutil
 import aiohttp
 import json
 import subprocess
@@ -11,7 +12,8 @@ from typing import List, Tuple, Optional, Dict, Any
 from pathlib import Path
 from dotenv import load_dotenv
 from critic_template import CriticTemplate
-from llm_client import parse_cli_spec
+from llm_client import parse_cli_spec, CliExecutor
+from judge_panel import judge_safe_key
 
 _ZERO_USAGE: Dict[str, Any] = {
     'prompt_tokens': 0, 'completion_tokens': 0, 'total_tokens': 0,
@@ -71,10 +73,13 @@ class Judge:
     the calls.
     """
 
-    SUPPORTED_CLI_JUDGES = ("claude", "codex")
+    SUPPORTED_CLI_JUDGES = ("claude", "codex", "gemini")
 
     def __init__(self, judge_model: str = "anthropic/claude-opus-4-6"):
         self.judge_model = judge_model
+        # Suffix used on per-judge log filenames so panel members don't
+        # clobber each other's response/error logs in the shared save_dir.
+        self.judge_log_suffix = judge_safe_key(judge_model)
         self.is_cli_judge = judge_model.startswith("cli/")
 
         if self.is_cli_judge:
@@ -172,7 +177,7 @@ class Judge:
         if not context.result_image_path or not context.result_image_path.exists():
             print(f"⏭️  Skipping LLM judge - NO IMAGE GENERATED (0/500)")
             if context.save_dir and context.save_dir.exists():
-                skip_log = context.save_dir / "judge_skipped.txt"
+                skip_log = context.save_dir / f"judge_skipped.{self.judge_log_suffix}.txt"
                 with open(skip_log, 'w') as f:
                     f.write("JUDGE SKIPPED - NO IMAGE GENERATED\n")
                     f.write("Reason: No result image file found\n")
@@ -183,6 +188,10 @@ class Judge:
         # (removed "smart skip" for black/white images - caused false positives)
         judge_prompt = self.critic_template.format_critic_prompt(context.critic_path, context.request_path)
         scores, usage = await self.evaluate(judge_prompt, context)
+        if not any(isinstance(s, (int, float)) and s > 0 for s in scores):
+            raise RuntimeError(
+                f"{self.judge_model} judge response did not contain parseable nonzero scores"
+            )
         return (scores, None, usage)
     
     async def evaluate(self, judge_prompt: str, context: EvaluationContext) -> Tuple[List[int], Dict[str, Any]]:
@@ -277,7 +286,7 @@ class Judge:
 
                     # Save raw judge response if save directory provided
                     if context.save_dir and context.save_dir.exists():
-                        judge_log_file = context.save_dir / "judge_response.txt"
+                        judge_log_file = context.save_dir / f"judge_response.{self.judge_log_suffix}.txt"
                         with open(judge_log_file, 'w', encoding='utf-8') as f:
                             f.write("=== JUDGE EVALUATION LOG ===\n\n")
                             f.write("PROMPT:\n")
@@ -294,7 +303,7 @@ class Judge:
 
                     # Add parsed scores to log file if it exists
                     if context.save_dir and context.save_dir.exists():
-                        judge_log_file = context.save_dir / "judge_response.txt"
+                        judge_log_file = context.save_dir / f"judge_response.{self.judge_log_suffix}.txt"
                         with open(judge_log_file, 'a', encoding='utf-8') as f:
                             f.write(f"PARSED SCORES:\n{scores}\n\n")
                             if scores == [1, 1, 1, 1, 1]:
@@ -310,7 +319,7 @@ class Judge:
             # stage='failed' and the next resume re-judges this problem
             # (using the cached render image — generation is NOT redone).
             if context.save_dir and context.save_dir.exists():
-                error_log_file = context.save_dir / "judge_error.txt"
+                error_log_file = context.save_dir / f"judge_error.{self.judge_log_suffix}.txt"
                 with open(error_log_file, 'w', encoding='utf-8') as f:
                     f.write("=== JUDGE ERROR LOG ===\n\n")
                     f.write(f"ERROR: {str(e)}\n\n")
@@ -378,6 +387,8 @@ class Judge:
                 response_text = self._run_codex_judge(full_prompt, context)
             elif tool == 'claude':
                 response_text = self._run_claude_judge(full_prompt, context)
+            elif tool == 'gemini':
+                response_text = self._run_gemini_judge(full_prompt, context)
             else:
                 raise ValueError(f"unsupported CLI judge cli/{tool}")
         except Exception as e:
@@ -388,7 +399,7 @@ class Judge:
             # (cached render image is reused — generation is NOT redone).
             print(f"Error calling judge ({self.judge_model}): {e}")
             if context.save_dir and context.save_dir.exists():
-                error_log = context.save_dir / "judge_error.txt"
+                error_log = context.save_dir / f"judge_error.{self.judge_log_suffix}.txt"
                 with open(error_log, 'w', encoding='utf-8') as f:
                     f.write(f"=== JUDGE ERROR LOG ({self.judge_model}) ===\n\n")
                     f.write(f"ERROR: {e}\n\nPROMPT USED:\n{full_prompt}\n")
@@ -396,7 +407,7 @@ class Judge:
 
         # Persist the raw response for debugging.
         if context.save_dir and context.save_dir.exists():
-            judge_log = context.save_dir / "judge_response.txt"
+            judge_log = context.save_dir / f"judge_response.{self.judge_log_suffix}.txt"
             with open(judge_log, 'w', encoding='utf-8') as f:
                 f.write(f"=== JUDGE EVALUATION LOG ({self.judge_model}) ===\n\nPROMPT:\n")
                 f.write(full_prompt)
@@ -481,6 +492,78 @@ class Judge:
             raise Exception(f"claude judge failed (exit {result.returncode}): {(result.stderr or '')[:500]}")
         return result.stdout
 
+    def _run_gemini_judge(self, full_prompt: str, context: EvaluationContext) -> str:
+        """gemini -p with images staged into an isolated tempdir workspace.
+
+        Mirrors `LLMClient._run_gemini`: gemini-cli walks `--include-directories`
+        recursively on startup and OOMs the node heap if pointed at any folder
+        inside this repo (cargo target + benchmark output > 200MB combined).
+        Stage the images into a fresh tempdir, whitelist only that tempdir, and
+        bump V8's heap to 8GB so the workspace seed phase doesn't crash.
+        """
+        # Heap-OOM guard: refuse to run if ~/.gemini/tmp/ has grown past the
+        # threshold seen to OOM gemini-cli on startup. Reuses the same
+        # preflight LLMClient runs for the gen path.
+        CliExecutor._gemini_preflight()
+
+        with tempfile.TemporaryDirectory(prefix='gemini_judge_workspace_') as workspace:
+            workspace_path = Path(workspace)
+            staged_result = workspace_path / context.result_image_path.name
+            shutil.copy(context.result_image_path, staged_result)
+
+            staged_ref: Optional[Path] = None
+            if context.reference_image_path and context.reference_image_path.exists():
+                staged_ref = workspace_path / f"reference_{context.reference_image_path.name}"
+                shutil.copy(context.reference_image_path, staged_ref)
+
+            prompt = (
+                f"{full_prompt}\n\n"
+                f"The images you need to evaluate are at these absolute paths — use your "
+                f"read_file tool to view them:\n"
+                f"- generated result: {staged_result.absolute()}\n"
+            )
+            if staged_ref:
+                prompt += f"- reference: {staged_ref.absolute()}\n"
+
+            cmd = [
+                'gemini', '-p', '',
+                '--output-format', 'text',
+                '--approval-mode', 'plan',
+                '--include-directories', workspace,
+            ]
+            if self.cli_judge_model_q:
+                cmd += ['-m', self.cli_judge_model_q]
+
+            env = self._judge_cli_env()
+            # 4GB default heap can OOM during workspace seeding even with the
+            # isolated tempdir; 8GB has been verified sufficient on the gen
+            # path. Append rather than replace so any user override survives.
+            env['NODE_OPTIONS'] = (env.get('NODE_OPTIONS', '') + ' --max-old-space-size=8192').strip()
+
+            try:
+                result = subprocess.run(
+                    cmd, input=prompt, capture_output=True, text=True,
+                    timeout=1200, env=env, cwd=workspace,
+                )
+            except subprocess.TimeoutExpired:
+                raise Exception("gemini judge timed out after 1200s")
+            if result.returncode != 0:
+                raise Exception(f"gemini judge failed (exit {result.returncode}): {(result.stderr or '')[:1000]}")
+
+            # gemini-cli can print transient 429/capacity errors while it is
+            # still retrying, then exit 0 with a valid final answer on stdout.
+            # Do not fail merely because stderr mentions RESOURCE_EXHAUSTED;
+            # the caller parses stdout and treats non-parseable/all-zero
+            # output as retryable. Keeping stderr non-fatal lets recovered
+            # attempts with valid <scores> count.
+            stderr_blob = result.stderr or ''
+            for marker in ('RESOURCE_EXHAUSTED', 'MODEL_CAPACITY_EXHAUSTED',
+                           'rateLimitExceeded', 'quotaExceeded'):
+                if marker in stderr_blob:
+                    print(f"⚠️ gemini stderr included transient {marker}; checking final stdout")
+                    break
+            return CliExecutor._strip_gemini_noise(result.stdout)
+
     def _encode_image(self, image_path: Path) -> str:
         """Encode image to base64 for OpenAI API"""
         with open(image_path, "rb") as image_file:
@@ -497,6 +580,7 @@ class Judge:
             xml_content = xml_match.group(1)
             try:
                 scores = []
+                missing = []
                 for i in range(1, 6):
                     score_pattern = rf'<S{i}>(\d+)</S{i}>'
                     score_match = re.search(score_pattern, xml_content)
@@ -506,13 +590,20 @@ class Judge:
                         score = max(1, min(100, score))
                         scores.append(score)
                     else:
-                        print(f"Warning: Missing S{i} in XML scores")
-                        scores.append(50)  # Default middle score
-                
-                if len(scores) == 5:
+                        missing.append(f"S{i}")
+                        scores.append(0)
+
+                if not missing:
                     print(f"Successfully parsed XML scores: {scores}")
                     return scores
-                    
+                # Partial XML response: do NOT silently default missing
+                # scores to 50 (was the old behavior — it polluted the panel
+                # mean with fake middle scores when a judge omitted some
+                # tags). Return the all-zero "failure" signal; the caller
+                # raises so the harness marks the judge stage retryable.
+                print(f"⚠️ Partial XML response — missing {missing}; treating as parse failure")
+                return [0, 0, 0, 0, 0]
+
             except Exception as e:
                 print(f"Error parsing XML scores: {e}")
         

@@ -43,7 +43,7 @@ import uuid
 import asyncio
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict, Optional, Tuple
 from error_handler import use_safe, save_subprocess_output
 from shader_parser import ShaderParser, WGSLRepair
 from language_specs import ShaderLanguageSpec, ShadertoySpec
@@ -430,15 +430,19 @@ class TestRunner:
         return result_image
     
     def save_results(self, test_folder: Path, scores: list, execution_success: bool = True,
-                     generation_usage: dict = None, judge_usage: dict = None):
+                     generation_usage: Optional[dict] = None, judge_usage: Optional[dict] = None,
+                     scores_by_judge: Optional[dict] = None):
         """Save the evaluation results including cost data.
 
         Args:
             test_folder: Path to test folder
-            scores: List of 5 scores
+            scores: List of 5 scores (mean across judges when scores_by_judge given)
             execution_success: Whether execution succeeded
             generation_usage: Cost data from LLM generation (prompt_tokens, completion_tokens, cost, etc.)
             judge_usage: Cost data from LLM judging (prompt_tokens, completion_tokens, cost, etc.)
+            scores_by_judge: Optional {judge_model: [s1..s5]} for multi-judge runs.
+                Top-level `scores` is the panel mean; this dict preserves the
+                per-judge breakdown that build_docs.py uses for the leaderboard.
         """
         # CRITICAL: Check for PNG files in BOTH root and artifacts/ subdirectory
         # Why both locations?
@@ -472,6 +476,8 @@ class TestRunner:
             results["generation_usage"] = generation_usage
         if judge_usage:
             results["judge_usage"] = judge_usage
+        if scores_by_judge:
+            results["scores_by_judge"] = scores_by_judge
 
         results_file = test_folder / "results.json"
         import json

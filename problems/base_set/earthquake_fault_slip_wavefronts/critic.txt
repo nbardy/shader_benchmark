@@ -1,0 +1,59 @@
+__MATHEMATICAL_ACCURACY__
+Fault Geometry:
+- Is a rectangular dipping fault plane visible beneath or intersecting a surface plane?
+- Does the fault dip at an oblique angle around `35°`, not vertical or horizontal?
+- Is the fault elongated along strike and shorter down dip, roughly matching a `60 km × 20 km` rectangle?
+- Is a surface trace of the dipping fault visible on or near the `Z = 0` plane?
+
+Rupture and Slip Field:
+- Is the hypocenter visible on the fault near one side rather than at the exact center?
+- Is the rupture front drawn as a clipped curve on the fault plane around the hypocenter?
+- Does the slip heatmap peak near the rupture-front band / hypocentral region and fade elsewhere?
+- Are displacement vectors located on the fault and scaled by slip amplitude?
+- Does the heatmap use blue/low through red/high or another clear monotone slip scale?
+
+Wavefront Geometry:
+- Are two wavefront shells centered at the hypocenter?
+- Is the P-wave shell larger than the S-wave shell, approximately radius ratio `48:28` or `~1.7:1`?
+- Is the P shell blue and the S shell orange, or otherwise clearly distinguished?
+- Do shells intersect or surround the fault volume consistently with the hypocenter location?
+
+__VISUAL_IMPLEMENTATION__
+3D Scene Readability:
+- Does the camera angle reveal the surface plane, the dipping fault, and shells simultaneously?
+- Are wavefront shells translucent enough to see the fault and slip through them?
+- Are shadows/depth cues sufficient to locate the hypocenter and rupture front in 3D?
+- Is the fault plane not clipped or hidden by the shells?
+
+Slip and Vector Rendering:
+- Is the slip colorbar or swatch readable?
+- Are displacement vectors short, aligned, and not so dense that they obscure the heatmap?
+- Is the rupture front bright and visually distinct from displacement vectors?
+- Are the heatmap gradients smooth rather than blocky or random?
+
+Surface and Scale Elements:
+- Is the surface grid subtle and helpful for orientation?
+- Is a scale bar or ticked equivalent present?
+- Are P/S shell labels or color distinctions clear?
+- Are antialiasing and line quality sufficient for the fault trace and rupture curve?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Dipping rectangular fault plane is present.
+- Slip heatmap is present.
+- Rupture front curve is present.
+- Hypocenter marker is present.
+- P and S wavefront shells are both present.
+- Displacement vectors and surface plane are present.
+
+Technical Requirements:
+- Image resolution is at least `1600 × 1600` pixels.
+- Output is a single static PNG.
+- Background is white or very light grey.
+- Main scene is fully in frame and not excessively occluded.
+
+Benchmark-Specific Failure Modes:
+- If wavefront shells are not centered on the hypocenter, mathematical accuracy should be penalized.
+- If the P and S radii are reversed, mathematical accuracy should be penalized.
+- If the fault is not dipping or not rectangular, mathematical accuracy should be low.
+- If the output is a generic earthquake icon/map without 3D fault geometry, completeness should be low.

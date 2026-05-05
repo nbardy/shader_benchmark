@@ -1,0 +1,39 @@
+**Objective**
+Produce a single high-resolution image of ocean-eddy Lagrangian coherent structures using a synthetic time-dependent double-gyre flow. The image should show attracting and repelling material ridges, streamlines, and tracer trajectories in a physically interpretable flow domain.
+
+**Mathematical specification**
+1. Flow domain: `x ∈ [0, 2]`, `y ∈ [0, 1]`; render as an ocean-like rectangular basin.
+2. Velocity field: use the standard double-gyre model
+   `u(x,y,t) = -π A sin(π f(x,t)) cos(π y)`,
+   `v(x,y,t) =  π A cos(π f(x,t)) sin(π y) ∂f/∂x`,
+   where `f(x,t) = a(t)x² + b(t)x`, `a(t) = ε sin(ωt)`, `b(t) = 1 - 2ε sin(ωt)`.
+3. Parameters: `A = 0.10`, `ε = 0.25`, `ω = 2π/10`.
+4. Static analysis time: `t0 = 0`. Compute or approximate finite-time Lyapunov exponent ridges over integration time `τ = 10`.
+5. Render repelling LCS ridges from forward-time FTLE in warm colors and attracting LCS ridges from backward-time FTLE in cool colors.
+6. Add at least `60` tracer trajectories integrated from seed points over `t ∈ [0, 10]`, with fading tails.
+
+**Geometry to render**
+- A rectangular basin plane with a faint ocean-blue background.
+- FTLE height field or texture over the basin; ridges should be elevated or brightly highlighted.
+- Repelling LCS: orange/red material ribbons.
+- Attracting LCS: blue/cyan material ribbons.
+- Tracer paths: thin white or dark stream curves with fading opacity.
+- Optional: small arrows showing instantaneous velocity at sparse grid points.
+
+**Rendering style**
+- White page background outside the basin; basin itself may have a subtle blue tint.
+- LCS ridges should be crisp, continuous, and layered above the flow texture.
+- Use transparency for overlapping attracting/repelling structures.
+- Anti-aliased curves and soft lighting if height is used.
+
+**Composition / overlays**
+- Camera may be top-down or slightly oblique; if oblique, height should represent FTLE magnitude.
+- Add a compact legend: warm = repelling, cool = attracting, thin curves = tracers.
+- Include domain tick marks at `x = 0, 1, 2` and `y = 0, 0.5, 1` if possible.
+
+**Technical specs**
+- Resolution at least `1600 × 1600` pixels.
+- Static frame only; no animation.
+- Output format: PNG.
+
+**Deliverable** A single PNG image satisfying the above.

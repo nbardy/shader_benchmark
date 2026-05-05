@@ -1,0 +1,58 @@
+__MATHEMATICAL_ACCURACY__
+Threshold Scaling Structure:
+- Are two distinct decoder panels or surfaces present, one for A and one for B?
+- Do curves for different distances cross near a common threshold in each decoder panel?
+- Is decoder A's threshold visibly to the right of decoder B's threshold (`0.0105 > 0.0088`)?
+- Are threshold planes drawn at the crossing locations, not arbitrarily elsewhere?
+- Does the logical error increase as physical error rate `p` increases?
+
+Distance Dependence:
+- Are six discrete code-distance tracks shown for `d = 3, 5, 7, 9, 11, 13`?
+- Below threshold, do larger distances trend toward lower logical error?
+- Above threshold, do larger distances trend toward higher or steeper logical error, consistent with finite-size scaling?
+- Are the distance tracks visually ordered rather than randomly tangled?
+
+Probability / Log Scale Representation:
+- Is logical error probability represented by height, color, or both?
+- Is there a clear crossing ridge around `P_L = 0.5`?
+- If a log scale is used, does it avoid impossible negative probabilities and preserve monotonicity?
+- Are the plotted quantities consistent with the stated sigmoid model rather than arbitrary curves?
+
+__VISUAL_IMPLEMENTATION__
+Curve and Surface Rendering:
+- Are the six curves per decoder smooth and legible?
+- Are semi-transparent surfaces or ribbons present behind/under the curves?
+- Are individual distances distinguishable by position, line weight, or subtle markers?
+- Are the threshold planes translucent and not hiding the curves?
+
+Color Encoding:
+- Is decoder A consistently blue/cyan and decoder B consistently orange/red?
+- Is the logical-error color gradient monotone and readable?
+- Are the threshold planes and crossing ridges visually distinct from the data surfaces?
+- Does the legend or color coding avoid ambiguity between decoders and error magnitude?
+
+Chart Composition:
+- Are axes, ticks, and panel separation clear enough to interpret the diagram?
+- Does the 3D perspective avoid excessive occlusion of curves?
+- Is the white background clean and non-distracting?
+- Are antialiasing and line quality sufficient for small tick marks and curves?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Decoder A and decoder B are both shown.
+- Six distance curves are shown for each decoder.
+- Threshold plane is present in each decoder panel.
+- Crossing ridge or crossing markers are present.
+- Legend or equivalent color identification is present.
+
+Technical Requirements:
+- Image resolution is at least `1600 × 1600` pixels.
+- Output is a single static PNG.
+- White or nearly white background.
+- The diagram is large enough for panel-level and curve-level inspection.
+
+Benchmark-Specific Failure Modes:
+- If the output is a generic heatmap with no threshold crossing structure, mathematical accuracy should be low.
+- If thresholds are reversed, with B to the right of A, mathematical accuracy should be penalized.
+- If code distance is omitted, completeness should be low.
+- If the plot shows arbitrary decorative surfaces with no monotonic error trend, mathematical accuracy should be low.

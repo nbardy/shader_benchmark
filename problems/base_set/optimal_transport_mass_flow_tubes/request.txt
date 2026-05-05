@@ -1,0 +1,37 @@
+**Objective**
+Produce a single high-resolution image visualizing optimal transport from a uniform disk distribution to a uniform annulus distribution. The visualization should show straight-line displacement interpolation as mass-flow tubes and a highlighted intermediate time slice.
+
+**Mathematical specification**
+1. Source distribution `μ`: uniform density on the unit disk `D = {x ∈ R² : ||x|| ≤ 1}`.
+2. Target distribution `ν`: uniform density on the annulus `A = {y ∈ R² : r0 ≤ ||y|| ≤ 1}`, with inner radius `r0 = 0.45`.
+3. Radial optimal map: for a source point `x` with radius `r = ||x||`, map it to
+   `T(x) = sqrt(r0² + (1 - r0²) r²) * x / max(r, ε)`, with the origin mapped to radius `r0` along a chosen sampled angle. This is the monotone radial transport map for disk-to-annulus mass rearrangement.
+4. Displacement interpolation: render particle trajectories
+   `γ_x(s) = (1 - s) x + s T(x)` for `s ∈ [0, 1]`.
+5. Static highlighted time: show the interpolated distribution at `s = 0.55` as a translucent mid-slice point cloud or ring of dots.
+6. Sampling: use at least `320` equal-mass source samples arranged in radial rings. Ring radii should be proportional to `sqrt(k/N)` so mass density is approximately uniform.
+
+**Geometry to render**
+- Blue source disk at `s = 0`, shown as a flat translucent disk or dense point cloud at height `z = 0`.
+- Orange target annulus at `s = 1`, shown at height `z = 1`.
+- Flow tubes connecting each source sample to its target sample; use `z = s` as the vertical coordinate so each tube is a 3D spacetime path.
+- Mid-slice at `s = 0.55`: small white or bright dots on the interpolated positions, lying on a horizontal plane.
+- A transparent cylinder/shell marking the annulus inner hole at target time is helpful but optional.
+
+**Rendering style**
+- White background.
+- Flow tubes colored from blue at `s = 0` through white to orange at `s = 1`.
+- Tube radius should be small but visible, about `0.006` to `0.012` of scene diameter.
+- Use soft lighting and subtle shadows so tubes are distinguishable without clutter.
+
+**Composition / overlays**
+- Camera: oblique view showing the source disk below, target annulus above, and radial outward flow.
+- Add a faint vertical axis labeled/ticked as interpolation time `s` if possible.
+- Add small silhouettes of the source disk and target annulus beside the main flow as legend icons if space permits.
+
+**Technical specs**
+- Resolution at least `1600 × 1600` pixels.
+- Static frame only; no animation.
+- Output format: PNG.
+
+**Deliverable** A single PNG image satisfying the above.

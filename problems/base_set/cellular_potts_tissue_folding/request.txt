@@ -1,0 +1,56 @@
+**Objective**
+Produce a single high-resolution PNG visualising a Cellular-Potts-style epithelial tissue sheet undergoing a fold. The image should show individual cells, apical constriction near the fold hinge, lineage colors, boundary tension, and highlighted neighbour-exchange events.
+
+**Mathematical specification**
+Use a hexagonal sheet of approximately \(34\times28\) cells. Cell centers are arranged in a staggered grid:
+\[
+\tilde x_{ij}=i+0.5(j\bmod2),\qquad \tilde y_{ij}=0.866j,
+\]
+for \(i=0,\ldots,33\), \(j=0,\ldots,27\), then linearly rescale to
+\[
+x\in[-1.4,1.4],\qquad y\in[-1.1,1.1].
+\]
+Map the sheet to a folded surface with height
+\[
+z(x,y)=0.55\exp\left[-{(y+0.18)^2\over0.025}\right](1-0.15x^2)
+-0.30\exp\left[-{(y-0.45)^2\over0.055}\right]
++0.08\sin(3\pi x)\sin(\pi y).
+\]
+The main fold hinge is near \(y=-0.18\).
+
+Cellular-Potts-style visual quantities:
+- Apical area scale:
+  \[
+  a(x,y)=1-0.45\exp\left[-{(y+0.18)^2\over0.035}\right].
+  \]
+  Cells near the hinge should appear smaller/narrower, representing apical constriction.
+- Boundary tension is higher near clone/type boundaries and near the hinge. Draw hinge-region cell borders thicker/darker.
+- Use four lineage clone fields seeded at approximately \((-0.9,-0.5),(0.8,-0.4),(-0.7,0.55),(0.7,0.65)\). Color each cell by nearest seed, with mild within-clone variation.
+- Highlight 8 neighbour-exchange / T1-like events along the hinge as small elongated diamond cells or red-white boundary swap glyphs.
+
+**Geometry to render**
+- Individual polygonal cells on the folded 3D sheet; each cell should have a visible boundary.
+- Cell centers should follow the folded surface, with polygon corners projected onto the same \(z(x,y)\) height field.
+- Hinge cells near \(y=-0.18\) should visibly constrict apically relative to surrounding cells.
+- Add arrows pointing inward toward the hinge to show apical constriction forces.
+- Add a side cross-section inset showing the \(y\)-\(z\) fold profile at \(x=0\), with the hinge marked.
+- Add a small legend for lineage clone colors and a marker for highlighted T1 events.
+
+**Rendering style**
+- Cells: softly shaded, semi-matte surfaces with thin dark boundaries.
+- Clone colors: four distinguishable pastel or saturated families; boundaries remain dark.
+- T1 events: red/white high-contrast glyphs, clearly localised along the hinge.
+- Force arrows: dark or bright depending on background, all pointing toward the hinge band.
+- Background: white or very light grey.
+
+**Composition / overlays**
+- Camera: oblique top-down perspective that reveals both the fold height and the cellular tiling.
+- The folded sheet should occupy most of the canvas.
+- Place the cross-section inset on the right and the clone legend along the bottom or in a corner.
+- Avoid excessive text; use color and glyphs to carry meaning.
+
+**Technical specs**
+- Resolution at least 1600×1600 px.
+- Static frame only; no animation.
+
+**Deliverable** A single PNG image satisfying the above.

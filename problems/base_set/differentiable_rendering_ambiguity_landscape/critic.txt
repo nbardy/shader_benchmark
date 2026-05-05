@@ -1,0 +1,60 @@
+__MATHEMATICAL_ACCURACY__
+Silhouette Ambiguity:
+- Does the main valley follow the curve \(r=0.42z\) across the \((z,r)\) domain?
+- Are the five candidate sphere glyphs placed along this curve with increasing radius and depth?
+- Do the candidate glyphs communicate equal projected silhouette radius despite different physical scenes?
+- Does the loss rise away from the ambiguity curve?
+- Is there a mild preference/global low near \(z=3,r=1.26\) due to the small depth prior?
+
+Loss Surface and Contours:
+- Is the surface smooth and shaped like a long shallow valley rather than isolated unrelated basins?
+- Are iso-loss contours elongated along the ambiguity direction?
+- Is contour spacing tighter across the valley than along it?
+- Does the target thumbnail correspond to a centered circular silhouette of apparent radius \(0.42\)?
+
+Albedo/Light Inset:
+- Does the secondary inset show a hyperbolic ambiguity \(a\ell=0.8\)?
+- Does the inset loss increase away from the hyperbola?
+- Are albedo and light intensity presented as separate axes or directions?
+- Is the inset visually linked to the same inverse-problem ambiguity theme?
+
+__VISUAL_IMPLEMENTATION__
+Main Landscape Rendering:
+- Is the height field smooth and adequately sampled?
+- Are at least 14 contour levels visible and aligned with the surface height?
+- Is the glowing valley line visible without obscuring the surface geometry?
+- Does lighting make the valley and surrounding ridges readable?
+
+Glyph and Thumbnail Rendering:
+- Are the five sphere/camera glyphs clearly different in physical size/depth?
+- Are equal-size projected circles or image-plane marks shown for the five glyphs?
+- Is the target thumbnail simple, clean, and recognisable?
+- Are camera rays thin and not visually confused with contour lines?
+
+Composition:
+- Does the main loss surface dominate the canvas?
+- Are the target and albedo/light insets placed cleanly without blocking the main valley?
+- Are colors used consistently for low/high loss?
+- Is anti-aliasing adequate on contours, glyph rays, and inset curves?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Main \((z,r)\) loss surface is present.
+- The ambiguity curve \(r=0.42z\) is explicitly highlighted.
+- At least five candidate scenes along the curve are shown.
+- Target silhouette thumbnail is present.
+- Secondary albedo/light ambiguity inset is present.
+- Contour lines are present.
+
+Technical Requirements:
+- Output is a single static PNG at least 1600×1600 px.
+- Background is white or very light grey.
+- The image is self-contained and does not rely on external data.
+- Axis directions or tick cues are included for the main landscape.
+
+Failure Modes to Penalize:
+- A generic 3D landscape without the specified valley equation.
+- Candidate spheres that do not preserve equal projected silhouette size.
+- Missing albedo/light ambiguity inset.
+- Missing contour lines.
+- Loss surface with isolated dots instead of a continuous ambiguity valley.

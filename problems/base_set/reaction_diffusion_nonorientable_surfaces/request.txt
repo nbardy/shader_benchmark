@@ -1,0 +1,63 @@
+**Objective**
+Produce a single high-resolution PNG showing a Gray–Scott reaction–diffusion pattern living on a nonorientable Klein bottle. The visualization should make both the surface topology and the twisted-boundary continuity of the pattern clear.
+
+**Mathematical specification**
+Use the standard immersed Klein bottle parameterisation with \(u,v\in[0,2\pi]\):
+\[
+\begin{aligned}
+x(u,v)&=\left(2+\cos(u/2)\sin v-\sin(u/2)\sin(2v)\right)\cos u,\\
+y(u,v)&=\left(2+\cos(u/2)\sin v-\sin(u/2)\sin(2v)\right)\sin u,\\
+z(u,v)&=\sin(u/2)\sin v+\cos(u/2)\sin(2v).
+\end{aligned}
+\]
+Normalize the final geometry to fit comfortably in the image.
+
+Nonorientable identification:
+\[
+(u=0,v)\sim(u=2\pi,2\pi-v).
+\]
+The pattern must be continuous under this twisted seam identification.
+
+Gray–Scott equations on the parameter domain:
+\[
+\partial_t A=D_A\Delta A-AB^2+F(1-A),
+\]
+\[
+\partial_t B=D_B\Delta B+AB^2-(F+k)B,
+\]
+with
+\[
+D_A=0.16,
+\quad D_B=0.08,
+\quad F=0.036,
+\quad k=0.064.
+\]
+Render a representative frame near \(t=650\) after pattern formation.
+
+Initial seeds for \(B\): five Gaussian spots in the fundamental square at
+\[(u,v)/(2\pi)=(0.18,0.27),(0.35,0.72),(0.52,0.43),(0.74,0.61),(0.88,0.30),\]
+with twisted copies implied by the seam. Start \(A\approx1\), \(B\approx0\) away from seeds.
+
+**Geometry to render**
+- Main Klein bottle mesh: at least \(320\times160\) samples in \((u,v)\).
+- Surface color: concentration \(B(u,v,t)\), using a high-contrast reaction–diffusion palette.
+- Draw the seam \(u=0/2\pi\) as a subtle dashed curve and show that the pattern matches after reversing \(v\).
+- Add small tangent arrows along the seam indicating the twist \(v\mapsto2\pi-v\).
+- Include an inset fundamental square showing the same pattern with edge-identification arrows: horizontal edges periodic, vertical edges twisted.
+
+**Rendering style**
+- Surface pattern should be organic spots/stripes, not random noise.
+- Use smooth shading on the Klein bottle geometry while keeping the scalar pattern crisp.
+- The self-intersection of the standard immersion may be visible, but the pattern should continue through the mathematical surface rather than stopping at the visual crossing.
+- Background: white, pale grey, or dark neutral; choose whichever gives the clearest pattern.
+
+**Composition / overlays**
+- Camera: three-quarter view that reveals the bottle neck, body, and self-intersection region.
+- Place the fundamental-square inset in the lower-right corner.
+- Add a tiny color bar for \(B\) concentration if text rendering is available; otherwise use a simple gradient strip.
+
+**Technical specs**
+- Resolution at least 1600×1600 px.
+- Static frame only; no animation.
+
+**Deliverable** A single PNG image satisfying the above.

@@ -1,0 +1,60 @@
+__MATHEMATICAL_ACCURACY__
+Reconnection Topology:
+- Are exactly two main post-reconnection vortex tubes visible?
+- Does one tube connect upper-left to lower-right and the other lower-left to upper-right?
+- Are there two distinct bridge arcs rather than a single X-shaped crossing?
+- Do the bridges remain separated in depth, avoiding an impossible physical intersection?
+- Are four narrowed neck/collar regions visible near the bridge endpoints?
+
+Centerline and Orientation Consistency:
+- Do the outer arms extend to approximately \(x=\pm L\) with offsets \(y=\pm d\)?
+- Are tangent arrows aligned along the tubes rather than randomly placed?
+- Does the helicity/tangent color change consistently with tangent direction?
+- Are the ghost filaments anti-parallel and placed at \(y=\pm d,z=0\)?
+
+Fluid-Visualization Semantics:
+- Does the vorticity cloud concentrate near the reconnection/bridge region?
+- Does the \(z=0\) cutting plane show stronger magnitude near the center than far away?
+- Is the image recognisable as vortex reconnection rather than generic intertwined tubes?
+- Is the topology visually inspectable despite volume effects?
+
+__VISUAL_IMPLEMENTATION__
+Tube Quality:
+- Are tubes smooth, round, and continuous over all centerline pieces?
+- Are there no gaps, sharp unintended kinks, or self-intersection artifacts at bridge joins?
+- Does the radius narrowing look controlled and localised near the four necks?
+- Are tube surfaces shaded enough to reveal 3D curvature?
+
+Volumetric and Plane Rendering:
+- Is the vorticity cloud translucent and spatially aligned with the tubes?
+- Is the cutting plane semi-transparent, readable, and not confused with a solid wall?
+- Are dashed ghost filaments visibly thinner and secondary to the main tubes?
+- Does the central glow enhance, rather than obscure, the reconnection.
+
+Camera and Readability:
+- Does the perspective reveal that the two bridges pass at different depths?
+- Are all four outer arms visible within the frame?
+- Are tangent arrows visible but not so dense that they clutter the topology?
+- Is anti-aliasing adequate on tubes, arrows, and dashed curves?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Two main reconnected vortex tubes are present.
+- Two grey dashed pre-reconnection ghost filaments are present.
+- Tangent arrows are present along the tubes.
+- Vorticity cloud around the bridge region is present.
+- A semi-transparent \(z=0\) cutting plane is present.
+- Four pinch collars or neck indicators are visible.
+
+Technical Requirements:
+- Output is a single PNG at least 1600×1600 px.
+- The image is a static frame at the specified reconnection stage.
+- The orientation triad or equivalent spatial cue is included.
+- Tube topology remains readable at full-image scale.
+
+Failure Modes to Penalize:
+- Merely drawing two crossing cylinders with no reconnection bridges.
+- Missing dashed pre-reconnection reference filaments.
+- Tubes that visually intersect without depth separation.
+- Overly opaque volume rendering that hides the topology.
+- Random decorative arrows not aligned with tangent flow.

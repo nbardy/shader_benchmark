@@ -1,0 +1,58 @@
+__MATHEMATICAL_ACCURACY__
+Optimal Map Structure:
+- Does the source distribution appear as a filled disk and the target as an annulus with a clear central hole?
+- Do flow tubes move mass radially outward according to a monotone disk-to-annulus map?
+- Are the trajectories straight-line displacement interpolations from source to target rather than arbitrary curves?
+- Does the annulus inner radius appear around `45%` of the outer radius?
+- Are there no large-scale crossings inconsistent with radial monotone transport?
+
+Mass Sampling and Interpolation:
+- Are many equal-mass trajectories visible, roughly hundreds rather than just a few arrows?
+- Are source samples denser in outer rings in a way consistent with uniform area sampling?
+- Is the highlighted intermediate slice at `s ≈ 0.55` visible between source and target planes?
+- Does the intermediate slice show a partially opened central void but not the full final annulus?
+
+Spacetime Encoding:
+- Is vertical position used as interpolation time `s` from `0` to `1`?
+- Are the source disk and target annulus placed at opposite time levels?
+- Do tube colors or positions consistently progress from blue/source to orange/target?
+- Is the map visibly deterministic: one source sample maps to one target sample?
+
+__VISUAL_IMPLEMENTATION__
+Flow Tube Quality:
+- Are flow tubes smooth, thin, and individually readable?
+- Is clutter controlled despite hundreds of trajectories?
+- Do tubes have enough lighting or shading to reveal 3D depth?
+- Are endpoints anchored cleanly on the disk and annulus distributions?
+
+Distribution Rendering:
+- Is the source disk visibly filled, not just an outline?
+- Is the target annulus visibly hollow at the center?
+- Are mid-slice dots or markers crisp and located on a horizontal plane?
+- Are transparency and opacity balanced so the whole transport path is visible?
+
+Color and Composition:
+- Is the blue-to-orange time gradient clear and consistent?
+- Does the camera reveal both radial expansion and vertical interpolation?
+- Is the white background clean and uncluttered?
+- Are shadows subtle and not mistaken for additional transport paths?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Blue source disk at `s = 0` is present.
+- Orange target annulus at `s = 1` is present.
+- At least hundreds of flow tubes or equivalent dense trajectories are visible.
+- Intermediate slice at `s = 0.55` is present.
+- Time/interpolation axis or visual equivalent is present.
+
+Technical Requirements:
+- Image resolution is at least `1600 × 1600` pixels.
+- Output is a single static PNG.
+- Background is white or nearly white.
+- Full source-to-target geometry is visible and not clipped.
+
+Benchmark-Specific Failure Modes:
+- If the target is not an annulus, mathematical accuracy should be low.
+- If transport paths are random, swirling, or heavily crossing, mathematical accuracy should be penalized.
+- If the visualization is only a 2D chart without spacetime flow tubes, completeness should be low.
+- If there are too few trajectories to see mass transport, visual implementation should be penalized.

@@ -1,0 +1,55 @@
+**Objective**
+Produce a single high-resolution PNG visualising the two-sheeted Riemann surface of a square-root function with four branch points. The image should show both covering sheets, branch cuts, sheet exchange, and monodromy trails.
+
+**Mathematical specification**
+Let \(z=x+iy\) over the base square \((x,y)\in[-1.6,1.6]^2\). Define
+\[
+P(z)=(z^2-1)(z^2+0.36),
+\]
+with branch points
+\[
+z=-1,\quad z=1,\quad z=-0.6i,\quad z=0.6i.
+\]
+The two sheets are
+\[
+w_+(z)=+\sqrt{P(z)},\qquad w_-(z)=-\sqrt{P(z)}.
+\]
+Use principal square root locally, but visualise sheet exchange across branch cuts.
+
+Branch cuts:
+- Draw one cut along the real segment from \(-1\) to \(1\).
+- Draw one cut along the imaginary segment from \(-0.6i\) to \(0.6i\).
+
+Surface embedding:
+- Base coordinates are \((x,y)\).
+- Height for a sheet is \(h=0.55\tanh(\operatorname{Re} w_\pm)\).
+- Color hue is \((\arg w_\pm+\pi)/(2\pi)\), with saturation high and value adjusted by height.
+- Make the two sheets semi-transparent where they overlap, but keep branch-cut seams and branch points crisp.
+
+**Geometry to render**
+- Two translucent surface sheets over the base square, one for \(w_+\), one for \(w_-\), with a small vertical separation or opacity difference only if needed for readability.
+- Four branch points as small black or gold spheres on the base plane and on the sheet junctions.
+- Two branch cuts as thick dark curves on the base plane and highlighted seams on the sheets.
+- Monodromy trails:
+  1. A small loop around \(z=1\), with arrows showing that a traveller switches sheets after one loop.
+  2. A small loop around \(z=0.6i\), also showing sheet switch.
+  3. A larger loop enclosing both real branch points \(-1,1\), showing return to the starting sheet.
+- Base plane: translucent grid in the \(z\)-plane with real and imaginary axes emphasized.
+
+**Rendering style**
+- Sheet colors should vary continuously by complex phase \(\arg w\), with no random patch coloring.
+- Use transparency to show both sheets and their crossings.
+- Branch cuts should be dark or saturated enough to be unambiguous.
+- Background: white or light grey.
+- Use anti-aliased curves and soft lighting; avoid heavy outlines except for cuts and monodromy trails.
+
+**Composition / overlays**
+- Camera: oblique 3D view from above, centered on the four branch points.
+- Keep the base grid visible underneath the sheets.
+- Place a tiny two-color legend showing “sheet +” and “sheet −” if text or simple symbols are possible.
+
+**Technical specs**
+- Resolution at least 1600×1600 px.
+- Static frame only; no animation.
+
+**Deliverable** A single PNG image satisfying the above.

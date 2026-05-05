@@ -1,0 +1,58 @@
+__MATHEMATICAL_ACCURACY__
+Defect World-Tube Geometry:
+- Are exactly four defect world-tubes visible: two blue smooth defects and two red rough defects?
+- Is `S0` a vertical tube at the center of the spacetime volume?
+- Does `R0` follow a single helical turn around `S0` from `t = 0` to `t = 1`?
+- Does the helical red tube remain separated from the central blue tube by a clear gap consistent with radius `0.42` and tube radius `0.075`?
+- Are `R1` and `S1` approximately vertical unbraided reference tubes?
+
+Topological Braid / Linking Checks:
+- Does `R0` visibly wind exactly once counter-clockwise around `S0`, rather than zero times or multiple times?
+- Does the red helix alternate front/back relative to the blue central tube, indicating genuine 3D braiding rather than a flat spiral?
+- Are there no unintended intersections between defect tubes?
+- Is the green logical loop placed around the linked pair near `t ≈ 0.58`?
+- Does the yellow error chain cross the green logical loop once and terminate on a red rough defect?
+
+Surface-Code Spacetime Structure:
+- Are seven time-slice lattice planes visible at evenly spaced heights?
+- Are the lattice slices square grids in the `x-y` plane and stacked along `t`?
+- Is the vertical direction clearly used as time rather than an arbitrary spatial axis?
+- Is the purple sheet connecting the two smooth defects rather than connecting mixed defect types?
+
+__VISUAL_IMPLEMENTATION__
+Tube and Ribbon Rendering:
+- Are all world-tubes smooth, round, and consistently thick, with no broken or faceted segments?
+- Are rounded caps or visually closed ends present at `t = 0` and `t = 1`?
+- Are the green loop, purple sheet, and yellow error chain rendered as separate visible geometry?
+- Is the purple sheet translucent enough to see nearby structures through it?
+
+Color and Material Encoding:
+- Are smooth defects consistently blue and rough defects consistently red?
+- Is the logical loop green, the logical sheet purple, and the error chain yellow/orange?
+- Are colors saturated enough to distinguish all topological elements?
+- Does transparency avoid hiding the braid or making the scene unreadable?
+
+Depth, Lighting, and Occlusion:
+- Does lighting reveal cylindrical curvature on the tubes?
+- Are shadows/contact cues sufficient to distinguish front/back crossings?
+- Does the camera angle clearly show the helical winding around the central tube?
+- Are aliasing artifacts, jagged grid lines, or z-fighting absent or minimal?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Four defect tubes are present with the correct color classes.
+- Seven lattice slices are present and visibly stacked.
+- The green logical loop, purple smooth-defect sheet, and yellow error chain are all present.
+- The scene includes a small orientation triad with `t` pointing upward.
+
+Technical and Layout Requirements:
+- Image is square and at least `1600 × 1600` pixels.
+- Background is white or nearly white, not a distracting environment.
+- The full spacetime volume is in frame; no critical tube or operator is clipped.
+- The braid occupies the center of the composition and is not too small.
+
+Benchmark-Specific Failure Modes:
+- If the image is only a generic quantum circuit diagram with no spacetime tubes, mathematical accuracy should be low.
+- If the helix is a decorative spiral that does not link a central defect, mathematical accuracy should be low.
+- If logical operators are omitted, completeness should be substantially penalized.
+- If all tubes have the same color or role, both mathematical accuracy and visual implementation should be penalized.

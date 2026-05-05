@@ -1,0 +1,59 @@
+__MATHEMATICAL_ACCURACY__
+Energy Function and Periodicity:
+- Does the surface represent the specified periodic two-angle domain \(\phi,\psi\in[-\pi,\pi]\)?
+- Are left/right and top/bottom seams treated as periodic rather than as unrelated boundaries?
+- Are the three low-energy basins visually located near \((-1.20,0.85)\), \((1.05,-0.75)\), and \((2.35,2.10)\)?
+- Is the high ridge or saddle near \((0.05,0.05)\) clearly higher than nearby regions?
+- Does the energy surface have multiple wells and ridges rather than a generic random terrain?
+
+Gradient-Descent Trajectories:
+- Do the three paths start from the prescribed unfolded positions and descend toward basins?
+- Are arrowheads or direction cues consistent with decreasing energy?
+- Do paths wrap correctly if they approach a periodic boundary?
+- Are trajectories smooth and continuous, with no impossible jumps except through explicitly indicated periodic wrapping?
+
+Landscape Invariants:
+- Does the native basin appear as the deepest basin?
+- Are misfolded and intermediate basins shallower but still recognisable local minima?
+- Are contour lines consistent with the height field, with tighter spacing near steep ridges?
+- Is the topology of the landscape basin/ridge structure visually recoverable?
+
+__VISUAL_IMPLEMENTATION__
+Surface Rendering:
+- Is the height field smooth and adequately sampled, with no visible grid faceting at normal viewing distance?
+- Are holes, tears, or clipping artifacts absent from the surface?
+- Does lighting reveal the 3D relief without washing out the color map?
+- Are contour lines thin, readable, and slightly offset to avoid z-fighting?
+
+Color and Glyph Encoding:
+- Does the low-to-high energy color mapping follow a clear monotone progression?
+- Are the three trajectories colored distinctly and not confused with contour colors?
+- Are the basin glyphs and ridge marker visible from the chosen camera angle?
+- Are seam cues subtle but legible, rather than dominating the image?
+
+Composition:
+- Is the camera angle oblique enough to reveal height while preserving the \((\phi,\psi)\) layout?
+- Are all important elements visible without excessive occlusion?
+- Is the flat inset readable and visually connected to the main surface?
+- Is anti-aliasing sufficient on contour lines, tubes, glyphs, and surface edges?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Main \(220\times220\)-or-better energy surface is present.
+- Twelve or approximately twelve iso-energy contour levels are visible.
+- Three gradient-descent trajectories are present and have direction cues.
+- Native, misfolded, intermediate, and ridge markers are all present.
+- Periodic boundary/seam indicators are included.
+
+Technical Requirements:
+- Output is a single static PNG.
+- Resolution is at least 1600×1600 px.
+- Background is white or very light grey.
+- The image is self-contained and does not rely on external data or labels alone.
+
+Failure Modes to Penalize:
+- Generic hills without the specified basin positions.
+- Flat 2D heatmap only, with no 3D height surface.
+- Trajectories that climb uphill or ignore the specified starts.
+- Missing periodicity cues.
+- Unreadable clutter that prevents basin and trajectory assessment.

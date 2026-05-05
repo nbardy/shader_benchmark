@@ -1,0 +1,40 @@
+**Objective**
+Produce a single high-resolution static spacetime diagram of defect braiding in a topological quantum error-correcting code. The image should read as a 3D surface-code lattice through time, with defect world-tubes, logical operators, and visible braid/linking structure.
+
+**Mathematical specification**
+1. Coordinate system: use 3D spacetime coordinates `(x, y, t)` with `x, y ∈ [-1, 1]` and `t ∈ [0, 1]`. Render `t` as the vertical axis.
+2. Base code lattice: draw square lattice time-slices at `t_k = k/6` for `k = 0, ..., 6`. Each slice contains grid lines at `x, y ∈ {-0.8, -0.6, ..., 0.8}`.
+3. Defect world-tubes: render four cylindrical tubes of radius `r = 0.075`:
+   - Blue smooth defect `S0(t) = (0, 0, t)`.
+   - Blue smooth defect `S1(t) = (0.72, -0.55, t)`.
+   - Red rough defect `R0(t) = (0.42 cos(2πt), 0.42 sin(2πt), t)`, which winds once counter-clockwise around `S0`.
+   - Red rough defect `R1(t) = (-0.72, 0.55, t)`.
+4. Topological invariant to show: `R0` must have linking/winding number `+1` around the vertical `S0` tube and must not intersect it. All other tubes are unlinked vertical references.
+5. Logical operators:
+   - A translucent green loop at `t = 0.58` encircling the linked pair `S0/R0` with radius about `0.58` in the `x-y` plane.
+   - A translucent purple sheet/ribbon connecting the two blue smooth defects over `t ∈ [0.18, 0.82]`.
+   - A thin yellow error chain crossing the green loop once, ending on the red rough defect `R0`.
+
+**Geometry to render**
+- Smooth cylindrical world-tubes with rounded caps; sample each tube with at least 300 longitudinal samples or equivalent smooth analytic geometry.
+- Semi-transparent lattice slabs at seven `t` values, with thin grey grid lines.
+- The helical red tube should visibly pass in front of and behind the central blue tube as it winds.
+- The green loop, purple sheet, and yellow error chain should be distinct overlay primitives, not just color changes on the tubes.
+
+**Rendering style**
+- White background.
+- Blue smooth defects, red rough defects, green logical loop, purple logical sheet, yellow error chain, grey lattice.
+- Use soft Phong lighting, ambient occlusion or contact shadows, and anti-aliasing.
+- Defect tubes should be opaque or nearly opaque; lattice slabs and logical sheets should be translucent.
+
+**Composition / overlays**
+- Camera: three-quarter view looking down from positive `t`, so the helical winding is visible.
+- Add small arrow rods for `x`, `y`, and `t` in a corner; `t` must point upward.
+- Add a small legend made of colored swatches for smooth defect, rough defect, logical loop, logical sheet, and error chain.
+
+**Technical specs**
+- Resolution at least `1600 × 1600` pixels.
+- Static frame only; no animation.
+- Output format: PNG.
+
+**Deliverable** A single PNG image satisfying the above.

@@ -1,0 +1,56 @@
+**Objective**
+Produce a single high-resolution PNG visualising a \(5{:}7{:}11\) polyrhythm as a trajectory on a projected phase torus. The image should show winding numbers, beat-alignment events, and the extra 11-phase modulation.
+
+**Mathematical specification**
+Let \(\tau\in[0,2\pi]\) be one full common cycle and define phases
+\[
+\theta_5=5\tau,
+\qquad
+\theta_7=7\tau,
+\qquad
+\theta_{11}=11\tau.
+\]
+Use the torus projection
+\[
+X(\tau)=\left((2.0+0.55\cos\theta_5)\cos\theta_7,\ (2.0+0.55\cos\theta_5)\sin\theta_7,
+\ 0.55\sin\theta_5+0.22\sin\theta_{11}\right).
+\]
+The transparent reference torus is the same embedding without the \(0.22\sin\theta_{11}\) vertical modulation:
+\[
+T(\theta_5,\theta_7)=\left((2.0+0.55\cos\theta_5)\cos\theta_7,\ (2.0+0.55\cos\theta_5)\sin\theta_7,
+\ 0.55\sin\theta_5\right).
+\]
+
+Beat-alignment events:
+- All three beats align at \(\tau=0\) and \(\tau=2\pi\); mark these with the largest gold/white spheres.
+- Pair alignments:
+  - \(5\) and \(7\): \((5-7)\tau=2\pi k\), giving \(\tau=\pi k\), \(k=0,1,2\).
+  - \(5\) and \(11\): \((5-11)\tau=2\pi k\), giving \(\tau=2\pi k/6\), \(k=0,\ldots,6\).
+  - \(7\) and \(11\): \((7-11)\tau=2\pi k\), giving \(\tau=2\pi k/4\), \(k=0,\ldots,4\).
+Use smaller distinct marker shapes or rings for pair alignments.
+
+**Geometry to render**
+- Transparent reference torus \(T(\theta_5,\theta_7)\) with faint grid lines: 5 minor-cycle guide rings and 7 major-cycle guide rings should be visually countable.
+- Main trajectory tube \(X(\tau)\), sampled at least 1400 points, with tube radius about 1% of torus major radius.
+- Color trajectory hue by \(\theta_{11}\bmod2\pi\), so it cycles 11 times along the full path.
+- Alignment markers at the specified \(\tau\) values, using three marker types: all-beat, 5–7, 5–11, 7–11.
+- Three small clock rings or beat wheels in a corner with exactly 5, 7, and 11 tick marks respectively.
+
+**Rendering style**
+- Reference torus: translucent pale grey or blue with thin grid curves.
+- Trajectory: saturated rainbow/HSV phase color, smooth and glossy.
+- Alignment markers: high-contrast spheres/rings, not hidden by the torus.
+- Background: black, navy, white, or light grey; choose for maximum trajectory contrast.
+- Use soft bloom only on all-beat alignment markers.
+
+**Composition / overlays**
+- Camera: oblique view showing the torus hole and enough of the path to count windings.
+- Avoid a camera angle where the torus collapses to a circle.
+- Put the 5/7/11 beat wheels in one unobtrusive corner.
+- Include a small phase-color strip if possible.
+
+**Technical specs**
+- Resolution at least 1600×1600 px.
+- Static frame only; no animation.
+
+**Deliverable** A single PNG image satisfying the above.

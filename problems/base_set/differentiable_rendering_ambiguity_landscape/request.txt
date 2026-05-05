@@ -1,0 +1,61 @@
+**Objective**
+Produce a single high-resolution PNG visualising ambiguity in a differentiable-rendering inverse problem. The main image should show a loss landscape where many different 3D sphere scenes produce nearly identical 2D silhouettes, forming a long shallow valley of equivalent solutions.
+
+**Mathematical specification**
+Use a pinhole camera with focal length \(f=1\), looking along positive \(z\). A Lambertian sphere with radius \(r\) and depth \(z\) has approximate projected silhouette radius
+\[
+\rho(r,z)=r/z.
+\]
+The target image is a centered circle of apparent radius
+\[
+\rho_*=0.42.
+\]
+Main parameter domain:
+\[
+z\in[1.0,5.0],\qquad r\in[0.25,2.25].
+\]
+Define the silhouette loss
+\[
+L(z,r)=\log\left(1+80( r/z-0.42)^2+0.05(z-3.0)^2\right).
+\]
+The exact silhouette-ambiguity curve is
+\[
+r=0.42z.
+\]
+This curve should be drawn explicitly as a glowing valley line on the loss surface.
+
+Secondary inset ambiguity:
+- Albedo/light ambiguity with albedo \(a\in[0.2,1.6]\), light intensity \(\ell\in[0.2,1.6]\).
+- Target brightness \(b_*=0.8\).
+- Inset loss:
+  \[
+  L_{a\ell}(a,\ell)=\log(1+50(a\ell-0.8)^2).
+  \]
+- Draw the hyperbola \(a\ell=0.8\) as the inset's ambiguity curve.
+
+**Geometry to render**
+- Main loss surface: a smooth height field over \((z,r)\), sampled at least \(220\times220\), with height proportional to normalised \(L(z,r)\).
+- Contour lines: at least 14 iso-loss contours on the surface.
+- Glowing ambiguity valley: tube or thick line along \(r=0.42z\), clipped to the domain.
+- Candidate scenes: place five small sphere-and-camera glyphs along the ambiguity curve at \(z=1.2,2.0,3.0,4.0,4.8\), with radius \(r=0.42z\). Each glyph should show a different physical radius/depth but the same projected silhouette size.
+- Target thumbnail: a small inset showing the observed centered circular silhouette of radius \(0.42\) in image coordinates.
+- Secondary inset: small height field or contour plot of \(L_{a\ell}\) with the hyperbola \(a\ell=0.8\).
+
+**Rendering style**
+- Main surface color: dark blue/purple for low loss, green/yellow/orange for high loss.
+- Valley line: bright gold or white glow.
+- Candidate scene glyphs: neutral grey spheres with camera rays drawn as thin lines to equal-size image-plane circles.
+- Use soft shadows and clear specular highlights on glyph spheres.
+- Background: white or very light grey.
+
+**Composition / overlays**
+- Camera: oblique view that makes the long valley and contour compression visible.
+- Main loss surface should occupy most of the canvas.
+- Place target thumbnail in the upper-left and albedo/light inset in the lower-right.
+- Add axis tick marks or minimal labels for \(z\), \(r\), \(a\), and \(\ell\) where possible; if text is unavailable, use arrows and tick marks.
+
+**Technical specs**
+- Resolution at least 1600×1600 px.
+- Static frame only; no animation.
+
+**Deliverable** A single PNG image satisfying the above.

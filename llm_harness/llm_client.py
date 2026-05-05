@@ -143,10 +143,10 @@ class CliExecutor(LLMExecutor):
         try:
             result = subprocess.run(
                 cmd, input=prompt, capture_output=True, text=True,
-                timeout=900, env=self._base_env(),
+                timeout=1800, env=self._base_env(),
             )
         except subprocess.TimeoutExpired:
-            raise Exception("claude CLI timed out after 900s")
+            raise Exception("claude CLI timed out after 1800s")
         if result.returncode != 0:
             raise Exception(f"claude CLI failed (exit {result.returncode}): {(result.stderr or '')[:1000]}")
         return result.stdout, dict(_ZERO_USAGE)
@@ -274,11 +274,11 @@ class CliExecutor(LLMExecutor):
             try:
                 result = subprocess.run(
                     cmd, input=prompt, capture_output=True, text=True,
-                    timeout=1200, env=env,
+                    timeout=1800, env=env,
                     cwd=workspace,
                 )
             except subprocess.TimeoutExpired:
-                raise Exception("gemini CLI timed out after 1200s")
+                raise Exception("gemini CLI timed out after 1800s")
             if result.returncode != 0:
                 raise Exception(f"gemini CLI failed (exit {result.returncode}): {(result.stderr or '')[:1000]}")
             # gemini-cli exits 0 even when the upstream API returned 429

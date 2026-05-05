@@ -1,0 +1,63 @@
+__MATHEMATICAL_ACCURACY__
+Hamming Code Structure:
+- Is the code clearly the binary \([7,4,3]\) Hamming code with 7 variables and 3 checks?
+- Does the Tanner graph contain exactly 7 variable nodes and 3 check nodes?
+- Are Tanner edges consistent with the specified parity-check matrix columns?
+- Are all 8 syndromes represented with distinct colors?
+- Are the eight coset leaders highlighted, including the zero vector and seven single-bit errors?
+
+Projected Decoding Landscape:
+- Does the central graph contain a dense cloud consistent with 128 error-pattern nodes?
+- Are edges only between near-neighbour nodes, suggesting single-bit Hamming flips?
+- Is vertical placement correlated with Hamming weight and syndrome index rather than arbitrary scatter?
+- Are flow arrows generally directed toward lower-score / lower-weight regions?
+- Are local ring markers used only for nodes with no lower-score neighbour or visual stopping points?
+
+Codeword and Motif Correctness:
+- Are the three specified weight-3 zero-syndrome motifs highlighted distinctly?
+- Do highlighted motifs appear as triangular or three-node connected structures, not random red marks?
+- Are zero-syndrome/codeword nodes visually distinguished from nonzero-syndrome nodes?
+- Is the relationship between syndrome cube, coset leaders, and central landscape visually coherent?
+
+__VISUAL_IMPLEMENTATION__
+Graph Readability:
+- Are 128 nodes visible enough to suggest the full error-pattern space without becoming a solid blob?
+- Are graph edges translucent and thin enough not to overwhelm node colors?
+- Are flow arrows legible at the chosen scale?
+- Are highlighted leaders and motifs immediately discoverable?
+
+Color Encoding:
+- Are the 8 syndrome hues saturated and distinguishable?
+- Is the same color mapping used consistently in the central graph, syndrome cube, and legend strip?
+- Do red motif highlights remain distinguishable from syndrome colors?
+- Are halos/rims used carefully to avoid hiding syndrome information?
+
+Inset Quality:
+- Is the Tanner graph layout clean, with variable and check nodes separated?
+- Is the syndrome cube clearly a cube or cube-like arrangement with 8 corners?
+- Do the insets support the main visualization rather than competing with it?
+- Is the overall layout balanced left-to-right?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Central projected 128-node decoding landscape is present.
+- Hamming-neighbour edges are present.
+- Decoder-flow arrows are present.
+- Eight coset leaders are highlighted.
+- Three specified weight-3 zero-syndrome motifs are highlighted.
+- Syndrome cube inset is present.
+- Tanner graph inset is present.
+- Syndrome-color legend is present.
+
+Technical Requirements:
+- Output is a single PNG at least 1600×1600 px.
+- Background is white or very light grey.
+- The visualization is self-contained and does not require external data.
+- The image remains readable without relying entirely on text labels.
+
+Failure Modes to Penalize:
+- Generic network diagram with no Hamming-code structure.
+- Missing syndrome cube or Tanner graph.
+- Fewer than 8 syndrome colors or inconsistent color mapping.
+- No coset-leader highlighting.
+- Red motifs placed decoratively without matching codeword-like triples.

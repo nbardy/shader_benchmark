@@ -1,0 +1,41 @@
+**Objective**
+Produce a single high-resolution image visualizing braid-group word reduction as physical ribbon tightening. The scene should show a nontrivial braid word on three ribbons reducing to the identity braid via the Artin relation and cancellation.
+
+**Mathematical specification**
+1. Braid group: use `B_3` with generators `σ1` and `σ2`.
+2. Word to visualize:
+   `w = σ1 σ2 σ1 σ2^{-1} σ1^{-1} σ2^{-1}`.
+3. Reduction identity: use the braid relation `σ1 σ2 σ1 = σ2 σ1 σ2`, so
+   `w = σ2 σ1 σ2 σ2^{-1} σ1^{-1} σ2^{-1} = identity`.
+4. Render three vertical ribbons/strands. Initial endpoint order at the top and bottom should be the same, confirming the identity braid after reduction.
+5. Crossing convention:
+   - `σi` means strand `i` crosses over strand `i+1`.
+   - `σi^{-1}` means strand `i` crosses under strand `i+1`.
+6. Static layout: show three stages left to right:
+   - left: the original six-crossing word `w`, with all crossings visible in order from top to bottom;
+   - center: the relation/cancellation stage, with `σ1σ2σ1 → σ2σ1σ2` indicated by ghost arrows or faded duplicate strands;
+   - right: the tightened identity braid as three straight parallel ribbons.
+
+**Geometry to render**
+- Use ribbons, not just thin lines: each strand should have finite width and slight twist/shading.
+- Strand colors: red, green, and blue, consistent across all three stages.
+- Crossings should show clear over/under ordering using depth, shadow, and small gaps.
+- Add small crossing labels or colored tick marks for the six symbols if text is supported; otherwise use plus/minus crossing markers.
+
+**Rendering style**
+- White background.
+- Ribbons should be glossy or satin-like, with soft shadows.
+- Use anti-aliasing and smooth Bezier-like curves.
+- Keep the three stages visually separated but aligned horizontally.
+
+**Composition / overlays**
+- Add a subtle horizontal arrow from left to center and center to right to show reduction flow.
+- Add top and bottom endpoint dots for the three strands in each stage.
+- The rightmost identity braid should clearly have no crossings.
+
+**Technical specs**
+- Resolution at least `1600 × 1600` pixels.
+- Static frame only; no animation.
+- Output format: PNG.
+
+**Deliverable** A single PNG image satisfying the above.

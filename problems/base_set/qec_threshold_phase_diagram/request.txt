@@ -1,0 +1,43 @@
+**Objective**
+Produce a single high-resolution visualization of a quantum error-correction threshold phase diagram. The image should compare two toy surface-code decoders by showing logical error probability as a function of physical error rate and code distance.
+
+**Mathematical specification**
+1. Variables:
+   - Physical error rate `p ∈ [0.001, 0.04]`.
+   - Code distances `d ∈ {3, 5, 7, 9, 11, 13}`.
+   - Two decoders: `A = MWPM-like` and `B = union-find-like`.
+2. Thresholds and scaling:
+   - Decoder A threshold: `p_th,A = 0.0105`.
+   - Decoder B threshold: `p_th,B = 0.0088`.
+   - Critical exponent parameter: `ν = 1.35`.
+3. Logical error model: for decoder `j`, plot
+   `P_L,j(p,d) = sigmoid(β_j (p - p_th,j) d^(1/ν))`, where `sigmoid(x) = 1/(1 + exp(-x))`, `β_A = 360`, and `β_B = 330`.
+4. For each decoder, draw six curves `P_L,j(p,d)` over `p`, one per distance. The curves should cross near `P_L = 0.5` at the decoder's threshold.
+5. Also render a semi-transparent surface or ribbon field over `(p, d, log10(P_L + 1e-4))` for each decoder.
+
+**Geometry to render**
+- Use two side-by-side 3D panels or two clearly separated surfaces in one scene.
+- Horizontal axis: `p`, with ticks at approximately `0.005`, `0.01`, `0.02`, `0.03`, `0.04`.
+- Depth axis: code distance `d` with six discrete tracks.
+- Vertical axis or color dimension: `log10(P_L + 1e-4)` or `P_L`; include a visible scale.
+- Draw a translucent vertical threshold plane at `p = p_th,A` in the A panel and at `p = p_th,B` in the B panel.
+- Mark the crossing ridge near `P_L = 0.5` with a bright line.
+
+**Rendering style**
+- White background.
+- Decoder A: blue/cyan curves and surface.
+- Decoder B: orange/red curves and surface.
+- Use a monotone light-to-dark color gradient along `log10(P_L + 1e-4)`.
+- Curves should be thick enough to distinguish individual code distances.
+
+**Composition / overlays**
+- Add compact axis labels or tick-mark legends for `p`, `d`, and `logical error` if text is supported; otherwise use clear tick marks and color/height cues.
+- Add a small legend distinguishing decoder A and decoder B.
+- The threshold planes should be labeled/ticked or otherwise visually tied to their crossing locations.
+
+**Technical specs**
+- Resolution at least `1600 × 1600` pixels.
+- Static frame only; no animation.
+- Output format: PNG.
+
+**Deliverable** A single PNG image satisfying the above.

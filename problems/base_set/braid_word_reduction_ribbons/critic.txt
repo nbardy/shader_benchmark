@@ -1,0 +1,58 @@
+__MATHEMATICAL_ACCURACY__
+Braid Word Representation:
+- Does the left panel show exactly six crossings corresponding to `σ1 σ2 σ1 σ2^{-1} σ1^{-1} σ2^{-1}`?
+- Are crossings ordered vertically from top to bottom according to the word order?
+- Are the first three crossings positive `σ1, σ2, σ1` and the last three inverse crossings `σ2^{-1}, σ1^{-1}, σ2^{-1}`?
+- Are there three strands/ribbons, not two or four?
+- Is the endpoint permutation the identity at the end of the full word?
+
+Reduction Logic:
+- Does the middle panel visually indicate the Artin relation `σ1σ2σ1 = σ2σ1σ2`?
+- Are adjacent inverse pairs shown cancelling after the relation is applied?
+- Does the right panel reduce to three straight parallel strands with no crossings?
+- Are the same red/green/blue strands tracked consistently through all stages?
+
+Over/Under Crossing Convention:
+- Are positive and negative crossings visually distinguished by correct over/under ordering or signs?
+- Are crossing gaps/shadows sufficient to determine which ribbon passes over?
+- Are there no impossible intersections where ribbons merge or pass through each other without crossing notation?
+- Does the physical ribbon geometry preserve strand continuity through crossings?
+
+__VISUAL_IMPLEMENTATION__
+Ribbon Rendering:
+- Are strands rendered as finite-width ribbons rather than simple flat lines?
+- Are curves smooth and free of jagged corners?
+- Does satin/gloss shading reveal ribbon twist and depth?
+- Are endpoint dots or anchors present and aligned across panels?
+
+Stage Layout:
+- Are the original, reduction, and identity stages clearly separated left-to-right?
+- Are reduction arrows or equivalent transition cues present?
+- Is the identity braid visually simple and crossing-free?
+- Does the middle stage use ghosting/fading or other visual devices to show transformation?
+
+Color and Readability:
+- Are strand colors consistent across all panels?
+- Are plus/minus markers or crossing labels legible if used?
+- Are shadows useful for over/under readability without cluttering the scene?
+- Is the white background clean and non-distracting?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Left original six-crossing braid is present.
+- Center relation/cancellation stage is present.
+- Right identity braid is present.
+- Three colored ribbons are used consistently.
+- Reduction arrows or equivalent transition indicators are present.
+
+Technical Requirements:
+- Image resolution is at least `1600 × 1600` pixels.
+- Output is a single static PNG.
+- White or nearly white background.
+- The full braid in every stage is visible and not clipped.
+
+Benchmark-Specific Failure Modes:
+- If the word does not have six crossings, mathematical accuracy should be penalized.
+- If the final state is not the identity braid, mathematical accuracy should be low.
+- If over/under information is impossible to read, visual implementation and mathematical accuracy should be penalized.
+- If the output is just algebraic text with no ribbon geometry, completeness should be low.

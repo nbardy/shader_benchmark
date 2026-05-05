@@ -1,0 +1,49 @@
+**Objective**
+Produce a single high-resolution PNG visualising an approximate Laplacian eigenfunction on a Sierpiński-carpet fractal drum. The result should show the fractal domain, punched-out holes, signed nodal domains, and nodal curves.
+
+**Mathematical specification**
+Use the order-5 Sierpiński carpet in the unit square. Let \(X,Y\in[0,1]\). A point is retained if, for every ternary digit level \(k=1,\ldots,5\), the \(k\)-th ternary digit of \(X\) and the \(k\)-th ternary digit of \(Y\) are not both equal to 1. Equivalently, recursively divide into \(3\times3\) blocks and remove every central block for 5 iterations.
+
+Define the retained-domain mask
+\[
+M_5(X,Y)=\begin{cases}
+1, & \text{point retained in the order-5 carpet},\\
+0, & \text{point lies in a removed square}.
+\end{cases}
+\]
+
+Use the following antisymmetric approximate eigenfunction on the retained set:
+\[
+u(X,Y)=M_5(X,Y)\left[
+\sin(\pi X)\sin(2\pi Y)-\sin(2\pi X)\sin(\pi Y)
++0.25\sin(3\pi X)\sin(2\pi Y)-0.25\sin(2\pi X)\sin(3\pi Y)
+\right].
+\]
+The field must be zero inside removed holes and along the outside boundary.
+
+**Geometry to render**
+- Main object: a thin 3D fractal plate shaped like the order-5 Sierpiński carpet.
+- Plate elevation: \(z=0.22u(X,Y)\), with positive and negative eigenfunction domains raised/lowered.
+- Holes: all removed central squares from the 5 recursive levels should be punched through the plate, not merely colored.
+- Nodal set: draw the zero contour \(u=0\) as dark curves on the plate. Include the main diagonal antisymmetry nodal curve and smaller secondary nodal loops/branches introduced by the higher-frequency terms.
+- Boundary: draw a thin black outline around the outer square and around holes.
+- Spectral side strip: include a small vertical ladder of six eigenvalue bars labelled visually by height only; highlight the displayed mode as the fifth bar. Approximate bar heights proportional to \([5.8,14.4,14.4,27.0,30.2,37.1]\).
+
+**Rendering style**
+- Positive \(u\): warm orange/red.
+- Negative \(u\): cool blue/cyan.
+- Near zero: white or pale grey, with explicit dark nodal lines.
+- Holes: reveal the background through the plate; do not fill removed regions.
+- Use soft shadows cast into larger holes to make the fractal geometry apparent.
+- Background: pure white or very light grey.
+
+**Composition / overlays**
+- Camera: oblique top-down view so the Sierpiński holes, surface height, and nodal domains are all visible.
+- Place the spectral side strip to the right of the main fractal plate.
+- Include a small legend showing positive, zero, and negative field colors if space allows.
+
+**Technical specs**
+- Resolution at least 1600×1600 px.
+- Static frame only; no animation.
+
+**Deliverable** A single PNG image satisfying the above.

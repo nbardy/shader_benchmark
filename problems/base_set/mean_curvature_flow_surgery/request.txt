@@ -1,0 +1,38 @@
+**Objective**
+Produce a single high-resolution image showing a representative frame of mean-curvature flow immediately after a neck-pinch surgery on a dumbbell-shaped surface. The visualization should make the geometric flow, high-curvature neck, and surgery caps visually explicit.
+
+**Mathematical specification**
+1. Coordinate system: render a 3D surface in coordinates `(x, y, z)`, with the dumbbell axis along `z`.
+2. Static time: render the post-surgery state at normalized time `t = 0.64`, just after the first neck-pinch event. Also include a faint ghost of the pre-surgery surface at `t = 0.60`.
+3. Pre-surgery ghost surface: an axisymmetric dumbbell of revolution with radius
+   `ρ_pre(z) = 0.045 + 0.46 exp(-((z - 0.58)^2)/0.18) + 0.46 exp(-((z + 0.58)^2)/0.18)`, for `z ∈ [-1.15, 1.15]`.
+4. Post-surgery visible surface: two separated capped components. Use the same bulb profile for `z ∈ [0.13, 1.15]` and `z ∈ [-1.15, -0.13]`, but close each cut at `z = ±0.13` with smooth convex caps of radius about `0.12`.
+5. Mean-curvature encoding: color the post-surgery surface by qualitative mean curvature magnitude:
+   - deep blue on low-curvature outer bulb regions,
+   - white/yellow on moderate curvature,
+   - orange/red near the two new surgery caps and the vanished neck location.
+6. Surgery markers: draw two thin red circular scar rings at `z = +0.13` and `z = -0.13`, where the neck was cut.
+
+**Geometry to render**
+- The two post-surgery components should be smooth closed surfaces, not open tubes.
+- The pre-surgery ghost should be a translucent grey wireframe or transparent surface showing the original continuous neck.
+- Add faint mean-curvature flow arrows normal to the ghost surface near the neck, pointing inward toward the pinching direction.
+- Add a small central gap between the two new caps so the topological separation is unambiguous.
+
+**Rendering style**
+- White background, soft Phong lighting, anti-aliased edges.
+- Main post-surgery surface: glossy but not mirror-like, with a curvature heatmap.
+- Ghost surface: light grey, 20–30% opacity.
+- Scar rings: saturated red, thin but clearly visible.
+
+**Composition / overlays**
+- Camera: oblique three-quarter view from above, with the `z` axis slightly diagonal in the frame.
+- Add a small vertical axis rod labeled or ticked as `z`.
+- Include a compact colorbar swatch from blue to red labeled/ticked as low to high curvature if text is available; otherwise use an unlabeled gradient strip.
+
+**Technical specs**
+- Resolution at least `1600 × 1600` pixels.
+- Static frame only; no animation.
+- Output format: PNG.
+
+**Deliverable** A single PNG image satisfying the above.

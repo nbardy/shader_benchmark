@@ -1,0 +1,61 @@
+__MATHEMATICAL_ACCURACY__
+Winding Numbers:
+- Does the trajectory wind 7 times around the torus major direction over one common cycle?
+- Does it wind 5 times around the torus minor direction over one common cycle?
+- Is the 11-phase visible as an additional vertical/color modulation rather than replacing the 5:7 torus winding?
+- Is the trajectory closed after \(\tau=2\pi\)?
+- Is the trajectory smooth and continuous without breaks?
+
+Beat Alignments:
+- Are all-beat alignments at the start/end marked as the largest markers?
+- Are 5–7 pair alignments represented at three points including endpoints?
+- Are 5–11 pair alignments represented at seven points including endpoints?
+- Are 7–11 pair alignments represented at five points including endpoints?
+- Are marker types visually distinguishable, with endpoints not overcounted confusingly?
+
+Phase Encoding:
+- Does the trajectory color cycle according to \(\theta_{11}\) and therefore repeat 11 times?
+- Are reference torus grid lines consistent with 5 minor and 7 major guide cycles?
+- Do the beat wheels have exactly 5, 7, and 11 tick marks?
+- Is the phase-color strip, if present, consistent with the trajectory coloring?
+
+__VISUAL_IMPLEMENTATION__
+Torus and Trajectory Rendering:
+- Is the transparent reference torus smooth and readable?
+- Is the trajectory tube smooth, continuous, and not overly thick?
+- Does the camera reveal the torus hole and path windings?
+- Are grid lines thin enough to avoid visual clutter?
+
+Marker Rendering:
+- Are alignment markers visible and attached to the trajectory?
+- Are all-beat markers visually dominant but not obscuring nearby pair markers?
+- Are different pair-alignment types distinguishable by shape, ring, or color?
+- Are markers anti-aliased and not hidden behind opaque surfaces?
+
+Composition and Contrast:
+- Is the color contrast high enough to distinguish trajectory from reference torus?
+- Are beat wheels readable in the corner?
+- Does the overall image avoid degenerating into an unreadable knot of color?
+- Is lighting/shading sufficient to show 3D depth?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Transparent reference torus is present.
+- Main \(5{:}7{:}11\) trajectory tube is present.
+- Trajectory hue varies by \(\theta_{11}\).
+- All-beat and three pair-alignment marker types are present.
+- Three beat wheels with 5, 7, and 11 ticks are present.
+- Reference grid or guide rings are present.
+
+Technical Requirements:
+- Output is a single PNG at least 1600×1600 px.
+- Static frame only.
+- The visualization is self-contained and does not rely on sound playback.
+- Camera angle supports counting or inferring windings.
+
+Failure Modes to Penalize:
+- Generic torus knot without 5:7:11 structure.
+- Missing 11-phase color modulation.
+- Missing or incorrectly counted beat wheels.
+- No alignment markers.
+- Opaque torus hiding the trajectory.

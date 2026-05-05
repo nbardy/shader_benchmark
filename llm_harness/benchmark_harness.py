@@ -10,7 +10,7 @@ import sys
 import os
 from pathlib import Path
 from datetime import datetime
-from typing import List, Dict
+from typing import List, Dict, Union
 import subprocess
 import json
 from tqdm.asyncio import tqdm
@@ -25,14 +25,29 @@ from prompt_loader import PromptLoader
 from shader_parser import ShaderParser
 from test_runner import TestRunner
 from judge import Judge, EvaluationContext
+from judge_panel import (
+    judge_stage_name,
+    scores_by_judge_from_stages,
+    mean_scores,
+)
 from debug_logger import DebugLogger
 from language_specs import get_language_spec
 from runtimes import get_runtime, default_runtime_for_language
 
 class BenchmarkHarness:
-    def __init__(self, model: str, problems: List[str], max_parallel: int = 100, judge_model: str = "anthropic/claude-opus-4-6", run_id: str = None, language: str = "wgsl", runtime: str = None, skip_judge: bool = False):
+    def __init__(self, model: str, problems: List[str], max_parallel: int = 100,
+                 judge_model: Union[str, List[str]] = "anthropic/claude-opus-4-6",
+                 run_id: str = None, language: str = "wgsl", runtime: str = None,
+                 skip_judge: bool = False):
         self.model = model
-        self.judge_model = judge_model
+        # judge_model accepts either a single string (legacy) or a list (panel).
+        # self.judge_models is the canonical list; self.judge_model is the
+        # first member, kept for backwards-compatible logging/manifest fields.
+        if isinstance(judge_model, str):
+            self.judge_models: List[str] = [judge_model]
+        else:
+            self.judge_models = list(judge_model)
+        self.judge_model = self.judge_models[0]
         self.problems = problems
         self.max_parallel = max_parallel
         self.language = language
@@ -92,7 +107,15 @@ class BenchmarkHarness:
         self.llm_semaphore = asyncio.Semaphore(max_parallel)
         self.compile_semaphore = asyncio.Semaphore(os.cpu_count() or 8)
         self.render_semaphore = asyncio.Semaphore(4)
-        judge_concurrency = 4 if self.judge_model.startswith("cli/") else 50
+        # Concurrency ceiling drops to the CLI cap if ANY panel judge is a
+        # CLI tool. Also respect --max-parallel here: during rejudge/resume,
+        # generate/compile/render are cached, so many problem tasks can reach
+        # the judge stage immediately. Without this min(), `--max-parallel 1`
+        # would still allow four concurrent CLI judges.
+        if any(jm.startswith("cli/") for jm in self.judge_models):
+            judge_concurrency = max(1, min(max_parallel, 4))
+        else:
+            judge_concurrency = min(max_parallel, 50)
         self.judge_semaphore = asyncio.Semaphore(judge_concurrency)
 
         # Get language specification
@@ -137,7 +160,10 @@ class BenchmarkHarness:
         config = {
             'run_id': self.run_id,
             'model': self.model,
-            'judge_model': self.judge_model,
+            # judge_model: first panel member, kept for legacy readers.
+            # judge_models: full panel list (canonical).
+            'judge_model': self.judge_models[0],
+            'judge_models': list(self.judge_models),
             'language': self.language,
             'runtime': self.runtime.name if hasattr(self, 'runtime') and self.runtime else None,
             'problems': self.problems,
@@ -193,7 +219,8 @@ class BenchmarkHarness:
         manifest = {
             'run_id': self.run_id,
             'model': self.model,
-            'judge_model': self.judge_model,
+            'judge_model': self.judge_models[0],
+            'judge_models': list(self.judge_models),
             'total_problems': len(self.problems),
             'problems': self.problems,
             'created': datetime.now().isoformat() if not self.manifest_file.exists() else None,
@@ -294,12 +321,35 @@ class BenchmarkHarness:
         stage_data = problem_data.get('stages', {}).get(stage_name, {})
         return stage_data.get('data', {})
 
+    def _completed_judge_scores(self, problem_index: int, judge_model: str) -> List[int] | None:
+        """Return a judge's usable score vector, or None when it should rerun.
+
+        Judge parse failures are encoded as all-zero score vectors. A completed
+        all-zero judge stage is not evidence; treat it like a missing judge so
+        resume/rejudge can retry it against the cached render.
+        """
+        stage_name = judge_stage_name(judge_model)
+        if not self._is_stage_complete(problem_index, stage_name):
+            return None
+        data = self._get_stage_data(problem_index, stage_name)
+        scores = data.get('scores')
+        if not (isinstance(scores, list) and len(scores) == 5):
+            return None
+        if not any(isinstance(s, (int, float)) and s > 0 for s in scores):
+            return None
+        return [int(s) for s in scores]
+
     def _is_problem_fully_complete(self, problem_index: int) -> bool:
-        """Check if all four stages of a problem are complete"""
-        return (self._is_stage_complete(problem_index, 'generate') and
+        """Check whether every pre-judge stage AND every configured panel
+        judge has usable scores for this problem."""
+        if not (self._is_stage_complete(problem_index, 'generate') and
                 self._is_stage_complete(problem_index, 'compile') and
-                self._is_stage_complete(problem_index, 'render') and
-                self._is_stage_complete(problem_index, 'judge'))
+                self._is_stage_complete(problem_index, 'render')):
+            return False
+        return all(
+            self._completed_judge_scores(problem_index, jm) is not None
+            for jm in self.judge_models
+        )
 
     def _permanent_fail_stage(self, problem_index: int):
         """Return the stage name where this problem permanently failed, or None.
@@ -358,12 +408,21 @@ class BenchmarkHarness:
             # Load all cached data from checkpoints
             compile_data = self._get_stage_data(problem_index, 'compile')
             render_data = self._get_stage_data(problem_index, 'render')
-            judge_data = self._get_stage_data(problem_index, 'judge')
 
             test_folder = Path(compile_data.get('test_folder', '')) if compile_data.get('test_folder') else None
             result_image = Path(render_data.get('image_path', '')) if render_data.get('image_path') else None
-            scores = judge_data.get('scores', [0, 0, 0, 0, 0])
-            failure_reason = judge_data.get('failure_reason')
+
+            # Aggregate cached panel scores. Mean across judges; failure_reason
+            # surfaces only if every judge skipped the same way (otherwise the
+            # mean is the truth and individual skips are visible in scores_by_judge).
+            problem_data = self.problem_checkpoints.get(problem_index, {})
+            sbj = scores_by_judge_from_stages(problem_data.get('stages', {}))
+            scores = mean_scores(sbj) or [0, 0, 0, 0, 0]
+            failure_reasons = [
+                self._get_stage_data(problem_index, judge_stage_name(jm)).get('failure_reason')
+                for jm in self.judge_models
+            ]
+            failure_reason = failure_reasons[0] if all(fr == failure_reasons[0] for fr in failure_reasons) else None
 
             if pbar:
                 pbar.set_postfix_str(f"{problem}: {sum(scores)}/500 (cached)")
@@ -549,70 +608,121 @@ class BenchmarkHarness:
                 else:
                     raise RuntimeError(f"Cannot resume: image_path not saved in render checkpoint")
 
-            # Stage 4: Judge (with smart skipping for obvious failures)
+            # Stage 4: Judge panel — run every panel member that hasn't already
+            # produced a stage for this problem. Per-judge stage names are
+            # `judge:<safe_key>` so each judge is its own resumable unit.
             failure_reason = None
             judge_usage = {'cost': 0.0, 'total_tokens': 0}
+            scores_by_judge: Dict[str, List[int]] = {}
             if self.skip_judge:
-                # Wave-1 mode: stop after render. Leaves the judge stage
+                # Wave-1 mode: stop after render. Leaves all judge stages
                 # 'missing' so a later resume (without --skip-judge) picks
-                # up exactly those problems and runs only the judge with
-                # the cached render image. This decouples gen-side quotas
-                # (Anthropic / Google) from judge-side quotas (codex).
+                # them up using the cached render image. Decouples gen-side
+                # quotas (Anthropic / Google) from judge-side quotas.
                 self.logger.log_info(problem_index, problem,
                                      "Skipping judge stage (--skip-judge); will be picked up on next resume")
                 scores = [0, 0, 0, 0, 0]
                 failure_reason = 'JUDGE_DEFERRED'
-            elif not self._is_stage_complete(problem_index, 'judge'):
-                async with self.judge_semaphore:
-                    self._save_stage_checkpoint(problem_index, 'judge', 'in_progress')
-                    try:
-                        judge = Judge(judge_model=self.judge_model)
-                        critic_path = problem_path / 'critic.txt'
-                        request_path = problem_path / 'request.txt'
-                        
-                        # setup_test_files writes shaders to test_folder/shaders/
-                        # — the top-level test_folder/shader.{language} does not
-                        # normally exist; pointing the judge there gave a silent
-                        # "no code" check, and worse, picked up rogue files from
-                        # a prior cwd-leak race.
-                        code_path = test_folder / "shaders" / f"shader.{self.language}"
-                        reference_image_path = problem_path / "reference.png"
-                        if not reference_image_path.exists():
-                            reference_image_path = None
-                            
-                        context = EvaluationContext(
-                            critic_path=critic_path,
-                            request_path=request_path,
-                            result_image_path=result_image,
-                            save_dir=test_folder,
-                            code_path=code_path,
-                            reference_image_path=reference_image_path
-                        )
-                        scores, failure_reason, judge_usage = await judge.evaluate_with_template(context)
-                        self.logger.log_info(problem_index, problem, f"Judge cost: ${judge_usage.get('cost', 0):.4f} ({judge_usage.get('total_tokens', 0)} tokens)")
-                        checkpoint_data = {'scores': scores, 'judge_usage': judge_usage}
-                        if failure_reason:
-                            checkpoint_data['failure_reason'] = failure_reason
-                            checkpoint_data['judge_skipped'] = True
-                        self._save_stage_checkpoint(problem_index, 'judge', 'complete', checkpoint_data)
-                    except Exception as e:
-                        error_msg = str(e)[:500]
-                        self._save_stage_checkpoint(problem_index, 'judge', 'failed', {'error': error_msg})
-                        print(f"❌ Judge stage failed for {problem}: {error_msg}")
-                        raise
             else:
-                # RESUME: Load scores from checkpoint - problem is fully complete
-                stage_data = self._get_stage_data(problem_index, 'judge')
-                scores = stage_data.get('scores', [0, 0, 0, 0, 0])
-                failure_reason = stage_data.get('failure_reason')
-                judge_usage = stage_data.get('judge_usage', {'cost': 0, 'total_tokens': 0})
-                self.logger.log_info(problem_index, problem, f"Resuming from checkpoint - judge stage complete, scores: {scores}")
+                critic_path = problem_path / 'critic.txt'
+                request_path = problem_path / 'request.txt'
+                # setup_test_files writes shaders to test_folder/shaders/ —
+                # the top-level test_folder/shader.{language} does not
+                # normally exist; pointing the judge there gave a silent
+                # "no code" check, and worse, picked up rogue files from
+                # a prior cwd-leak race.
+                code_path = test_folder / "shaders" / f"shader.{self.language}"
+                reference_image_path = problem_path / "reference.png"
+                if not reference_image_path.exists():
+                    reference_image_path = None
 
-            # Save final results with cost data
+                # Run any judges not yet present in the checkpoint. Each judge
+                # gets its own semaphore acquire so panel-of-3 doesn't burn
+                # the entire judge concurrency budget on one problem.
+                judge_costs = []
+                judge_failure_reasons = []
+                judge_errors: List[str] = []
+                for jm in self.judge_models:
+                    stage_n = judge_stage_name(jm)
+                    cached_scores = self._completed_judge_scores(problem_index, jm)
+                    if cached_scores is not None:
+                        sd = self._get_stage_data(problem_index, stage_n)
+                        scores_by_judge[jm] = cached_scores
+                        judge_costs.append(sd.get('judge_usage', {}))
+                        judge_failure_reasons.append(sd.get('failure_reason'))
+                        continue
+                    async with self.judge_semaphore:
+                        self._save_stage_checkpoint(problem_index, stage_n, 'in_progress',
+                                                    {'judge_model': jm})
+                        try:
+                            judge = Judge(judge_model=jm)
+                            context = EvaluationContext(
+                                critic_path=critic_path,
+                                request_path=request_path,
+                                result_image_path=result_image,
+                                save_dir=test_folder,
+                                code_path=code_path,
+                                reference_image_path=reference_image_path,
+                            )
+                            j_scores, j_failure, j_usage = await judge.evaluate_with_template(context)
+                            scores_by_judge[jm] = j_scores
+                            judge_costs.append(j_usage)
+                            judge_failure_reasons.append(j_failure)
+                            self.logger.log_info(
+                                problem_index, problem,
+                                f"Judge {jm} cost: ${j_usage.get('cost', 0):.4f} "
+                                f"({j_usage.get('total_tokens', 0)} tokens)"
+                            )
+                            cp_data = {'scores': j_scores, 'judge_usage': j_usage, 'judge_model': jm}
+                            if j_failure:
+                                cp_data['failure_reason'] = j_failure
+                                cp_data['judge_skipped'] = True
+                            self._save_stage_checkpoint(problem_index, stage_n, 'complete', cp_data)
+                        except Exception as e:
+                            # One judge failing (e.g. codex quota) should NOT
+                            # block the rest of the panel from scoring this
+                            # problem. Save failed status and continue — the
+                            # next resume will retry only the failed judges
+                            # because their stage status is not 'complete'.
+                            error_msg = str(e)[:500]
+                            self._save_stage_checkpoint(
+                                problem_index, stage_n, 'failed',
+                                {'error': error_msg, 'judge_model': jm},
+                            )
+                            judge_errors.append(f"{jm}: {error_msg}")
+                            print(f"⚠️ Judge {jm} failed for {problem} (continuing with rest of panel): {error_msg}")
+
+                # If every panel judge failed there's nothing to aggregate;
+                # surface that as a hard error so the per-problem result is
+                # marked failed and resume retries them all.
+                if not scores_by_judge and judge_errors:
+                    raise RuntimeError(f"All panel judges failed: {'; '.join(judge_errors)}")
+
+                # Aggregate. Mean across whichever judges produced scores.
+                scores = mean_scores(scores_by_judge) or [0, 0, 0, 0, 0]
+                # failure_reason surfaces only when ALL panel judges agree —
+                # otherwise the problem has at least one real score and the
+                # mean is the truth. Per-judge skips are visible in
+                # scores_by_judge / per-stage data.
+                if judge_failure_reasons and all(fr == judge_failure_reasons[0] for fr in judge_failure_reasons) and judge_failure_reasons[0]:
+                    failure_reason = judge_failure_reasons[0]
+                # Roll up cost across the panel.
+                judge_usage = {
+                    'cost': sum(c.get('cost', 0) for c in judge_costs),
+                    'total_tokens': sum(c.get('total_tokens', 0) for c in judge_costs),
+                }
+                self.logger.log_info(
+                    problem_index, problem,
+                    f"Panel mean: {scores} (n={len(scores_by_judge)}/{len(self.judge_models)})"
+                )
+
+            # Save final results with cost data. scores is the panel mean;
+            # scores_by_judge preserves the per-judge breakdown for build_docs.
             if test_folder:
                 test_runner.save_results(test_folder, scores, True,
                                         generation_usage=generation_usage,
-                                        judge_usage=judge_usage)
+                                        judge_usage=judge_usage,
+                                        scores_by_judge=scores_by_judge or None)
 
             end_time = datetime.now()
             execution_time = (end_time - start_time).total_seconds()
@@ -806,8 +916,14 @@ class BenchmarkHarness:
 def main():
     parser = argparse.ArgumentParser(description='Shader Benchmark Harness - Tier 2 (Pipeline Parallel)')
     parser.add_argument('--model', help='LLM model to test (required unless using --resume)')
-    parser.add_argument('--judge-model', default='anthropic/claude-opus-4-6',
-                       help='Judge model for evaluation (default: anthropic/claude-opus-4-6)')
+    # nargs='+' so we can pass a panel: --judge-model cli/codex:gpt-5.5:high cli/claude:sonnet-4.6 google/gemini-2.5-pro
+    # Single string still works since argparse just gives a list of length 1.
+    parser.add_argument('--judge-model', nargs='+', default=['anthropic/claude-opus-4-6'],
+                       help=('One or more judge models. Multiple = panel mode; the published score is '
+                             'the mean across whichever judges have completed. Default: a single '
+                             'anthropic/claude-opus-4-6 judge. Each judge is its own resumable stage, '
+                             'so adding a judge to a prior run only runs the new judge against the '
+                             'cached render images.'))
     parser.add_argument('--problems', nargs='+',
                        help='List of problems to test (from problems/base_set/)')
     parser.add_argument('--all', action='store_true',
@@ -895,19 +1011,32 @@ def main():
             if matches:
                 matches.sort(reverse=True)
                 latest_dir = matches[0][1]
-                # Check completeness: a problem is fully complete when all four
-                # stages are 'complete' in its checkpoint file.
+                # Check completeness: a problem is settled when it either has
+                # usable scores from every configured judge, or hit a permanent
+                # render failure. Completed all-zero judge stages are parse
+                # failures and should be retried, not counted as done.
                 cfg = json.load(open(latest_dir / 'config.json'))
                 expected = cfg.get('total_problems', len(cfg.get('problems', [])))
+                panel = cfg.get('judge_models') or [cfg.get('judge_model', default_panel[0])]
                 cp_dir = latest_dir / 'checkpoints'
-                # "Settled" = will not be retried on resume = either fully
-                # complete OR permanently failed (render-stage fail, or any
-                # stage tagged permanent=True). "Pending" includes 'failed'
-                # generate stages from transient causes (rate limits, quota)
-                # which the next pass should re-attempt.
                 settled = 0
                 done = 0
                 perm_fail = 0
+                def has_usable_judge_score(stages: dict, judge_model: str) -> bool:
+                    sdata = stages.get(judge_stage_name(judge_model))
+                    # Legacy single-judge runs used stages.judge before the
+                    # panel schema existed. Keep auto-resume compatible with
+                    # those runs until migrate_judge_schema.py is applied.
+                    if not sdata and len(panel) == 1 and judge_model == cfg.get('judge_model'):
+                        sdata = stages.get('judge')
+                    if not sdata or sdata.get('status') != 'complete':
+                        return False
+                    scores = (sdata.get('data') or {}).get('scores')
+                    return (
+                        isinstance(scores, list)
+                        and len(scores) == 5
+                        and any(isinstance(s, (int, float)) and s > 0 for s in scores)
+                    )
                 if cp_dir.exists():
                     for f in sorted(cp_dir.glob('problem_*.json')):
                         try:
@@ -915,8 +1044,10 @@ def main():
                         except (OSError, json.JSONDecodeError):
                             continue
                         stages = pdata.get('stages', {})
-                        if all(stages.get(s, {}).get('status') == 'complete'
-                               for s in ('generate', 'compile', 'render', 'judge')):
+                        prejudge_ok = all(stages.get(s, {}).get('status') == 'complete'
+                                          for s in ('generate', 'compile', 'render'))
+                        judges_ok = all(has_usable_judge_score(stages, jm) for jm in panel)
+                        if prejudge_ok and judges_ok:
                             done += 1
                             settled += 1
                         elif (any(sd.get('data', {}).get('permanent') is True for sd in stages.values())
@@ -975,9 +1106,17 @@ def main():
         print(f"   Problems: {config['total_problems']} total")
         print(f"   Language: {config.get('language', 'wgsl')}")
 
-        # Use config values, but allow CLI overrides for some settings
+        # Use config values, but allow CLI overrides for some settings.
+        # Judge panel resolution: if the user explicitly passed --judge-model
+        # (anything other than the bare default), that wins; otherwise prefer
+        # the config's panel (judge_models) and fall back to the legacy
+        # singular judge_model field.
         model = args.model or config['model']
-        judge_model = args.judge_model if args.judge_model != 'anthropic/claude-opus-4-6' else config.get('judge_model', 'anthropic/claude-opus-4-6')
+        default_panel = ['anthropic/claude-opus-4-6']
+        if args.judge_model != default_panel:
+            judge_model = args.judge_model
+        else:
+            judge_model = config.get('judge_models') or [config.get('judge_model', default_panel[0])]
         problems = args.problems or config['problems']
         max_parallel = args.max_parallel if args.max_parallel != 100 else config.get('max_parallel', 100)
         language = args.language if args.language != 'wgsl' else config.get('language', 'wgsl')

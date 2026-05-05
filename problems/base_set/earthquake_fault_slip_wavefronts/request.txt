@@ -1,0 +1,43 @@
+**Objective**
+Produce a single high-resolution 3D visualization of earthquake fault slip and seismic wavefronts. The image should show a dipping rectangular fault plane, rupture propagation, slip amplitude, displacement vectors, and P/S wavefront shells at a fixed time.
+
+**Mathematical specification**
+1. Coordinate system: use kilometers. Let `X` be along strike, `Y` be horizontal across strike, and `Z` be depth, with `Z = 0` at the surface and positive downward.
+2. Fault geometry: rectangular fault plane with strike length `60 km`, down-dip width `20 km`, and dip angle `35°`. Center it near `(X,Y,Z)=(0,0,10)`.
+3. Fault-plane coordinates: `s ∈ [-30, 30] km` along strike and `q ∈ [0, 20] km` down dip.
+4. Hypocenter: `(s0, q0) = (-18, 12) km` on the fault.
+5. Static time: render `t = 8.0 s` after rupture initiation.
+6. Rupture front speed: `v_r = 2.8 km/s`; draw the rupture front on the fault where `sqrt((s-s0)^2 + (q-q0)^2) = v_r t`, clipped to the rectangular fault.
+7. Slip amplitude on the fault:
+   `D(s,q,t) = 3.0 exp(-((sqrt((s-s0)^2 + (q-q0)^2) - v_r t)^2)/(2*5.0^2)) exp(-((q-q0)^2)/(2*7.0^2))`, in meters, clipped to the fault plane.
+8. Seismic wavefronts from the hypocenter:
+   - P wave radius `R_P = c_P t` with `c_P = 6.0 km/s`, so `R_P = 48 km`.
+   - S wave radius `R_S = c_S t` with `c_S = 3.5 km/s`, so `R_S = 28 km`.
+
+**Geometry to render**
+- Dipping rectangular fault plane with slip heatmap from blue/low to red/high.
+- Rupture front as a bright yellow curve on the fault plane.
+- Hypocenter as a glowing white/yellow point.
+- P-wave shell: large translucent blue spherical or ellipsoidal shell centered at the hypocenter.
+- S-wave shell: smaller translucent orange shell centered at the hypocenter.
+- Displacement vectors on the fault: short black or white arrows pointing approximately along rake direction, with length proportional to slip.
+- Surface plane `Z = 0` with faint grid lines and a surface trace of the fault.
+
+**Rendering style**
+- White or very light grey background.
+- Fault plane should be semi-opaque with a vivid slip heatmap.
+- Wavefront shells should be translucent enough not to hide the fault.
+- Use soft shadows, depth cues, and anti-aliasing.
+
+**Composition / overlays**
+- Camera: oblique view showing the surface plane, dipping fault, and both wavefront shells.
+- Add a small scale bar marked or ticked as `10 km` if text is available.
+- Add a compact colorbar swatch for slip amplitude from `0` to `3 m` if feasible.
+- Add small labels/ticks for P and S shells if text is available; otherwise make P shell blue and larger, S shell orange and smaller.
+
+**Technical specs**
+- Resolution at least `1600 × 1600` pixels.
+- Static frame only; no animation.
+- Output format: PNG.
+
+**Deliverable** A single PNG image satisfying the above.

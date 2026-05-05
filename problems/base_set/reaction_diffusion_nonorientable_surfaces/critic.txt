@@ -1,0 +1,59 @@
+__MATHEMATICAL_ACCURACY__
+Klein Bottle Geometry:
+- Does the main surface resemble the specified immersed Klein bottle rather than a torus or sphere?
+- Are the neck, body, and self-intersection-like visual crossing present?
+- Is the parameter seam indicated and located consistently on the surface?
+- Does the surface appear nonorientable through the twisted seam cues?
+
+Reaction–Diffusion Semantics:
+- Does the pattern look like a Gray–Scott spot/stripe pattern rather than unstructured noise?
+- Are seed-derived pattern regions distributed across the surface, not confined to one patch?
+- Is the pattern continuous through the visual self-intersection, respecting the parameter surface?
+- Does the pattern avoid obvious discontinuity at the seam except for the intended twist?
+
+Twisted Boundary Condition:
+- Does the seam show \((u=0,v)\sim(u=2\pi,2\pi-v)\) rather than ordinary untwisted periodicity?
+- Are arrows or cues along the seam consistent with reversing \(v\)?
+- Does the fundamental-square inset show vertical-edge twisting and horizontal-edge periodicity?
+- Is the inset pattern consistent with the pattern on the 3D surface?
+
+__VISUAL_IMPLEMENTATION__
+Surface and Pattern Rendering:
+- Is the Klein bottle mesh smooth and high-resolution?
+- Is the concentration color map crisp enough to reveal spots/stripes?
+- Does shading preserve surface shape without obscuring the scalar pattern?
+- Are self-intersection regions handled clearly, with no severe clipping artifacts?
+
+Seam and Inset Rendering:
+- Is the seam dashed or subtly marked without dominating the pattern?
+- Are twist arrows legible and aligned with the seam?
+- Is the fundamental-square inset large enough to read?
+- Is the color bar or gradient strip clear if included?
+
+Composition:
+- Does the camera reveal the nontrivial topology of the Klein bottle?
+- Are important pattern regions visible on both body and neck?
+- Is the background chosen for strong contrast?
+- Is anti-aliasing adequate on seam markers, inset, and mesh silhouette?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Main Klein bottle surface is present.
+- Reaction–diffusion scalar pattern is present on the surface.
+- Seam indicator is present.
+- Twist arrows or equivalent nonorientable identification cues are present.
+- Fundamental-square inset with edge-identification arrows is present.
+- Color scale or gradient cue for \(B\) concentration is present.
+
+Technical Requirements:
+- Output is a single PNG at least 1600×1600 px.
+- Static frame near the specified post-pattern time.
+- Visualization is self-contained and does not require external data.
+- Pattern continuity under the twisted seam is visually assessable.
+
+Failure Modes to Penalize:
+- Rendering a torus, Möbius strip, or sphere instead of a Klein bottle.
+- Random texture with no reaction–diffusion structure.
+- Missing seam/twist cues.
+- Pattern discontinuity at the seam with no twisted matching.
+- Missing fundamental-domain inset.

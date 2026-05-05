@@ -43,7 +43,17 @@ How aesthetic, polished, and technically sound is the visual result? Consider im
 **PROBLEM CONTEXT:**
 {problem_description}
 
-Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format."""
+Now evaluate the provided image and give your detailed assessment followed by the numerical scores in the specified XML format.
+
+**CRITICAL OUTPUT REQUIREMENT — read carefully:**
+The very last line of your response MUST be a single XML scores block with ALL FIVE scores
+present, in this exact form (each NN is an integer 1–100):
+
+<scores><S1>NN</S1><S2>NN</S2><S3>NN</S3><S4>NN</S4><S5>NN</S5></scores>
+
+Do NOT omit S3, S4, or S5 — partial blocks are treated as a parse failure and your scoring
+contribution is discarded. Do NOT wrap the block in markdown code fences. Do NOT add text
+after the closing </scores> tag."""
 
     def parse_questions(self, critic_content: str) -> Dict[str, str]:
         """Parse structured sections from critic file content."""

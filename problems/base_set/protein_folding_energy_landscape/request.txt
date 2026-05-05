@@ -1,0 +1,52 @@
+**Objective**
+Produce a single high-resolution PNG visualising a toy protein-folding energy landscape over periodic Ramachandran-style coordinates. The image should show the energy surface, major basins, saddle ridges, and three folding trajectories descending toward a native basin.
+
+**Mathematical specification**
+1. Domain: angles \(\phi,\psi \in [-\pi,\pi]\). Treat both coordinates as periodic.
+2. Periodic angular difference:
+   \[
+   \delta(a,b)=\operatorname{atan2}(\sin(a-b),\cos(a-b)).
+   \]
+3. Energy function:
+   \[
+   \begin{aligned}
+   E(\phi,\psi)=&\ 4.0
+   -3.2\exp\left[-\left({\delta(\phi,-1.20)^2\over0.18}+{\delta(\psi,0.85)^2\over0.12}\right)\right]\\
+   &-2.1\exp\left[-\left({\delta(\phi,1.05)^2\over0.22}+{\delta(\psi,-0.75)^2\over0.18}\right)\right]\\
+   &-1.4\exp\left[-\left({\delta(\phi,2.35)^2\over0.28}+{\delta(\psi,2.10)^2\over0.24}\right)\right]\\
+   &+1.1\exp\left[-\left({\delta(\phi,0.05)^2\over0.10}+{\delta(\psi,0.05)^2\over0.10}\right)\right]
+   +0.35(1+
+   \cos 3\phi)(1+0.5\cos2\psi).
+   \end{aligned}
+   \]
+4. Normalise \(E\) linearly over the sampled domain to \(E_n\in[0,1]\).
+5. Mark three named basins with distinct glyphs: native \(N=(-1.20,0.85)\), misfolded \(M=(1.05,-0.75)\), and intermediate \(I=(2.35,2.10)\). Mark the high saddle/ridge near \((0.05,0.05)\).
+6. Render three gradient-descent trajectories using \(d(\phi,\psi)/d\tau=-\nabla E\), with periodic wrapping, starting at:
+   - \(U_1=(2.70,-2.50)\)
+   - \(U_2=(-2.70,-1.90)\)
+   - \(U_3=(0.90,2.70)\)
+   Use approximately 200 small integration steps per trajectory, stopping visually in a basin.
+
+**Geometry to render**
+- Main surface: a square height field over \((\phi/\pi,\psi/\pi)\in[-1,1]^2\), with height \(z=0.55E_n\), sampled at least \(220\times220\).
+- Contours: 12 thin iso-energy contour lines projected slightly above the surface.
+- Trajectories: three smooth tubes following the negative-gradient paths, radius about 1.5% of the domain width, with arrowheads indicating descent direction.
+- Basin glyphs: small spheres or discs at \(N,M,I\), plus a distinct red/orange ridge marker near \((0.05,0.05)\).
+- Periodic seam cues: faint translucent curtains or paired arrows along all four boundaries showing that left/right and top/bottom edges wrap.
+
+**Rendering style**
+- Energy color map: low energy deep blue/purple, mid energy green/cyan, high energy orange/red.
+- Trajectories: three contrasting bright colors; each remains visually separate from the surface colormap.
+- Use soft Phong lighting, ambient occlusion if available, and anti-aliased edges.
+- Background: pure white or very light grey.
+
+**Composition / overlays**
+- Camera: oblique 3D view where height, contour rings, and trajectories are all visible.
+- Include a small inset in the lower-right showing the periodic square domain as a flat map with the same basin markers and wrapped edges.
+- Optional labels may be drawn, but marker shapes/colors must make the roles clear even if text rendering is unavailable.
+
+**Technical specs**
+- Resolution at least 1600×1600 px.
+- Static frame only; no animation.
+
+**Deliverable** A single PNG image satisfying the above.

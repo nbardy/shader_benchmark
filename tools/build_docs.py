@@ -31,21 +31,41 @@ PROBLEMS_DIR = REPO / "problems" / "base_set"
 DOCS = REPO / "docs"
 
 # Three completed runs we publish. Order = column order on the hub.
+# `run_dirs` is a list because we sometimes split a model's coverage
+# across multiple harness runs (primary big run + small "delta" runs
+# for problems added after the fact). Per-problem rows are merged
+# across all listed run_dirs; later run_dirs override earlier ones for
+# the same problem name. The first run_dir is the "primary" — its
+# benchmark_report.{html,md} is what the "View detail report" link on
+# the hub points to.
 RUNS = [
     {
         "key": "claude-opus-4-7",
         "label": "Claude Opus 4.7",
-        "run_dir": "65ab97ac_cli_claude_claude-opus-4-7_20260427_183924",
+        "run_dirs": [
+            "65ab97ac_cli_claude_claude-opus-4-7_20260427_183924",
+            "c27a9b7a_cli_claude_claude-opus-4-7_20260501_231430",  # 3 new image-reproduction problems
+            "b03ce16c_cli_claude_claude-opus-4-7_20260502_132102",  # 20 frontier problems
+            "a8deff3a_cli_claude_claude-opus-4-7_20260502_172716",  # retry for 3 frontier gen failures
+        ],
     },
     {
         "key": "gemini-3.1-pro-preview",
         "label": "Gemini 3.1-pro-preview",
-        "run_dir": "f995b01e_cli_gemini_20260427_184028",
+        "run_dirs": [
+            "f995b01e_cli_gemini_20260427_184028",
+            "eac60057_cli_gemini_20260501_231430",  # 3 new image-reproduction problems
+            "3b212275_cli_gemini_20260502_132102",  # 20 frontier problems
+        ],
     },
     {
         "key": "codex-gpt-5.5-high",
         "label": "Codex GPT-5.5 high",
-        "run_dir": "68ca3b4b_cli_codex_gpt-5.5_high_20260428_170724",
+        "run_dirs": [
+            "68ca3b4b_cli_codex_gpt-5.5_high_20260428_170724",
+            "53b06f90_cli_codex_gpt-5.5_high_20260501_231430",  # 3 new image-reproduction problems
+            "768e6e20_cli_codex_gpt-5.5_high_20260502_132102",  # 20 frontier problems
+        ],
     },
 ]
 
@@ -63,17 +83,65 @@ CATEGORY_LABELS = [
 # ---------------------------------------------------------------------------
 
 
-def load_run(run_dir: Path) -> dict:
-    """Return canonical run record with config + per-problem rows.
+def load_runs(run_dirs: list[Path]) -> dict:
+    """Merge multiple harness run dirs for the same model into one record.
 
-    Status for a problem is one of:
-      "ok"          results.json has 5 nonzero scores AND has_image (i.e. judged)
-      "render_fail" render stage failed (any permanent flag or status=failed)
-      "missing"     no checkpoint / no results.json / not judged
+    Per-problem rows from each run_dir are unioned, keyed by problem name.
+    If two runs cover the same problem, later run_dirs win (so a small
+    "delta" run can correct or extend the primary). The merged record's
+    `config` is the first run_dir's config; `run_dir` is also the first;
+    `extra_run_dirs` is the rest, used for image-asset copying.
+    """
+    primary_cfg = json.loads((run_dirs[0] / "config.json").read_text())
+
+    rows: dict[str, dict] = {}
+    for run_dir in run_dirs:
+        new_rows = _load_one_run_rows(run_dir)
+        for name, row in new_rows.items():
+            existing = rows.get(name)
+            tagged = row | {"_source_run_dir": run_dir}
+            if existing is None:
+                rows[name] = tagged
+                continue
+            # Don't let a still-running delta clobber a real result from
+            # the primary. Override only if the new row has data the old
+            # one didn't (status "ok" wins; "render_fail" wins over
+            # "missing"; "missing" never overrides).
+            priority = {"ok": 2, "render_fail": 1, "missing": 0}
+            if priority[row["status"]] >= priority[existing["status"]]:
+                rows[name] = tagged
+
+    return {
+        "config": primary_cfg,
+        "rows": rows,
+        "run_dir": run_dirs[0],
+        "all_run_dirs": run_dirs,
+    }
+
+
+def _mean_of_judges(per_judge: dict) -> list[int] | None:
+    """Element-wise mean of per-judge score vectors. None when empty."""
+    if not per_judge:
+        return None
+    n = len(per_judge)
+    sums = [0, 0, 0, 0, 0]
+    for vec in per_judge.values():
+        for i in range(5):
+            sums[i] += vec[i]
+    return [round(s / n) for s in sums]
+
+
+def _load_one_run_rows(run_dir: Path) -> dict[str, dict]:
+    """Read a single run's per-problem rows.
+
+    Each row carries `scores_by_judge` (per-judge breakdown) plus `scores`
+    which is the panel mean recomputed from `scores_by_judge`. Recomputing
+    here (instead of trusting the top-level `scores` field in results.json)
+    means a stale single-judge `scores` left over from before a rejudge
+    can't outvote the new evidence in `scores_by_judge`.
     """
     cfg = json.loads((run_dir / "config.json").read_text())
     problems = cfg["problems"]
-
     rows = {}
     for idx, name in enumerate(problems):
         cp_path = run_dir / "checkpoints" / f"problem_{idx:03d}.json"
@@ -85,46 +153,58 @@ def load_run(run_dir: Path) -> dict:
         row = {
             "scores": None,
             "total": None,
+            "scores_by_judge": None,
             "has_image": False,
             "status": "missing",
             "index": idx,
         }
 
-        # Render-fail detection from checkpoint
+        # Render-fail detection: only the render stage's own failed/permanent
+        # marker counts. A judge stage failing transiently (codex quota etc.)
+        # does NOT poison the problem — the rest of the panel can still score.
         is_render_fail = False
         if cp_path.exists():
             try:
                 cp = json.loads(cp_path.read_text())
-                stages = cp.get("stages", {})
-                for stage, val in stages.items():
-                    if val.get("status") == "failed":
-                        is_render_fail = True
-                    data = val.get("data") or {}
-                    if isinstance(data, dict) and data.get("permanent") is True:
-                        is_render_fail = True
+                render = cp.get("stages", {}).get("render", {})
+                if render.get("status") == "failed":
+                    is_render_fail = True
+                rdata = render.get("data") or {}
+                if isinstance(rdata, dict) and rdata.get("permanent") is True:
+                    is_render_fail = True
             except Exception:
                 pass
 
         if results_path.exists():
             try:
                 r = json.loads(results_path.read_text())
-                scores = r.get("scores")
                 has_img = bool(r.get("has_image")) and image_path.exists()
-                # Treat as ok only if we have 5 scores, all > 0, AND an image.
-                if (
-                    isinstance(scores, list)
-                    and len(scores) == 5
-                    and all(isinstance(s, (int, float)) for s in scores)
-                    and any(s > 0 for s in scores)
-                    and has_img
-                    and r.get("status") == "completed"
-                ):
-                    row["scores"] = [int(s) for s in scores]
-                    row["total"] = sum(int(s) for s in scores)
+                sbj_raw = r.get("scores_by_judge") or {}
+                # Keep only judges that produced 5 nonzero ints.
+                sbj: dict[str, list[int]] = {}
+                for jm, vec in sbj_raw.items():
+                    if (isinstance(vec, list) and len(vec) == 5
+                            and all(isinstance(s, (int, float)) for s in vec)
+                            and any(s > 0 for s in vec)):
+                        sbj[jm] = [int(s) for s in vec]
+                # Defensive fallback: pre-migration row with only the legacy
+                # top-level `scores` field. migrate_judge_schema.py should
+                # have backfilled scores_by_judge already, so this branch is
+                # rarely hit.
+                if not sbj:
+                    legacy = r.get("scores")
+                    if (isinstance(legacy, list) and len(legacy) == 5
+                            and any(isinstance(s, (int, float)) and s > 0 for s in legacy)):
+                        sbj = {cfg.get("judge_model", "unknown"): [int(s) for s in legacy]}
+
+                mean = _mean_of_judges(sbj)
+                if mean is not None and has_img and r.get("status") == "completed":
+                    row["scores"] = mean
+                    row["total"] = sum(mean)
+                    row["scores_by_judge"] = sbj
                     row["has_image"] = True
                     row["status"] = "ok"
                 else:
-                    # judged with zeros, or no image, or status not completed
                     row["status"] = "render_fail" if is_render_fail else "missing"
                     row["has_image"] = has_img
             except Exception:
@@ -134,11 +214,7 @@ def load_run(run_dir: Path) -> dict:
 
         rows[name] = row
 
-    return {
-        "config": cfg,
-        "rows": rows,
-        "run_dir": run_dir,
-    }
+    return rows
 
 
 def aggregate(runs: dict[str, dict], problems_sorted: list[str]) -> dict:
@@ -150,12 +226,14 @@ def aggregate(runs: dict[str, dict], problems_sorted: list[str]) -> dict:
             r = run["rows"].get(name) or {
                 "scores": None,
                 "total": None,
+                "scores_by_judge": None,
                 "has_image": False,
                 "status": "missing",
             }
             scores[name][key] = {
                 "scores": r["scores"],
                 "total": r["total"],
+                "scores_by_judge": r.get("scores_by_judge"),
                 "has_image": r["has_image"],
                 "status": r["status"],
             }
@@ -199,6 +277,9 @@ def aggregate(runs: dict[str, dict], problems_sorted: list[str]) -> dict:
             "run_id": cfg["run_id"],
             "model": cfg.get("model"),
             "judge_model": cfg.get("judge_model"),
+            "judge_models": cfg.get("judge_models") or (
+                [cfg.get("judge_model")] if cfg.get("judge_model") else []
+            ),
             "language": cfg.get("language"),
             "runtime": cfg.get("runtime"),
         })
@@ -217,32 +298,43 @@ def aggregate(runs: dict[str, dict], problems_sorted: list[str]) -> dict:
 # ---------------------------------------------------------------------------
 
 
-def copy_run_report(run_meta: dict, run_dir: Path) -> None:
+def copy_run_report(run_meta: dict, primary_run_dir: Path) -> None:
+    """Copy the PRIMARY run's detail report. Delta runs are not surfaced
+    as detail reports — their problems are merged into the hub's
+    per-problem table instead."""
     out = DOCS / run_meta["key"]
     if out.exists():
         shutil.rmtree(out)
     out.mkdir(parents=True)
     for fname in ("benchmark_report.html", "benchmark_report.md"):
-        src = run_dir / fname
+        src = primary_run_dir / fname
         if src.exists():
-            shutil.copy2(src, out / fname)
-    src_imgs = run_dir / "images"
+            target = out / fname
+            if fname.endswith(".md"):
+                text = src.read_text()
+                target.write_text("\n".join(line.rstrip() for line in text.splitlines()) + "\n")
+            else:
+                shutil.copy2(src, target)
+    src_imgs = primary_run_dir / "images"
     if src_imgs.exists():
         shutil.copytree(src_imgs, out / "images")
 
 
-def copy_drawer_images(run_meta: dict, run_dir: Path) -> None:
-    """Copy per-problem rendered images into docs/images/<model>/ for the drawer."""
-    src = run_dir / "images"
+def copy_drawer_images(run_meta: dict, run_dirs: list[Path]) -> None:
+    """Copy per-problem rendered images from EACH run_dir into
+    docs/images/<model>/. Later run_dirs override earlier ones for the
+    same filename."""
     dst = DOCS / "images" / run_meta["key"]
     if dst.exists():
         shutil.rmtree(dst)
-    if not src.exists():
-        return
     dst.mkdir(parents=True)
-    for f in src.iterdir():
-        if f.suffix.lower() == ".png":
-            shutil.copy2(f, dst / f.name)
+    for run_dir in run_dirs:
+        src = run_dir / "images"
+        if not src.exists():
+            continue
+        for f in src.iterdir():
+            if f.suffix.lower() == ".png":
+                shutil.copy2(f, dst / f.name)
 
 
 def copy_reference_images(problems: list[str]) -> dict[str, str]:
@@ -294,14 +386,25 @@ def bar_html(pct: int | None) -> str:
     return f"<div class='barwrap'><div class='bar' style='width:{pct}%'></div></div>"
 
 
-def find_image_filename(run_dir: Path, idx: int, problem: str) -> str | None:
-    """Return the actual filename inside images/ for this problem, if present."""
-    src = run_dir / "images"
+def find_image_filename(source_run_dir: Path, idx: int, problem: str) -> str | None:
+    """Return the actual filename inside images/ for this problem, if present.
+
+    `source_run_dir` is the specific run that produced this row (tracked
+    on the row as `_source_run_dir`). Image filenames are
+    `<NNN>_<problem>_result.png` where NNN is the *that-run's* problem
+    index, not the merged-hub index.
+    """
+    src = source_run_dir / "images"
     if not src.exists():
         return None
     expected = f"{idx:03d}_{problem}_result.png"
     if (src / expected).exists():
         return expected
+    # Fallback: scan for any file matching the problem name (in case the
+    # source run's index for this problem differs from our enumeration).
+    for f in src.iterdir():
+        if f.suffix.lower() == ".png" and f.stem.endswith(f"_{problem}_result"):
+            return f.name
     return None
 
 
@@ -317,11 +420,18 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
     img_lookup: dict[str, dict[str, str | None]] = {}
     for m in models:
         run = runs[m["key"]]
-        run_dir = run["run_dir"]
-        idx_for = {p: run["rows"][p]["index"] for p in problems if p in run["rows"]}
-        img_lookup[m["key"]] = {
-            p: find_image_filename(run_dir, idx_for[p], p) for p in problems if p in idx_for
-        }
+        # Each row was tagged with its own source_run_dir during merge,
+        # so the image path resolves correctly even when this problem
+        # came from a delta run rather than the primary.
+        img_lookup[m["key"]] = {}
+        for p in problems:
+            row = run["rows"].get(p)
+            if not row:
+                continue
+            src = row.get("_source_run_dir")
+            if src is None:
+                continue
+            img_lookup[m["key"]][p] = find_image_filename(src, row["index"], p)
 
     # --- model summary table -----
     summary_rows = []
@@ -387,8 +497,12 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
             color = color_for_total(total if status == "ok" else None)
             if total is not None:
                 pct = pct_from_total(total)
+                # Multi-judge tag: tiny "(N)" badge so users can tell at a
+                # glance which cells are panel-mean vs single-judge.
+                njudges = len(cell.get("scores_by_judge") or {})
+                judge_tag = f"<span class='cellpct'> · {njudges}j</span>" if njudges > 1 else ""
                 disp = (
-                    f"<div class='cellnum'>{total}<span class='cellpct'> · {pct}%</span></div>"
+                    f"<div class='cellnum'>{total}<span class='cellpct'> · {pct}%</span>{judge_tag}</div>"
                     f"{bar_html(pct)}"
                 )
             else:
@@ -509,7 +623,7 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
 <body>
 <div class="wrap">
   <h1>Shader Benchmark</h1>
-  <p class="lead">Three frontier coding agents generating WGSL shaders from text prompts on 107 mathematical visualization problems. Scored 0&ndash;100 across five categories by an LLM judge against the rendered image.</p>
+  <p class="lead">Three frontier coding agents generating WGSL shaders from text prompts on {len(problems)} mathematical visualization problems. Scored 0&ndash;100 across five categories by one or more LLM judges against the rendered image.</p>
   <p class="sub">Generation and judging both ran on subscription CLIs (Claude Code, Gemini CLI, Codex CLI). Direct API spend: <strong>$0</strong>.</p>
 
   <h2>Model summary</h2>
@@ -577,7 +691,24 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
       const ul = el('ul');
       cell.scores.forEach((s,i) => ul.appendChild(el('li', {{}}, [CATS[i] + ': ' + s])));
       p.appendChild(ul);
-      p.appendChild(el('div', {{class:'stotal'}}, ['Total: ' + cell.total + ' / 500']));
+      const sbj = cell.scores_by_judge || {{}};
+      const judgeNames = Object.keys(sbj);
+      if (judgeNames.length > 1) {{
+        // Show per-judge totals when more than one judge scored — the
+        // displayed `total` is the panel mean and users may want to see
+        // which judge was harshest/most generous.
+        const jul = el('ul', {{class:'judges'}});
+        judgeNames.forEach(jm => {{
+          const t = sbj[jm].reduce((a,b) => a+b, 0);
+          jul.appendChild(el('li', {{}}, [jm + ': ' + t + ' / 500']));
+        }});
+        p.appendChild(el('div', {{class:'dim'}}, ['Per-judge totals (mean shown above):']));
+        p.appendChild(jul);
+      }}
+      const meanLabel = judgeNames.length > 1
+        ? 'Mean total: ' + cell.total + ' / 500 (' + judgeNames.length + ' judges)'
+        : 'Total: ' + cell.total + ' / 500';
+      p.appendChild(el('div', {{class:'stotal'}}, [meanLabel]));
     }} else {{
       p.appendChild(el('div', {{class:'dim'}}, ['Status: ' + cell.status]));
     }}
@@ -633,24 +764,34 @@ def main() -> None:
 
     runs: dict[str, dict] = {}
     for r in RUNS:
-        run_dir = BENCH_DIR / r["run_dir"]
-        if not run_dir.exists():
-            raise SystemExit(f"missing run dir: {run_dir}")
-        runs[r["key"]] = load_run(run_dir)
+        run_dirs: list[Path] = []
+        for d in r["run_dirs"]:
+            p = BENCH_DIR / d
+            if not p.exists():
+                # Skip deltas that haven't run yet rather than hard-fail —
+                # lets the build proceed before the new delta runs finish.
+                print(f"  ⚠ skipping missing run dir: {d}")
+                continue
+            run_dirs.append(p)
+        if not run_dirs:
+            raise SystemExit(f"no run dirs found for model {r['key']}")
+        runs[r["key"]] = load_runs(run_dirs)
 
-    # Use the union of problem names across configs, sorted. They should match.
+    # Use the union of problem names across all rows (which may include
+    # problems only present in delta runs), sorted alphabetically.
     problem_set: set[str] = set()
     for run in runs.values():
-        problem_set.update(run["config"]["problems"])
+        problem_set.update(run["rows"].keys())
     problems_sorted = sorted(problem_set)
 
     data = aggregate(runs, problems_sorted)
     (DOCS / "all_scores.json").write_text(json.dumps(data, indent=2))
 
-    # Copy per-model detail reports + images they reference.
+    # Copy per-model detail reports (primary run only) + drawer images
+    # (merged across all run_dirs).
     for r in RUNS:
         copy_run_report(r, runs[r["key"]]["run_dir"])
-        copy_drawer_images(r, runs[r["key"]]["run_dir"])
+        copy_drawer_images(r, runs[r["key"]]["all_run_dirs"])
 
     # Copy reference images for image-reproduction problems.
     ref_map = copy_reference_images(problems_sorted)

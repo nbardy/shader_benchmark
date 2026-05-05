@@ -1,0 +1,36 @@
+**Objective**
+Produce a single high-resolution image of a soap-film-like minimal surface spanning a changing knot boundary. The main object should be a triangulated approximate Plateau surface for the midpoint of a trefoil-to-figure-eight boundary morph, with boundary knots and curvature overlays.
+
+**Mathematical specification**
+1. Parameter domain: use an annular/disk-like mesh with angular coordinate `u ∈ [0, 2π)` and radial coordinate `r ∈ [0, 1]`. Use at least `480` angular samples and `80` radial samples or an equivalent smooth representation.
+2. Trefoil boundary curve:
+   `T(u) = ((2 + 0.55 cos 3u) cos 2u, (2 + 0.55 cos 3u) sin 2u, 0.55 sin 3u)`.
+3. Figure-eight-style boundary curve:
+   `F(u) = ((2 + 0.55 cos 2u) cos 3u, (2 + 0.55 cos 2u) sin 3u, 0.55 sin 4u)`.
+4. Midpoint boundary: set `λ = 0.5` and use `B(u) = normalize_scale((1 - λ)T(u) + λF(u))`, scaled so the maximum radius from the origin is about `1.0`.
+5. Surface construction: approximate the minimal surface spanning `B(u)` by a relaxed triangular mesh whose interior vertices satisfy a discrete Laplace condition: each interior vertex is close to the average of its one-ring neighbors, with the boundary fixed to `B(u)`. A harmonic/radial initialization is acceptable, but the final surface should look area-minimized rather than a flat filled polygon.
+6. Mean-curvature overlay: color by approximate residual mean curvature magnitude, using blue/white for near-zero interior residual and yellow/red near boundary strain or saddle concentration.
+
+**Geometry to render**
+- Main surface: a semi-translucent triangulated soap film bounded by the midpoint knot `B(u)`.
+- Boundary tube: render `B(u)` as a dark metallic tube of radius `0.025`.
+- Ghost boundary curves: render `T(u)` and `F(u)` as thin translucent tubes, one cyan and one magenta, slightly offset or shown around the main boundary so the morph is visible.
+- Mesh lines: show a subtle triangulation or radial/azimuthal grid on the surface.
+
+**Rendering style**
+- White background.
+- Soap film: translucent pearlescent material with curvature heatmap, 60–75% opacity.
+- Boundary tubes: crisp, opaque, and smooth.
+- Use soft area lighting and anti-aliasing; avoid heavy black outlines.
+
+**Composition / overlays**
+- Camera: oblique view that reveals the knot boundary crossing structure and the saddle-like surface interior.
+- Add a small inset showing the morph parameter: three small colored ticks labeled or positioned as `λ = 0`, `λ = 0.5`, `λ = 1` if labels are possible.
+- The main midpoint surface should occupy most of the frame.
+
+**Technical specs**
+- Resolution at least `1600 × 1600` pixels.
+- Static frame only; no animation.
+- Output format: PNG.
+
+**Deliverable** A single PNG image satisfying the above.

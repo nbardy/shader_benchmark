@@ -1,0 +1,57 @@
+__MATHEMATICAL_ACCURACY__
+Spinodal Morphology:
+- Does the interface form a bicontinuous labyrinth rather than isolated spheres or random blobs?
+- Are both phases visually present and interpenetrating through the cube?
+- Is the volume fraction approximately balanced, not overwhelmingly one phase?
+- Are channels and tunnels visible in several directions, consistent with mid-stage spinodal decomposition?
+
+Scalar Field / Interface Representation:
+- Is the main surface an isosurface-like boundary between phases?
+- Is the interface smooth enough to be compatible with a tanh-smoothed field?
+- Are periodic or wave-like structural motifs suggested without obvious hard voxel blocks?
+- Does the `z = 0` cut plane align visually with the 3D interface morphology?
+
+Curvature Encoding:
+- Is curvature coloring applied on the interface surface rather than randomly in space?
+- Are positive, near-zero, and negative curvature regions distinguishable by red, white, and blue tones?
+- Do saddle-like tunnel regions show mixed or near-zero curvature cues?
+- Is curvature variation coherent over local patches of the surface?
+
+__VISUAL_IMPLEMENTATION__
+Isosurface Rendering:
+- Is the interface surface smooth, continuous, and well-lit?
+- Are holes/tunnels visible through the surface without excessive opacity?
+- Is the bounding cube visible but not visually dominant?
+- Are faceting, aliasing, and marching-cube artifacts minimal?
+
+Cut Plane and Volume Cues:
+- Is a central slice plane visible and clearly different from the 3D surface?
+- Does the slice show a binary or two-phase pattern consistent with the surrounding volume?
+- Are optional phase fogs subtle enough not to obscure the interface?
+- Is depth ordering readable inside the cube?
+
+Color and Composition:
+- Is the blue-white-red curvature colorbar or swatch present?
+- Does the camera angle show both interior tunnels and the cut plane?
+- Is the white background clean and publication-like?
+- Are shadows and lighting useful rather than visually confusing?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Main `φ = 0` interface isosurface is present.
+- Transparent bounding cube or wireframe cube is present.
+- Central `z = 0` phase slice is present.
+- Curvature colorbar/swatch is present.
+- Volume-fraction inset or bar pair is present, if feasible.
+
+Technical Requirements:
+- Image resolution is at least `1600 × 1600` pixels.
+- Output is one static PNG.
+- Static mid-stage frame, not a time sequence.
+- The full cube is visible and not clipped.
+
+Benchmark-Specific Failure Modes:
+- If the image shows droplets only, mathematical accuracy should be low for this prompt.
+- If no isosurface is present, completeness should be low.
+- If curvature coloring is omitted or unrelated to the interface, mathematical accuracy and visual implementation should be penalized.
+- If the cut plane contradicts the 3D geometry, mathematical accuracy should be penalized.

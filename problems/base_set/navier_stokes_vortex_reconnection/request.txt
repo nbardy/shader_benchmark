@@ -1,0 +1,62 @@
+**Objective**
+Produce a single high-resolution PNG showing a representative static frame of vortex reconnection in a viscous incompressible flow. The image should make the topological reconnection event legible: two initially anti-parallel vortex tubes have pinched, exchanged partners, and formed two smooth reconnected bridges.
+
+**Mathematical specification**
+Render the frame at synthetic time \(t=0.68\) of the first reconnection event. Use the following explicit centerline geometry as a physically motivated proxy for the high-vorticity cores.
+
+Constants:
+\[
+L=2.2,\quad d=0.42,\quad h=0.34,\quad a=0.26.
+\]
+Two post-reconnection vortex tubes are assembled from the following centerline pieces.
+
+Tube A, connecting upper-left to lower-right:
+\[
+A_L(s)=(-a-(L-a)s,\ d,\ h(1-s)),\quad s\in[0,1],
+\]
+\[
+A_B(\theta)=(-a\cos\theta,\ d\cos\theta,\ h+0.12\sin\theta),\quad \theta\in[0,\pi],
+\]
+\[
+A_R(s)=(a+(L-a)s,\ -d,\ h(1-s)),\quad s\in[0,1].
+\]
+Tube B, connecting lower-left to upper-right:
+\[
+B_L(s)=(-a-(L-a)s,\ -d,\ -h(1-s)),\quad s\in[0,1],
+\]
+\[
+B_B(\theta)=(-a\cos\theta,\ -d\cos\theta,\ -h-0.12\sin\theta),\quad \theta\in[0,\pi],
+\]
+\[
+B_R(s)=(a+(L-a)s,\ d,\ -h(1-s)),\quad s\in[0,1].
+\]
+Tube radius:
+- Base radius \(r=0.075\).
+- Radius narrows to about \(0.045\) near the four bridge endpoints \((\pm a,\pm d,\pm h)\) to suggest viscous necking.
+
+Ghost pre-reconnection filaments:
+- Draw two thin translucent dashed centerlines \(G_+(x)=(x,d,0)\) and \(G_-(x)=(x,-d,0)\), \(x\in[-L,L]\), to show the original anti-parallel orientation.
+
+**Geometry to render**
+- Two smooth opaque vortex tubes following the assembled centerlines, with at least 300 samples per full tube.
+- Tangent arrow glyphs along each tube every 10–15% of arclength.
+- A faint translucent vorticity-magnitude cloud around the bridge region, shaped like overlapping Gaussian halos around the tubes.
+- A semi-transparent cutting plane through \(z=0\), colored by local vorticity magnitude, showing two bright lobes near the reconnection site.
+- Four small pinch collars/rings at the bridge endpoints.
+
+**Rendering style**
+- Color tube surface by tangent direction / helicity cue: blue-cyan where the tangent has positive \(x\)-component, orange-magenta where it has negative \(x\)-component, with smooth interpolation.
+- The ghost pre-reconnection filaments should be grey, dashed, and much thinner than the main tubes.
+- Use volumetric translucency for the vorticity cloud, but keep the two main tubes crisp.
+- Dark navy or black background is allowed if it improves contrast; otherwise use white. Avoid busy textures.
+
+**Composition / overlays**
+- Camera: three-quarter perspective looking down the approximate \(x\)-axis so both reconnected bridges and the anti-parallel ghost filaments are visible.
+- Add a small orientation triad in one corner labelled visually by red/green/blue rods if text is unavailable.
+- Include a subtle central glow at the reconnection region, but do not obscure the tube topology.
+
+**Technical specs**
+- Resolution at least 1600×1600 px.
+- Static frame only; no animation.
+
+**Deliverable** A single PNG image satisfying the above.

@@ -1,0 +1,56 @@
+__MATHEMATICAL_ACCURACY__
+Boundary Curve Specification:
+- Is the main boundary a nontrivial knot-like closed tube, not a simple circle?
+- Are ghost trefoil and figure-eight-style boundary curves visible as distinct cyan/magenta references?
+- Does the main boundary appear as a midpoint morph between the two ghost boundaries rather than identical to either one?
+- Are all boundary curves closed without gaps or broken endpoints?
+
+Minimal / Plateau Surface Behavior:
+- Does the surface span the full main boundary curve with no missing regions?
+- Does the interior look like a relaxed soap film with saddle structure rather than a flat disk or arbitrary blob?
+- Are interior mesh vertices visually smoother and lower-curvature than boundary regions?
+- Does the surface avoid obvious self-intersections not implied by the boundary projection?
+
+Curvature Overlay:
+- Is low residual mean curvature concentrated over much of the interior?
+- Are higher curvature or strain colors localized near boundary bends, necks, or saddle transitions?
+- Is the curvature color field coherent over the triangulated surface?
+- Does the surface geometry and coloring together communicate approximate area minimization?
+
+__VISUAL_IMPLEMENTATION__
+Surface and Mesh Quality:
+- Is the soap film semi-translucent and continuous across the entire boundary?
+- Are triangulation/grid lines subtle but visible enough to show the mesh structure?
+- Is the boundary tube smooth and consistently thick?
+- Are ghost curves thin enough not to dominate the main surface?
+
+Knot Readability:
+- Are over/under relationships of the boundary visually suggested through depth, lighting, and occlusion?
+- Does the camera angle reveal the 3D knot shape rather than flattening it into a messy projection?
+- Are the main boundary and ghost boundaries distinguishable by color and opacity?
+- Is the main midpoint object centered and large enough to inspect?
+
+Lighting and Color:
+- Does lighting reveal the saddle-like shape of the film?
+- Is the curvature heatmap readable through the translucent material?
+- Are cyan, magenta, dark boundary, and heatmap colors not confused with each other?
+- Are aliasing, jagged edges, or transparency sorting artifacts minimal?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Main midpoint minimal-surface approximation is present.
+- Main boundary tube `B(u)` is present.
+- Both ghost boundaries `T(u)` and `F(u)` are present.
+- Curvature coloring and surface mesh/grid are present.
+
+Technical Requirements:
+- Image resolution is at least `1600 × 1600` pixels.
+- Output is one static PNG frame.
+- White or nearly white background.
+- Surface occupies most of the frame and is not clipped.
+
+Benchmark-Specific Failure Modes:
+- If the output is only a decorative knot with no spanning surface, completeness should be low.
+- If the boundary is a circle or simple torus-like loop, mathematical accuracy should be low.
+- If the surface ignores the boundary and floats separately, mathematical accuracy should be low.
+- If all three boundary states are missing or indistinguishable, completeness and visual implementation should be penalized.

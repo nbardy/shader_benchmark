@@ -1,0 +1,60 @@
+**Objective**
+Produce a single high-resolution PNG visualising a 3D crystal dislocation network under shear stress. The image should show screw, edge, bowed Frank–Read, and junction dislocation segments, along with Burgers vectors, slip planes, and a Burgers circuit closure failure.
+
+**Mathematical specification**
+Use a cubic crystal cell \([-1,1]^3\). Render a sparse FCC-like lattice for context, with lattice points at
+\[
+(i,j,k)/2,\quad (i,j,k)\in\{-2,-1,0,1,2\}^3,
+\]
+plus face-centered offsets where visually feasible. The lattice should be faint and secondary.
+
+Dislocation centerlines:
+1. Screw helix, Burgers vector \(b_s=(0,0,1)\):
+   \[
+   \Gamma_s(t)=(0.28\cos t,\ 0.28\sin t,\ -0.85+1.70t/(4\pi)),\quad t\in[0,4\pi].
+   \]
+2. Edge loop, Burgers vector \(b_e=(1,0,0)\):
+   \[
+   \Gamma_e(t)=(0.58\cos t,\ 0.58\sin t,\ 0.08\sin 2t),\quad t\in[0,2\pi].
+   \]
+3. Bowed Frank–Read source, Burgers vector \(b_f=(0,1,0)\):
+   \[
+   \Gamma_f(s)=(s,\ -0.55,\ 0.18+0.42(1-s^2)),\quad s\in[-0.75,0.75].
+   \]
+   Mark its endpoints as pinned nodes.
+4. Junction segment, Burgers vector \(b_j=(1,1,0)/\sqrt2\):
+   draw a straight segment connecting approximately \((0.28,0,-0.10)\) to \((0.58,0,0)\).
+
+Slip/stress geometry:
+- Slip plane for the edge loop: translucent plane \(z=0\).
+- Secondary \(\{111\}\)-like plane: translucent plane \(x+y+z=0.30\).
+- Applied shear stress \(\tau_{xy}\): draw opposing shear arrows on the \(z=\pm1\) faces of the cube.
+
+Burgers circuit:
+- Around one visible part of the edge loop, draw a square circuit on the \(z=0\) plane with a missing-closure vector parallel to \(b_e=(1,0,0)\).
+
+**Geometry to render**
+- Dislocations as glossy tubes of radius about 0.035–0.055.
+- Tube color by Burgers vector: screw blue, edge orange, Frank–Read green, junction purple.
+- Tangent arrows along each dislocation line and separate Burgers-vector arrows next to each segment.
+- Faint atom/lattice points and cube boundary rods.
+- Semi-transparent slip planes with subtle hatching.
+- Pinned endpoints on the Frank–Read segment as black or metallic spheres.
+
+**Rendering style**
+- Main dislocation tubes should be saturated and visually dominant.
+- Lattice and planes should be low opacity to avoid clutter.
+- Use soft Phong or physically inspired lighting with clear depth cues.
+- Background: white or light grey.
+- Avoid excessive labels; rely on color, arrow direction, and a small legend if possible.
+
+**Composition / overlays**
+- Camera: oblique 3D view that shows the helix, loop, bowed segment, junction, and shear arrows.
+- Put a small Burgers-vector color legend in one corner.
+- Keep the cube boundary visible but not heavy.
+
+**Technical specs**
+- Resolution at least 1600×1600 px.
+- Static frame only; no animation.
+
+**Deliverable** A single PNG image satisfying the above.

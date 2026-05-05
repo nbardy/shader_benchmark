@@ -1,0 +1,56 @@
+__MATHEMATICAL_ACCURACY__
+Post-Surgery Topology:
+- Are there exactly two separated closed surface components after surgery?
+- Is there a clear central gap between the two components at the former neck location?
+- Are both cut locations capped smoothly rather than left as open holes?
+- Do the caps appear near `z = ±0.13` relative to the axis of the dumbbell?
+
+Pre-Surgery Ghost Consistency:
+- Is a faint continuous dumbbell ghost surface visible, showing the pre-surgery neck connecting the two bulbs?
+- Is the ghost neck very thin compared with the two bulb radii, consistent with a neck-pinch?
+- Does the ghost surface align with the post-surgery components rather than floating unrelatedly?
+- Are inward flow arrows near the neck present and pointing toward the shrinking/pinching direction?
+
+Curvature and Surgery Encoding:
+- Is high curvature concentrated near the new caps and scar rings?
+- Are low-curvature outer bulb regions colored blue or another clearly low-curvature color?
+- Does the color field vary smoothly over the surface, not randomly?
+- Are the two scar rings positioned at the topological surgery cuts?
+
+__VISUAL_IMPLEMENTATION__
+Surface Quality:
+- Are the post-surgery surfaces smooth and rounded, without faceted polygon artifacts?
+- Do the surfaces of revolution look axisymmetric around a common `z` axis?
+- Are caps convex and visually continuous with the bulb surfaces?
+- Is the ghost surface translucent enough to distinguish it from the main geometry?
+
+Curvature Heatmap:
+- Is the blue-to-red curvature map legible across the surface?
+- Is high curvature rendered as localized red/orange bands or caps rather than covering everything uniformly?
+- Is there a usable colorbar or gradient swatch explaining the curvature scale?
+- Are scar rings visually distinct from the curvature colors?
+
+Lighting and Composition:
+- Does soft lighting reveal the 3D shape of the bulbs and caps?
+- Is the central neck/surgery region prominently visible?
+- Is the camera angle suitable for seeing both the axial profile and the separation gap?
+- Are there no distracting backgrounds, excessive shadows, or clipping artifacts?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Geometry:
+- Two post-surgery components are present.
+- One translucent pre-surgery ghost surface is present.
+- Two red scar rings are present.
+- Curvature-flow arrows near the neck are present.
+
+Technical Requirements:
+- Image resolution is at least `1600 × 1600` pixels.
+- Static PNG frame, not a sequence or multipanel animation.
+- White or nearly white background.
+- Anti-aliasing is sufficient for smooth silhouettes.
+
+Benchmark-Specific Failure Modes:
+- If the image shows a single unsurgered dumbbell only, mathematical accuracy should be low.
+- If the caps are open holes, topological accuracy should be strongly penalized.
+- If curvature coloring is random or purely decorative, mathematical accuracy and visual implementation should be penalized.
+- If the ghost state is missing, completeness should be penalized.

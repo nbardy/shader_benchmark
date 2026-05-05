@@ -1,0 +1,60 @@
+__MATHEMATICAL_ACCURACY__
+Fractal Domain:
+- Is the visible domain an order-5 or clearly high-order Sierpiński carpet with recursively removed central squares?
+- Are holes actually absent/punched through rather than merely painted a different color?
+- Are multiple scales of holes visible, including large central holes and smaller recursive holes?
+- Is the outer boundary square and the recursive grid alignment consistent with ternary subdivision?
+
+Eigenfunction Field:
+- Does the field vanish on the outer boundary and inside removed holes?
+- Are positive and negative domains both present and spatially interleaved?
+- Is the dominant antisymmetry across the main diagonal visible?
+- Do additional higher-frequency terms create secondary nodal branches or loops rather than a single trivial line?
+- Is plate height consistent with signed field value, not just color?
+
+Nodal Structure:
+- Is the zero contour explicitly drawn as dark nodal curves?
+- Do nodal curves lie on color-transition boundaries between positive and negative regions?
+- Are nodal lines clipped correctly by holes and boundaries?
+- Do nodal domains respect the fractal holes instead of crossing removed regions?
+
+__VISUAL_IMPLEMENTATION__
+Fractal Plate Rendering:
+- Are hole outlines crisp across multiple recursive scales?
+- Is the plate thin but visibly three-dimensional?
+- Are shadows and lighting sufficient to distinguish holes from merely dark painted squares?
+- Is the height deformation smooth over retained regions?
+
+Color and Contour Rendering:
+- Is the positive/negative diverging color map clear and symmetric?
+- Are near-zero regions pale, with dark nodal curves readable on top?
+- Are boundary outlines and nodal lines not confused with one another?
+- Is anti-aliasing adequate on tiny fractal holes?
+
+Layout and Side Strip:
+- Is the oblique top-down camera angle suitable for both height and domain recognition?
+- Is the spectral side strip visible and distinct from the main plate?
+- Are six eigenvalue bars present with the fifth bar highlighted?
+- Is the image uncluttered despite high fractal detail?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Order-5 Sierpiński carpet domain is present.
+- Signed elevated eigenfunction surface is present.
+- Punched holes at multiple recursive scales are present.
+- Explicit dark nodal curves are present.
+- Positive/zero/negative color encoding is present.
+- Spectral side strip with six bars and highlighted fifth mode is present.
+
+Technical Requirements:
+- Output is a single PNG at least 1600×1600 px.
+- Background is white or very light grey.
+- The visualization is static and self-contained.
+- The main plate occupies most of the canvas.
+
+Failure Modes to Penalize:
+- Drawing a solid square heatmap without punched holes.
+- Showing a generic fractal texture unrelated to the Sierpiński carpet.
+- Missing nodal curves or mismatched nodal curves that do not follow color sign changes.
+- No visible signed height deformation.
+- Missing spectral side strip.

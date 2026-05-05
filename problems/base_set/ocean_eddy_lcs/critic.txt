@@ -1,0 +1,58 @@
+__MATHEMATICAL_ACCURACY__
+Double-Gyre Flow Structure:
+- Does the basin show two gyre-like regions across the `x ∈ [0,2]` domain?
+- Is the domain rectangular with aspect ratio approximately `2:1`?
+- Are flow features consistent with a time-dependent double gyre rather than random noise?
+- Do tracer paths curve around gyre lobes and separatrix-like structures?
+
+LCS / FTLE Representation:
+- Are warm repelling and cool attracting LCS ridges both present?
+- Do LCS ridges appear as coherent material curves or ribbons, not scattered dots?
+- Are ridges located near separatrices and lobe boundaries between gyres?
+- If a height field is used, do elevated or bright ridges correspond to FTLE-like maxima?
+- Are attracting and repelling structures visually distinct but allowed to intersect/transverse each other?
+
+Trajectory Integration:
+- Are at least dozens of tracer trajectories present?
+- Do trajectories have fading tails or direction cues suggesting integration over time?
+- Do stream/tracer curves respect basin boundaries and not escape arbitrarily?
+- Are sparse velocity arrows, if present, aligned with the double-gyre pattern?
+
+__VISUAL_IMPLEMENTATION__
+LCS Rendering Quality:
+- Are ridges crisp, continuous, and easy to distinguish from background texture?
+- Are warm and cool colors used consistently for repelling and attracting structures?
+- Is transparency handled well where ridges overlap?
+- Are lines anti-aliased and not jagged?
+
+Flow Field Readability:
+- Is the ocean basin background subtle rather than overpowering?
+- Are tracer paths thin enough to avoid clutter but visible enough to inspect?
+- Does the image show both local curve detail and global two-gyre organization?
+- If rendered obliquely, is FTLE height visible without hiding the basin layout?
+
+Composition and Legend:
+- Is there a clear legend or equivalent color key?
+- Are domain ticks or boundary markings visible?
+- Does the camera or top-down framing preserve the `2:1` basin geometry?
+- Is the white page/background clean and professional?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Rectangular double-gyre basin is present.
+- Warm repelling LCS ridges are present.
+- Cool attracting LCS ridges are present.
+- Tracer trajectories are present.
+- Legend or color key is present.
+
+Technical Requirements:
+- Image resolution is at least `1600 × 1600` pixels.
+- Output is a single static PNG.
+- Static frame corresponds to `t0 = 0` analysis, not an animation.
+- Main basin is fully visible and not clipped.
+
+Benchmark-Specific Failure Modes:
+- If the image is a generic ocean map with no LCS ridges, mathematical accuracy should be low.
+- If only streamlines are shown and attracting/repelling ridges are omitted, completeness should be penalized.
+- If the domain is not recognizably double-gyre-like, mathematical accuracy should be penalized.
+- If warm/cool roles are swapped or undefined, visual implementation and completeness should be penalized.

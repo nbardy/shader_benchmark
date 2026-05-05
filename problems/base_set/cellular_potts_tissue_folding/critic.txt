@@ -1,0 +1,62 @@
+__MATHEMATICAL_ACCURACY__
+Fold Geometry:
+- Does the tissue sheet follow the specified folded height profile with a raised hinge near \(y=-0.18\)?
+- Is the secondary depression near \(y=0.45\) visible?
+- Does the fold vary across \(x\) through the \((1-0.15x^2)\) term rather than forming a perfectly uniform ridge?
+- Is the cross-section inset consistent with the main 3D fold profile?
+
+Cellular-Potts Semantics:
+- Are individual cells visible as a hexagonal/staggered epithelial tiling?
+- Are hinge-region cells apically constricted, i.e. smaller/narrower than surrounding cells?
+- Are boundaries near the hinge or clone interfaces darker/thicker, reflecting higher tension?
+- Are the four lineage clone regions seeded in approximately the specified quadrants?
+- Are exactly or approximately 8 T1-like neighbour-exchange events highlighted along the hinge?
+
+Force and Topology Cues:
+- Do force arrows point inward toward the hinge band?
+- Are T1 markers localised to cell boundaries/diamonds rather than arbitrary red dots?
+- Does the tissue remain a continuous sheet, not disconnected patches?
+- Does the visualization read as a cellular tissue fold rather than a generic colored surface?
+
+__VISUAL_IMPLEMENTATION__
+Cell Rendering:
+- Are cell polygons individually visible and conforming to the folded surface?
+- Are boundaries crisp but not so thick that they hide cell colors?
+- Are clone colors distinguishable and visually coherent across neighbouring cells?
+- Are hinge cells visibly deformed/constricted without causing severe overlap artifacts?
+
+Fold and Lighting:
+- Does the oblique camera reveal 3D height and surface curvature?
+- Is shading sufficient to perceive the ridge and depression?
+- Are force arrows and T1 glyphs visible above the cell layer?
+- Is anti-aliasing adequate on many small cell boundaries?
+
+Inset and Legend:
+- Is the side cross-section inset readable and correctly placed?
+- Is the hinge marked in the inset and on the main sheet?
+- Is the lineage legend compact and consistent with cell colors?
+- Is the T1-event marker explained visually by the legend or repeated glyph style?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Approximately \(34\times28\) staggered/hexagonal cells are present.
+- Folded 3D sheet with hinge near \(y=-0.18\) is present.
+- Apical constriction near the hinge is visible.
+- Four lineage clone color regions are present.
+- Dark cell boundaries and increased hinge/interface tension are visible.
+- Eight T1-like event markers are present along the hinge.
+- Inward force arrows are present.
+- Cross-section inset and lineage/T1 legend are present.
+
+Technical Requirements:
+- Output is a single PNG at least 1600×1600 px.
+- Static frame only.
+- Background is white or very light grey.
+- The image is self-contained and does not rely on external data.
+
+Failure Modes to Penalize:
+- Smooth colored sheet with no individual cells.
+- No apical constriction at the hinge.
+- Clone colors placed randomly rather than as four coherent seeded regions.
+- Missing T1-event markers.
+- Missing cross-section inset or force arrows.

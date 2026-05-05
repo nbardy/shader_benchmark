@@ -1,0 +1,39 @@
+**Objective**
+Produce a single high-resolution Coxeter-group reflection kaleidoscope comparing spherical, Euclidean, and hyperbolic reflection tilings. The image should be a triptych with one panel for each geometry and a clearly marked fundamental triangle.
+
+**Mathematical specification**
+1. Render three panels from left to right:
+   - Spherical Coxeter triangle with angles `(π/2, π/3, π/3)` on the unit sphere.
+   - Euclidean Coxeter triangle with angles `(π/2, π/3, π/6)` in the plane.
+   - Hyperbolic Coxeter triangle with angles `(π/2, π/3, π/7)` in the Poincare disk.
+2. Reflection generators: each fundamental triangle has three mirror edges labeled or color-coded as `A`, `B`, and `C`.
+3. Generate cells by reflecting the fundamental triangle across its edges up to visible depth:
+   - Spherical: enough reflections to tile the sphere with tetrahedral/octahedral-like symmetry patches.
+   - Euclidean: at least `8` reflection layers outward from the center triangle.
+   - Hyperbolic: at least `7` reflection layers in the Poincare disk, with cells shrinking toward the boundary.
+4. Cell coloring: color by reflection word length modulo a palette cycle, e.g. `length mod 6`. Adjacent cells should generally have different colors.
+5. The central fundamental triangle must be outlined in black in every panel.
+
+**Geometry to render**
+- Spherical panel: a shaded unit sphere with triangular geodesic arcs drawn on the surface.
+- Euclidean panel: flat triangular kaleidoscope tiling in a square or circular viewport.
+- Hyperbolic panel: Poincare disk with geodesic arcs drawn as circular arcs orthogonal to the disk boundary.
+- Mirror edges: three thicker lines in the fundamental triangle, with distinct colors or tiny labels.
+
+**Rendering style**
+- White background.
+- Clean high-contrast tiling lines, anti-aliased.
+- Use a restrained six-color palette for cells.
+- Spherical panel should have subtle lighting to show curvature; Euclidean and hyperbolic panels should be mostly flat but crisp.
+
+**Composition / overlays**
+- Arrange the three panels evenly with small captions or icon markers for spherical, Euclidean, and hyperbolic if text is available.
+- Add a small legend showing the three mirror generator colors `A/B/C`.
+- Hyperbolic disk boundary should be a dark circle; cells near the boundary should visibly shrink.
+
+**Technical specs**
+- Resolution at least `1600 × 1600` pixels.
+- Static frame only; no animation.
+- Output format: PNG.
+
+**Deliverable** A single PNG image satisfying the above.

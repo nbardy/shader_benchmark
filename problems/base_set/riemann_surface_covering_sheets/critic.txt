@@ -1,0 +1,61 @@
+__MATHEMATICAL_ACCURACY__
+Function and Branch Points:
+- Are the four branch points located at approximately \(\pm1\) and \(\pm0.6i\) in the base plane?
+- Are exactly two sheets of the square-root cover shown?
+- Do the sheets exchange across branch cuts rather than behaving as unrelated surfaces?
+- Are the real and imaginary branch-cut segments placed as specified?
+- Is the surface height based on \(\operatorname{Re}w\)-like structure, with opposite sheets having opposite heights/colors where appropriate?
+
+Monodromy:
+- Does a loop around a single branch point indicate sheet switching after one circuit?
+- Does the loop around \(z=1\) show a sheet swap?
+- Does the loop around \(z=0.6i\) show a sheet swap?
+- Does the loop enclosing both real branch points show return to the starting sheet?
+- Are monodromy trails visually connected to the surface sheets rather than floating decoratively?
+
+Phase Coloring:
+- Does color vary smoothly with \(\arg w\)?
+- Are phase discontinuities aligned with branch cuts rather than random seams?
+- Are the two sheets distinguishable while still sharing the same phase-color rule?
+- Are branch points visually singular or junction-like?
+
+__VISUAL_IMPLEMENTATION__
+Surface Rendering:
+- Are both sheets smooth and semi-transparent enough to inspect overlaps?
+- Are branch-cut seams crisp and readable?
+- Are branch points clearly marked and not hidden by the sheets?
+- Is the base grid visible beneath the surfaces?
+
+Curve and Trail Rendering:
+- Are monodromy loops anti-aliased, arrowed, and spatially aligned with the base plane/sheets?
+- Are branch cuts thicker/darker than ordinary grid lines?
+- Are real and imaginary axes emphasized without cluttering the figure?
+- Are sheet crossings handled without severe z-fighting artifacts?
+
+Composition:
+- Does the camera show all four branch points and both cuts at once?
+- Is the chosen perspective sufficient to reveal the two-sheeted structure?
+- Is transparency balanced so the image is not muddy?
+- Is the optional sheet legend or symbolic cue unobtrusive and clear?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Two covering sheets are present.
+- Four branch points are marked.
+- Real and imaginary branch cuts are drawn.
+- Three monodromy trails are present with directional arrows.
+- Base \(z\)-plane grid and emphasized axes are present.
+- Phase-based color variation is present.
+
+Technical Requirements:
+- Output is a single PNG at least 1600×1600 px.
+- Static frame only.
+- Background is white or light grey.
+- The visualization is self-contained and interpretable without external links.
+
+Failure Modes to Penalize:
+- Single surface only, with no second sheet.
+- Branch points in incorrect locations.
+- Decorative cuts that do not align with phase discontinuities or sheet exchange.
+- Missing monodromy loops.
+- Random colors unrelated to complex phase.

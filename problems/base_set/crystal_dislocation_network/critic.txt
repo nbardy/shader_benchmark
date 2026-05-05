@@ -1,0 +1,63 @@
+__MATHEMATICAL_ACCURACY__
+Dislocation Types:
+- Is the screw dislocation represented as a helical line with Burgers vector parallel to its axis?
+- Is the edge loop a roughly circular loop near the \(z=0\) slip plane?
+- Is the Frank–Read source a bowed segment with two pinned endpoints?
+- Is the junction segment present and connected between the loop and helix region?
+- Are dislocation segments visually distinct rather than collapsed into one generic curve?
+
+Burgers Vectors and Stress:
+- Are Burgers-vector arrows shown next to the relevant segments?
+- Are Burgers-vector colors consistent across tubes, arrows, and legend?
+- Is the edge-loop Burgers vector parallel to the missing closure of the Burgers circuit?
+- Are shear arrows on opposite cube faces consistent with \(\tau_{xy}\)?
+- Are slip planes placed at \(z=0\) and approximately \(x+y+z=0.30\)?
+
+Crystal Context:
+- Is there a cubic crystal frame with faint lattice points?
+- Do planes and lattice serve as spatial context without implying impossible geometry?
+- Are pinned endpoints visibly fixed on the bowed segment?
+- Does the network read as a dislocation network in a crystal rather than arbitrary colored tubes?
+
+__VISUAL_IMPLEMENTATION__
+Tube and Arrow Rendering:
+- Are dislocation tubes smooth, glossy, and clearly separated by color?
+- Are tangent arrows aligned with the line directions?
+- Are Burgers-vector arrows straight and visually distinguishable from tangent arrows?
+- Are tube radii appropriate: large enough to see, small enough not to obscure topology?
+
+Planes, Lattice, and Circuit:
+- Are slip planes transparent with subtle hatching or grid cues?
+- Is the Burgers circuit square readable and close to the edge loop?
+- Is the closure-failure vector visible and parallel to the edge Burgers vector?
+- Are lattice points faint and not distracting?
+
+Composition:
+- Does the camera show all four dislocation elements at once?
+- Are shear arrows visible on the cube faces?
+- Is the legend, if present, compact and unambiguous?
+- Is anti-aliasing adequate on tubes, arrows, lattice points, and cube rods?
+
+__COMPLETENESS_AND_SPECIFICATIONS__
+Required Elements:
+- Screw helix dislocation is present.
+- Edge loop dislocation is present.
+- Bowed Frank–Read source with pinned endpoints is present.
+- Junction segment is present.
+- Burgers-vector arrows and color legend are present.
+- Slip planes \(z=0\) and \(x+y+z=0.30\) are present.
+- Shear stress arrows are present.
+- Burgers circuit with closure failure is present.
+
+Technical Requirements:
+- Output is a single PNG at least 1600×1600 px.
+- Static frame only.
+- Background is white or light grey.
+- Main dislocation network is visually dominant over lattice context.
+
+Failure Modes to Penalize:
+- Generic crystal lattice with no dislocation network.
+- Missing Burgers vectors or Burgers circuit.
+- Frank–Read source not pinned or not bowed.
+- Opaque planes hiding the dislocations.
+- Colors inconsistent between tubes and vector legend.
