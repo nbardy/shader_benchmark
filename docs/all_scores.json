@@ -1,5 +1,5 @@
 {
-  "generated": "2026-05-05T18:21:02.623544+00:00",
+  "generated": "2026-05-05T18:35:18.447710+00:00",
   "models": [
     {
       "key": "claude-opus-4-7",
@@ -45,6 +45,36 @@
     }
   ],
   "problems": [
+    "braid_word_reduction_ribbons",
+    "cellular_potts_tissue_folding",
+    "coxeter_reflection_kaleidoscope",
+    "crystal_dislocation_network",
+    "differentiable_rendering_ambiguity_landscape",
+    "earthquake_fault_slip_wavefronts",
+    "error_correcting_code_decoding_landscape",
+    "fractal_drum_eigenfunctions",
+    "mean_curvature_flow_surgery",
+    "minimal_surface_knot_boundaries",
+    "navier_stokes_vortex_reconnection",
+    "ocean_eddy_lcs",
+    "optimal_transport_mass_flow_tubes",
+    "polyrhythm_phase_torus",
+    "protein_folding_energy_landscape",
+    "qec_threshold_phase_diagram",
+    "reaction_diffusion_nonorientable_surfaces",
+    "riemann_surface_covering_sheets",
+    "spinodal_decomposition_3d",
+    "topological_quantum_code_defect_braiding",
+    "reproduce_image",
+    "reproduce_image_andrew_pons",
+    "reproduce_image_fabrice_villard",
+    "reproduce_image_jason_leung",
+    "reproduce_image_javier_penas",
+    "reproduce_image_mark_basarab",
+    "reproduce_image_photoholgic",
+    "reproduce_image_rayul",
+    "reproduce_image_sebastien_gabriel",
+    "reproduce_image_tim_stief",
     "ackermann_function_growth",
     "al_khwarizmi_geometric_algebra",
     "apollonian_gasket",
@@ -54,14 +84,12 @@
     "barbell_dumbbell_shape",
     "binary_tree_fractal",
     "brahmagupta_cyclic_quadrilaterals",
-    "braid_word_reduction_ribbons",
     "braided_rope",
     "butterfly_curve",
     "calabi_yau_manifold",
     "capsule_shape",
     "cardioid_limacon_collection",
     "catenoid_helicoid_minimal",
-    "cellular_potts_tissue_folding",
     "chinese_remainder_sunzi",
     "chinese_remainder_theorem",
     "chladni_patterns",
@@ -69,24 +97,18 @@
     "compound_polyhedra_stella_octangula",
     "conformal_spiral_mapping",
     "costa_minimal_surface",
-    "coxeter_reflection_kaleidoscope",
-    "crystal_dislocation_network",
     "crystal_lattice_diffraction",
     "cycloid_wave_patterns",
     "cylindrical_bend_deformation",
-    "differentiable_rendering_ambiguity_landscape",
     "differential_equations_water",
     "dna_double_helix",
-    "earthquake_fault_slip_wavefronts",
     "epicycloids",
-    "error_correcting_code_decoding_landscape",
     "euler_polyhedron_formula",
     "euler_polyhedron_platonic",
     "fermat_parabolic_spiral",
     "five_pointed_star_polygon",
     "fourier_architectural_blueprint",
     "fourier_epicycles_drawing",
-    "fractal_drum_eigenfunctions",
     "fractal_loxodromic_patterns",
     "fractal_tree_2d",
     "gauss_complex_plane",
@@ -108,48 +130,28 @@
     "loxodromic_sphere_spirals",
     "mandala_circles",
     "mandelbulb_fractal",
-    "mean_curvature_flow_surgery",
     "menger_cube_fractal",
     "menger_sponge_fractal",
-    "minimal_surface_knot_boundaries",
     "mobius_strip_half_twist",
     "mobius_strip_triple_twist",
     "mobius_transformation_3d",
-    "navier_stokes_vortex_reconnection",
     "number_theory_music",
-    "ocean_eddy_lcs",
     "octagram_star_polygon",
-    "optimal_transport_mass_flow_tubes",
     "parametric_gear_train",
     "parametric_seashell",
     "penrose_tiling_p3",
     "phyllotaxis_spiral",
     "poincare_disc",
-    "polyrhythm_phase_torus",
     "prime_crystal_lattice",
     "probability_weather_patterns",
-    "protein_folding_energy_landscape",
-    "qec_threshold_phase_diagram",
     "quantum_probability_waves",
     "ramanujan_mock_theta",
-    "reaction_diffusion_nonorientable_surfaces",
     "reaction_diffusion_patterns",
     "regular_dodecahedron",
     "regular_icosahedron",
     "regular_octahedron",
     "regular_tetrahedron",
-    "reproduce_image",
-    "reproduce_image_andrew_pons",
-    "reproduce_image_fabrice_villard",
-    "reproduce_image_jason_leung",
-    "reproduce_image_javier_penas",
-    "reproduce_image_mark_basarab",
-    "reproduce_image_photoholgic",
-    "reproduce_image_rayul",
-    "reproduce_image_sebastien_gabriel",
-    "reproduce_image_tim_stief",
     "riemann_surface_branch_cuts",
-    "riemann_surface_covering_sheets",
     "riemann_zeta_zeros",
     "rose_curves",
     "rotating_hypercube_projection",
@@ -160,12 +162,10 @@
     "spherical_inversion_mapping",
     "spinning_gear_assembly",
     "spinning_vortex_funnel",
-    "spinodal_decomposition_3d",
     "spiral_staircase_tower",
     "stella_octangula",
     "superformula_explorer",
     "taper_shear_transformation",
-    "topological_quantum_code_defect_braiding",
     "topology_fabric_texture",
     "torus_donut_parametric",
     "trefoil_alexander_polynomial",
@@ -176,7 +176,3123 @@
     "wave_deformation_field",
     "weierstrass_function"
   ],
+  "problem_categories": {
+    "ackermann_function_growth": "Number Theory & Algebra",
+    "al_khwarizmi_geometric_algebra": "Historical Mathematics",
+    "apollonian_gasket": "Fractals & Recursion",
+    "apollonius_conic_sections": "Historical Mathematics",
+    "archimedean_spiral_galaxy": "Parametric Curves & Spirals",
+    "archimedes_spiral": "Parametric Curves & Spirals",
+    "barbell_dumbbell_shape": "Classical Geometry",
+    "binary_tree_fractal": "Fractals & Recursion",
+    "brahmagupta_cyclic_quadrilaterals": "Historical Mathematics",
+    "braid_word_reduction_ribbons": "Frontier",
+    "braided_rope": "Topology & Knot Theory",
+    "butterfly_curve": "Parametric Curves & Spirals",
+    "calabi_yau_manifold": "Differential Geometry",
+    "capsule_shape": "Classical Geometry",
+    "cardioid_limacon_collection": "Parametric Curves & Spirals",
+    "catenoid_helicoid_minimal": "Differential Geometry",
+    "cellular_potts_tissue_folding": "Frontier",
+    "chinese_remainder_sunzi": "Historical Mathematics",
+    "chinese_remainder_theorem": "Historical Mathematics",
+    "chladni_patterns": "Physics & Simulations",
+    "complex_analysis_stained_glass": "Complex Analysis & Visualization",
+    "compound_polyhedra_stella_octangula": "Classical Geometry",
+    "conformal_spiral_mapping": "Advanced Topology",
+    "costa_minimal_surface": "Differential Geometry",
+    "coxeter_reflection_kaleidoscope": "Frontier",
+    "crystal_dislocation_network": "Frontier",
+    "crystal_lattice_diffraction": "Deformations & Transformations",
+    "cycloid_wave_patterns": "Parametric Curves & Spirals",
+    "cylindrical_bend_deformation": "Deformations & Transformations",
+    "differentiable_rendering_ambiguity_landscape": "Frontier",
+    "differential_equations_water": "Cross-Disciplinary",
+    "dna_double_helix": "Topology & Knot Theory",
+    "earthquake_fault_slip_wavefronts": "Frontier",
+    "epicycloids": "Parametric Curves & Spirals",
+    "error_correcting_code_decoding_landscape": "Frontier",
+    "euler_polyhedron_formula": "Historical Mathematics",
+    "euler_polyhedron_platonic": "Historical Mathematics",
+    "fermat_parabolic_spiral": "Parametric Curves & Spirals",
+    "five_pointed_star_polygon": "Classical Geometry",
+    "fourier_architectural_blueprint": "Cross-Disciplinary",
+    "fourier_epicycles_drawing": "Cross-Disciplinary",
+    "fractal_drum_eigenfunctions": "Frontier",
+    "fractal_loxodromic_patterns": "Cross-Disciplinary",
+    "fractal_tree_2d": "Fractals & Recursion",
+    "gauss_complex_plane": "Historical Mathematics",
+    "geometric_cube": "Classical Geometry",
+    "glass_sphere_red_core": "Physics & Simulations",
+    "group_theory_kaleidoscope": "Number Theory & Algebra",
+    "gyroscopic_nested_rings": "Topology & Knot Theory",
+    "helical_twist_deformation": "Deformations & Transformations",
+    "helical_twisted_cube_advanced": "Topology & Knot Theory",
+    "holographic_interference": "Complex Analysis & Visualization",
+    "hopf_fibration_base_loops": "Differential Geometry",
+    "hyper_menger_cube_3sphere": "Fractals & Recursion",
+    "hyperbolic_heat_kernel": "Cross-Disciplinary",
+    "icosahedron_wireframe": "Classical Geometry",
+    "klein_bottle": "Differential Geometry",
+    "lissajous_curve_garden": "Parametric Curves & Spirals",
+    "logarithmic_spiral_motion": "Parametric Curves & Spirals",
+    "lorenz_attractor_poincare": "Physics & Simulations",
+    "loxodromic_sphere_spirals": "Physics & Simulations",
+    "mandala_circles": "Fractals & Recursion",
+    "mandelbulb_fractal": "Deformations & Transformations",
+    "mean_curvature_flow_surgery": "Frontier",
+    "menger_cube_fractal": "Fractals & Recursion",
+    "menger_sponge_fractal": "Fractals & Recursion",
+    "minimal_surface_knot_boundaries": "Frontier",
+    "mobius_strip_half_twist": "Differential Geometry",
+    "mobius_strip_triple_twist": "Differential Geometry",
+    "mobius_transformation_3d": "Advanced Topology",
+    "navier_stokes_vortex_reconnection": "Frontier",
+    "number_theory_music": "Cross-Disciplinary",
+    "ocean_eddy_lcs": "Frontier",
+    "octagram_star_polygon": "Cross-Disciplinary",
+    "optimal_transport_mass_flow_tubes": "Frontier",
+    "parametric_gear_train": "Deformations & Transformations",
+    "parametric_seashell": "Parametric Curves & Spirals",
+    "penrose_tiling_p3": "Advanced Topology",
+    "phyllotaxis_spiral": "Fractals & Recursion",
+    "poincare_disc": "Advanced Topology",
+    "polyrhythm_phase_torus": "Frontier",
+    "prime_crystal_lattice": "Number Theory & Algebra",
+    "probability_weather_patterns": "Cross-Disciplinary",
+    "protein_folding_energy_landscape": "Frontier",
+    "qec_threshold_phase_diagram": "Frontier",
+    "quantum_probability_waves": "Complex Analysis & Visualization",
+    "ramanujan_mock_theta": "Complex Analysis & Visualization",
+    "reaction_diffusion_nonorientable_surfaces": "Frontier",
+    "reaction_diffusion_patterns": "Physics & Simulations",
+    "regular_dodecahedron": "Classical Geometry",
+    "regular_icosahedron": "Classical Geometry",
+    "regular_octahedron": "Classical Geometry",
+    "regular_tetrahedron": "Classical Geometry",
+    "reproduce_image": "Image Reproduction",
+    "reproduce_image_andrew_pons": "Image Reproduction",
+    "reproduce_image_fabrice_villard": "Image Reproduction",
+    "reproduce_image_jason_leung": "Image Reproduction",
+    "reproduce_image_javier_penas": "Image Reproduction",
+    "reproduce_image_mark_basarab": "Image Reproduction",
+    "reproduce_image_photoholgic": "Image Reproduction",
+    "reproduce_image_rayul": "Image Reproduction",
+    "reproduce_image_sebastien_gabriel": "Image Reproduction",
+    "reproduce_image_tim_stief": "Image Reproduction",
+    "riemann_surface_branch_cuts": "Historical Mathematics",
+    "riemann_surface_covering_sheets": "Frontier",
+    "riemann_zeta_zeros": "Complex Analysis & Visualization",
+    "rose_curves": "Parametric Curves & Spirals",
+    "rotating_hypercube_projection": "Advanced Topology",
+    "rounded_box": "Classical Geometry",
+    "schwarzschild_black_hole": "Physics & Simulations",
+    "sierpinski_tetrahedron": "Fractals & Recursion",
+    "sierpinski_triangle_6_iterations": "Fractals & Recursion",
+    "spherical_inversion_mapping": "Advanced Topology",
+    "spinning_gear_assembly": "Topology & Knot Theory",
+    "spinning_vortex_funnel": "Physics & Simulations",
+    "spinodal_decomposition_3d": "Frontier",
+    "spiral_staircase_tower": "Topology & Knot Theory",
+    "stella_octangula": "Classical Geometry",
+    "superformula_explorer": "Parametric Curves & Spirals",
+    "taper_shear_transformation": "Deformations & Transformations",
+    "topological_quantum_code_defect_braiding": "Frontier",
+    "topology_fabric_texture": "Cross-Disciplinary",
+    "torus_donut_parametric": "Classical Geometry",
+    "trefoil_alexander_polynomial": "Cross-Disciplinary",
+    "trigonometric_mandalas": "Deformations & Transformations",
+    "truncated_icosahedron": "Classical Geometry",
+    "twisted_stellated_polyhedron": "Advanced Topology",
+    "voronoi_diagram": "Deformations & Transformations",
+    "wave_deformation_field": "Physics & Simulations",
+    "weierstrass_function": "Complex Analysis & Visualization"
+  },
+  "problem_groups": {
+    "Frontier": [
+      "braid_word_reduction_ribbons",
+      "cellular_potts_tissue_folding",
+      "coxeter_reflection_kaleidoscope",
+      "crystal_dislocation_network",
+      "differentiable_rendering_ambiguity_landscape",
+      "earthquake_fault_slip_wavefronts",
+      "error_correcting_code_decoding_landscape",
+      "fractal_drum_eigenfunctions",
+      "mean_curvature_flow_surgery",
+      "minimal_surface_knot_boundaries",
+      "navier_stokes_vortex_reconnection",
+      "ocean_eddy_lcs",
+      "optimal_transport_mass_flow_tubes",
+      "polyrhythm_phase_torus",
+      "protein_folding_energy_landscape",
+      "qec_threshold_phase_diagram",
+      "reaction_diffusion_nonorientable_surfaces",
+      "riemann_surface_covering_sheets",
+      "spinodal_decomposition_3d",
+      "topological_quantum_code_defect_braiding"
+    ],
+    "Reconstruction": [
+      "reproduce_image",
+      "reproduce_image_andrew_pons",
+      "reproduce_image_fabrice_villard",
+      "reproduce_image_jason_leung",
+      "reproduce_image_javier_penas",
+      "reproduce_image_mark_basarab",
+      "reproduce_image_photoholgic",
+      "reproduce_image_rayul",
+      "reproduce_image_sebastien_gabriel",
+      "reproduce_image_tim_stief"
+    ],
+    "Rest": [
+      "ackermann_function_growth",
+      "al_khwarizmi_geometric_algebra",
+      "apollonian_gasket",
+      "apollonius_conic_sections",
+      "archimedean_spiral_galaxy",
+      "archimedes_spiral",
+      "barbell_dumbbell_shape",
+      "binary_tree_fractal",
+      "brahmagupta_cyclic_quadrilaterals",
+      "braided_rope",
+      "butterfly_curve",
+      "calabi_yau_manifold",
+      "capsule_shape",
+      "cardioid_limacon_collection",
+      "catenoid_helicoid_minimal",
+      "chinese_remainder_sunzi",
+      "chinese_remainder_theorem",
+      "chladni_patterns",
+      "complex_analysis_stained_glass",
+      "compound_polyhedra_stella_octangula",
+      "conformal_spiral_mapping",
+      "costa_minimal_surface",
+      "crystal_lattice_diffraction",
+      "cycloid_wave_patterns",
+      "cylindrical_bend_deformation",
+      "differential_equations_water",
+      "dna_double_helix",
+      "epicycloids",
+      "euler_polyhedron_formula",
+      "euler_polyhedron_platonic",
+      "fermat_parabolic_spiral",
+      "five_pointed_star_polygon",
+      "fourier_architectural_blueprint",
+      "fourier_epicycles_drawing",
+      "fractal_loxodromic_patterns",
+      "fractal_tree_2d",
+      "gauss_complex_plane",
+      "geometric_cube",
+      "glass_sphere_red_core",
+      "group_theory_kaleidoscope",
+      "gyroscopic_nested_rings",
+      "helical_twist_deformation",
+      "helical_twisted_cube_advanced",
+      "holographic_interference",
+      "hopf_fibration_base_loops",
+      "hyper_menger_cube_3sphere",
+      "hyperbolic_heat_kernel",
+      "icosahedron_wireframe",
+      "klein_bottle",
+      "lissajous_curve_garden",
+      "logarithmic_spiral_motion",
+      "lorenz_attractor_poincare",
+      "loxodromic_sphere_spirals",
+      "mandala_circles",
+      "mandelbulb_fractal",
+      "menger_cube_fractal",
+      "menger_sponge_fractal",
+      "mobius_strip_half_twist",
+      "mobius_strip_triple_twist",
+      "mobius_transformation_3d",
+      "number_theory_music",
+      "octagram_star_polygon",
+      "parametric_gear_train",
+      "parametric_seashell",
+      "penrose_tiling_p3",
+      "phyllotaxis_spiral",
+      "poincare_disc",
+      "prime_crystal_lattice",
+      "probability_weather_patterns",
+      "quantum_probability_waves",
+      "ramanujan_mock_theta",
+      "reaction_diffusion_patterns",
+      "regular_dodecahedron",
+      "regular_icosahedron",
+      "regular_octahedron",
+      "regular_tetrahedron",
+      "riemann_surface_branch_cuts",
+      "riemann_zeta_zeros",
+      "rose_curves",
+      "rotating_hypercube_projection",
+      "rounded_box",
+      "schwarzschild_black_hole",
+      "sierpinski_tetrahedron",
+      "sierpinski_triangle_6_iterations",
+      "spherical_inversion_mapping",
+      "spinning_gear_assembly",
+      "spinning_vortex_funnel",
+      "spiral_staircase_tower",
+      "stella_octangula",
+      "superformula_explorer",
+      "taper_shear_transformation",
+      "topology_fabric_texture",
+      "torus_donut_parametric",
+      "trefoil_alexander_polynomial",
+      "trigonometric_mandalas",
+      "truncated_icosahedron",
+      "twisted_stellated_polyhedron",
+      "voronoi_diagram",
+      "wave_deformation_field",
+      "weierstrass_function"
+    ]
+  },
   "scores": {
+    "braid_word_reduction_ribbons": {
+      "claude-opus-4-7": {
+        "scores": [
+          83,
+          86,
+          82,
+          86,
+          85
+        ],
+        "total": 422,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            78,
+            84,
+            76,
+            83,
+            74
+          ],
+          "cli/claude:claude-opus-4-7": [
+            72,
+            74,
+            70,
+            76,
+            80
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            100,
+            100,
+            100,
+            100,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          46,
+          64,
+          35,
+          69,
+          60
+        ],
+        "total": 274,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            56,
+            82,
+            43,
+            78,
+            70
+          ],
+          "cli/claude:claude-opus-4-7": [
+            62,
+            64,
+            52,
+            68,
+            74
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            20,
+            45,
+            10,
+            60,
+            35
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "cellular_potts_tissue_folding": {
+      "claude-opus-4-7": {
+        "scores": [
+          82,
+          78,
+          82,
+          78,
+          84
+        ],
+        "total": 404,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            84,
+            76,
+            82,
+            78,
+            80
+          ],
+          "cli/claude:claude-opus-4-7": [
+            65,
+            62,
+            68,
+            60,
+            72
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            98,
+            96,
+            97,
+            97,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          10,
+          32,
+          9,
+          16,
+          13
+        ],
+        "total": 80,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            12,
+            45,
+            7,
+            18,
+            10
+          ],
+          "cli/claude:claude-opus-4-7": [
+            8,
+            22,
+            9,
+            15,
+            15
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            10,
+            30,
+            10,
+            15,
+            15
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          64,
+          64,
+          64,
+          64,
+          69
+        ],
+        "total": 325,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            82,
+            84,
+            79,
+            81,
+            74
+          ],
+          "cli/claude:claude-opus-4-7": [
+            70,
+            74,
+            68,
+            72,
+            72
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            40,
+            35,
+            45,
+            40,
+            60
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "coxeter_reflection_kaleidoscope": {
+      "claude-opus-4-7": {
+        "scores": [
+          85,
+          85,
+          85,
+          84,
+          83
+        ],
+        "total": 422,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            78,
+            76,
+            80,
+            74,
+            70
+          ],
+          "cli/claude:claude-opus-4-7": [
+            78,
+            80,
+            76,
+            78,
+            80
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            100,
+            100,
+            100,
+            100,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          3,
+          6,
+          2,
+          5,
+          7
+        ],
+        "total": 23,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            5,
+            8,
+            3,
+            7,
+            6
+          ],
+          "cli/claude:claude-opus-4-7": [
+            3,
+            5,
+            2,
+            3,
+            4
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            1,
+            5,
+            1,
+            5,
+            10
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          4,
+          5,
+          4,
+          4,
+          5
+        ],
+        "total": 22,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            3,
+            5,
+            2,
+            3,
+            2
+          ],
+          "cli/claude:claude-opus-4-7": [
+            4,
+            5,
+            4,
+            4,
+            4
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            5,
+            5,
+            5,
+            5,
+            10
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "crystal_dislocation_network": {
+      "claude-opus-4-7": {
+        "scores": [
+          87,
+          87,
+          85,
+          84,
+          88
+        ],
+        "total": 431,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            84,
+            86,
+            82,
+            79,
+            81
+          ],
+          "cli/claude:claude-opus-4-7": [
+            80,
+            76,
+            80,
+            76,
+            83
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            96,
+            100,
+            92,
+            98,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          76,
+          77,
+          72,
+          68,
+          72
+        ],
+        "total": 365,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            72,
+            76,
+            70,
+            69,
+            66
+          ],
+          "cli/claude:claude-opus-4-7": [
+            68,
+            62,
+            60,
+            58,
+            65
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            88,
+            92,
+            85,
+            78,
+            85
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          60,
+          44,
+          57,
+          45,
+          70
+        ],
+        "total": 276,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            68,
+            58,
+            66,
+            55,
+            72
+          ],
+          "cli/claude:claude-opus-4-7": [
+            48,
+            40,
+            45,
+            40,
+            52
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            65,
+            35,
+            60,
+            40,
+            85
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "differentiable_rendering_ambiguity_landscape": {
+      "claude-opus-4-7": {
+        "scores": [
+          13,
+          18,
+          9,
+          10,
+          10
+        ],
+        "total": 60,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            12,
+            28,
+            10,
+            14,
+            12
+          ],
+          "cli/claude:claude-opus-4-7": [
+            18,
+            15,
+            12,
+            10,
+            12
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            10,
+            10,
+            5,
+            5,
+            5
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          68,
+          64,
+          68,
+          61,
+          72
+        ],
+        "total": 333,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            72,
+            61,
+            70,
+            58,
+            70
+          ],
+          "cli/claude:claude-opus-4-7": [
+            38,
+            42,
+            40,
+            38,
+            52
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            95,
+            90,
+            95,
+            88,
+            95
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          43,
+          54,
+          45,
+          52,
+          56
+        ],
+        "total": 250,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            78,
+            73,
+            84,
+            68,
+            70
+          ],
+          "cli/claude:claude-opus-4-7": [
+            42,
+            40,
+            40,
+            38,
+            48
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            10,
+            50,
+            10,
+            50,
+            50
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "earthquake_fault_slip_wavefronts": {
+      "claude-opus-4-7": {
+        "scores": [
+          32,
+          64,
+          29,
+          36,
+          32
+        ],
+        "total": 193,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            48,
+            66,
+            38,
+            45,
+            42
+          ],
+          "cli/claude:claude-opus-4-7": [
+            22,
+            40,
+            20,
+            28,
+            30
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            25,
+            85,
+            30,
+            35,
+            25
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          75,
+          73,
+          77,
+          67,
+          76
+        ],
+        "total": 368,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            77,
+            79,
+            78,
+            72,
+            70
+          ],
+          "cli/claude:claude-opus-4-7": [
+            58,
+            55,
+            62,
+            50,
+            72
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            90,
+            85,
+            90,
+            80,
+            85
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          74,
+          79,
+          74,
+          75,
+          80
+        ],
+        "total": 382,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            78,
+            82,
+            76,
+            80,
+            72
+          ],
+          "cli/claude:claude-opus-4-7": [
+            48,
+            58,
+            50,
+            52,
+            70
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            95,
+            96,
+            95,
+            94,
+            98
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "error_correcting_code_decoding_landscape": {
+      "claude-opus-4-7": {
+        "scores": [
+          85,
+          83,
+          85,
+          82,
+          88
+        ],
+        "total": 423,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            82,
+            78,
+            80,
+            76,
+            78
+          ],
+          "cli/claude:claude-opus-4-7": [
+            78,
+            72,
+            80,
+            72,
+            85
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            96,
+            98,
+            96,
+            98,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          77,
+          59,
+          80,
+          61,
+          78
+        ],
+        "total": 355,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            70,
+            58,
+            74,
+            56,
+            68
+          ],
+          "cli/claude:claude-opus-4-7": [
+            68,
+            55,
+            70,
+            58,
+            72
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            92,
+            65,
+            95,
+            68,
+            95
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          70,
+          73,
+          74,
+          62,
+          62
+        ],
+        "total": 341,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            78,
+            82,
+            70,
+            73,
+            68
+          ],
+          "cli/claude:claude-opus-4-7": [
+            78,
+            72,
+            76,
+            68,
+            78
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            55,
+            65,
+            75,
+            45,
+            40
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "fractal_drum_eigenfunctions": {
+      "claude-opus-4-7": {
+        "scores": [
+          81,
+          73,
+          83,
+          73,
+          82
+        ],
+        "total": 392,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            76,
+            72,
+            80,
+            70,
+            68
+          ],
+          "cli/claude:claude-opus-4-7": [
+            76,
+            71,
+            74,
+            70,
+            82
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            90,
+            75,
+            95,
+            80,
+            95
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          60,
+          55,
+          58,
+          55,
+          68
+        ],
+        "total": 296,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            62,
+            78,
+            55,
+            72,
+            63
+          ],
+          "cli/claude:claude-opus-4-7": [
+            32,
+            38,
+            28,
+            34,
+            40
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            85,
+            50,
+            90,
+            60,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "render_fail"
+      }
+    },
+    "mean_curvature_flow_surgery": {
+      "claude-opus-4-7": {
+        "scores": [
+          15,
+          19,
+          17,
+          21,
+          26
+        ],
+        "total": 98,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            8,
+            18,
+            5,
+            12,
+            8
+          ],
+          "cli/claude:claude-opus-4-7": [
+            22,
+            28,
+            20,
+            27,
+            30
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            15,
+            10,
+            25,
+            25,
+            40
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          82,
+          83,
+          83,
+          82,
+          82
+        ],
+        "total": 412,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            80,
+            82,
+            78,
+            82,
+            72
+          ],
+          "cli/claude:claude-opus-4-7": [
+            68,
+            67,
+            72,
+            66,
+            74
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            98,
+            100,
+            98,
+            98,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          51,
+          47,
+          50,
+          47,
+          62
+        ],
+        "total": 257,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            72,
+            68,
+            70,
+            66,
+            71
+          ],
+          "cli/claude:claude-opus-4-7": [
+            30,
+            32,
+            26,
+            30,
+            45
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            50,
+            40,
+            55,
+            45,
+            70
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "minimal_surface_knot_boundaries": {
+      "claude-opus-4-7": {
+        "scores": [
+          8,
+          12,
+          6,
+          7,
+          13
+        ],
+        "total": 46,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            10,
+            18,
+            4,
+            6,
+            12
+          ],
+          "cli/claude:claude-opus-4-7": [
+            5,
+            8,
+            5,
+            6,
+            12
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            10,
+            10,
+            10,
+            10,
+            15
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          32,
+          31,
+          25,
+          27,
+          48
+        ],
+        "total": 163,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            43,
+            42,
+            31,
+            39,
+            48
+          ],
+          "cli/claude:claude-opus-4-7": [
+            32,
+            25,
+            28,
+            22,
+            35
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            20,
+            25,
+            15,
+            20,
+            60
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          45,
+          46,
+          37,
+          40,
+          63
+        ],
+        "total": 231,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            58,
+            66,
+            52,
+            61,
+            60
+          ],
+          "cli/claude:claude-opus-4-7": [
+            22,
+            28,
+            20,
+            25,
+            40
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            55,
+            45,
+            40,
+            35,
+            90
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "navier_stokes_vortex_reconnection": {
+      "claude-opus-4-7": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          8,
+          13,
+          6,
+          7,
+          7
+        ],
+        "total": 41,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            5,
+            18,
+            2,
+            4,
+            3
+          ],
+          "cli/claude:claude-opus-4-7": [
+            8,
+            10,
+            5,
+            8,
+            7
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            10,
+            10,
+            10,
+            10,
+            10
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          75,
+          73,
+          74,
+          68,
+          74
+        ],
+        "total": 364,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            74,
+            82,
+            68,
+            73,
+            70
+          ],
+          "cli/claude:claude-opus-4-7": [
+            62,
+            60,
+            58,
+            60,
+            68
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            90,
+            78,
+            95,
+            72,
+            85
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "ocean_eddy_lcs": {
+      "claude-opus-4-7": {
+        "scores": [
+          77,
+          73,
+          77,
+          70,
+          79
+        ],
+        "total": 376,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            72,
+            68,
+            70,
+            62,
+            64
+          ],
+          "cli/claude:claude-opus-4-7": [
+            62,
+            55,
+            62,
+            52,
+            72
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            98,
+            95,
+            98,
+            95,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          84,
+          79,
+          85,
+          79,
+          82
+        ],
+        "total": 409,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            76,
+            72,
+            78,
+            70,
+            68
+          ],
+          "cli/claude:claude-opus-4-7": [
+            78,
+            70,
+            78,
+            72,
+            78
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            98,
+            96,
+            98,
+            94,
+            99
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          72,
+          69,
+          74,
+          66,
+          70
+        ],
+        "total": 351,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            74,
+            73,
+            78,
+            70,
+            66
+          ],
+          "cli/claude:claude-opus-4-7": [
+            52,
+            58,
+            48,
+            54,
+            60
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            90,
+            75,
+            95,
+            75,
+            85
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "optimal_transport_mass_flow_tubes": {
+      "claude-opus-4-7": {
+        "scores": [
+          12,
+          16,
+          9,
+          10,
+          11
+        ],
+        "total": 58,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            16,
+            24,
+            8,
+            10,
+            9
+          ],
+          "cli/claude:claude-opus-4-7": [
+            10,
+            15,
+            8,
+            9,
+            10
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            10,
+            10,
+            10,
+            10,
+            15
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          11,
+          18,
+          7,
+          8,
+          9
+        ],
+        "total": 53,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            18,
+            35,
+            8,
+            10,
+            12
+          ],
+          "cli/claude:claude-opus-4-7": [
+            4,
+            8,
+            3,
+            3,
+            5
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            10,
+            10,
+            10,
+            10,
+            10
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          70,
+          64,
+          75,
+          59,
+          71
+        ],
+        "total": 339,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            84,
+            76,
+            83,
+            72,
+            78
+          ],
+          "cli/claude:claude-opus-4-7": [
+            42,
+            45,
+            48,
+            40,
+            55
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            85,
+            70,
+            95,
+            65,
+            80
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "polyrhythm_phase_torus": {
+      "claude-opus-4-7": {
+        "scores": [
+          80,
+          77,
+          81,
+          74,
+          81
+        ],
+        "total": 393,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            84,
+            88,
+            82,
+            86,
+            76
+          ],
+          "cli/claude:claude-opus-4-7": [
+            62,
+            55,
+            60,
+            50,
+            72
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            95,
+            88,
+            100,
+            85,
+            95
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          57,
+          67,
+          47,
+          59,
+          62
+        ],
+        "total": 292,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            55,
+            68,
+            42,
+            58,
+            52
+          ],
+          "cli/claude:claude-opus-4-7": [
+            52,
+            48,
+            45,
+            45,
+            58
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            65,
+            85,
+            55,
+            75,
+            75
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          87,
+          82,
+          89,
+          80,
+          88
+        ],
+        "total": 426,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            84,
+            80,
+            88,
+            77,
+            78
+          ],
+          "cli/claude:claude-opus-4-7": [
+            83,
+            82,
+            80,
+            78,
+            86
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            95,
+            85,
+            100,
+            85,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "protein_folding_energy_landscape": {
+      "claude-opus-4-7": {
+        "scores": [
+          45,
+          24,
+          40,
+          25,
+          26
+        ],
+        "total": 160,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            37,
+            42,
+            34,
+            35,
+            24
+          ],
+          "cli/claude:claude-opus-4-7": [
+            14,
+            16,
+            22,
+            14,
+            18
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            85,
+            15,
+            65,
+            25,
+            35
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          46,
+          58,
+          57,
+          56,
+          52
+        ],
+        "total": 269,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            67,
+            74,
+            62,
+            70,
+            55
+          ],
+          "cli/claude:claude-opus-4-7": [
+            52,
+            50,
+            58,
+            48,
+            50
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            20,
+            50,
+            50,
+            50,
+            50
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          59,
+          75,
+          57,
+          76,
+          61
+        ],
+        "total": 328,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            72,
+            84,
+            68,
+            82,
+            70
+          ],
+          "cli/claude:claude-opus-4-7": [
+            55,
+            58,
+            48,
+            62,
+            58
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            50,
+            82,
+            55,
+            85,
+            55
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "qec_threshold_phase_diagram": {
+      "claude-opus-4-7": {
+        "scores": [
+          72,
+          78,
+          79,
+          67,
+          65
+        ],
+        "total": 361,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            72,
+            78,
+            78,
+            70,
+            58
+          ],
+          "cli/claude:claude-opus-4-7": [
+            58,
+            62,
+            60,
+            55,
+            58
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            85,
+            95,
+            98,
+            75,
+            80
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          86,
+          84,
+          86,
+          84,
+          86
+        ],
+        "total": 426,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            86,
+            82,
+            88,
+            84,
+            76
+          ],
+          "cli/claude:claude-opus-4-7": [
+            74,
+            76,
+            72,
+            74,
+            82
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            98,
+            95,
+            98,
+            95,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reaction_diffusion_nonorientable_surfaces": {
+      "claude-opus-4-7": {
+        "scores": [
+          32,
+          68,
+          24,
+          58,
+          42
+        ],
+        "total": 224,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            42,
+            73,
+            34,
+            59,
+            45
+          ],
+          "cli/claude:claude-opus-4-7": [
+            28,
+            50,
+            22,
+            40,
+            45
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            25,
+            80,
+            15,
+            75,
+            35
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          47,
+          73,
+          49,
+          69,
+          72
+        ],
+        "total": 310,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            58,
+            76,
+            52,
+            70,
+            60
+          ],
+          "cli/claude:claude-opus-4-7": [
+            38,
+            52,
+            34,
+            48,
+            62
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            45,
+            90,
+            60,
+            90,
+            95
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          61,
+          58,
+          65,
+          56,
+          78
+        ],
+        "total": 318,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            64,
+            67,
+            66,
+            65,
+            72
+          ],
+          "cli/claude:claude-opus-4-7": [
+            55,
+            66,
+            48,
+            58,
+            68
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            65,
+            40,
+            80,
+            45,
+            95
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "riemann_surface_covering_sheets": {
+      "claude-opus-4-7": {
+        "scores": [
+          80,
+          79,
+          74,
+          77,
+          81
+        ],
+        "total": 391,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            74,
+            78,
+            67,
+            76,
+            72
+          ],
+          "cli/claude:claude-opus-4-7": [
+            72,
+            62,
+            62,
+            60,
+            74
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            95,
+            98,
+            93,
+            96,
+            98
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          38,
+          39,
+          41,
+          41,
+          51
+        ],
+        "total": 210,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            68,
+            70,
+            62,
+            66,
+            72
+          ],
+          "cli/claude:claude-opus-4-7": [
+            30,
+            32,
+            30,
+            32,
+            40
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            15,
+            15,
+            30,
+            25,
+            40
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "spinodal_decomposition_3d": {
+      "claude-opus-4-7": {
+        "scores": [
+          83,
+          79,
+          86,
+          79,
+          77
+        ],
+        "total": 404,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            82,
+            78,
+            81,
+            77,
+            80
+          ],
+          "cli/claude:claude-opus-4-7": [
+            74,
+            62,
+            78,
+            66,
+            70
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            92,
+            96,
+            98,
+            95,
+            80
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          64,
+          54,
+          57,
+          50,
+          73
+        ],
+        "total": 298,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            58,
+            60,
+            45,
+            48,
+            62
+          ],
+          "cli/claude:claude-opus-4-7": [
+            48,
+            42,
+            40,
+            38,
+            68
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            85,
+            60,
+            85,
+            65,
+            90
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          69,
+          52,
+          62,
+          52,
+          79
+        ],
+        "total": 314,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            78,
+            72,
+            76,
+            70,
+            73
+          ],
+          "cli/claude:claude-opus-4-7": [
+            58,
+            44,
+            56,
+            46,
+            68
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            70,
+            40,
+            55,
+            40,
+            95
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "topological_quantum_code_defect_braiding": {
+      "claude-opus-4-7": {
+        "scores": [
+          68,
+          76,
+          63,
+          68,
+          57
+        ],
+        "total": 332,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            76,
+            81,
+            74,
+            78,
+            66
+          ],
+          "cli/claude:claude-opus-4-7": [
+            42,
+            56,
+            28,
+            40,
+            26
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            85,
+            92,
+            88,
+            85,
+            78
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          76,
+          71,
+          79,
+          68,
+          72
+        ],
+        "total": 366,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            82,
+            84,
+            80,
+            78,
+            70
+          ],
+          "cli/claude:claude-opus-4-7": [
+            55,
+            48,
+            62,
+            50,
+            62
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            90,
+            80,
+            95,
+            75,
+            85
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          71,
+          72,
+          70,
+          73,
+          71
+        ],
+        "total": 357,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            76,
+            84,
+            72,
+            82,
+            70
+          ],
+          "cli/claude:claude-opus-4-7": [
+            52,
+            56,
+            54,
+            60,
+            62
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            85,
+            75,
+            85,
+            78,
+            80
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reproduce_image": {
+      "claude-opus-4-7": {
+        "scores": [
+          47,
+          56,
+          63,
+          67,
+          40
+        ],
+        "total": 273,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            42,
+            55,
+            58,
+            63,
+            35
+          ],
+          "cli/claude:claude-opus-4-7": [
+            68,
+            74,
+            72,
+            72,
+            64
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            30,
+            40,
+            60,
+            65,
+            20
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          45,
+          60,
+          59,
+          59,
+          43
+        ],
+        "total": 266,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            72,
+            74,
+            78,
+            76,
+            70
+          ],
+          "cli/claude:claude-opus-4-7": [
+            8,
+            52,
+            15,
+            40,
+            5
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            55,
+            55,
+            85,
+            60,
+            55
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reproduce_image_andrew_pons": {
+      "claude-opus-4-7": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          39,
+          48,
+          48,
+          52,
+          38
+        ],
+        "total": 225,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            36,
+            47,
+            42,
+            50,
+            32
+          ],
+          "cli/claude:claude-opus-4-7": [
+            20,
+            38,
+            18,
+            32,
+            18
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            60,
+            60,
+            85,
+            75,
+            65
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reproduce_image_fabrice_villard": {
+      "claude-opus-4-7": {
+        "scores": [
+          43,
+          52,
+          64,
+          53,
+          42
+        ],
+        "total": 254,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            58,
+            70,
+            63,
+            68,
+            55
+          ],
+          "cli/claude:claude-opus-4-7": [
+            40,
+            55,
+            38,
+            52,
+            45
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            30,
+            30,
+            90,
+            40,
+            25
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          20,
+          24,
+          14,
+          24,
+          9
+        ],
+        "total": 91,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            5,
+            12,
+            15,
+            10,
+            4
+          ],
+          "cli/claude:claude-opus-4-7": [
+            5,
+            10,
+            6,
+            8,
+            5
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            50,
+            50,
+            20,
+            54,
+            19
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          23,
+          28,
+          31,
+          29,
+          25
+        ],
+        "total": 136,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            28,
+            35,
+            42,
+            34,
+            25
+          ],
+          "cli/claude:claude-opus-4-7": [
+            22,
+            30,
+            20,
+            28,
+            25
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            20,
+            20,
+            30,
+            25,
+            25
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reproduce_image_jason_leung": {
+      "claude-opus-4-7": {
+        "scores": [
+          19,
+          38,
+          31,
+          29,
+          20
+        ],
+        "total": 137,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            20,
+            58,
+            32,
+            42,
+            24
+          ],
+          "cli/claude:claude-opus-4-7": [
+            18,
+            32,
+            22,
+            25,
+            20
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            20,
+            25,
+            40,
+            20,
+            15
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          37,
+          51,
+          61,
+          45,
+          31
+        ],
+        "total": 225,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            38,
+            61,
+            48,
+            58,
+            32
+          ],
+          "cli/claude:claude-opus-4-7": [
+            38,
+            52,
+            50,
+            48,
+            35
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            35,
+            40,
+            85,
+            30,
+            25
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          29,
+          53,
+          32,
+          40,
+          27
+        ],
+        "total": 181,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            34,
+            55,
+            42,
+            48,
+            30
+          ],
+          "cli/claude:claude-opus-4-7": [
+            22,
+            40,
+            20,
+            32,
+            25
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            30,
+            65,
+            35,
+            40,
+            25
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reproduce_image_javier_penas": {
+      "claude-opus-4-7": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          31,
+          38,
+          56,
+          43,
+          26
+        ],
+        "total": 194,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            30,
+            36,
+            45,
+            40,
+            24
+          ],
+          "cli/claude:claude-opus-4-7": [
+            32,
+            42,
+            34,
+            43,
+            28
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            30,
+            35,
+            90,
+            45,
+            25
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          37,
+          38,
+          53,
+          39,
+          32
+        ],
+        "total": 199,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            25,
+            42,
+            55,
+            50,
+            24
+          ],
+          "cli/claude:claude-opus-4-7": [
+            32,
+            38,
+            30,
+            36,
+            32
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            55,
+            35,
+            75,
+            30,
+            40
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reproduce_image_mark_basarab": {
+      "claude-opus-4-7": {
+        "scores": [
+          40,
+          40,
+          48,
+          42,
+          44
+        ],
+        "total": 214,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            48,
+            43,
+            55,
+            46,
+            42
+          ],
+          "cli/claude:claude-opus-4-7": [
+            42,
+            48,
+            50,
+            45,
+            55
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            30,
+            30,
+            40,
+            35,
+            35
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          42,
+          39,
+          55,
+          41,
+          42
+        ],
+        "total": 219,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            47,
+            45,
+            60,
+            48,
+            43
+          ],
+          "cli/claude:claude-opus-4-7": [
+            35,
+            38,
+            40,
+            35,
+            42
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            45,
+            35,
+            65,
+            40,
+            40
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          27,
+          32,
+          26,
+          32,
+          27
+        ],
+        "total": 144,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            35,
+            47,
+            39,
+            46,
+            38
+          ],
+          "cli/claude:claude-opus-4-7": [
+            22,
+            28,
+            20,
+            26,
+            22
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            25,
+            20,
+            20,
+            25,
+            20
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reproduce_image_photoholgic": {
+      "claude-opus-4-7": {
+        "scores": [
+          34,
+          38,
+          39,
+          40,
+          33
+        ],
+        "total": 184,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            35,
+            42,
+            38,
+            45,
+            36
+          ],
+          "cli/claude:claude-opus-4-7": [
+            42,
+            48,
+            38,
+            46,
+            44
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            25,
+            25,
+            40,
+            30,
+            20
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          52,
+          58,
+          57,
+          58,
+          59
+        ],
+        "total": 284,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            42,
+            58,
+            50,
+            56,
+            44
+          ],
+          "cli/claude:claude-opus-4-7": [
+            45,
+            55,
+            40,
+            52,
+            48
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            70,
+            60,
+            80,
+            65,
+            85
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          47,
+          49,
+          57,
+          53,
+          53
+        ],
+        "total": 259,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            52,
+            61,
+            55,
+            60,
+            54
+          ],
+          "cli/claude:claude-opus-4-7": [
+            30,
+            42,
+            32,
+            45,
+            34
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            60,
+            45,
+            85,
+            55,
+            70
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reproduce_image_rayul": {
+      "claude-opus-4-7": {
+        "scores": [
+          58,
+          64,
+          65,
+          63,
+          56
+        ],
+        "total": 306,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            43,
+            50,
+            58,
+            48,
+            42
+          ],
+          "cli/claude:claude-opus-4-7": [
+            45,
+            58,
+            48,
+            55,
+            45
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            85,
+            85,
+            90,
+            85,
+            80
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          58,
+          58,
+          63,
+          61,
+          55
+        ],
+        "total": 295,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            43,
+            56,
+            58,
+            57,
+            47
+          ],
+          "cli/claude:claude-opus-4-7": [
+            40,
+            52,
+            45,
+            50,
+            38
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            90,
+            65,
+            85,
+            75,
+            80
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "render_fail"
+      }
+    },
+    "reproduce_image_sebastien_gabriel": {
+      "claude-opus-4-7": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          46,
+          56,
+          52,
+          50,
+          41
+        ],
+        "total": 245,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            55,
+            68,
+            72,
+            64,
+            52
+          ],
+          "cli/claude:claude-opus-4-7": [
+            42,
+            55,
+            45,
+            50,
+            40
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            40,
+            45,
+            40,
+            35,
+            30
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
+    "reproduce_image_tim_stief": {
+      "claude-opus-4-7": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "render_fail"
+      },
+      "gemini-3.1-pro-preview": {
+        "scores": [
+          42,
+          31,
+          49,
+          35,
+          47
+        ],
+        "total": 204,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            45,
+            38,
+            50,
+            42,
+            48
+          ],
+          "cli/claude:claude-opus-4-7": [
+            30,
+            25,
+            32,
+            22,
+            38
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            50,
+            30,
+            65,
+            40,
+            55
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "codex-gpt-5.5-high": {
+        "scores": [
+          33,
+          30,
+          39,
+          31,
+          30
+        ],
+        "total": 163,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            38,
+            43,
+            48,
+            42,
+            35
+          ],
+          "cli/claude:claude-opus-4-7": [
+            26,
+            28,
+            30,
+            27,
+            25
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            35,
+            20,
+            40,
+            25,
+            30
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      }
+    },
     "ackermann_function_growth": {
       "claude-opus-4-7": {
         "scores": [
@@ -1084,85 +4200,6 @@
         "status": "ok"
       }
     },
-    "braid_word_reduction_ribbons": {
-      "claude-opus-4-7": {
-        "scores": [
-          83,
-          86,
-          82,
-          86,
-          85
-        ],
-        "total": 422,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            78,
-            84,
-            76,
-            83,
-            74
-          ],
-          "cli/claude:claude-opus-4-7": [
-            72,
-            74,
-            70,
-            76,
-            80
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            100,
-            100,
-            100,
-            100,
-            100
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "render_fail"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          46,
-          64,
-          35,
-          69,
-          60
-        ],
-        "total": 274,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            56,
-            82,
-            43,
-            78,
-            70
-          ],
-          "cli/claude:claude-opus-4-7": [
-            62,
-            64,
-            52,
-            68,
-            74
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            20,
-            45,
-            10,
-            60,
-            35
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
     "braided_rope": {
       "claude-opus-4-7": {
         "scores": [
@@ -1743,113 +4780,6 @@
             20,
             10,
             10
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "cellular_potts_tissue_folding": {
-      "claude-opus-4-7": {
-        "scores": [
-          82,
-          78,
-          82,
-          78,
-          84
-        ],
-        "total": 404,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            84,
-            76,
-            82,
-            78,
-            80
-          ],
-          "cli/claude:claude-opus-4-7": [
-            65,
-            62,
-            68,
-            60,
-            72
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            98,
-            96,
-            97,
-            97,
-            100
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          10,
-          32,
-          9,
-          16,
-          13
-        ],
-        "total": 80,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            12,
-            45,
-            7,
-            18,
-            10
-          ],
-          "cli/claude:claude-opus-4-7": [
-            8,
-            22,
-            9,
-            15,
-            15
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            30,
-            10,
-            15,
-            15
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          64,
-          64,
-          64,
-          64,
-          69
-        ],
-        "total": 325,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            82,
-            84,
-            79,
-            81,
-            74
-          ],
-          "cli/claude:claude-opus-4-7": [
-            70,
-            74,
-            68,
-            72,
-            72
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            40,
-            35,
-            45,
-            40,
-            60
           ]
         },
         "has_image": true,
@@ -2521,220 +5451,6 @@
         "status": "ok"
       }
     },
-    "coxeter_reflection_kaleidoscope": {
-      "claude-opus-4-7": {
-        "scores": [
-          85,
-          85,
-          85,
-          84,
-          83
-        ],
-        "total": 422,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            78,
-            76,
-            80,
-            74,
-            70
-          ],
-          "cli/claude:claude-opus-4-7": [
-            78,
-            80,
-            76,
-            78,
-            80
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            100,
-            100,
-            100,
-            100,
-            100
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          3,
-          6,
-          2,
-          5,
-          7
-        ],
-        "total": 23,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            5,
-            8,
-            3,
-            7,
-            6
-          ],
-          "cli/claude:claude-opus-4-7": [
-            3,
-            5,
-            2,
-            3,
-            4
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            1,
-            5,
-            1,
-            5,
-            10
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          4,
-          5,
-          4,
-          4,
-          5
-        ],
-        "total": 22,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            3,
-            5,
-            2,
-            3,
-            2
-          ],
-          "cli/claude:claude-opus-4-7": [
-            4,
-            5,
-            4,
-            4,
-            4
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            5,
-            5,
-            5,
-            5,
-            10
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "crystal_dislocation_network": {
-      "claude-opus-4-7": {
-        "scores": [
-          87,
-          87,
-          85,
-          84,
-          88
-        ],
-        "total": 431,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            84,
-            86,
-            82,
-            79,
-            81
-          ],
-          "cli/claude:claude-opus-4-7": [
-            80,
-            76,
-            80,
-            76,
-            83
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            96,
-            100,
-            92,
-            98,
-            100
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          76,
-          77,
-          72,
-          68,
-          72
-        ],
-        "total": 365,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            72,
-            76,
-            70,
-            69,
-            66
-          ],
-          "cli/claude:claude-opus-4-7": [
-            68,
-            62,
-            60,
-            58,
-            65
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            88,
-            92,
-            85,
-            78,
-            85
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          60,
-          44,
-          57,
-          45,
-          70
-        ],
-        "total": 276,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            68,
-            58,
-            66,
-            55,
-            72
-          ],
-          "cli/claude:claude-opus-4-7": [
-            48,
-            40,
-            45,
-            40,
-            52
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            65,
-            35,
-            60,
-            40,
-            85
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
     "crystal_lattice_diffraction": {
       "claude-opus-4-7": {
         "scores": [
@@ -3056,113 +5772,6 @@
         "status": "ok"
       }
     },
-    "differentiable_rendering_ambiguity_landscape": {
-      "claude-opus-4-7": {
-        "scores": [
-          13,
-          18,
-          9,
-          10,
-          10
-        ],
-        "total": 60,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            12,
-            28,
-            10,
-            14,
-            12
-          ],
-          "cli/claude:claude-opus-4-7": [
-            18,
-            15,
-            12,
-            10,
-            12
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            5,
-            5,
-            5
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          68,
-          64,
-          68,
-          61,
-          72
-        ],
-        "total": 333,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            72,
-            61,
-            70,
-            58,
-            70
-          ],
-          "cli/claude:claude-opus-4-7": [
-            38,
-            42,
-            40,
-            38,
-            52
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            95,
-            90,
-            95,
-            88,
-            95
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          43,
-          54,
-          45,
-          52,
-          56
-        ],
-        "total": 250,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            78,
-            73,
-            84,
-            68,
-            70
-          ],
-          "cli/claude:claude-opus-4-7": [
-            42,
-            40,
-            40,
-            38,
-            48
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            50,
-            10,
-            50,
-            50
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
     "differential_equations_water": {
       "claude-opus-4-7": {
         "scores": [
@@ -3349,113 +5958,6 @@
         "status": "ok"
       }
     },
-    "earthquake_fault_slip_wavefronts": {
-      "claude-opus-4-7": {
-        "scores": [
-          32,
-          64,
-          29,
-          36,
-          32
-        ],
-        "total": 193,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            48,
-            66,
-            38,
-            45,
-            42
-          ],
-          "cli/claude:claude-opus-4-7": [
-            22,
-            40,
-            20,
-            28,
-            30
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            25,
-            85,
-            30,
-            35,
-            25
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          75,
-          73,
-          77,
-          67,
-          76
-        ],
-        "total": 368,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            77,
-            79,
-            78,
-            72,
-            70
-          ],
-          "cli/claude:claude-opus-4-7": [
-            58,
-            55,
-            62,
-            50,
-            72
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            90,
-            85,
-            90,
-            80,
-            85
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          74,
-          79,
-          74,
-          75,
-          80
-        ],
-        "total": 382,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            78,
-            82,
-            76,
-            80,
-            72
-          ],
-          "cli/claude:claude-opus-4-7": [
-            48,
-            58,
-            50,
-            52,
-            70
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            95,
-            96,
-            95,
-            94,
-            98
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
     "epicycloids": {
       "claude-opus-4-7": {
         "scores": [
@@ -3557,113 +6059,6 @@
             50,
             65,
             35
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "error_correcting_code_decoding_landscape": {
-      "claude-opus-4-7": {
-        "scores": [
-          85,
-          83,
-          85,
-          82,
-          88
-        ],
-        "total": 423,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            82,
-            78,
-            80,
-            76,
-            78
-          ],
-          "cli/claude:claude-opus-4-7": [
-            78,
-            72,
-            80,
-            72,
-            85
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            96,
-            98,
-            96,
-            98,
-            100
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          77,
-          59,
-          80,
-          61,
-          78
-        ],
-        "total": 355,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            70,
-            58,
-            74,
-            56,
-            68
-          ],
-          "cli/claude:claude-opus-4-7": [
-            68,
-            55,
-            70,
-            58,
-            72
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            92,
-            65,
-            95,
-            68,
-            95
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          70,
-          73,
-          74,
-          62,
-          62
-        ],
-        "total": 341,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            78,
-            82,
-            70,
-            73,
-            68
-          ],
-          "cli/claude:claude-opus-4-7": [
-            78,
-            72,
-            76,
-            68,
-            78
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            55,
-            65,
-            75,
-            45,
-            40
           ]
         },
         "has_image": true,
@@ -4254,85 +6649,6 @@
         },
         "has_image": true,
         "status": "ok"
-      }
-    },
-    "fractal_drum_eigenfunctions": {
-      "claude-opus-4-7": {
-        "scores": [
-          81,
-          73,
-          83,
-          73,
-          82
-        ],
-        "total": 392,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            76,
-            72,
-            80,
-            70,
-            68
-          ],
-          "cli/claude:claude-opus-4-7": [
-            76,
-            71,
-            74,
-            70,
-            82
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            90,
-            75,
-            95,
-            80,
-            95
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          60,
-          55,
-          58,
-          55,
-          68
-        ],
-        "total": 296,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            62,
-            78,
-            55,
-            72,
-            63
-          ],
-          "cli/claude:claude-opus-4-7": [
-            32,
-            38,
-            28,
-            34,
-            40
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            85,
-            50,
-            90,
-            60,
-            100
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "render_fail"
       }
     },
     "fractal_loxodromic_patterns": {
@@ -6498,113 +8814,6 @@
         "status": "ok"
       }
     },
-    "mean_curvature_flow_surgery": {
-      "claude-opus-4-7": {
-        "scores": [
-          15,
-          19,
-          17,
-          21,
-          26
-        ],
-        "total": 98,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            8,
-            18,
-            5,
-            12,
-            8
-          ],
-          "cli/claude:claude-opus-4-7": [
-            22,
-            28,
-            20,
-            27,
-            30
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            15,
-            10,
-            25,
-            25,
-            40
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          82,
-          83,
-          83,
-          82,
-          82
-        ],
-        "total": 412,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            80,
-            82,
-            78,
-            82,
-            72
-          ],
-          "cli/claude:claude-opus-4-7": [
-            68,
-            67,
-            72,
-            66,
-            74
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            98,
-            100,
-            98,
-            98,
-            100
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          51,
-          47,
-          50,
-          47,
-          62
-        ],
-        "total": 257,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            72,
-            68,
-            70,
-            66,
-            71
-          ],
-          "cli/claude:claude-opus-4-7": [
-            30,
-            32,
-            26,
-            30,
-            45
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            50,
-            40,
-            55,
-            45,
-            70
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
     "menger_cube_fractal": {
       "claude-opus-4-7": {
         "scores": [
@@ -6813,113 +9022,6 @@
             5,
             5,
             5
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "minimal_surface_knot_boundaries": {
-      "claude-opus-4-7": {
-        "scores": [
-          8,
-          12,
-          6,
-          7,
-          13
-        ],
-        "total": 46,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            10,
-            18,
-            4,
-            6,
-            12
-          ],
-          "cli/claude:claude-opus-4-7": [
-            5,
-            8,
-            5,
-            6,
-            12
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            10,
-            15
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          32,
-          31,
-          25,
-          27,
-          48
-        ],
-        "total": 163,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            43,
-            42,
-            31,
-            39,
-            48
-          ],
-          "cli/claude:claude-opus-4-7": [
-            32,
-            25,
-            28,
-            22,
-            35
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            20,
-            25,
-            15,
-            20,
-            60
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          45,
-          46,
-          37,
-          40,
-          63
-        ],
-        "total": 231,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            58,
-            66,
-            52,
-            61,
-            60
-          ],
-          "cli/claude:claude-opus-4-7": [
-            22,
-            28,
-            20,
-            25,
-            40
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            55,
-            45,
-            40,
-            35,
-            90
           ]
         },
         "has_image": true,
@@ -7247,85 +9349,6 @@
         "status": "ok"
       }
     },
-    "navier_stokes_vortex_reconnection": {
-      "claude-opus-4-7": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "render_fail"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          8,
-          13,
-          6,
-          7,
-          7
-        ],
-        "total": 41,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            5,
-            18,
-            2,
-            4,
-            3
-          ],
-          "cli/claude:claude-opus-4-7": [
-            8,
-            10,
-            5,
-            8,
-            7
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            10,
-            10
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          75,
-          73,
-          74,
-          68,
-          74
-        ],
-        "total": 364,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            74,
-            82,
-            68,
-            73,
-            70
-          ],
-          "cli/claude:claude-opus-4-7": [
-            62,
-            60,
-            58,
-            60,
-            68
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            90,
-            78,
-            95,
-            72,
-            85
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
     "number_theory_music": {
       "claude-opus-4-7": {
         "scores": [
@@ -7403,113 +9426,6 @@
         "scores_by_judge": null,
         "has_image": false,
         "status": "render_fail"
-      }
-    },
-    "ocean_eddy_lcs": {
-      "claude-opus-4-7": {
-        "scores": [
-          77,
-          73,
-          77,
-          70,
-          79
-        ],
-        "total": 376,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            72,
-            68,
-            70,
-            62,
-            64
-          ],
-          "cli/claude:claude-opus-4-7": [
-            62,
-            55,
-            62,
-            52,
-            72
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            98,
-            95,
-            98,
-            95,
-            100
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          84,
-          79,
-          85,
-          79,
-          82
-        ],
-        "total": 409,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            76,
-            72,
-            78,
-            70,
-            68
-          ],
-          "cli/claude:claude-opus-4-7": [
-            78,
-            70,
-            78,
-            72,
-            78
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            98,
-            96,
-            98,
-            94,
-            99
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          72,
-          69,
-          74,
-          66,
-          70
-        ],
-        "total": 351,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            74,
-            73,
-            78,
-            70,
-            66
-          ],
-          "cli/claude:claude-opus-4-7": [
-            52,
-            58,
-            48,
-            54,
-            60
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            90,
-            75,
-            95,
-            75,
-            85
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
       }
     },
     "octagram_star_polygon": {
@@ -7613,113 +9529,6 @@
             100,
             30,
             30
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "optimal_transport_mass_flow_tubes": {
-      "claude-opus-4-7": {
-        "scores": [
-          12,
-          16,
-          9,
-          10,
-          11
-        ],
-        "total": 58,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            16,
-            24,
-            8,
-            10,
-            9
-          ],
-          "cli/claude:claude-opus-4-7": [
-            10,
-            15,
-            8,
-            9,
-            10
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            10,
-            15
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          11,
-          18,
-          7,
-          8,
-          9
-        ],
-        "total": 53,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            18,
-            35,
-            8,
-            10,
-            12
-          ],
-          "cli/claude:claude-opus-4-7": [
-            4,
-            8,
-            3,
-            3,
-            5
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            10,
-            10
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          70,
-          64,
-          75,
-          59,
-          71
-        ],
-        "total": 339,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            84,
-            76,
-            83,
-            72,
-            78
-          ],
-          "cli/claude:claude-opus-4-7": [
-            42,
-            45,
-            48,
-            40,
-            55
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            85,
-            70,
-            95,
-            65,
-            80
           ]
         },
         "has_image": true,
@@ -8233,113 +10042,6 @@
         "status": "ok"
       }
     },
-    "polyrhythm_phase_torus": {
-      "claude-opus-4-7": {
-        "scores": [
-          80,
-          77,
-          81,
-          74,
-          81
-        ],
-        "total": 393,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            84,
-            88,
-            82,
-            86,
-            76
-          ],
-          "cli/claude:claude-opus-4-7": [
-            62,
-            55,
-            60,
-            50,
-            72
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            95,
-            88,
-            100,
-            85,
-            95
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          57,
-          67,
-          47,
-          59,
-          62
-        ],
-        "total": 292,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            55,
-            68,
-            42,
-            58,
-            52
-          ],
-          "cli/claude:claude-opus-4-7": [
-            52,
-            48,
-            45,
-            45,
-            58
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            65,
-            85,
-            55,
-            75,
-            75
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          87,
-          82,
-          89,
-          80,
-          88
-        ],
-        "total": 426,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            84,
-            80,
-            88,
-            77,
-            78
-          ],
-          "cli/claude:claude-opus-4-7": [
-            83,
-            82,
-            80,
-            78,
-            86
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            95,
-            85,
-            100,
-            85,
-            100
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
     "prime_crystal_lattice": {
       "claude-opus-4-7": {
         "scores": [
@@ -8520,192 +10222,6 @@
             50,
             20,
             25
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "protein_folding_energy_landscape": {
-      "claude-opus-4-7": {
-        "scores": [
-          45,
-          24,
-          40,
-          25,
-          26
-        ],
-        "total": 160,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            37,
-            42,
-            34,
-            35,
-            24
-          ],
-          "cli/claude:claude-opus-4-7": [
-            14,
-            16,
-            22,
-            14,
-            18
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            85,
-            15,
-            65,
-            25,
-            35
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          46,
-          58,
-          57,
-          56,
-          52
-        ],
-        "total": 269,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            67,
-            74,
-            62,
-            70,
-            55
-          ],
-          "cli/claude:claude-opus-4-7": [
-            52,
-            50,
-            58,
-            48,
-            50
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            20,
-            50,
-            50,
-            50,
-            50
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          59,
-          75,
-          57,
-          76,
-          61
-        ],
-        "total": 328,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            72,
-            84,
-            68,
-            82,
-            70
-          ],
-          "cli/claude:claude-opus-4-7": [
-            55,
-            58,
-            48,
-            62,
-            58
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            50,
-            82,
-            55,
-            85,
-            55
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "qec_threshold_phase_diagram": {
-      "claude-opus-4-7": {
-        "scores": [
-          72,
-          78,
-          79,
-          67,
-          65
-        ],
-        "total": 361,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            72,
-            78,
-            78,
-            70,
-            58
-          ],
-          "cli/claude:claude-opus-4-7": [
-            58,
-            62,
-            60,
-            55,
-            58
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            85,
-            95,
-            98,
-            75,
-            80
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "render_fail"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          86,
-          84,
-          86,
-          84,
-          86
-        ],
-        "total": 426,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            86,
-            82,
-            88,
-            84,
-            76
-          ],
-          "cli/claude:claude-opus-4-7": [
-            74,
-            76,
-            72,
-            74,
-            82
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            98,
-            95,
-            98,
-            95,
-            100
           ]
         },
         "has_image": true,
@@ -8920,113 +10436,6 @@
             30,
             75,
             65
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "reaction_diffusion_nonorientable_surfaces": {
-      "claude-opus-4-7": {
-        "scores": [
-          32,
-          68,
-          24,
-          58,
-          42
-        ],
-        "total": 224,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            42,
-            73,
-            34,
-            59,
-            45
-          ],
-          "cli/claude:claude-opus-4-7": [
-            28,
-            50,
-            22,
-            40,
-            45
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            25,
-            80,
-            15,
-            75,
-            35
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          47,
-          73,
-          49,
-          69,
-          72
-        ],
-        "total": 310,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            58,
-            76,
-            52,
-            70,
-            60
-          ],
-          "cli/claude:claude-opus-4-7": [
-            38,
-            52,
-            34,
-            48,
-            62
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            45,
-            90,
-            60,
-            90,
-            95
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          61,
-          58,
-          65,
-          56,
-          78
-        ],
-        "total": 318,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            64,
-            67,
-            66,
-            65,
-            72
-          ],
-          "cli/claude:claude-opus-4-7": [
-            55,
-            66,
-            48,
-            58,
-            68
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            65,
-            40,
-            80,
-            45,
-            95
           ]
         },
         "has_image": true,
@@ -9568,852 +10977,6 @@
         "status": "ok"
       }
     },
-    "reproduce_image": {
-      "claude-opus-4-7": {
-        "scores": [
-          47,
-          56,
-          63,
-          67,
-          40
-        ],
-        "total": 273,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            42,
-            55,
-            58,
-            63,
-            35
-          ],
-          "cli/claude:claude-opus-4-7": [
-            68,
-            74,
-            72,
-            72,
-            64
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            30,
-            40,
-            60,
-            65,
-            20
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "render_fail"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          45,
-          60,
-          59,
-          59,
-          43
-        ],
-        "total": 266,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            72,
-            74,
-            78,
-            76,
-            70
-          ],
-          "cli/claude:claude-opus-4-7": [
-            8,
-            52,
-            15,
-            40,
-            5
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            55,
-            55,
-            85,
-            60,
-            55
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "reproduce_image_andrew_pons": {
-      "claude-opus-4-7": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "render_fail"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "render_fail"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          39,
-          48,
-          48,
-          52,
-          38
-        ],
-        "total": 225,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            36,
-            47,
-            42,
-            50,
-            32
-          ],
-          "cli/claude:claude-opus-4-7": [
-            20,
-            38,
-            18,
-            32,
-            18
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            60,
-            60,
-            85,
-            75,
-            65
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "reproduce_image_fabrice_villard": {
-      "claude-opus-4-7": {
-        "scores": [
-          43,
-          52,
-          64,
-          53,
-          42
-        ],
-        "total": 254,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            58,
-            70,
-            63,
-            68,
-            55
-          ],
-          "cli/claude:claude-opus-4-7": [
-            40,
-            55,
-            38,
-            52,
-            45
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            30,
-            30,
-            90,
-            40,
-            25
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          20,
-          24,
-          14,
-          24,
-          9
-        ],
-        "total": 91,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            5,
-            12,
-            15,
-            10,
-            4
-          ],
-          "cli/claude:claude-opus-4-7": [
-            5,
-            10,
-            6,
-            8,
-            5
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            50,
-            50,
-            20,
-            54,
-            19
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          23,
-          28,
-          31,
-          29,
-          25
-        ],
-        "total": 136,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            28,
-            35,
-            42,
-            34,
-            25
-          ],
-          "cli/claude:claude-opus-4-7": [
-            22,
-            30,
-            20,
-            28,
-            25
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            20,
-            20,
-            30,
-            25,
-            25
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "reproduce_image_jason_leung": {
-      "claude-opus-4-7": {
-        "scores": [
-          19,
-          38,
-          31,
-          29,
-          20
-        ],
-        "total": 137,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            20,
-            58,
-            32,
-            42,
-            24
-          ],
-          "cli/claude:claude-opus-4-7": [
-            18,
-            32,
-            22,
-            25,
-            20
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            20,
-            25,
-            40,
-            20,
-            15
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          37,
-          51,
-          61,
-          45,
-          31
-        ],
-        "total": 225,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            38,
-            61,
-            48,
-            58,
-            32
-          ],
-          "cli/claude:claude-opus-4-7": [
-            38,
-            52,
-            50,
-            48,
-            35
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            35,
-            40,
-            85,
-            30,
-            25
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          29,
-          53,
-          32,
-          40,
-          27
-        ],
-        "total": 181,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            34,
-            55,
-            42,
-            48,
-            30
-          ],
-          "cli/claude:claude-opus-4-7": [
-            22,
-            40,
-            20,
-            32,
-            25
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            30,
-            65,
-            35,
-            40,
-            25
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "reproduce_image_javier_penas": {
-      "claude-opus-4-7": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "render_fail"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          31,
-          38,
-          56,
-          43,
-          26
-        ],
-        "total": 194,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            30,
-            36,
-            45,
-            40,
-            24
-          ],
-          "cli/claude:claude-opus-4-7": [
-            32,
-            42,
-            34,
-            43,
-            28
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            30,
-            35,
-            90,
-            45,
-            25
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          37,
-          38,
-          53,
-          39,
-          32
-        ],
-        "total": 199,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            25,
-            42,
-            55,
-            50,
-            24
-          ],
-          "cli/claude:claude-opus-4-7": [
-            32,
-            38,
-            30,
-            36,
-            32
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            55,
-            35,
-            75,
-            30,
-            40
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "reproduce_image_mark_basarab": {
-      "claude-opus-4-7": {
-        "scores": [
-          40,
-          40,
-          48,
-          42,
-          44
-        ],
-        "total": 214,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            48,
-            43,
-            55,
-            46,
-            42
-          ],
-          "cli/claude:claude-opus-4-7": [
-            42,
-            48,
-            50,
-            45,
-            55
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            30,
-            30,
-            40,
-            35,
-            35
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          42,
-          39,
-          55,
-          41,
-          42
-        ],
-        "total": 219,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            47,
-            45,
-            60,
-            48,
-            43
-          ],
-          "cli/claude:claude-opus-4-7": [
-            35,
-            38,
-            40,
-            35,
-            42
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            45,
-            35,
-            65,
-            40,
-            40
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          27,
-          32,
-          26,
-          32,
-          27
-        ],
-        "total": 144,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            35,
-            47,
-            39,
-            46,
-            38
-          ],
-          "cli/claude:claude-opus-4-7": [
-            22,
-            28,
-            20,
-            26,
-            22
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            25,
-            20,
-            20,
-            25,
-            20
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "reproduce_image_photoholgic": {
-      "claude-opus-4-7": {
-        "scores": [
-          34,
-          38,
-          39,
-          40,
-          33
-        ],
-        "total": 184,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            35,
-            42,
-            38,
-            45,
-            36
-          ],
-          "cli/claude:claude-opus-4-7": [
-            42,
-            48,
-            38,
-            46,
-            44
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            25,
-            25,
-            40,
-            30,
-            20
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          52,
-          58,
-          57,
-          58,
-          59
-        ],
-        "total": 284,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            42,
-            58,
-            50,
-            56,
-            44
-          ],
-          "cli/claude:claude-opus-4-7": [
-            45,
-            55,
-            40,
-            52,
-            48
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            70,
-            60,
-            80,
-            65,
-            85
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          47,
-          49,
-          57,
-          53,
-          53
-        ],
-        "total": 259,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            52,
-            61,
-            55,
-            60,
-            54
-          ],
-          "cli/claude:claude-opus-4-7": [
-            30,
-            42,
-            32,
-            45,
-            34
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            60,
-            45,
-            85,
-            55,
-            70
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "reproduce_image_rayul": {
-      "claude-opus-4-7": {
-        "scores": [
-          58,
-          64,
-          65,
-          63,
-          56
-        ],
-        "total": 306,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            43,
-            50,
-            58,
-            48,
-            42
-          ],
-          "cli/claude:claude-opus-4-7": [
-            45,
-            58,
-            48,
-            55,
-            45
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            85,
-            85,
-            90,
-            85,
-            80
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          58,
-          58,
-          63,
-          61,
-          55
-        ],
-        "total": 295,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            43,
-            56,
-            58,
-            57,
-            47
-          ],
-          "cli/claude:claude-opus-4-7": [
-            40,
-            52,
-            45,
-            50,
-            38
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            90,
-            65,
-            85,
-            75,
-            80
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "render_fail"
-      }
-    },
-    "reproduce_image_sebastien_gabriel": {
-      "claude-opus-4-7": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "render_fail"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "render_fail"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          46,
-          56,
-          52,
-          50,
-          41
-        ],
-        "total": 245,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            55,
-            68,
-            72,
-            64,
-            52
-          ],
-          "cli/claude:claude-opus-4-7": [
-            42,
-            55,
-            45,
-            50,
-            40
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            40,
-            45,
-            40,
-            35,
-            30
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "reproduce_image_tim_stief": {
-      "claude-opus-4-7": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "render_fail"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          42,
-          31,
-          49,
-          35,
-          47
-        ],
-        "total": 204,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            45,
-            38,
-            50,
-            42,
-            48
-          ],
-          "cli/claude:claude-opus-4-7": [
-            30,
-            25,
-            32,
-            22,
-            38
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            50,
-            30,
-            65,
-            40,
-            55
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          33,
-          30,
-          39,
-          31,
-          30
-        ],
-        "total": 163,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            38,
-            43,
-            48,
-            42,
-            35
-          ],
-          "cli/claude:claude-opus-4-7": [
-            26,
-            28,
-            30,
-            27,
-            25
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            35,
-            20,
-            40,
-            25,
-            30
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
     "riemann_surface_branch_cuts": {
       "claude-opus-4-7": {
         "scores": [
@@ -10515,85 +11078,6 @@
             20,
             10,
             15
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "riemann_surface_covering_sheets": {
-      "claude-opus-4-7": {
-        "scores": [
-          80,
-          79,
-          74,
-          77,
-          81
-        ],
-        "total": 391,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            74,
-            78,
-            67,
-            76,
-            72
-          ],
-          "cli/claude:claude-opus-4-7": [
-            72,
-            62,
-            62,
-            60,
-            74
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            95,
-            98,
-            93,
-            96,
-            98
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "render_fail"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          38,
-          39,
-          41,
-          41,
-          51
-        ],
-        "total": 210,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            68,
-            70,
-            62,
-            66,
-            72
-          ],
-          "cli/claude:claude-opus-4-7": [
-            30,
-            32,
-            30,
-            32,
-            40
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            15,
-            15,
-            30,
-            25,
-            40
           ]
         },
         "has_image": true,
@@ -11614,113 +12098,6 @@
         "status": "ok"
       }
     },
-    "spinodal_decomposition_3d": {
-      "claude-opus-4-7": {
-        "scores": [
-          83,
-          79,
-          86,
-          79,
-          77
-        ],
-        "total": 404,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            82,
-            78,
-            81,
-            77,
-            80
-          ],
-          "cli/claude:claude-opus-4-7": [
-            74,
-            62,
-            78,
-            66,
-            70
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            92,
-            96,
-            98,
-            95,
-            80
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          64,
-          54,
-          57,
-          50,
-          73
-        ],
-        "total": 298,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            58,
-            60,
-            45,
-            48,
-            62
-          ],
-          "cli/claude:claude-opus-4-7": [
-            48,
-            42,
-            40,
-            38,
-            68
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            85,
-            60,
-            85,
-            65,
-            90
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          69,
-          52,
-          62,
-          52,
-          79
-        ],
-        "total": 314,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            78,
-            72,
-            76,
-            70,
-            73
-          ],
-          "cli/claude:claude-opus-4-7": [
-            58,
-            44,
-            56,
-            46,
-            68
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            70,
-            40,
-            55,
-            40,
-            95
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
     "spiral_staircase_tower": {
       "claude-opus-4-7": {
         "scores": null,
@@ -12003,113 +12380,6 @@
             10,
             25,
             30
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      }
-    },
-    "topological_quantum_code_defect_braiding": {
-      "claude-opus-4-7": {
-        "scores": [
-          68,
-          76,
-          63,
-          68,
-          57
-        ],
-        "total": 332,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            76,
-            81,
-            74,
-            78,
-            66
-          ],
-          "cli/claude:claude-opus-4-7": [
-            42,
-            56,
-            28,
-            40,
-            26
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            85,
-            92,
-            88,
-            85,
-            78
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "gemini-3.1-pro-preview": {
-        "scores": [
-          76,
-          71,
-          79,
-          68,
-          72
-        ],
-        "total": 366,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            82,
-            84,
-            80,
-            78,
-            70
-          ],
-          "cli/claude:claude-opus-4-7": [
-            55,
-            48,
-            62,
-            50,
-            62
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            90,
-            80,
-            95,
-            75,
-            85
-          ]
-        },
-        "has_image": true,
-        "status": "ok"
-      },
-      "codex-gpt-5.5-high": {
-        "scores": [
-          71,
-          72,
-          70,
-          73,
-          71
-        ],
-        "total": 357,
-        "scores_by_judge": {
-          "cli/codex:gpt-5.5:high": [
-            76,
-            84,
-            72,
-            82,
-            70
-          ],
-          "cli/claude:claude-opus-4-7": [
-            52,
-            56,
-            54,
-            60,
-            62
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            85,
-            75,
-            85,
-            78,
-            80
           ]
         },
         "has_image": true,
@@ -12975,6 +13245,16 @@
       "total": 130,
       "avg_total_filtered": 261.28205128205127,
       "avg_total_with_zeros": 235.15384615384616,
+      "avg_total_by_judge_filtered": {
+        "cli/codex:gpt-5.5:high": 252.8803418803419,
+        "cli/claude:claude-opus-4-7": 236.25641025641025,
+        "cli/gemini:gemini-3.1-pro-preview": 294.79487179487177
+      },
+      "judge_score_counts": {
+        "cli/codex:gpt-5.5:high": 117,
+        "cli/claude:claude-opus-4-7": 117,
+        "cli/gemini:gemini-3.1-pro-preview": 117
+      },
       "best_problem": {
         "name": "epicycloids",
         "total": 476
@@ -12990,6 +13270,16 @@
       "total": 130,
       "avg_total_filtered": 262.39639639639637,
       "avg_total_with_zeros": 224.04615384615386,
+      "avg_total_by_judge_filtered": {
+        "cli/codex:gpt-5.5:high": 259.47747747747746,
+        "cli/claude:claude-opus-4-7": 221.02702702702703,
+        "cli/gemini:gemini-3.1-pro-preview": 306.55855855855856
+      },
+      "judge_score_counts": {
+        "cli/codex:gpt-5.5:high": 111,
+        "cli/claude:claude-opus-4-7": 111,
+        "cli/gemini:gemini-3.1-pro-preview": 111
+      },
       "best_problem": {
         "name": "epicycloids",
         "total": 473
@@ -13005,6 +13295,16 @@
       "total": 130,
       "avg_total_filtered": 258.07377049180326,
       "avg_total_with_zeros": 242.19230769230768,
+      "avg_total_by_judge_filtered": {
+        "cli/codex:gpt-5.5:high": 277.4590163934426,
+        "cli/claude:claude-opus-4-7": 219.5,
+        "cli/gemini:gemini-3.1-pro-preview": 277.60655737704917
+      },
+      "judge_score_counts": {
+        "cli/codex:gpt-5.5:high": 122,
+        "cli/claude:claude-opus-4-7": 122,
+        "cli/gemini:gemini-3.1-pro-preview": 122
+      },
       "best_problem": {
         "name": "five_pointed_star_polygon",
         "total": 466

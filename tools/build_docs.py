@@ -77,6 +77,8 @@ CATEGORY_LABELS = [
     "Reference Elements",
 ]
 
+TOP_LEVEL_GROUPS = ["Frontier", "Reconstruction", "Rest"]
+
 
 # ---------------------------------------------------------------------------
 # Data extraction
@@ -129,6 +131,50 @@ def _mean_of_judges(per_judge: dict) -> list[int] | None:
         for i in range(5):
             sums[i] += vec[i]
     return [round(s / n) for s in sums]
+
+
+def judge_display_name(judge_model: str) -> str:
+    """Short display label for a judge model identifier."""
+    low = judge_model.lower()
+    if "codex" in low or "gpt-5.5" in low:
+        return "Codex judge"
+    if "claude" in low:
+        return "Claude judge"
+    if "gemini" in low:
+        return "Gemini judge"
+    return judge_model
+
+
+def load_problem_categories(problems: list[str]) -> dict[str, str]:
+    """Read per-problem category.txt tags, falling back to Uncategorized."""
+    categories = {}
+    for name in problems:
+        path = PROBLEMS_DIR / name / "category.txt"
+        if path.exists():
+            categories[name] = path.read_text(encoding="utf-8").strip() or "Uncategorized"
+        else:
+            categories[name] = "Uncategorized"
+    return categories
+
+
+def problem_group(problem: str, category: str) -> str:
+    """Collapse detailed categories into the homepage's top-level groups."""
+    if category == "Frontier":
+        return "Frontier"
+    if category in {"Image Reproduction", "Reconstruction"}:
+        return "Reconstruction"
+    if problem == "reproduce_image" or problem.startswith("reproduce_image_"):
+        return "Reconstruction"
+    return "Rest"
+
+
+def grouped_problem_order(problems: set[str], categories: dict[str, str]) -> list[str]:
+    """Sort problems by top-level group, then alphabetically within group."""
+    order = {group: i for i, group in enumerate(TOP_LEVEL_GROUPS)}
+    return sorted(
+        problems,
+        key=lambda p: (order[problem_group(p, categories.get(p, "Uncategorized"))], p),
+    )
 
 
 def _load_one_run_rows(run_dir: Path) -> dict[str, dict]:
@@ -217,7 +263,7 @@ def _load_one_run_rows(run_dir: Path) -> dict[str, dict]:
     return rows
 
 
-def aggregate(runs: dict[str, dict], problems_sorted: list[str]) -> dict:
+def aggregate(runs: dict[str, dict], problems_sorted: list[str], problem_categories: dict[str, str]) -> dict:
     """Produce the all_scores.json structure."""
     scores = {}
     for name in problems_sorted:
@@ -238,6 +284,11 @@ def aggregate(runs: dict[str, dict], problems_sorted: list[str]) -> dict:
                 "status": r["status"],
             }
 
+    problem_groups = {group: [] for group in TOP_LEVEL_GROUPS}
+    for name in problems_sorted:
+        group = problem_group(name, problem_categories.get(name, "Uncategorized"))
+        problem_groups.setdefault(group, []).append(name)
+
     summary = {}
     for key, run in runs.items():
         rows = run["rows"]
@@ -246,6 +297,13 @@ def aggregate(runs: dict[str, dict], problems_sorted: list[str]) -> dict:
         ok_count = sum(1 for r in rows.values() if r["status"] == "ok")
         fail_count = sum(1 for r in rows.values() if r["status"] == "render_fail")
         # missing_count = total - ok - fail (kept implicit)
+
+        judge_totals: dict[str, list[int]] = {}
+        for r in rows.values():
+            if r["status"] != "ok":
+                continue
+            for judge_model, vec in (r.get("scores_by_judge") or {}).items():
+                judge_totals.setdefault(judge_model, []).append(sum(vec))
 
         best = None
         worst = None
@@ -264,6 +322,10 @@ def aggregate(runs: dict[str, dict], problems_sorted: list[str]) -> dict:
             "total": len(rows),
             "avg_total_filtered": (sum(ok_totals) / len(ok_totals)) if ok_totals else None,
             "avg_total_with_zeros": (sum(all_totals) / len(all_totals)) if all_totals else None,
+            "avg_total_by_judge_filtered": {
+                jm: (sum(vals) / len(vals)) for jm, vals in judge_totals.items()
+            },
+            "judge_score_counts": {jm: len(vals) for jm, vals in judge_totals.items()},
             "best_problem": {"name": best[0], "total": best[1]} if best else None,
             "worst_problem": {"name": worst[0], "total": worst[1]} if worst else None,
         }
@@ -288,6 +350,8 @@ def aggregate(runs: dict[str, dict], problems_sorted: list[str]) -> dict:
         "generated": datetime.now(timezone.utc).isoformat(),
         "models": models_meta,
         "problems": problems_sorted,
+        "problem_categories": problem_categories,
+        "problem_groups": problem_groups,
         "scores": scores,
         "summary": summary,
     }
@@ -386,6 +450,14 @@ def bar_html(pct: int | None) -> str:
     return f"<div class='barwrap'><div class='bar' style='width:{pct}%'></div></div>"
 
 
+def avg_total_html(total: float | int | None) -> str:
+    """Formatted average total with normalized-score bar."""
+    if total is None:
+        return "—"
+    pct = pct_from_total(total)
+    return f"{total:.1f} / 500 <span class='pct'>{pct}%</span>{bar_html(pct)}"
+
+
 def find_image_filename(source_run_dir: Path, idx: int, problem: str) -> str | None:
     """Return the actual filename inside images/ for this problem, if present.
 
@@ -412,8 +484,29 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
     """Render the hub index.html."""
     models = data["models"]
     problems = data["problems"]
+    problem_categories = data["problem_categories"]
+    problem_groups = data["problem_groups"]
     summary = data["summary"]
     scores = data["scores"]
+    group_counts = {group: len(problem_groups.get(group, [])) for group in TOP_LEVEL_GROUPS}
+    group_note = (
+        f"{group_counts['Frontier']} frontier, "
+        f"{group_counts['Reconstruction']} reconstruction, "
+        f"{group_counts['Rest']} rest"
+    )
+
+    judge_models = []
+    for m in models:
+        for jm in m.get("judge_models") or []:
+            if jm not in judge_models:
+                judge_models.append(jm)
+    if not judge_models:
+        seen = set()
+        for s in summary.values():
+            for jm in s.get("avg_total_by_judge_filtered", {}):
+                if jm not in seen:
+                    judge_models.append(jm)
+                    seen.add(jm)
 
     # Per-model image filename lookup so drawer image paths work even when
     # naming drift would otherwise break things.
@@ -439,18 +532,17 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
         s = summary[m["key"]]
         avg_f_raw = s["avg_total_filtered"]
         avg_z_raw = s["avg_total_with_zeros"]
-        avg_f = f"{avg_f_raw:.1f}" if avg_f_raw is not None else "—"
-        avg_z = f"{avg_z_raw:.1f}" if avg_z_raw is not None else "—"
-        avg_f_pct = pct_from_total(avg_f_raw)
-        avg_z_pct = pct_from_total(avg_z_raw)
-        avg_f_html = (
-            f"{avg_f} / 500 <span class='pct'>{avg_f_pct}%</span>{bar_html(avg_f_pct)}"
-            if avg_f_pct is not None else "—"
-        )
-        avg_z_html = (
-            f"{avg_z} / 500 <span class='pct'>{avg_z_pct}%</span>{bar_html(avg_z_pct)}"
-            if avg_z_pct is not None else "—"
-        )
+        avg_f_html = avg_total_html(avg_f_raw)
+        avg_z_html = avg_total_html(avg_z_raw)
+        judge_cells = []
+        judge_avgs = s.get("avg_total_by_judge_filtered", {})
+        judge_counts = s.get("judge_score_counts", {})
+        for jm in judge_models:
+            count = judge_counts.get(jm, 0)
+            count_html = f"<div class='judgecount'>{count} scored</div>" if count else ""
+            judge_cells.append(
+                f"<td class='avgcell judgeavg'>{avg_total_html(judge_avgs.get(jm))}{count_html}</td>"
+            )
         best = s["best_problem"]
         worst = s["worst_problem"]
         worst_s = f"{worst['name']} ({worst['total']})" if worst else "—"
@@ -476,6 +568,7 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
             f"<td>{s['ok']}</td>"
             f"<td>{s['permanent_fail']}</td>"
             f"<td class='avgcell'>{avg_f_html}</td>"
+            f"{''.join(judge_cells)}"
             f"<td class='avgcell'>{avg_z_html}</td>"
             f"<td class='nowrap'>{best_s}</td>"
             f"<td>{worst_s}</td>"
@@ -483,41 +576,53 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
             f"</tr>"
         )
     summary_html = "\n".join(summary_rows)
+    judge_headers = "".join(f"<th>{judge_display_name(jm)}</th>" for jm in judge_models)
 
     # --- comparison table -----
     header_cells = "".join(f"<th class='mh'>{m['label']}</th>" for m in models)
 
     body_rows = []
-    for problem in problems:
-        cells = []
-        for m in models:
-            cell = scores[problem][m["key"]]
-            total = cell["total"]
-            status = cell["status"]
-            color = color_for_total(total if status == "ok" else None)
-            if total is not None:
-                pct = pct_from_total(total)
-                # Multi-judge tag: tiny "(N)" badge so users can tell at a
-                # glance which cells are panel-mean vs single-judge.
-                njudges = len(cell.get("scores_by_judge") or {})
-                judge_tag = f"<span class='cellpct'> · {njudges}j</span>" if njudges > 1 else ""
-                disp = (
-                    f"<div class='cellnum'>{total}<span class='cellpct'> · {pct}%</span>{judge_tag}</div>"
-                    f"{bar_html(pct)}"
-                )
-            else:
-                disp = "render fail" if status == "render_fail" else "—"
-            cells.append(
-                f"<td class='cell' style='background:{color}' "
-                f"data-problem='{problem}' data-model='{m['key']}'>{disp}</td>"
-            )
-        ref_attr = f" data-ref='{ref_map[problem]}'" if problem in ref_map else ""
+    for group in TOP_LEVEL_GROUPS:
+        group_problems = problem_groups.get(group, [])
+        if not group_problems:
+            continue
         body_rows.append(
-            f"<tr class='prow' data-problem='{problem}'{ref_attr}>"
-            f"<td class='pname'>{problem}</td>"
-            f"{''.join(cells)}"
-            f"</tr>"
+            f"<tr class='group-row'><td colspan='{1 + len(models)}'>"
+            f"{group}<span>{len(group_problems)} problems</span>"
+            f"</td></tr>"
         )
+        for problem in group_problems:
+            category = problem_categories.get(problem, "Uncategorized")
+            tag = group if group != "Rest" else category
+            cells = []
+            for m in models:
+                cell = scores[problem][m["key"]]
+                total = cell["total"]
+                status = cell["status"]
+                color = color_for_total(total if status == "ok" else None)
+                if total is not None:
+                    pct = pct_from_total(total)
+                    # Multi-judge tag: tiny "(N)" badge so users can tell at a
+                    # glance which cells are panel-mean vs single-judge.
+                    njudges = len(cell.get("scores_by_judge") or {})
+                    judge_tag = f"<span class='cellpct'> · {njudges}j</span>" if njudges > 1 else ""
+                    disp = (
+                        f"<div class='cellnum'>{total}<span class='cellpct'> · {pct}%</span>{judge_tag}</div>"
+                        f"{bar_html(pct)}"
+                    )
+                else:
+                    disp = "render fail" if status == "render_fail" else "—"
+                cells.append(
+                    f"<td class='cell' style='background:{color}' "
+                    f"data-problem='{problem}' data-model='{m['key']}'>{disp}</td>"
+                )
+            ref_attr = f" data-ref='{ref_map[problem]}'" if problem in ref_map else ""
+            body_rows.append(
+                f"<tr class='prow' data-problem='{problem}'{ref_attr}>"
+                f"<td class='pname'><span class='ptext'>{problem}</span><span class='tag'>{tag}</span></td>"
+                f"{''.join(cells)}"
+                f"</tr>"
+            )
     body_html = "\n".join(body_rows)
 
     # JSON payloads embedded for the drawer JS (avoids a fetch — works on file://)
@@ -604,6 +709,32 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
   td.avgcell .pct {{ color: var(--dim); font-size: 12px; margin-left: 4px; }}
   td.avgcell .barwrap {{ background: #222633; }}
   td.avgcell .bar {{ background: var(--accent); }}
+  td.judgeavg {{ min-width: 128px; }}
+  .judgecount {{ color: var(--dim); font-size: 11px; margin-top: 2px; }}
+  .group-row td {{
+    background: #141927;
+    color: #f3f6fb;
+    font-weight: 700;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    border-top: 2px solid var(--line);
+  }}
+  .group-row span {{ color: var(--dim); font-weight: 500; margin-left: 10px; text-transform: none; letter-spacing: 0; }}
+  .ptext {{ display: block; }}
+  .tag {{
+    display: inline-block;
+    margin-top: 4px;
+    padding: 2px 6px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--dim);
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    word-break: normal;
+  }}
   /* drawer */
   tr.drawer-row td {{ padding: 0; background: #0c0e14; }}
   .drawer {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; padding: 18px; border-top: 1px solid var(--line); }}
@@ -623,7 +754,7 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
 <body>
 <div class="wrap">
   <h1>Shader Benchmark</h1>
-  <p class="lead">Three frontier coding agents generating WGSL shaders from text prompts on {len(problems)} mathematical visualization problems. Scored 0&ndash;100 across five categories by one or more LLM judges against the rendered image.</p>
+  <p class="lead">Three frontier coding agents generating WGSL shaders from text prompts on {len(problems)} mathematical visualization problems ({group_note}). Scored 0&ndash;100 across five categories by one or more LLM judges against the rendered image.</p>
   <p class="sub">Generation and judging both ran on subscription CLIs (Claude Code, Gemini CLI, Codex CLI). Direct API spend: <strong>$0</strong>.</p>
 
   <h2>Model summary</h2>
@@ -631,7 +762,7 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
     <thead>
       <tr>
         <th>Model</th><th>OK</th><th>Render fails</th>
-        <th>Avg total (ok)</th><th>Avg total (fails=0)</th>
+        <th>Avg of judges</th>{judge_headers}<th>Avg w/ render fails</th>
         <th>Best</th><th>Worst</th><th>Detail</th>
       </tr>
     </thead>
@@ -643,7 +774,7 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
     <span class="swatch" style="background:hsl(0,60%,35%)"></span> low
     <span class="swatch" style="background:hsl(60,60%,35%)"></span> mid
     <span class="swatch" style="background:hsl(120,60%,35%)"></span> high
-    <span style="margin-left:8px">— click any cell to expand reference + rendered shaders + sub-scores. Score is sum of 5 categories (max 500). Bar shows final score: <code>(score &minus; 200) / 300</code>, clamped 0&ndash;100%.</span>
+    <span style="margin-left:8px">— click any cell to expand reference + rendered shaders + sub-scores. Problems are split into Frontier, Reconstruction, and Rest. Score is sum of 5 categories (max 500). Bar shows final score: <code>(score &minus; 200) / 300</code>, clamped 0&ndash;100%.</span>
   </div>
   <table class="cmp">
     <thead>
@@ -778,13 +909,14 @@ def main() -> None:
         runs[r["key"]] = load_runs(run_dirs)
 
     # Use the union of problem names across all rows (which may include
-    # problems only present in delta runs), sorted alphabetically.
+    # problems only present in delta runs), sorted by top-level group.
     problem_set: set[str] = set()
     for run in runs.values():
         problem_set.update(run["rows"].keys())
-    problems_sorted = sorted(problem_set)
+    problem_categories = load_problem_categories(sorted(problem_set))
+    problems_sorted = grouped_problem_order(problem_set, problem_categories)
 
-    data = aggregate(runs, problems_sorted)
+    data = aggregate(runs, problems_sorted, problem_categories)
     (DOCS / "all_scores.json").write_text(json.dumps(data, indent=2))
 
     # Copy per-model detail reports (primary run only) + drawer images
