@@ -51,6 +51,38 @@
     box-shadow: 0 6px 20px rgba(0,0,0,.6);
   }
   .hoverimg:hover > img { display: block; }
+  /* hover-detail card on the avg cells: shows per-judge X/500 + the
+     200-baseline explanation. Pure CSS, mirrors `.hoverimg`. */
+  .hoverdetail { position: relative; cursor: help; display: inline-block; }
+  .hoverdetail > .card {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 10;
+    margin-top: 6px;
+    width: 280px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #11151f;
+    box-shadow: 0 6px 20px rgba(0,0,0,.6);
+    color: #e6ebf5;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1.45;
+    text-transform: none;
+    letter-spacing: 0;
+    white-space: normal;
+  }
+  .hoverdetail:hover > .card { display: block; }
+  .card .ctitle { display: block; font-weight: 600; color: #c8cfdb; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+  .card .ctotal { font-weight: 600; font-size: 14px; color: #fff; margin-bottom: 6px; }
+  .card .crow { display: flex; gap: 6px; align-items: baseline; margin-top: 2px; }
+  .card .cname { flex: 1; color: #c8cfdb; }
+  .card .cval { font-variant-numeric: tabular-nums; }
+  .card .ccount { color: var(--dim); font-size: 11px; }
+  .card .cnote { color: var(--dim); font-size: 11px; margin-top: 8px; }
   /* comparison table */
   table.cmp td.cell { text-align: center; cursor: pointer; font-weight: 600; min-width: 110px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.4); padding-bottom: 12px; }
   table.cmp td.cell:hover { outline: 2px solid var(--accent); outline-offset: -2px; }
@@ -63,12 +95,12 @@
   .barwrap { margin-top: 4px; height: 4px; background: rgba(0,0,0,.4); border-radius: 2px; overflow: hidden; }
   .bar { height: 100%; background: rgba(255,255,255,.78); border-radius: 2px; }
   td.nowrap { white-space: nowrap; }
-  td.avgcell { min-width: 140px; white-space: nowrap; }
-  td.avgcell .pct { color: var(--dim); font-size: 12px; margin-left: 4px; }
-  td.avgcell .barwrap { background: #222633; }
+  td.avgcell { min-width: 110px; white-space: nowrap; }
+  td.avgcell .pctnum { font-weight: 500; font-size: 13px; }
+  td.avgcell .barwrap { background: #222633; margin-top: 5px; height: 5px; }
   td.avgcell .bar { background: var(--accent); }
-  td.judgeavg { min-width: 128px; }
-  .judgecount { color: var(--dim); font-size: 11px; margin-top: 2px; }
+  /* fail-rate bar: same shape as score bars but red, since fuller = worse. */
+  td.avgcell .bar.failbar { background: #c64a4a; }
   .group-row td {
     background: #141927;
     color: #f3f6fb;
@@ -113,20 +145,21 @@
 <div class="wrap">
   <h1>Shader Benchmark</h1>
   <p class="lead">Three frontier coding agents generating WGSL shaders from text prompts on 130 mathematical visualization problems (20 frontier, 10 reconstruction, 100 rest). Scored 0&ndash;100 across five categories by one or more LLM judges against the rendered image.</p>
-  <p class="sub">Generation and judging both ran on subscription CLIs (Claude Code, Gemini CLI, Codex CLI). Direct API spend: <strong>$0</strong>.</p>
 
   <h2>Model summary</h2>
   <table>
     <thead>
       <tr>
-        <th>Model</th><th>OK</th><th>Render fails</th>
-        <th>Avg of judges</th><th>Codex judge</th><th>Claude judge</th><th>Gemini judge</th><th>Avg w/ render fails</th>
+        <th>Model</th>
+        <th>Avg w/ render fails</th>
+        <th>Avg of judges</th>
+        <th>Render fails</th>
         <th>Best</th><th>Worst</th><th>Detail</th>
       </tr>
     </thead>
-    <tbody><tr><td class='mname'><strong>Claude Opus 4.7</strong></td><td>117</td><td>13</td><td class='avgcell'>261.3 / 500 <span class='pct'>20%</span><div class='barwrap'><div class='bar' style='width:20%'></div></div></td><td class='avgcell judgeavg'>252.9 / 500 <span class='pct'>18%</span><div class='barwrap'><div class='bar' style='width:18%'></div></div><div class='judgecount'>117 scored</div></td><td class='avgcell judgeavg'>236.3 / 500 <span class='pct'>12%</span><div class='barwrap'><div class='bar' style='width:12%'></div></div><div class='judgecount'>117 scored</div></td><td class='avgcell judgeavg'>294.8 / 500 <span class='pct'>32%</span><div class='barwrap'><div class='bar' style='width:32%'></div></div><div class='judgecount'>117 scored</div></td><td class='avgcell'>235.2 / 500 <span class='pct'>12%</span><div class='barwrap'><div class='bar' style='width:12%'></div></div></td><td class='nowrap'><span class='hoverimg'>epicycloids (476)<img src='images/claude-opus-4-7/027_epicycloids_result.png' alt='epicycloids' loading='lazy'></span></td><td>menger_cube_fractal (19)</td><td class='nowrap'><a href='claude-opus-4-7/benchmark_report.html'>View detail report &rarr;</a></td></tr>
-<tr><td class='mname'><strong>Gemini 3.1-pro-preview</strong></td><td>111</td><td>19</td><td class='avgcell'>262.4 / 500 <span class='pct'>21%</span><div class='barwrap'><div class='bar' style='width:21%'></div></div></td><td class='avgcell judgeavg'>259.5 / 500 <span class='pct'>20%</span><div class='barwrap'><div class='bar' style='width:20%'></div></div><div class='judgecount'>111 scored</div></td><td class='avgcell judgeavg'>221.0 / 500 <span class='pct'>7%</span><div class='barwrap'><div class='bar' style='width:7%'></div></div><div class='judgecount'>111 scored</div></td><td class='avgcell judgeavg'>306.6 / 500 <span class='pct'>36%</span><div class='barwrap'><div class='bar' style='width:36%'></div></div><div class='judgecount'>111 scored</div></td><td class='avgcell'>224.0 / 500 <span class='pct'>8%</span><div class='barwrap'><div class='bar' style='width:8%'></div></div></td><td class='nowrap'><span class='hoverimg'>epicycloids (473)<img src='images/gemini-3.1-pro-preview/027_epicycloids_result.png' alt='epicycloids' loading='lazy'></span></td><td>mandelbulb_fractal (9)</td><td class='nowrap'><a href='gemini-3.1-pro-preview/benchmark_report.html'>View detail report &rarr;</a></td></tr>
-<tr><td class='mname'><strong>Codex GPT-5.5 high</strong></td><td>122</td><td>8</td><td class='avgcell'>258.1 / 500 <span class='pct'>19%</span><div class='barwrap'><div class='bar' style='width:19%'></div></div></td><td class='avgcell judgeavg'>277.5 / 500 <span class='pct'>26%</span><div class='barwrap'><div class='bar' style='width:26%'></div></div><div class='judgecount'>122 scored</div></td><td class='avgcell judgeavg'>219.5 / 500 <span class='pct'>6%</span><div class='barwrap'><div class='bar' style='width:6%'></div></div><div class='judgecount'>122 scored</div></td><td class='avgcell judgeavg'>277.6 / 500 <span class='pct'>26%</span><div class='barwrap'><div class='bar' style='width:26%'></div></div><div class='judgecount'>122 scored</div></td><td class='avgcell'>242.2 / 500 <span class='pct'>14%</span><div class='barwrap'><div class='bar' style='width:14%'></div></div></td><td class='nowrap'><span class='hoverimg'>five_pointed_star_polygon (466)<img src='images/codex-gpt-5.5-high/031_five_pointed_star_polygon_result.png' alt='five_pointed_star_polygon' loading='lazy'></span></td><td>archimedean_spiral_galaxy (14)</td><td class='nowrap'><a href='codex-gpt-5.5-high/benchmark_report.html'>View detail report &rarr;</a></td></tr></tbody>
+    <tbody><tr><td class='mname'><strong>Claude Opus 4.7</strong></td><td class='avgcell'><span class='hoverdetail'><span class='pctnum'>12%</span><div class='barwrap'><div class='bar' style='width:12%'></div></div><span class='card'><span class='ctitle'>Avg w/ render fails (each fail counts as 0)</span><span class='cbody'><div class='ctotal'>235.2 / 500</div><div class='crow'><span class='cname'>Codex judge</span><span class='cval'>252.9 / 500</span><span class='ccount'>· 117 scored</span></div><div class='crow'><span class='cname'>Claude judge</span><span class='cval'>236.3 / 500</span><span class='ccount'>· 117 scored</span></div><div class='crow'><span class='cname'>Gemini judge</span><span class='cval'>294.8 / 500</span><span class='ccount'>· 117 scored</span></div><div class='cnote'>Per-judge rows above are rendered-only. Top number averages over all 130 problems with 0 imputed for the 13 render fails.</div><div class='cnote'>Percentage = (score &minus; 200) / 300. The judges floor around 200 even for unrecognizable images, so the interesting range is 200&ndash;500.</div></span></span></span></td><td class='avgcell'><span class='hoverdetail'><span class='pctnum'>20%</span><div class='barwrap'><div class='bar' style='width:20%'></div></div><span class='card'><span class='ctitle'>Avg of judges (rendered only)</span><span class='cbody'><div class='ctotal'>261.3 / 500</div><div class='crow'><span class='cname'>Codex judge</span><span class='cval'>252.9 / 500</span><span class='ccount'>· 117 scored</span></div><div class='crow'><span class='cname'>Claude judge</span><span class='cval'>236.3 / 500</span><span class='ccount'>· 117 scored</span></div><div class='crow'><span class='cname'>Gemini judge</span><span class='cval'>294.8 / 500</span><span class='ccount'>· 117 scored</span></div><div class='cnote'>Percentage = (score &minus; 200) / 300. The judges floor around 200 even for unrecognizable images, so the interesting range is 200&ndash;500.</div></span></span></span></td><td class='avgcell'><span class='hoverdetail'><span class='pctnum'>10%</span><div class='barwrap'><div class='bar failbar' style='width:10%'></div></div><span class='card'><span class='ctitle'>Render fails</span><span class='cbody'><div class='ctotal'>13 of 130 problems</div><div class='cnote'>A render fail = the WGSL shader the model produced did not compile or the shader_harness exited non-zero. These count as 0 in the &ldquo;avg w/ render fails&rdquo; column and are excluded from &ldquo;avg of judges&rdquo;.</div></span></span></span></td><td class='nowrap'><span class='hoverimg'>epicycloids (476)<img src='images/claude-opus-4-7/027_epicycloids_result.png' alt='epicycloids' loading='lazy'></span></td><td>menger_cube_fractal (19)</td><td class='nowrap'><a href='claude-opus-4-7/benchmark_report.html'>View detail report &rarr;</a></td></tr>
+<tr><td class='mname'><strong>Gemini 3.1-pro-preview</strong></td><td class='avgcell'><span class='hoverdetail'><span class='pctnum'>8%</span><div class='barwrap'><div class='bar' style='width:8%'></div></div><span class='card'><span class='ctitle'>Avg w/ render fails (each fail counts as 0)</span><span class='cbody'><div class='ctotal'>224.0 / 500</div><div class='crow'><span class='cname'>Codex judge</span><span class='cval'>259.5 / 500</span><span class='ccount'>· 111 scored</span></div><div class='crow'><span class='cname'>Claude judge</span><span class='cval'>221.0 / 500</span><span class='ccount'>· 111 scored</span></div><div class='crow'><span class='cname'>Gemini judge</span><span class='cval'>306.6 / 500</span><span class='ccount'>· 111 scored</span></div><div class='cnote'>Per-judge rows above are rendered-only. Top number averages over all 130 problems with 0 imputed for the 19 render fails.</div><div class='cnote'>Percentage = (score &minus; 200) / 300. The judges floor around 200 even for unrecognizable images, so the interesting range is 200&ndash;500.</div></span></span></span></td><td class='avgcell'><span class='hoverdetail'><span class='pctnum'>21%</span><div class='barwrap'><div class='bar' style='width:21%'></div></div><span class='card'><span class='ctitle'>Avg of judges (rendered only)</span><span class='cbody'><div class='ctotal'>262.4 / 500</div><div class='crow'><span class='cname'>Codex judge</span><span class='cval'>259.5 / 500</span><span class='ccount'>· 111 scored</span></div><div class='crow'><span class='cname'>Claude judge</span><span class='cval'>221.0 / 500</span><span class='ccount'>· 111 scored</span></div><div class='crow'><span class='cname'>Gemini judge</span><span class='cval'>306.6 / 500</span><span class='ccount'>· 111 scored</span></div><div class='cnote'>Percentage = (score &minus; 200) / 300. The judges floor around 200 even for unrecognizable images, so the interesting range is 200&ndash;500.</div></span></span></span></td><td class='avgcell'><span class='hoverdetail'><span class='pctnum'>15%</span><div class='barwrap'><div class='bar failbar' style='width:15%'></div></div><span class='card'><span class='ctitle'>Render fails</span><span class='cbody'><div class='ctotal'>19 of 130 problems</div><div class='cnote'>A render fail = the WGSL shader the model produced did not compile or the shader_harness exited non-zero. These count as 0 in the &ldquo;avg w/ render fails&rdquo; column and are excluded from &ldquo;avg of judges&rdquo;.</div></span></span></span></td><td class='nowrap'><span class='hoverimg'>epicycloids (473)<img src='images/gemini-3.1-pro-preview/027_epicycloids_result.png' alt='epicycloids' loading='lazy'></span></td><td>mandelbulb_fractal (9)</td><td class='nowrap'><a href='gemini-3.1-pro-preview/benchmark_report.html'>View detail report &rarr;</a></td></tr>
+<tr><td class='mname'><strong>Codex GPT-5.5 high</strong></td><td class='avgcell'><span class='hoverdetail'><span class='pctnum'>14%</span><div class='barwrap'><div class='bar' style='width:14%'></div></div><span class='card'><span class='ctitle'>Avg w/ render fails (each fail counts as 0)</span><span class='cbody'><div class='ctotal'>242.2 / 500</div><div class='crow'><span class='cname'>Codex judge</span><span class='cval'>277.5 / 500</span><span class='ccount'>· 122 scored</span></div><div class='crow'><span class='cname'>Claude judge</span><span class='cval'>219.5 / 500</span><span class='ccount'>· 122 scored</span></div><div class='crow'><span class='cname'>Gemini judge</span><span class='cval'>277.6 / 500</span><span class='ccount'>· 122 scored</span></div><div class='cnote'>Per-judge rows above are rendered-only. Top number averages over all 130 problems with 0 imputed for the 8 render fails.</div><div class='cnote'>Percentage = (score &minus; 200) / 300. The judges floor around 200 even for unrecognizable images, so the interesting range is 200&ndash;500.</div></span></span></span></td><td class='avgcell'><span class='hoverdetail'><span class='pctnum'>19%</span><div class='barwrap'><div class='bar' style='width:19%'></div></div><span class='card'><span class='ctitle'>Avg of judges (rendered only)</span><span class='cbody'><div class='ctotal'>258.1 / 500</div><div class='crow'><span class='cname'>Codex judge</span><span class='cval'>277.5 / 500</span><span class='ccount'>· 122 scored</span></div><div class='crow'><span class='cname'>Claude judge</span><span class='cval'>219.5 / 500</span><span class='ccount'>· 122 scored</span></div><div class='crow'><span class='cname'>Gemini judge</span><span class='cval'>277.6 / 500</span><span class='ccount'>· 122 scored</span></div><div class='cnote'>Percentage = (score &minus; 200) / 300. The judges floor around 200 even for unrecognizable images, so the interesting range is 200&ndash;500.</div></span></span></span></td><td class='avgcell'><span class='hoverdetail'><span class='pctnum'>6%</span><div class='barwrap'><div class='bar failbar' style='width:6%'></div></div><span class='card'><span class='ctitle'>Render fails</span><span class='cbody'><div class='ctotal'>8 of 130 problems</div><div class='cnote'>A render fail = the WGSL shader the model produced did not compile or the shader_harness exited non-zero. These count as 0 in the &ldquo;avg w/ render fails&rdquo; column and are excluded from &ldquo;avg of judges&rdquo;.</div></span></span></span></td><td class='nowrap'><span class='hoverimg'>five_pointed_star_polygon (466)<img src='images/codex-gpt-5.5-high/031_five_pointed_star_polygon_result.png' alt='five_pointed_star_polygon' loading='lazy'></span></td><td>archimedean_spiral_galaxy (14)</td><td class='nowrap'><a href='codex-gpt-5.5-high/benchmark_report.html'>View detail report &rarr;</a></td></tr></tbody>
   </table>
 
   <h2>Per-problem comparison</h2>
@@ -276,7 +309,7 @@
   </table>
 
   <footer>
-    Generated 2026-05-05T18:35:18.447710+00:00.
+    Generated 2026-05-10T04:47:06.745868+00:00.
     Source: <a href="https://github.com/nbardy/shader_benchmark">shader_benchmark</a>.
     Aggregated data: <a href="all_scores.json">all_scores.json</a>.
   </footer>

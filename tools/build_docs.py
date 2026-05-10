@@ -450,12 +450,73 @@ def bar_html(pct: int | None) -> str:
     return f"<div class='barwrap'><div class='bar' style='width:{pct}%'></div></div>"
 
 
+BASELINE_NOTE = (
+    "Percentage = (score &minus; 200) / 300. The judges floor around 200 even "
+    "for unrecognizable images, so the interesting range is 200&ndash;500."
+)
+
+
+def _hover_card(visible_html: str, title: str, body_html: str) -> str:
+    """Wrap a cell in a hover card. Pure CSS, mirrors `.hoverimg`."""
+    return (
+        f"<span class='hoverdetail'>{visible_html}"
+        f"<span class='card'>"
+        f"<span class='ctitle'>{title}</span>"
+        f"<span class='cbody'>{body_html}</span>"
+        f"</span></span>"
+    )
+
+
+def _judge_breakdown_html(
+    avg_total: float | None,
+    judge_avgs: dict[str, float],
+    judge_counts: dict[str, int],
+    impute_label: str | None,
+) -> str:
+    """Per-judge X/500 list for a hover card. `impute_label` is the
+    one-line note explaining how render fails entered the average
+    (or None if they didn't)."""
+    head = (
+        f"<div class='ctotal'>{avg_total:.1f} / 500</div>"
+        if avg_total is not None
+        else "<div class='ctotal'>—</div>"
+    )
+    rows = []
+    for jm, avg in judge_avgs.items():
+        count = judge_counts.get(jm, 0)
+        rows.append(
+            f"<div class='crow'>"
+            f"<span class='cname'>{judge_display_name(jm)}</span>"
+            f"<span class='cval'>{avg:.1f} / 500</span>"
+            f"<span class='ccount'>· {count} scored</span>"
+            f"</div>"
+        )
+    impute = f"<div class='cnote'>{impute_label}</div>" if impute_label else ""
+    legend = f"<div class='cnote'>{BASELINE_NOTE}</div>"
+    return head + "".join(rows) + impute + legend
+
+
 def avg_total_html(total: float | int | None) -> str:
-    """Formatted average total with normalized-score bar."""
+    """Normalized-score percentage + bar. No raw X/500 — keeps the
+    summary table scannable; raw scores live in per-model detail pages
+    and in the hover card."""
     if total is None:
         return "—"
     pct = pct_from_total(total)
-    return f"{total:.1f} / 500 <span class='pct'>{pct}%</span>{bar_html(pct)}"
+    return f"<span class='pctnum'>{pct}%</span>{bar_html(pct)}"
+
+
+def fail_rate_html(fails: int, total: int) -> str:
+    """Render-fail rate as a percentage with an inverted bar (fuller = worse).
+    Treated as a score-shaped cell so eyes can compare it alongside the
+    score columns."""
+    if total <= 0:
+        return "—"
+    pct = round(fails * 100 / total)
+    return (
+        f"<span class='pctnum'>{pct}%</span>"
+        f"<div class='barwrap'><div class='bar failbar' style='width:{pct}%'></div></div>"
+    )
 
 
 def find_image_filename(source_run_dir: Path, idx: int, problem: str) -> str | None:
@@ -495,19 +556,6 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
         f"{group_counts['Rest']} rest"
     )
 
-    judge_models = []
-    for m in models:
-        for jm in m.get("judge_models") or []:
-            if jm not in judge_models:
-                judge_models.append(jm)
-    if not judge_models:
-        seen = set()
-        for s in summary.values():
-            for jm in s.get("avg_total_by_judge_filtered", {}):
-                if jm not in seen:
-                    judge_models.append(jm)
-                    seen.add(jm)
-
     # Per-model image filename lookup so drawer image paths work even when
     # naming drift would otherwise break things.
     img_lookup: dict[str, dict[str, str | None]] = {}
@@ -527,22 +575,43 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
             img_lookup[m["key"]][p] = find_image_filename(src, row["index"], p)
 
     # --- model summary table -----
+    # Three score-shaped columns, in order: avg-with-fails (most honest —
+    # render fails count as 0), avg-of-judges (rendered-only), and
+    # render-fail rate. Per-judge X/500 numbers and the 200-baseline
+    # explanation live in per-cell hover cards.
     summary_rows = []
     for m in models:
         s = summary[m["key"]]
-        avg_f_raw = s["avg_total_filtered"]
-        avg_z_raw = s["avg_total_with_zeros"]
-        avg_f_html = avg_total_html(avg_f_raw)
-        avg_z_html = avg_total_html(avg_z_raw)
-        judge_cells = []
         judge_avgs = s.get("avg_total_by_judge_filtered", {})
         judge_counts = s.get("judge_score_counts", {})
-        for jm in judge_models:
-            count = judge_counts.get(jm, 0)
-            count_html = f"<div class='judgecount'>{count} scored</div>" if count else ""
-            judge_cells.append(
-                f"<td class='avgcell judgeavg'>{avg_total_html(judge_avgs.get(jm))}{count_html}</td>"
-            )
+        avg_f_pct = avg_total_html(s["avg_total_filtered"])
+        avg_z_pct = avg_total_html(s["avg_total_with_zeros"])
+        fail_pct = fail_rate_html(s["permanent_fail"], s["total"])
+        avg_f_html = _hover_card(
+            avg_f_pct,
+            "Avg of judges (rendered only)",
+            _judge_breakdown_html(s["avg_total_filtered"], judge_avgs, judge_counts, None),
+        )
+        avg_z_html = _hover_card(
+            avg_z_pct,
+            "Avg w/ render fails (each fail counts as 0)",
+            _judge_breakdown_html(
+                s["avg_total_with_zeros"],
+                judge_avgs,
+                judge_counts,
+                f"Per-judge rows above are rendered-only. Top number averages over all {s['total']} problems with 0 imputed for the {s['permanent_fail']} render fails.",
+            ),
+        )
+        fail_html = _hover_card(
+            fail_pct,
+            "Render fails",
+            (
+                f"<div class='ctotal'>{s['permanent_fail']} of {s['total']} problems</div>"
+                "<div class='cnote'>A render fail = the WGSL shader the model produced did not compile or "
+                "the shader_harness exited non-zero. These count as 0 in the &ldquo;avg w/ render fails&rdquo; "
+                "column and are excluded from &ldquo;avg of judges&rdquo;.</div>"
+            ),
+        )
         best = s["best_problem"]
         worst = s["worst_problem"]
         worst_s = f"{worst['name']} ({worst['total']})" if worst else "—"
@@ -565,18 +634,15 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
         summary_rows.append(
             f"<tr>"
             f"<td class='mname'><strong>{m['label']}</strong></td>"
-            f"<td>{s['ok']}</td>"
-            f"<td>{s['permanent_fail']}</td>"
-            f"<td class='avgcell'>{avg_f_html}</td>"
-            f"{''.join(judge_cells)}"
             f"<td class='avgcell'>{avg_z_html}</td>"
+            f"<td class='avgcell'>{avg_f_html}</td>"
+            f"<td class='avgcell'>{fail_html}</td>"
             f"<td class='nowrap'>{best_s}</td>"
             f"<td>{worst_s}</td>"
             f"<td class='nowrap'><a href='{m['key']}/benchmark_report.html'>View detail report &rarr;</a></td>"
             f"</tr>"
         )
     summary_html = "\n".join(summary_rows)
-    judge_headers = "".join(f"<th>{judge_display_name(jm)}</th>" for jm in judge_models)
 
     # --- comparison table -----
     header_cells = "".join(f"<th class='mh'>{m['label']}</th>" for m in models)
@@ -693,6 +759,38 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
     box-shadow: 0 6px 20px rgba(0,0,0,.6);
   }}
   .hoverimg:hover > img {{ display: block; }}
+  /* hover-detail card on the avg cells: shows per-judge X/500 + the
+     200-baseline explanation. Pure CSS, mirrors `.hoverimg`. */
+  .hoverdetail {{ position: relative; cursor: help; display: inline-block; }}
+  .hoverdetail > .card {{
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 10;
+    margin-top: 6px;
+    width: 280px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #11151f;
+    box-shadow: 0 6px 20px rgba(0,0,0,.6);
+    color: #e6ebf5;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1.45;
+    text-transform: none;
+    letter-spacing: 0;
+    white-space: normal;
+  }}
+  .hoverdetail:hover > .card {{ display: block; }}
+  .card .ctitle {{ display: block; font-weight: 600; color: #c8cfdb; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }}
+  .card .ctotal {{ font-weight: 600; font-size: 14px; color: #fff; margin-bottom: 6px; }}
+  .card .crow {{ display: flex; gap: 6px; align-items: baseline; margin-top: 2px; }}
+  .card .cname {{ flex: 1; color: #c8cfdb; }}
+  .card .cval {{ font-variant-numeric: tabular-nums; }}
+  .card .ccount {{ color: var(--dim); font-size: 11px; }}
+  .card .cnote {{ color: var(--dim); font-size: 11px; margin-top: 8px; }}
   /* comparison table */
   table.cmp td.cell {{ text-align: center; cursor: pointer; font-weight: 600; min-width: 110px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.4); padding-bottom: 12px; }}
   table.cmp td.cell:hover {{ outline: 2px solid var(--accent); outline-offset: -2px; }}
@@ -705,12 +803,12 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
   .barwrap {{ margin-top: 4px; height: 4px; background: rgba(0,0,0,.4); border-radius: 2px; overflow: hidden; }}
   .bar {{ height: 100%; background: rgba(255,255,255,.78); border-radius: 2px; }}
   td.nowrap {{ white-space: nowrap; }}
-  td.avgcell {{ min-width: 140px; white-space: nowrap; }}
-  td.avgcell .pct {{ color: var(--dim); font-size: 12px; margin-left: 4px; }}
-  td.avgcell .barwrap {{ background: #222633; }}
+  td.avgcell {{ min-width: 110px; white-space: nowrap; }}
+  td.avgcell .pctnum {{ font-weight: 500; font-size: 13px; }}
+  td.avgcell .barwrap {{ background: #222633; margin-top: 5px; height: 5px; }}
   td.avgcell .bar {{ background: var(--accent); }}
-  td.judgeavg {{ min-width: 128px; }}
-  .judgecount {{ color: var(--dim); font-size: 11px; margin-top: 2px; }}
+  /* fail-rate bar: same shape as score bars but red, since fuller = worse. */
+  td.avgcell .bar.failbar {{ background: #c64a4a; }}
   .group-row td {{
     background: #141927;
     color: #f3f6fb;
@@ -755,14 +853,15 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
 <div class="wrap">
   <h1>Shader Benchmark</h1>
   <p class="lead">Three frontier coding agents generating WGSL shaders from text prompts on {len(problems)} mathematical visualization problems ({group_note}). Scored 0&ndash;100 across five categories by one or more LLM judges against the rendered image.</p>
-  <p class="sub">Generation and judging both ran on subscription CLIs (Claude Code, Gemini CLI, Codex CLI). Direct API spend: <strong>$0</strong>.</p>
 
   <h2>Model summary</h2>
   <table>
     <thead>
       <tr>
-        <th>Model</th><th>OK</th><th>Render fails</th>
-        <th>Avg of judges</th>{judge_headers}<th>Avg w/ render fails</th>
+        <th>Model</th>
+        <th>Avg w/ render fails</th>
+        <th>Avg of judges</th>
+        <th>Render fails</th>
         <th>Best</th><th>Worst</th><th>Detail</th>
       </tr>
     </thead>
