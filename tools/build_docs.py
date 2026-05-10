@@ -725,9 +725,9 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
   body {{ font: 14px/1.5 ui-sans-serif, -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif; }}
   .wrap {{ max-width: 1180px; margin: 0 auto; padding: 32px 24px 80px; }}
   h1 {{ font-size: 26px; margin: 0 0 6px; letter-spacing: -0.01em; }}
-  /* hero header: image is 1672x941 (~1.78:1). Force aspect 2.13:1 with
-     object-fit:fill so the rendered image is stretched 20% horizontally. */
-  img.hero {{ display: block; width: 100%; aspect-ratio: 2.13 / 1; height: auto; object-fit: fill; margin: 0 0 14px; border-radius: 6px; }}
+  /* hero header: fixed 860x320, centered. Source is 1672x941 (~1.78:1)
+     so object-fit:fill stretches it ~50% horizontally to fit the box. */
+  img.hero {{ display: block; width: 860px; height: 320px; max-width: 100%; object-fit: fill; margin: 0 auto 14px; border-radius: 6px; }}
   h2 {{ font-size: 18px; margin: 36px 0 12px; letter-spacing: -0.01em; }}
   .lead {{ color: var(--dim); margin: 0 0 4px; }}
   .sub  {{ color: var(--dim); font-size: 12px; margin: 0; }}
