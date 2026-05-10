@@ -589,12 +589,12 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
         fail_pct = fail_rate_html(s["permanent_fail"], s["total"])
         avg_f_html = _hover_card(
             avg_f_pct,
-            "Avg of judges (rendered only)",
+            "Score excluding failures (rendered only)",
             _judge_breakdown_html(s["avg_total_filtered"], judge_avgs, judge_counts, None),
         )
         avg_z_html = _hover_card(
             avg_z_pct,
-            "Avg w/ render fails (each fail counts as 0)",
+            "Score (each render fail counts as 0)",
             _judge_breakdown_html(
                 s["avg_total_with_zeros"],
                 judge_avgs,
@@ -608,8 +608,8 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
             (
                 f"<div class='ctotal'>{s['permanent_fail']} of {s['total']} problems</div>"
                 "<div class='cnote'>A render fail = the WGSL shader the model produced did not compile or "
-                "the shader_harness exited non-zero. These count as 0 in the &ldquo;avg w/ render fails&rdquo; "
-                "column and are excluded from &ldquo;avg of judges&rdquo;.</div>"
+                "the shader_harness exited non-zero. These count as 0 in the &ldquo;Score&rdquo; column and "
+                "are excluded from &ldquo;Score excluding failures&rdquo;.</div>"
             ),
         )
         best = s["best_problem"]
@@ -725,6 +725,9 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
   body {{ font: 14px/1.5 ui-sans-serif, -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif; }}
   .wrap {{ max-width: 1180px; margin: 0 auto; padding: 32px 24px 80px; }}
   h1 {{ font-size: 26px; margin: 0 0 6px; letter-spacing: -0.01em; }}
+  /* hero header: image is 1672x941 (~1.78:1). Force aspect 2.13:1 with
+     object-fit:fill so the rendered image is stretched 20% horizontally. */
+  img.hero {{ display: block; width: 100%; aspect-ratio: 2.13 / 1; height: auto; object-fit: fill; margin: 0 0 14px; border-radius: 6px; }}
   h2 {{ font-size: 18px; margin: 36px 0 12px; letter-spacing: -0.01em; }}
   .lead {{ color: var(--dim); margin: 0 0 4px; }}
   .sub  {{ color: var(--dim); font-size: 12px; margin: 0; }}
@@ -803,9 +806,10 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
   .barwrap {{ margin-top: 4px; height: 4px; background: rgba(0,0,0,.4); border-radius: 2px; overflow: hidden; }}
   .bar {{ height: 100%; background: rgba(255,255,255,.78); border-radius: 2px; }}
   td.nowrap {{ white-space: nowrap; }}
-  td.avgcell {{ min-width: 110px; white-space: nowrap; }}
+  /* avg cells: wide so the score bars are scannable at a glance. */
+  td.avgcell {{ min-width: 240px; white-space: nowrap; }}
   td.avgcell .pctnum {{ font-weight: 500; font-size: 13px; }}
-  td.avgcell .barwrap {{ background: #222633; margin-top: 5px; height: 5px; }}
+  td.avgcell .barwrap {{ background: #222633; margin-top: 6px; height: 6px; width: 220px; max-width: 100%; }}
   td.avgcell .bar {{ background: var(--accent); }}
   /* fail-rate bar: same shape as score bars but red, since fuller = worse. */
   td.avgcell .bar.failbar {{ background: #c64a4a; }}
@@ -851,7 +855,7 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
 </head>
 <body>
 <div class="wrap">
-  <h1>Shader Benchmark</h1>
+  <img class="hero" src="header.png" alt="Shader bench">
   <p class="lead">Three frontier coding agents generating WGSL shaders from text prompts on {len(problems)} mathematical visualization problems ({group_note}). Scored 0&ndash;100 across five categories by one or more LLM judges against the rendered image.</p>
 
   <h2>Model summary</h2>
@@ -859,8 +863,8 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
     <thead>
       <tr>
         <th>Model</th>
-        <th>Avg w/ render fails</th>
-        <th>Avg of judges</th>
+        <th>Score</th>
+        <th>Score excluding failures</th>
         <th>Render fails</th>
         <th>Best</th><th>Worst</th><th>Detail</th>
       </tr>
