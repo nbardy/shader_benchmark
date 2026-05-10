@@ -631,12 +631,17 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
                 best_s = label
         else:
             best_s = "—"
+        # Numeric sort keys; missing values sink to the bottom on
+        # descending sort (and float to top on ascending) by using -inf.
+        sort_score = s["avg_total_with_zeros"] if s["avg_total_with_zeros"] is not None else float("-inf")
+        sort_filtered = s["avg_total_filtered"] if s["avg_total_filtered"] is not None else float("-inf")
+        sort_fail = (s["permanent_fail"] / s["total"]) if s["total"] else 0.0
         summary_rows.append(
             f"<tr>"
             f"<td class='mname'><strong>{m['label']}</strong></td>"
-            f"<td class='avgcell'>{avg_z_html}</td>"
-            f"<td class='avgcell'>{avg_f_html}</td>"
-            f"<td class='avgcell'>{fail_html}</td>"
+            f"<td class='avgcell' data-sortval='{sort_score}'>{avg_z_html}</td>"
+            f"<td class='avgcell' data-sortval='{sort_filtered}'>{avg_f_html}</td>"
+            f"<td class='avgcell' data-sortval='{sort_fail}'>{fail_html}</td>"
             f"<td class='nowrap'>{best_s}</td>"
             f"<td>{worst_s}</td>"
             f"<td class='nowrap'><a href='{m['key']}/benchmark_report.html'>View detail report &rarr;</a></td>"
@@ -813,6 +818,12 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
   td.avgcell .bar {{ background: var(--accent); }}
   /* fail-rate bar: same shape as score bars but red, since fuller = worse. */
   td.avgcell .bar.failbar {{ background: #c64a4a; }}
+  /* sortable headers in the model summary */
+  th.sortable {{ cursor: pointer; user-select: none; }}
+  th.sortable:hover {{ color: #fff; }}
+  th.sortable .arrow {{ display: inline-block; margin-left: 4px; opacity: .35; font-size: 10px; }}
+  th.sortable.sort-asc .arrow,
+  th.sortable.sort-desc .arrow {{ opacity: 1; color: var(--accent); }}
   .group-row td {{
     background: #141927;
     color: #f3f6fb;
@@ -859,13 +870,13 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
   <p class="lead">Three frontier coding agents generating WGSL shaders from text prompts on {len(problems)} mathematical visualization problems ({group_note}). Scored 0&ndash;100 across five categories by one or more LLM judges against the rendered image.</p>
 
   <h2>Model summary</h2>
-  <table>
+  <table id="modelsum">
     <thead>
       <tr>
         <th>Model</th>
-        <th>Score</th>
-        <th>Score excluding failures</th>
-        <th>Render fails</th>
+        <th class="sortable" data-sort="num" data-default-dir="desc">Score<span class="arrow">▼</span></th>
+        <th class="sortable" data-sort="num">Score excluding failures<span class="arrow">▼</span></th>
+        <th class="sortable" data-sort="num">Render fails<span class="arrow">▼</span></th>
         <th>Best</th><th>Worst</th><th>Detail</th>
       </tr>
     </thead>
@@ -948,6 +959,56 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
     }}
     return p;
   }}
+
+  // --- model-summary sortable headers ---
+  // Three columns are sortable: Score (default desc), Score-excluding-
+  // failures, and Render-fails. Click toggles direction; clicking a
+  // different column starts in its preferred default direction (desc
+  // for scores, asc for fails — fewer fails is better).
+  (function setupSummarySort(){{
+    const tbl = document.getElementById('modelsum');
+    if (!tbl) return;
+    const tbody = tbl.tBodies[0];
+    const heads = Array.from(tbl.tHead.rows[0].cells);
+    const sortables = heads.map((th, i) => th.classList.contains('sortable') ? i : -1).filter(i => i >= 0);
+
+    function sortBy(colIdx, dir){{
+      const rows = Array.from(tbody.rows);
+      rows.sort((a, b) => {{
+        const av = parseFloat(a.cells[colIdx].dataset.sortval);
+        const bv = parseFloat(b.cells[colIdx].dataset.sortval);
+        const aOk = isFinite(av), bOk = isFinite(bv);
+        if (!aOk && !bOk) return 0;
+        if (!aOk) return 1;     // missing always sinks
+        if (!bOk) return -1;
+        return dir === 'asc' ? (av - bv) : (bv - av);
+      }});
+      rows.forEach(r => tbody.appendChild(r));
+      heads.forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+      const th = heads[colIdx];
+      th.classList.add(dir === 'asc' ? 'sort-asc' : 'sort-desc');
+      const arrow = th.querySelector('.arrow');
+      if (arrow) arrow.textContent = dir === 'asc' ? '▲' : '▼';
+    }}
+
+    sortables.forEach(i => {{
+      const th = heads[i];
+      th.addEventListener('click', () => {{
+        const cur = th.classList.contains('sort-desc') ? 'desc'
+                  : th.classList.contains('sort-asc')  ? 'asc'
+                  : (th.dataset.defaultDir || 'desc');
+        // First click on a fresh column → its default direction.
+        // Subsequent clicks on the active column → toggle.
+        const nextDir = th.classList.contains('sort-desc') ? 'asc'
+                      : th.classList.contains('sort-asc')  ? 'desc'
+                      : cur;
+        sortBy(i, nextDir);
+      }});
+    }});
+
+    // Default: Score column (first sortable) descending.
+    if (sortables.length) sortBy(sortables[0], 'desc');
+  }})();
 
   document.querySelectorAll('tr.prow .cell').forEach(td => {{
     td.addEventListener('click', function(ev){{
