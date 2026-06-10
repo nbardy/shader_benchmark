@@ -1,11 +1,70 @@
-// Animated, re-shaded "hyper Menger cube on a 3-sphere" — v3: one clean action.
+// Animated, re-shaded "hyper Menger cube on a 3-sphere" — v5: v4's two
+// interacting pole-moving sweeps + a BREATHING SLICE RADIUS.
 //
 // Derived from shader_original.wgsl (benchmark output, run 2cebf07b /
 // 000_hyper_menger_cube_3sphere). Geometry pipeline is unchanged:
 // inverse stereographic lift R^3 -> S^3, 4D rotation, 4D Menger
 // tesseract distance estimator, conservative 3D step.
 //
-// v3 design (replaces v2's SU(2)xSU(2) double isoclinic action):
+// v5 design (adds on top of v4, which stays exactly as is):
+//
+//   Evaluate the Menger DE at  r(t) * G(t) * q_lift  (scale AFTER the
+//   rotation, before the DE), i.e. slice the tesseract with a sphere of
+//   radius r(t) instead of the unit sphere:
+//
+//     r(t) = R_MID + R_AMP * sin(TAU * t / LOOP_SECONDS + R_PHI)
+//
+//   One full breath per 24 s loop (period = LOOP_SECONDS -> seamless).
+//   WHY THIS IS STRUCTURAL, NOT A ZOOM: the visible object is
+//   (Menger tesseract) INTERSECT (sphere of radius r). The cube [-1,1]^4
+//   has inradius 1 (face centers) and circumradius 2 (corners), so as r
+//   crosses those shells the intersection CHANGES TOPOLOGY — corners
+//   pierce the sphere as separate caps, caps merge across edges, tunnel
+//   systems connect — cavities open because the topology changed, not by
+//   sweep-alignment luck. Points with r != 1 leave S^3; that's fine — the
+//   DE is a true R^4 distance, so marching still works, only the
+//   R^3-step conversion gains a factor r (see map_scene).
+//   Radius window chosen empirically (rotation frozen at t=0, stills at
+//   r in {0.6, 0.65, 0.8, 1.0, 1.2, 1.4, 1.5, 1.55, 1.6, 1.7, 2.0}):
+//     r ~ 0.6-0.7  lobed slice through the CENTRAL TUNNEL system (the
+//                  sphere is inside the inradius shell; only the axis
+//                  tunnels cut it, carving merged lobes with windows)
+//     r ~ 0.8-1.2  perforated ball (the v4 regime at r = 1)
+//     r ~ 1.4-1.6  tunnel mouths PIERCE the ball and widen into large
+//                  openings; nested interior shells become visible
+//     r ~ 1.7      sparse thin wheel (still rich but small silhouette)
+//     r = 2.0      empty — corners sit at |corner| = 2 exactly, the caps
+//                  have measure zero. Dropped.
+//   Window [0.64, 1.60]: R_MID = 1.12, R_AMP = 0.48. The sine lingers at
+//   the two exotic regimes (tunnel-lobes / open wheel) and transits the
+//   familiar perforated ball quickly; both topology-change events (lobes
+//   merging into the ball, tunnel mouths piercing through) happen every
+//   breath. NOTE the slice topology is rotation-INVARIANT (sphere_r and
+//   G commute: sphere_r INTERSECT G*Menger = G*(sphere_r INTERSECT
+//   Menger)), so no rotation phase can empty a radius that is non-empty
+//   at t=0 — only the projection (which face is near the pole) varies.
+//   R_PHI = 0 puts t=0 mid-breath (r rising through R_MID), not at an
+//   extreme.
+//
+// v4 design (adds a second sweep on top of v3, which stays exactly as is):
+//
+//   G(t) = R_wx(PRE_WX + TAU*t/12) o R_wu(TAU*t/24) o R_yz(PRE_YZ)
+//
+//   The v3 fast (w,x) sweep (one turn per 12 s, reads bottom-right ->
+//   top-left on screen) is composed with a 2x-slower simple rotation in the
+//   (w,u)-plane, u = (y+z)/sqrt(2) — a unit SPATIAL direction chosen
+//   empirically so its sweep reads bottom-left -> top-right on screen (the
+//   opposite diagonal). Both planes contain w, so BOTH rotations move the
+//   projection pole and morph the visible surface (see v3 notes below: a
+//   plane avoiding w is just a rigid screen swirl — never animate one).
+//   The two factors do NOT commute (their planes share the w axis), which
+//   is fine: one composition order is fixed (slow first, fast second).
+//   LOOP CLOSURE despite non-commutativity: LOOP_SECONDS = 24, so at t=24
+//   the fast factor has made exactly 2 full turns and the slow factor
+//   exactly 1 full turn — EACH factor is individually the identity, hence
+//   G(24) = I regardless of order, and the seam closes for any color field.
+//
+// v3 design notes (kept; replaces v2's SU(2)xSU(2) double isoclinic action):
 //
 //   WHY: only 4D rotations that MOVE the projection pole morph the visible
 //   surface. The lift puts the pole on the w axis (inv_stereo: w is the
@@ -19,15 +78,14 @@
 //   rotating, so points slid along their own hue bands — the color field
 //   was static by construction.
 //
-//   ANIMATION - a SINGLE simple rotation in the (w,x)-plane only (a plane
-//              containing the pole — pure slice-sweep, no swirl):
-//                  alpha = TAU * time / LOOP_SECONDS
-//              One FULL turn per loop, so the net loop transform is the
-//              IDENTITY and the loop closes for ANY color field. The object
-//              passes "through infinity" once per loop. A constant
-//              aesthetic pre-rotation (PRE_WX / PRE_YZ, v2's base
+//   ANIMATION - (v3) a SINGLE simple rotation in the (w,x)-plane only (a
+//              plane containing the pole — pure slice-sweep, no swirl):
+//                  alpha = TAU * time / FAST_SECONDS
+//              The object passes "through infinity" once per fast turn. A
+//              constant aesthetic pre-rotation (PRE_WX / PRE_YZ, v2's base
 //              orientation) is applied first; any fixed pre-rotation keeps
-//              the net loop transform identity.
+//              the net loop transform identity. (v4 composes the slow
+//              (w,u) sweep with this — see the v4 notes above.)
 //   CAMERA   - STATIC: orbit and bob removed, one fixed viewpoint (v2's
 //              phase-0 view). Key light stays tied to the (fixed) camera
 //              azimuth. The 4D sweep provides all the visual change.
@@ -61,7 +119,35 @@ struct Params {
 
 const TAU: f32 = 6.283185307179586;
 const PI: f32 = 3.141592653589793;
-const LOOP_SECONDS: f32 = 12.0;
+// v4: loop doubled to 24 s — the fast (w,x) factor (period 12 s) makes 2
+// full turns and the slow (w,u) factor (period 24 s) makes 1 full turn, so
+// each factor is individually the identity at t = LOOP_SECONDS.
+const LOOP_SECONDS: f32 = 24.0;
+const FAST_SECONDS: f32 = 12.0; // v3's (w,x) sweep period, unchanged
+// Slow sweep direction: unit spatial vector u = (y+z)/sqrt(2), lifted to
+// e_u = (0, u) in R^4 (zero w component, so e_u is orthogonal to the pole
+// axis e_w). Chosen empirically from candidates {y, z, (y+z)/sqrt2,
+// (y-z)/sqrt2}: with this camera azimuth and pre-rotation, the slow-only
+// (w,u) sweep opens its cut-in cavity at the bottom-LEFT and erodes toward
+// the top-right — the opposite screen diagonal to v3's fast sweep.
+const SLOW_U: vec3<f32> = vec3<f32>(0.0, 0.7071067811865476, 0.7071067811865476);
+// Constant phase offset of the slow factor. Any constant still closes the
+// loop (the slow factor completes a full turn, so R_wu(TAU + phi0) =
+// R_wu(phi0) = the t=0 value). Kept 0.0: the two pole passages stay well
+// separated over the 24 s loop (verified frame-by-frame, no blank stretch).
+const SLOW_PHI0: f32 = 0.0;
+
+// v5 breathing slice radius r(t) = R_MID + R_AMP*sin(TAU*t/LOOP + R_PHI).
+// One full breath per loop -> seamless. Window picked empirically; see the
+// header notes. R_PHI = 0 so t=0 sits mid-breath (r = R_MID, growing),
+// never at a sine extreme.
+const R_MID: f32 = 1.12;
+const R_AMP: f32 = 0.48;
+const R_PHI: f32 = 0.0;
+
+fn breath_r() -> f32 {
+    return R_MID + R_AMP * sin(TAU * params.time / LOOP_SECONDS + R_PHI);
+}
 
 // Fixed camera azimuth — v2's phase-0 viewpoint (orbit/bob removed).
 const CAM_ANG: f32 = 0.7;
@@ -103,12 +189,34 @@ fn rot_yz(q: vec4<f32>, a: f32) -> vec4<f32> {
     return vec4<f32>(q.x, q.y * c - q.z * s, q.y * s + q.z * c, q.w);
 }
 
-// The one clean action: fixed pre-rotation, then a single (w,x) rotation
-// advancing one full turn per loop. alpha(LOOP_SECONDS) = TAU => net
-// transform identity => seam closes exactly, for any color field.
+// Simple rotation in the (w,u)-plane for a unit spatial direction u
+// (e_u = (u, 0_w), orthonormal to e_w since its w component is zero).
+// General plane-rotation formula
+//   q' = q + (cos a - 1)(<q,e_w> e_w + <q,e_u> e_u)
+//          + sin a (<q,e_w> e_u - <q,e_u> e_w)
+// specialised to this layout; for u = e_x it reduces exactly to rot_wx
+// (same sign convention). Fixes the orthogonal complement of span{e_w,e_u}
+// pointwise and preserves |q|. The plane CONTAINS the pole axis, so this is
+// a pole-moving sweep, like rot_wx but along a different spatial direction.
+fn rot_wu(q: vec4<f32>, u: vec3<f32>, a: f32) -> vec4<f32> {
+    let c = cos(a);
+    let s = sin(a);
+    let qu = dot(q.xyz, u);
+    let xyz = q.xyz + ((c - 1.0) * qu + s * q.w) * u;
+    let w = q.w * c - s * qu;
+    return vec4<f32>(xyz, w);
+}
+
+// v4 action: fixed pre-rotation, then the slow (w,u) sweep (1 turn per
+// loop), then v3's fast (w,x) sweep (2 turns per loop). The factors don't
+// commute (both planes contain w); this order — slow inside, fast outside —
+// is the one fixed choice. At t = LOOP_SECONDS each factor is individually
+// the identity, so the composition is too, and the seam closes exactly for
+// any color field.
 fn rot4(q: vec4<f32>) -> vec4<f32> {
-    let alpha = TAU * params.time / LOOP_SECONDS;
-    return rot_wx(rot_yz(q, PRE_YZ), PRE_WX + alpha);
+    let alpha_fast = TAU * params.time / FAST_SECONDS;
+    let alpha_slow = TAU * params.time / LOOP_SECONDS + SLOW_PHI0;
+    return rot_wx(rot_wu(rot_yz(q, PRE_YZ), SLOW_U, alpha_slow), PRE_WX + alpha_fast);
 }
 
 // Distance estimator for the 4D Menger tesseract in [-1,1]^4 (unchanged).
@@ -132,10 +240,17 @@ fn menger4(p: vec4<f32>) -> f32 {
 }
 
 fn map_scene(p: vec3<f32>) -> f32 {
-    let q = rot4(inv_stereo(p));
+    // v5: scale AFTER the rotation, before the DE — slice the tesseract
+    // with the breathing sphere of radius r(t). The composed map
+    // p -> r * G(t) * lift(p) has local Lipschitz constant r * lambda
+    // (lift conformal factor lambda, rotation isometric, scaling exactly
+    // r), so the conservative R^3 step divides by r as well. CLIP_R/TMAX
+    // are unaffected: marching still happens in the same projected ball.
+    let r = breath_r();
+    let q = r * rot4(inv_stereo(p));
     let d4 = menger4(q);
     let lambda = 2.0 / (1.0 + dot(p, p));
-    let dm = (d4 / lambda) * 0.6;
+    let dm = (d4 / (lambda * r)) * 0.6;
     let dclip = length(p) - CLIP_R;
     return max(dm, dclip);
 }
@@ -165,6 +280,13 @@ fn hsv2rgb(h: f32, s: f32, v: f32) -> vec3<f32> {
 // Saturation is subtly modulated by the (y,z)-plane angle as a faint
 // second visible 4D direction. Gamma-down deepens the hue so it survives
 // the additive light terms + ACES highlight rolloff.
+// v5 HUE NORMALIZATION: the DE now sees q_eval = r(t) * G(t) * q_lift with
+// |q_eval| = r(t), so q_eval.w spans [-r, r] and the old formula would
+// clip out of the hue range at r > 1 (and compress at r < 1). The caller
+// therefore passes the UNIT rotated point (q_eval / r == G(t) * q_lift),
+// which makes this formula exactly (q_eval.w / r + 1)/2 * 0.83 — the
+// rainbow stays in range at every radius. atan2(q.z, q.y) is
+// scale-invariant, so saturation is unaffected either way.
 fn surface_albedo(q: vec4<f32>) -> vec3<f32> {
     let hue = (q.w + 1.0) * 0.5 * 0.83;
     let xi2 = atan2(q.z, q.y);
@@ -214,7 +336,9 @@ fn soft_shadow(ro: vec3<f32>, rd: vec3<f32>, tmin: f32, tmax: f32, k: f32) -> f3
 
 fn shade(p: vec3<f32>, rd: vec3<f32>) -> vec3<f32> {
     let n = calc_normal(p);
-    let q = rot4(inv_stereo(p)); // rotated 4D surface point on S^3
+    // UNIT rotated 4D point (NOT scaled by r): this is q_eval / r(t), the
+    // v5 hue normalization — see surface_albedo.
+    let q = rot4(inv_stereo(p));
     let base = surface_albedo(q);
 
     // Key light tied to the (fixed) camera azimuth (offset ~63 degrees,

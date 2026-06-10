@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Render the animated hyper-Menger-on-S3 loop to an h264 mp4.
+# Render the Menger universe loop (intrinsic S^3 geodesic raymarch) to mp4.
 #
 # Renders FRAMES frames of shader.wgsl with shader-bench --time spanning one
-# exact LOOP_SECONDS loop (frame N is NOT rendered twice: t goes 0 .. LOOP*(N-1)/N
-# so the video tiles seamlessly), then encodes with ffmpeg.
+# exact LOOP_SECONDS loop (frame N is NOT rendered twice: t goes
+# 0 .. LOOP*(N-1)/N so the video tiles seamlessly), then encodes with ffmpeg.
 #
 # Usage: ./render_video.sh            (720 frames, 30 fps, 24 s, 1024px)
 #        FRAMES=180 SIZE=512 ./render_video.sh   (quick preview)
@@ -15,7 +15,7 @@ FRAMES="${FRAMES:-720}"
 FPS="${FPS:-30}"
 LOOP_SECONDS="${LOOP_SECONDS:-24.0}"  # must match LOOP_SECONDS in shader.wgsl
 SIZE="${SIZE:-1024}"
-OUT="${OUT:-menger_3sphere.mp4}"
+OUT="${OUT:-menger_universe.mp4}"
 
 BENCH="$(cd ../../shader_harness && pwd)/target/release/shader-bench"
 if [[ ! -x "$BENCH" ]]; then
