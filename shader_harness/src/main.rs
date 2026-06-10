@@ -2,14 +2,24 @@ use clap::Parser;
 use std::{borrow::Cow, fs, path::PathBuf, time::Instant};
 
 // GPU-aligned struct for uniform buffer
-// CRITICAL: Matches WGSL_CONSTRAINT_SPEC.md section 2.3 contract:
-//   @group(0) @binding(0) var<uniform> Params: Params;
-//   struct Params { resolution: vec2<f32>, ... }
+// CRITICAL: Matches the prompt-spec contract in llm_harness/language_specs.py:
+//   @group(0) @binding(0) var<uniform> params: Params;
+//   struct Params { resolution: vec2<f32>, time: f32, aspect: f32 }
+//
+// June 2026 bug fix: these last two fields used to be zero-filled `_padding`.
+// The prompt spec suggested models could declare `time`/`aspect` fields, and a
+// GPU uniform binding is raw bytes with no field-name checking — so shaders
+// that declared them silently read 0.0. Any shader multiplying a coordinate
+// axis by `aspect` collapsed that axis into stripes (a whole class of
+// catastrophic benchmark failures across models, e.g. archimedean_spiral_
+// galaxy). aspect=1.0 is the true value for our square render target; time=0.0
+// is the documented "single static frame" value.
 #[repr(C)]
 #[derive(Copy, Clone, Debug, bytemuck::Pod, bytemuck::Zeroable)]
 struct Params {
     resolution: [f32; 2],
-    _padding: [f32; 2],  // Align to 16 bytes (vec4 alignment requirement)
+    time: f32,   // defaults to 0.0 (static single-frame render); override with --time for animation frames
+    aspect: f32, // width/height — always 1.0 (square target)
 }
 
 /// Render WGSL shaders off-screen, save PNG + timings.
@@ -25,6 +35,10 @@ struct Opts {
     /// Width & height in pixels
     #[arg(short = 'z', long, default_value_t = 1024)]
     size: u32,
+    /// Time (seconds) fed to the shader uniform. Default 0.0 = the benchmark's
+    /// static single-frame contract; only animation renders should set this.
+    #[arg(short = 't', long, default_value_t = 0.0)]
+    time: f32,
 }
 
 fn main() {
@@ -60,7 +74,8 @@ fn main() {
     // WGSL contract: @group(0) @binding(0) var<uniform> Params: Params;
     let params = Params {
         resolution: [opts.size as f32, opts.size as f32],
-        _padding: [0.0, 0.0],
+        time: opts.time,
+        aspect: 1.0,
     };
 
     let uniform_buffer = device.create_buffer(&wgpu::BufferDescriptor {
