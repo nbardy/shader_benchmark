@@ -1,6 +1,20 @@
 {
-  "generated": "2026-05-05T18:35:18.447710+00:00",
+  "generated": "2026-06-10T05:43:08.312007+00:00",
   "models": [
+    {
+      "key": "claude-fable-5",
+      "label": "Claude Fable 5",
+      "run_id": "ee3dcad2_cli_claude_claude-fable-5_20260610_030343",
+      "model": "cli/claude:claude-fable-5",
+      "judge_model": "cli/codex:gpt-5.5:high",
+      "judge_models": [
+        "cli/codex:gpt-5.5:high",
+        "cli/claude:claude-opus-4-7",
+        "cli/gemini:gemini-3.1-pro-preview"
+      ],
+      "language": "wgsl",
+      "runtime": "wgpu"
+    },
     {
       "key": "claude-opus-4-7",
       "label": "Claude Opus 4.7",
@@ -448,6 +462,13 @@
   },
   "scores": {
     "braid_word_reduction_ribbons": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           83,
@@ -527,6 +548,13 @@
       }
     },
     "cellular_potts_tissue_folding": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           82,
@@ -564,34 +592,27 @@
       },
       "gemini-3.1-pro-preview": {
         "scores": [
-          10,
-          32,
-          9,
-          16,
-          13
+          44,
+          57,
+          38,
+          48,
+          46
         ],
-        "total": 80,
+        "total": 233,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            12,
-            45,
-            7,
-            18,
-            10
+            55,
+            72,
+            50,
+            61,
+            54
           ],
           "cli/claude:claude-opus-4-7": [
-            8,
-            22,
-            9,
-            15,
-            15
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            30,
-            10,
-            15,
-            15
+            32,
+            42,
+            25,
+            35,
+            38
           ]
         },
         "has_image": true,
@@ -599,34 +620,34 @@
       },
       "codex-gpt-5.5-high": {
         "scores": [
-          64,
-          64,
-          64,
-          64,
-          69
+          68,
+          75,
+          65,
+          70,
+          80
         ],
-        "total": 325,
+        "total": 358,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            82,
-            84,
-            79,
-            81,
+            78,
+            76,
+            80,
+            77,
             74
           ],
           "cli/claude:claude-opus-4-7": [
-            70,
-            74,
-            68,
-            72,
-            72
+            82,
+            79,
+            80,
+            78,
+            85
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            40,
-            35,
             45,
-            40,
-            60
+            70,
+            35,
+            55,
+            80
           ]
         },
         "has_image": true,
@@ -634,6 +655,41 @@
       }
     },
     "coxeter_reflection_kaleidoscope": {
+      "claude-fable-5": {
+        "scores": [
+          87,
+          86,
+          89,
+          86,
+          86
+        ],
+        "total": 434,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            74,
+            76,
+            80,
+            77,
+            70
+          ],
+          "cli/claude:claude-opus-4-7": [
+            86,
+            82,
+            88,
+            81,
+            87
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            100,
+            100,
+            100,
+            100,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
       "claude-opus-4-7": {
         "scores": [
           85,
@@ -671,34 +727,34 @@
       },
       "gemini-3.1-pro-preview": {
         "scores": [
-          3,
-          6,
-          2,
-          5,
-          7
+          80,
+          76,
+          77,
+          74,
+          80
         ],
-        "total": 23,
+        "total": 387,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            5,
-            8,
-            3,
-            7,
-            6
+            67,
+            58,
+            70,
+            56,
+            61
           ],
           "cli/claude:claude-opus-4-7": [
-            3,
-            5,
-            2,
-            3,
-            4
+            72,
+            74,
+            62,
+            70,
+            78
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            1,
-            5,
-            1,
-            5,
-            10
+            100,
+            95,
+            100,
+            95,
+            100
           ]
         },
         "has_image": true,
@@ -741,6 +797,13 @@
       }
     },
     "crystal_dislocation_network": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           87,
@@ -848,36 +911,43 @@
       }
     },
     "differentiable_rendering_ambiguity_landscape": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          13,
-          18,
-          9,
-          10,
-          10
+          86,
+          83,
+          86,
+          83,
+          85
         ],
-        "total": 60,
+        "total": 423,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            12,
-            28,
-            10,
-            14,
-            12
+            88,
+            82,
+            90,
+            79,
+            78
           ],
           "cli/claude:claude-opus-4-7": [
-            18,
-            15,
-            12,
-            10,
-            12
+            72,
+            70,
+            71,
+            72,
+            78
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            5,
-            5,
-            5
+            98,
+            96,
+            98,
+            97,
+            100
           ]
         },
         "has_image": true,
@@ -955,6 +1025,13 @@
       }
     },
     "earthquake_fault_slip_wavefronts": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           32,
@@ -1062,6 +1139,13 @@
       }
     },
     "error_correcting_code_decoding_landscape": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           85,
@@ -1169,6 +1253,13 @@
       }
     },
     "fractal_drum_eigenfunctions": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           81,
@@ -1248,36 +1339,43 @@
       }
     },
     "mean_curvature_flow_surgery": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          15,
-          19,
-          17,
-          21,
-          26
+          73,
+          73,
+          69,
+          71,
+          71
         ],
-        "total": 98,
+        "total": 357,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            8,
-            18,
-            5,
-            12,
-            8
+            76,
+            78,
+            73,
+            76,
+            68
           ],
           "cli/claude:claude-opus-4-7": [
-            22,
-            28,
-            20,
-            27,
-            30
+            48,
+            66,
+            40,
+            58,
+            45
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            15,
-            10,
-            25,
-            25,
-            40
+            95,
+            75,
+            95,
+            80,
+            100
           ]
         },
         "has_image": true,
@@ -1355,36 +1453,71 @@
       }
     },
     "minimal_surface_knot_boundaries": {
-      "claude-opus-4-7": {
+      "claude-fable-5": {
         "scores": [
-          8,
-          12,
-          6,
-          7,
-          13
+          74,
+          80,
+          68,
+          74,
+          83
         ],
-        "total": 46,
+        "total": 379,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            10,
-            18,
-            4,
-            6,
-            12
+            72,
+            80,
+            66,
+            76,
+            74
           ],
           "cli/claude:claude-opus-4-7": [
-            5,
-            8,
-            5,
-            6,
-            12
+            62,
+            74,
+            58,
+            68,
+            78
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            10,
-            15
+            88,
+            85,
+            80,
+            78,
+            96
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "claude-opus-4-7": {
+        "scores": [
+          37,
+          42,
+          32,
+          40,
+          52
+        ],
+        "total": 203,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            43,
+            47,
+            39,
+            45,
+            50
+          ],
+          "cli/claude:claude-opus-4-7": [
+            28,
+            38,
+            22,
+            30,
+            45
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            40,
+            40,
+            35,
+            45,
+            60
           ]
         },
         "has_image": true,
@@ -1462,6 +1595,13 @@
       }
     },
     "navier_stokes_vortex_reconnection": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": null,
         "total": null,
@@ -1471,34 +1611,34 @@
       },
       "gemini-3.1-pro-preview": {
         "scores": [
-          8,
-          13,
-          6,
-          7,
-          7
+          60,
+          62,
+          61,
+          57,
+          54
         ],
-        "total": 41,
+        "total": 294,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            5,
-            18,
-            2,
-            4,
-            3
+            68,
+            73,
+            67,
+            70,
+            62
           ],
           "cli/claude:claude-opus-4-7": [
-            8,
-            10,
-            5,
-            8,
-            7
+            48,
+            52,
+            50,
+            42,
+            40
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            10,
-            10
+            65,
+            60,
+            65,
+            60,
+            60
           ]
         },
         "has_image": true,
@@ -1541,6 +1681,13 @@
       }
     },
     "ocean_eddy_lcs": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           77,
@@ -1648,36 +1795,71 @@
       }
     },
     "optimal_transport_mass_flow_tubes": {
-      "claude-opus-4-7": {
+      "claude-fable-5": {
         "scores": [
-          12,
-          16,
-          9,
-          10,
-          11
+          87,
+          88,
+          87,
+          86,
+          85
         ],
-        "total": 58,
+        "total": 433,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            16,
-            24,
-            8,
-            10,
-            9
+            88,
+            87,
+            90,
+            85,
+            82
           ],
           "cli/claude:claude-opus-4-7": [
-            10,
-            15,
-            8,
-            9,
-            10
+            74,
+            76,
+            72,
+            72,
+            74
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            10,
-            15
+            100,
+            100,
+            100,
+            100,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "claude-opus-4-7": {
+        "scores": [
+          75,
+          75,
+          77,
+          72,
+          75
+        ],
+        "total": 374,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            78,
+            74,
+            82,
+            72,
+            76
+          ],
+          "cli/claude:claude-opus-4-7": [
+            48,
+            52,
+            50,
+            45,
+            50
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            98,
+            98,
+            100,
+            98,
+            100
           ]
         },
         "has_image": true,
@@ -1685,34 +1867,27 @@
       },
       "gemini-3.1-pro-preview": {
         "scores": [
-          11,
-          18,
-          7,
-          8,
-          9
+          84,
+          80,
+          86,
+          79,
+          81
         ],
-        "total": 53,
+        "total": 410,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            18,
-            35,
-            8,
-            10,
-            12
+            84,
+            80,
+            89,
+            82,
+            76
           ],
           "cli/claude:claude-opus-4-7": [
-            4,
-            8,
-            3,
-            3,
-            5
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            10,
-            10
+            84,
+            80,
+            83,
+            76,
+            86
           ]
         },
         "has_image": true,
@@ -1755,6 +1930,13 @@
       }
     },
     "polyrhythm_phase_torus": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           80,
@@ -1862,36 +2044,43 @@
       }
     },
     "protein_folding_energy_landscape": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          45,
-          24,
-          40,
-          25,
-          26
+          70,
+          64,
+          69,
+          65,
+          65
         ],
-        "total": 160,
+        "total": 333,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            37,
-            42,
-            34,
-            35,
-            24
+            74,
+            78,
+            72,
+            76,
+            58
           ],
           "cli/claude:claude-opus-4-7": [
-            14,
-            16,
-            22,
-            14,
-            18
+            52,
+            48,
+            50,
+            48,
+            52
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
             85,
-            15,
             65,
-            25,
-            35
+            85,
+            70,
+            85
           ]
         },
         "has_image": true,
@@ -1969,6 +2158,13 @@
       }
     },
     "qec_threshold_phase_diagram": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           72,
@@ -2048,6 +2244,13 @@
       }
     },
     "reaction_diffusion_nonorientable_surfaces": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           32,
@@ -2155,6 +2358,13 @@
       }
     },
     "riemann_surface_covering_sheets": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           80,
@@ -2234,6 +2444,13 @@
       }
     },
     "spinodal_decomposition_3d": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           83,
@@ -2341,6 +2558,13 @@
       }
     },
     "topological_quantum_code_defect_braiding": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           68,
@@ -2448,6 +2672,13 @@
       }
     },
     "reproduce_image": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           47,
@@ -2527,6 +2758,13 @@
       }
     },
     "reproduce_image_andrew_pons": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": null,
         "total": null,
@@ -2578,6 +2816,13 @@
       }
     },
     "reproduce_image_fabrice_villard": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           43,
@@ -2615,34 +2860,34 @@
       },
       "gemini-3.1-pro-preview": {
         "scores": [
-          20,
-          24,
-          14,
-          24,
-          9
+          27,
+          46,
+          36,
+          47,
+          26
         ],
-        "total": 91,
+        "total": 182,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            5,
-            12,
-            15,
-            10,
-            4
+            24,
+            58,
+            28,
+            60,
+            22
           ],
           "cli/claude:claude-opus-4-7": [
-            5,
-            10,
-            6,
-            8,
-            5
+            28,
+            40,
+            35,
+            45,
+            25
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            50,
-            50,
-            20,
-            54,
-            19
+            30,
+            40,
+            45,
+            35,
+            30
           ]
         },
         "has_image": true,
@@ -2685,6 +2930,13 @@
       }
     },
     "reproduce_image_jason_leung": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           19,
@@ -2792,6 +3044,13 @@
       }
     },
     "reproduce_image_javier_penas": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": null,
         "total": null,
@@ -2871,6 +3130,13 @@
       }
     },
     "reproduce_image_mark_basarab": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           40,
@@ -2978,6 +3244,13 @@
       }
     },
     "reproduce_image_photoholgic": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           34,
@@ -3085,6 +3358,13 @@
       }
     },
     "reproduce_image_rayul": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           58,
@@ -3164,6 +3444,13 @@
       }
     },
     "reproduce_image_sebastien_gabriel": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": null,
         "total": null,
@@ -3215,6 +3502,13 @@
       }
     },
     "reproduce_image_tim_stief": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": null,
         "total": null,
@@ -3294,6 +3588,13 @@
       }
     },
     "ackermann_function_growth": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           56,
@@ -3401,6 +3702,13 @@
       }
     },
     "al_khwarizmi_geometric_algebra": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           19,
@@ -3438,34 +3746,34 @@
       },
       "gemini-3.1-pro-preview": {
         "scores": [
-          5,
-          14,
-          3,
-          8,
-          3
+          11,
+          42,
+          12,
+          26,
+          10
         ],
-        "total": 33,
+        "total": 101,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            8,
-            28,
-            5,
-            10,
-            4
+            18,
+            42,
+            22,
+            35,
+            16
           ],
           "cli/claude:claude-opus-4-7": [
             5,
-            10,
+            20,
             3,
-            8,
-            4
+            12,
+            3
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            2,
-            5,
-            1,
-            5,
-            1
+            10,
+            65,
+            10,
+            30,
+            10
           ]
         },
         "has_image": true,
@@ -3508,6 +3816,13 @@
       }
     },
     "apollonian_gasket": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           29,
@@ -3615,6 +3930,13 @@
       }
     },
     "apollonius_conic_sections": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": null,
         "total": null,
@@ -3694,6 +4016,41 @@
       }
     },
     "archimedean_spiral_galaxy": {
+      "claude-fable-5": {
+        "scores": [
+          79,
+          83,
+          80,
+          72,
+          74
+        ],
+        "total": 388,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            68,
+            83,
+            62,
+            64,
+            59
+          ],
+          "cli/claude:claude-opus-4-7": [
+            68,
+            66,
+            78,
+            52,
+            62
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            100,
+            100,
+            100,
+            100,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
       "claude-opus-4-7": {
         "scores": [
           69,
@@ -3766,34 +4123,34 @@
       },
       "codex-gpt-5.5-high": {
         "scores": [
-          2,
-          7,
-          1,
-          2,
-          2
+          55,
+          52,
+          52,
+          39,
+          46
         ],
-        "total": 14,
+        "total": 244,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            4,
-            18,
-            1,
-            3,
-            2
+            56,
+            67,
+            44,
+            48,
+            46
           ],
           "cli/claude:claude-opus-4-7": [
-            2,
-            3,
-            2,
-            3,
-            2
+            38,
+            45,
+            32,
+            30,
+            33
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            1,
-            1,
-            1,
-            1,
-            1
+            70,
+            45,
+            80,
+            40,
+            60
           ]
         },
         "has_image": true,
@@ -3801,6 +4158,13 @@
       }
     },
     "archimedes_spiral": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           21,
@@ -3838,34 +4202,34 @@
       },
       "gemini-3.1-pro-preview": {
         "scores": [
-          3,
-          16,
-          1,
-          6,
-          2
+          4,
+          19,
+          2,
+          9,
+          3
         ],
-        "total": 28,
+        "total": 37,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
             4,
-            36,
+            22,
             1,
-            10,
-            2
+            8,
+            1
           ],
           "cli/claude:claude-opus-4-7": [
-            3,
-            8,
             2,
-            4,
+            20,
+            1,
+            8,
             2
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            1,
             5,
-            1,
+            15,
             5,
-            1
+            10,
+            5
           ]
         },
         "has_image": true,
@@ -3908,36 +4272,43 @@
       }
     },
     "barbell_dumbbell_shape": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          42,
-          51,
-          41,
-          42,
-          40
+          65,
+          57,
+          72,
+          55,
+          62
         ],
-        "total": 216,
+        "total": 311,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            8,
-            22,
-            5,
-            7,
-            5
+            74,
+            58,
+            84,
+            52,
+            65
           ],
           "cli/claude:claude-opus-4-7": [
-            22,
-            35,
-            18,
-            28,
-            20
+            72,
+            62,
+            82,
+            62,
+            70
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            95,
-            95,
-            100,
-            90,
-            95
+            50,
+            50,
+            50,
+            50,
+            50
           ]
         },
         "has_image": true,
@@ -3987,36 +4358,43 @@
       }
     },
     "binary_tree_fractal": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          29,
-          25,
-          32,
-          18,
-          27
+          79,
+          72,
+          90,
+          62,
+          82
         ],
-        "total": 131,
+        "total": 385,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            2,
-            8,
-            1,
-            1,
-            1
+            76,
+            64,
+            91,
+            55,
+            82
           ],
           "cli/claude:claude-opus-4-7": [
-            4,
-            8,
-            10,
-            4,
-            4
+            62,
+            58,
+            78,
+            42,
+            65
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            80,
-            60,
-            85,
-            50,
-            75
+            100,
+            95,
+            100,
+            90,
+            100
           ]
         },
         "has_image": true,
@@ -4094,6 +4472,13 @@
       }
     },
     "brahmagupta_cyclic_quadrilaterals": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           70,
@@ -4201,6 +4586,13 @@
       }
     },
     "braided_rope": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           64,
@@ -4308,6 +4700,13 @@
       }
     },
     "butterfly_curve": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           57,
@@ -4415,36 +4814,43 @@
       }
     },
     "calabi_yau_manifold": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          6,
-          12,
-          4,
-          6,
-          5
+          26,
+          51,
+          33,
+          46,
+          31
         ],
-        "total": 33,
+        "total": 187,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            6,
-            12,
-            1,
-            3,
-            2
+            24,
+            56,
+            25,
+            43,
+            22
           ],
           "cli/claude:claude-opus-4-7": [
-            3,
-            15,
-            2,
-            4,
-            3
+            38,
+            68,
+            48,
+            70,
+            55
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            10,
-            10
+            15,
+            30,
+            25,
+            25,
+            15
           ]
         },
         "has_image": true,
@@ -4494,6 +4900,13 @@
       }
     },
     "capsule_shape": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           52,
@@ -4601,36 +5014,43 @@
       }
     },
     "cardioid_limacon_collection": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          85,
-          87,
-          91,
-          81,
-          81
+          89,
+          89,
+          93,
+          84,
+          85
         ],
-        "total": 425,
+        "total": 440,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            82,
             88,
-            90,
-            76,
-            74
+            91,
+            93,
+            84,
+            82
           ],
           "cli/claude:claude-opus-4-7": [
             78,
-            74,
-            82,
+            76,
+            85,
             68,
             72
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            95,
-            98,
             100,
-            98,
-            96
+            100,
+            100,
+            100,
+            100
           ]
         },
         "has_image": true,
@@ -4708,6 +5128,13 @@
       }
     },
     "catenoid_helicoid_minimal": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           82,
@@ -4752,34 +5179,34 @@
       },
       "codex-gpt-5.5-high": {
         "scores": [
-          13,
-          16,
-          26,
-          9,
-          9
+          56,
+          43,
+          78,
+          38,
+          54
         ],
-        "total": 73,
+        "total": 269,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            18,
-            22,
-            35,
-            8,
-            10
+            72,
+            58,
+            76,
+            54,
+            68
           ],
           "cli/claude:claude-opus-4-7": [
-            10,
-            15,
-            22,
-            8,
-            8
+            42,
+            32,
+            62,
+            30,
+            40
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            20,
-            10,
-            10
+            55,
+            40,
+            95,
+            30,
+            55
           ]
         },
         "has_image": true,
@@ -4787,6 +5214,13 @@
       }
     },
     "chinese_remainder_sunzi": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           49,
@@ -4894,6 +5328,13 @@
       }
     },
     "chinese_remainder_theorem": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           68,
@@ -4931,34 +5372,34 @@
       },
       "gemini-3.1-pro-preview": {
         "scores": [
-          2,
-          3,
-          2,
-          2,
-          2
+          52,
+          36,
+          62,
+          46,
+          42
         ],
-        "total": 11,
+        "total": 238,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            2,
-            5,
-            3,
-            2,
-            2
+            42,
+            34,
+            55,
+            43,
+            36
           ],
           "cli/claude:claude-opus-4-7": [
-            2,
-            3,
-            2,
-            2,
-            2
+            58,
+            38,
+            62,
+            45,
+            45
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            1,
-            1,
-            1,
-            1,
-            1
+            55,
+            35,
+            70,
+            50,
+            45
           ]
         },
         "has_image": true,
@@ -4973,6 +5414,13 @@
       }
     },
     "chladni_patterns": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           74,
@@ -5052,6 +5500,13 @@
       }
     },
     "complex_analysis_stained_glass": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           48,
@@ -5159,6 +5614,13 @@
       }
     },
     "compound_polyhedra_stella_octangula": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           72,
@@ -5266,6 +5728,13 @@
       }
     },
     "conformal_spiral_mapping": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           63,
@@ -5373,6 +5842,13 @@
       }
     },
     "costa_minimal_surface": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": null,
         "total": null,
@@ -5382,33 +5858,33 @@
       },
       "gemini-3.1-pro-preview": {
         "scores": [
-          5,
-          4,
-          4,
-          4,
-          4
+          25,
+          48,
+          13,
+          29,
+          15
         ],
-        "total": 21,
+        "total": 130,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            3,
-            1,
-            1,
-            1,
-            1
+            31,
+            72,
+            14,
+            48,
+            12
           ],
           "cli/claude:claude-opus-4-7": [
-            2,
-            2,
-            2,
-            2,
-            2
+            28,
+            48,
+            15,
+            20,
+            22
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
+            15,
+            25,
             10,
-            10,
-            10,
-            10,
+            20,
             10
           ]
         },
@@ -5452,6 +5928,13 @@
       }
     },
     "crystal_lattice_diffraction": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           85,
@@ -5559,6 +6042,13 @@
       }
     },
     "cycloid_wave_patterns": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           81,
@@ -5666,36 +6156,43 @@
       }
     },
     "cylindrical_bend_deformation": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          17,
-          18,
-          22,
-          11,
-          14
+          71,
+          65,
+          85,
+          51,
+          60
         ],
-        "total": 82,
+        "total": 332,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            18,
-            24,
-            30,
-            10,
-            14
+            78,
+            66,
+            84,
+            55,
+            61
           ],
           "cli/claude:claude-opus-4-7": [
-            22,
-            20,
+            55,
+            42,
+            72,
             32,
-            18,
-            18
+            45
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            5,
-            5,
-            10
+            80,
+            88,
+            98,
+            65,
+            75
           ]
         },
         "has_image": true,
@@ -5773,36 +6270,43 @@
       }
     },
     "differential_equations_water": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          13,
-          17,
-          11,
-          12,
-          12
+          22,
+          31,
+          19,
+          24,
+          21
         ],
-        "total": 65,
+        "total": 117,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
             24,
-            31,
+            46,
             18,
-            20,
+            31,
             22
           ],
           "cli/claude:claude-opus-4-7": [
-            6,
-            10,
-            5,
-            7,
-            5
+            22,
+            26,
+            24,
+            20,
+            20
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            10,
-            10
+            20,
+            20,
+            15,
+            20,
+            20
           ]
         },
         "has_image": true,
@@ -5880,6 +6384,13 @@
       }
     },
     "dna_double_helix": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           53,
@@ -5959,6 +6470,13 @@
       }
     },
     "epicycloids": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           95,
@@ -6066,6 +6584,13 @@
       }
     },
     "euler_polyhedron_formula": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           64,
@@ -6103,34 +6628,27 @@
       },
       "gemini-3.1-pro-preview": {
         "scores": [
-          8,
-          10,
-          6,
-          6,
-          7
+          12,
+          20,
+          9,
+          11,
+          8
         ],
-        "total": 37,
+        "total": 60,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
+            15,
+            24,
             8,
-            12,
-            5,
-            4,
-            6
+            10,
+            9
           ],
           "cli/claude:claude-opus-4-7": [
-            5,
             8,
-            3,
-            4,
-            4
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
+            15,
             10,
-            10,
-            10,
-            10,
-            10
+            12,
+            8
           ]
         },
         "has_image": true,
@@ -6138,34 +6656,27 @@
       },
       "codex-gpt-5.5-high": {
         "scores": [
-          21,
-          31,
-          15,
-          18,
-          18
+          26,
+          34,
+          19,
+          24,
+          22
         ],
-        "total": 103,
+        "total": 125,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
             38,
             45,
             28,
-            32,
-            35
+            34,
+            31
           ],
           "cli/claude:claude-opus-4-7": [
-            10,
+            14,
             22,
-            8,
-            12,
-            10
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
+            10,
             15,
-            25,
-            10,
-            10,
-            10
+            12
           ]
         },
         "has_image": true,
@@ -6173,6 +6684,13 @@
       }
     },
     "euler_polyhedron_platonic": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": null,
         "total": null,
@@ -6224,6 +6742,13 @@
       }
     },
     "fermat_parabolic_spiral": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           76,
@@ -6331,6 +6856,13 @@
       }
     },
     "five_pointed_star_polygon": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           85,
@@ -6438,6 +6970,13 @@
       }
     },
     "fourier_architectural_blueprint": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           39,
@@ -6545,6 +7084,13 @@
       }
     },
     "fourier_epicycles_drawing": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           77,
@@ -6652,36 +7198,43 @@
       }
     },
     "fractal_loxodromic_patterns": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          11,
-          24,
-          8,
-          14,
-          10
+          52,
+          59,
+          48,
+          54,
+          49
         ],
-        "total": 67,
+        "total": 262,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            18,
-            42,
-            10,
-            20,
-            14
+            57,
+            78,
+            48,
+            65,
+            50
           ],
           "cli/claude:claude-opus-4-7": [
-            6,
-            10,
-            4,
-            8,
-            5
+            48,
+            50,
+            45,
+            46,
+            47
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            20,
-            10,
-            15,
-            10
+            50,
+            50,
+            50,
+            50,
+            50
           ]
         },
         "has_image": true,
@@ -6759,6 +7312,13 @@
       }
     },
     "fractal_tree_2d": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           76,
@@ -6866,6 +7426,13 @@
       }
     },
     "gauss_complex_plane": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           74,
@@ -6945,36 +7512,71 @@
       }
     },
     "geometric_cube": {
-      "claude-opus-4-7": {
+      "claude-fable-5": {
         "scores": [
-          7,
-          18,
-          5,
-          10,
-          5
+          92,
+          94,
+          89,
+          93,
+          91
         ],
-        "total": 45,
+        "total": 459,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            8,
-            22,
-            6,
-            9,
-            5
+            84,
+            90,
+            74,
+            88,
+            82
           ],
           "cli/claude:claude-opus-4-7": [
-            8,
-            22,
-            7,
-            15,
-            8
+            93,
+            92,
+            94,
+            91,
+            92
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            5,
-            10,
-            1,
-            5,
-            1
+            100,
+            100,
+            100,
+            100,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
+      "claude-opus-4-7": {
+        "scores": [
+          91,
+          92,
+          88,
+          91,
+          90
+        ],
+        "total": 452,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            82,
+            88,
+            76,
+            85,
+            80
+          ],
+          "cli/claude:claude-opus-4-7": [
+            90,
+            88,
+            93,
+            89,
+            91
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            100,
+            100,
+            95,
+            100,
+            100
           ]
         },
         "has_image": true,
@@ -7052,6 +7654,13 @@
       }
     },
     "glass_sphere_red_core": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           46,
@@ -7159,6 +7768,13 @@
       }
     },
     "group_theory_kaleidoscope": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           58,
@@ -7266,6 +7882,13 @@
       }
     },
     "gyroscopic_nested_rings": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           75,
@@ -7373,6 +7996,13 @@
       }
     },
     "helical_twist_deformation": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": null,
         "total": null,
@@ -7452,36 +8082,43 @@
       }
     },
     "helical_twisted_cube_advanced": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          8,
-          17,
-          9,
-          6,
-          16
+          74,
+          82,
+          76,
+          59,
+          72
         ],
-        "total": 56,
+        "total": 363,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            8,
-            22,
-            5,
-            8,
-            20
+            55,
+            76,
+            54,
+            30,
+            42
           ],
           "cli/claude:claude-opus-4-7": [
-            15,
-            20,
-            22,
-            10,
-            18
+            72,
+            80,
+            74,
+            62,
+            74
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            1,
-            10,
-            1,
-            1,
-            10
+            95,
+            90,
+            100,
+            85,
+            100
           ]
         },
         "has_image": true,
@@ -7559,6 +8196,13 @@
       }
     },
     "holographic_interference": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           44,
@@ -7666,6 +8310,41 @@
       }
     },
     "hopf_fibration_base_loops": {
+      "claude-fable-5": {
+        "scores": [
+          28,
+          70,
+          26,
+          35,
+          49
+        ],
+        "total": 208,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            38,
+            76,
+            24,
+            39,
+            42
+          ],
+          "cli/claude:claude-opus-4-7": [
+            16,
+            55,
+            14,
+            22,
+            45
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            30,
+            80,
+            40,
+            45,
+            60
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
       "claude-opus-4-7": {
         "scores": [
           26,
@@ -7703,34 +8382,34 @@
       },
       "gemini-3.1-pro-preview": {
         "scores": [
-          1,
-          8,
-          1,
-          2,
-          2
+          63,
+          78,
+          60,
+          74,
+          56
         ],
-        "total": 14,
+        "total": 331,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            2,
-            15,
-            1,
-            3,
-            2
+            70,
+            82,
+            58,
+            81,
+            52
           ],
           "cli/claude:claude-opus-4-7": [
-            1,
-            3,
-            1,
-            2,
-            2
+            25,
+            55,
+            22,
+            40,
+            30
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            1,
-            5,
-            1,
-            1,
-            1
+            95,
+            98,
+            100,
+            100,
+            85
           ]
         },
         "has_image": true,
@@ -7773,6 +8452,41 @@
       }
     },
     "hyper_menger_cube_3sphere": {
+      "claude-fable-5": {
+        "scores": [
+          78,
+          79,
+          79,
+          66,
+          76
+        ],
+        "total": 378,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            63,
+            68,
+            60,
+            43,
+            55
+          ],
+          "cli/claude:claude-opus-4-7": [
+            72,
+            74,
+            78,
+            58,
+            72
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            98,
+            95,
+            100,
+            98,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
       "claude-opus-4-7": {
         "scores": [
           30,
@@ -7880,6 +8594,13 @@
       }
     },
     "hyperbolic_heat_kernel": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           63,
@@ -7987,36 +8708,43 @@
       }
     },
     "icosahedron_wireframe": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          8,
-          16,
-          8,
-          8,
-          6
+          74,
+          85,
+          64,
+          49,
+          57
         ],
-        "total": 46,
+        "total": 329,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            10,
-            18,
-            8,
-            8,
-            7
+            76,
+            82,
+            58,
+            48,
+            57
           ],
           "cli/claude:claude-opus-4-7": [
-            5,
-            15,
-            5,
-            12,
-            5
+            72,
+            82,
+            68,
+            55,
+            60
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            15,
-            10,
-            5,
-            5
+            75,
+            90,
+            65,
+            45,
+            55
           ]
         },
         "has_image": true,
@@ -8031,31 +8759,31 @@
       },
       "codex-gpt-5.5-high": {
         "scores": [
-          6,
-          16,
-          5,
-          4,
-          4
+          48,
+          68,
+          35,
+          32,
+          32
         ],
-        "total": 35,
+        "total": 215,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            1,
-            4,
-            3,
-            1,
-            1
+            52,
+            73,
+            34,
+            39,
+            32
           ],
           "cli/claude:claude-opus-4-7": [
-            2,
-            5,
-            3,
-            1,
-            1
+            72,
+            76,
+            62,
+            48,
+            55
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            15,
-            40,
+            20,
+            55,
             10,
             10,
             10
@@ -8066,36 +8794,43 @@
       }
     },
     "klein_bottle": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          7,
-          15,
-          7,
-          11,
-          7
+          42,
+          44,
+          41,
+          41,
+          35
         ],
-        "total": 47,
+        "total": 203,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            4,
-            18,
-            1,
-            3,
-            1
+            39,
+            43,
+            31,
+            34,
+            29
           ],
           "cli/claude:claude-opus-4-7": [
-            8,
-            18,
-            10,
-            15,
-            10
+            22,
+            48,
+            28,
+            30,
+            22
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            15,
-            10
+            65,
+            40,
+            65,
+            60,
+            55
           ]
         },
         "has_image": true,
@@ -8173,6 +8908,13 @@
       }
     },
     "lissajous_curve_garden": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           63,
@@ -8280,36 +9022,43 @@
       }
     },
     "logarithmic_spiral_motion": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          33,
-          33,
-          34,
-          29,
-          34
+          49,
+          39,
+          68,
+          39,
+          52
         ],
-        "total": 163,
+        "total": 247,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            2,
-            1,
-            3,
-            1,
-            2
+            56,
+            61,
+            74,
+            42,
+            55
           ],
           "cli/claude:claude-opus-4-7": [
-            3,
-            2,
-            3,
-            2,
-            2
+            32,
+            22,
+            35,
+            24,
+            30
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
+            60,
+            35,
             95,
-            95,
-            96,
-            85,
-            98
+            50,
+            70
           ]
         },
         "has_image": true,
@@ -8387,36 +9136,43 @@
       }
     },
     "lorenz_attractor_poincare": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          7,
-          11,
-          6,
-          6,
-          8
+          40,
+          27,
+          36,
+          25,
+          33
         ],
-        "total": 38,
+        "total": 161,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            8,
-            12,
-            5,
-            4,
-            6
+            52,
+            48,
+            39,
+            38,
+            37
           ],
           "cli/claude:claude-opus-4-7": [
-            4,
-            5,
-            3,
-            3,
-            4
+            38,
+            18,
+            40,
+            22,
+            38
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
+            30,
             15,
-            10,
-            10,
-            15
+            30,
+            15,
+            25
           ]
         },
         "has_image": true,
@@ -8494,36 +9250,43 @@
       }
     },
     "loxodromic_sphere_spirals": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          6,
-          11,
-          5,
-          7,
-          5
+          89,
+          88,
+          91,
+          88,
+          89
         ],
-        "total": 34,
+        "total": 445,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            4,
-            18,
-            2,
-            6,
-            2
+            88,
+            91,
+            91,
+            87,
+            86
           ],
           "cli/claude:claude-opus-4-7": [
-            4,
-            5,
-            3,
-            5,
-            3
+            82,
+            78,
+            85,
+            80,
+            83
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            10,
-            10
+            98,
+            96,
+            97,
+            98,
+            98
           ]
         },
         "has_image": true,
@@ -8601,6 +9364,13 @@
       }
     },
     "mandala_circles": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           81,
@@ -8708,6 +9478,41 @@
       }
     },
     "mandelbulb_fractal": {
+      "claude-fable-5": {
+        "scores": [
+          79,
+          77,
+          85,
+          69,
+          76
+        ],
+        "total": 386,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            76,
+            72,
+            82,
+            59,
+            67
+          ],
+          "cli/claude:claude-opus-4-7": [
+            62,
+            58,
+            74,
+            48,
+            62
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            100,
+            100,
+            100,
+            100,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
       "claude-opus-4-7": {
         "scores": [
           5,
@@ -8780,27 +9585,27 @@
       },
       "codex-gpt-5.5-high": {
         "scores": [
-          6,
-          8,
-          5,
-          7,
-          5
+          42,
+          38,
+          49,
+          28,
+          38
         ],
-        "total": 31,
+        "total": 195,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            6,
-            12,
-            2,
-            8,
-            3
+            68,
+            63,
+            76,
+            43,
+            58
           ],
           "cli/claude:claude-opus-4-7": [
-            2,
-            3,
-            2,
-            3,
-            2
+            48,
+            40,
+            62,
+            32,
+            45
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
             10,
@@ -8815,36 +9620,43 @@
       }
     },
     "menger_cube_fractal": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          3,
-          6,
-          2,
-          6,
-          2
+          81,
+          70,
+          88,
+          62,
+          73
         ],
-        "total": 19,
+        "total": 374,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            5,
-            8,
-            3,
-            4,
-            2
+            67,
+            52,
+            76,
+            41,
+            58
           ],
           "cli/claude:claude-opus-4-7": [
-            3,
-            5,
-            2,
-            5,
-            3
+            82,
+            68,
+            88,
+            55,
+            70
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            1,
-            5,
-            1,
-            10,
-            1
+            95,
+            90,
+            100,
+            90,
+            90
           ]
         },
         "has_image": true,
@@ -8922,6 +9734,13 @@
       }
     },
     "menger_sponge_fractal": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           9,
@@ -9029,6 +9848,13 @@
       }
     },
     "mobius_strip_half_twist": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           79,
@@ -9136,6 +9962,13 @@
       }
     },
     "mobius_strip_triple_twist": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           85,
@@ -9243,36 +10076,43 @@
       }
     },
     "mobius_transformation_3d": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          6,
-          1,
-          17,
-          1,
-          2
+          61,
+          56,
+          73,
+          58,
+          54
         ],
-        "total": 27,
+        "total": 302,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            12,
-            1,
-            45,
-            1,
-            3
+            57,
+            60,
+            64,
+            49,
+            43
           ],
           "cli/claude:claude-opus-4-7": [
-            4,
-            2,
-            5,
-            2,
-            2
+            40,
+            22,
+            58,
+            30,
+            32
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            1,
-            1,
-            1,
-            1,
-            1
+            85,
+            85,
+            98,
+            95,
+            88
           ]
         },
         "has_image": true,
@@ -9315,34 +10155,27 @@
       },
       "codex-gpt-5.5-high": {
         "scores": [
-          7,
-          9,
-          13,
-          6,
-          7
+          44,
+          42,
+          54,
+          38,
+          40
         ],
-        "total": 42,
+        "total": 218,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            5,
-            12,
-            8,
-            3,
-            2
+            47,
+            55,
+            50,
+            39,
+            34
           ],
           "cli/claude:claude-opus-4-7": [
-            5,
-            6,
-            22,
-            6,
-            10
-          ],
-          "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            10,
-            10
+            42,
+            30,
+            58,
+            38,
+            45
           ]
         },
         "has_image": true,
@@ -9350,36 +10183,43 @@
       }
     },
     "number_theory_music": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          9,
-          11,
-          9,
-          9,
-          8
+          47,
+          31,
+          44,
+          35,
+          38
         ],
-        "total": 46,
+        "total": 195,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            10,
-            12,
-            8,
-            7,
-            6
+            38,
+            32,
+            27,
+            35,
+            26
           ],
           "cli/claude:claude-opus-4-7": [
-            8,
-            10,
-            10,
-            9,
-            8
+            32,
+            22,
+            30,
+            25,
+            22
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            10,
-            10
+            70,
+            40,
+            75,
+            45,
+            65
           ]
         },
         "has_image": true,
@@ -9429,6 +10269,13 @@
       }
     },
     "octagram_star_polygon": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           77,
@@ -9536,6 +10383,13 @@
       }
     },
     "parametric_gear_train": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           68,
@@ -9615,6 +10469,13 @@
       }
     },
     "parametric_seashell": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           63,
@@ -9722,6 +10583,13 @@
       }
     },
     "penrose_tiling_p3": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           61,
@@ -9829,36 +10697,43 @@
       }
     },
     "phyllotaxis_spiral": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          7,
-          19,
-          15,
-          6,
-          7
+          70,
+          88,
+          75,
+          81,
+          79
         ],
-        "total": 54,
+        "total": 393,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            10,
-            35,
-            18,
-            8,
-            10
+            72,
+            88,
+            75,
+            80,
+            70
           ],
           "cli/claude:claude-opus-4-7": [
-            7,
-            12,
-            22,
-            6,
-            6
+            72,
+            80,
+            76,
+            74,
+            74
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            5,
-            10,
-            5,
-            5,
-            5
+            65,
+            95,
+            75,
+            88,
+            92
           ]
         },
         "has_image": true,
@@ -9901,34 +10776,34 @@
       },
       "codex-gpt-5.5-high": {
         "scores": [
-          4,
-          17,
-          17,
-          6,
-          5
+          62,
+          70,
+          68,
+          60,
+          67
         ],
-        "total": 49,
+        "total": 327,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            8,
-            35,
-            42,
-            12,
-            10
+            76,
+            86,
+            80,
+            68,
+            76
           ],
           "cli/claude:claude-opus-4-7": [
-            4,
-            15,
-            8,
-            6,
-            4
+            80,
+            78,
+            83,
+            76,
+            79
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            1,
-            1,
-            1,
-            1,
-            1
+            30,
+            45,
+            40,
+            35,
+            45
           ]
         },
         "has_image": true,
@@ -9936,6 +10811,13 @@
       }
     },
     "poincare_disc": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           94,
@@ -10043,6 +10925,13 @@
       }
     },
     "prime_crystal_lattice": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           57,
@@ -10122,6 +11011,13 @@
       }
     },
     "probability_weather_patterns": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           30,
@@ -10229,6 +11125,13 @@
       }
     },
     "quantum_probability_waves": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           81,
@@ -10336,6 +11239,13 @@
       }
     },
     "ramanujan_mock_theta": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           57,
@@ -10443,6 +11353,13 @@
       }
     },
     "reaction_diffusion_patterns": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           12,
@@ -10550,6 +11467,13 @@
       }
     },
     "regular_dodecahedron": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           87,
@@ -10657,6 +11581,13 @@
       }
     },
     "regular_icosahedron": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           93,
@@ -10764,6 +11695,13 @@
       }
     },
     "regular_octahedron": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           91,
@@ -10871,36 +11809,43 @@
       }
     },
     "regular_tetrahedron": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          12,
-          13,
-          16,
-          9,
-          9
+          77,
+          62,
+          91,
+          61,
+          76
         ],
-        "total": 59,
+        "total": 367,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            22,
-            18,
-            32,
-            10,
-            12
+            76,
+            46,
+            92,
+            44,
+            75
           ],
           "cli/claude:claude-opus-4-7": [
-            5,
-            10,
-            5,
-            6,
-            4
+            55,
+            48,
+            82,
+            42,
+            52
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            10,
-            10
+            100,
+            92,
+            100,
+            96,
+            100
           ]
         },
         "has_image": true,
@@ -10978,6 +11923,13 @@
       }
     },
     "riemann_surface_branch_cuts": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           73,
@@ -11085,6 +12037,13 @@
       }
     },
     "riemann_zeta_zeros": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": null,
         "total": null,
@@ -11136,6 +12095,13 @@
       }
     },
     "rose_curves": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           75,
@@ -11243,6 +12209,13 @@
       }
     },
     "rotating_hypercube_projection": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           69,
@@ -11350,36 +12323,43 @@
       }
     },
     "rounded_box": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          20,
-          35,
-          19,
-          50,
-          23
+          93,
+          90,
+          94,
+          89,
+          88
         ],
-        "total": 147,
+        "total": 454,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            22,
-            38,
-            18,
-            42,
-            15
+            88,
+            86,
+            90,
+            84,
+            82
           ],
           "cli/claude:claude-opus-4-7": [
-            22,
-            48,
-            28,
-            52,
-            30
+            90,
+            88,
+            92,
+            87,
+            82
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            15,
-            20,
-            10,
-            55,
-            25
+            100,
+            95,
+            100,
+            95,
+            100
           ]
         },
         "has_image": true,
@@ -11457,6 +12437,13 @@
       }
     },
     "schwarzschild_black_hole": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           67,
@@ -11494,27 +12481,27 @@
       },
       "gemini-3.1-pro-preview": {
         "scores": [
-          36,
-          35,
-          37,
-          34,
-          35
+          79,
+          79,
+          78,
+          81,
+          73
         ],
-        "total": 177,
+        "total": 390,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            5,
-            3,
-            8,
-            1,
-            2
+            62,
+            59,
+            58,
+            66,
+            47
           ],
           "cli/claude:claude-opus-4-7": [
-            2,
-            2,
-            2,
-            2,
-            2
+            76,
+            78,
+            75,
+            76,
+            72
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
             100,
@@ -11564,6 +12551,13 @@
       }
     },
     "sierpinski_tetrahedron": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           37,
@@ -11671,6 +12665,41 @@
       }
     },
     "sierpinski_triangle_6_iterations": {
+      "claude-fable-5": {
+        "scores": [
+          94,
+          92,
+          94,
+          91,
+          89
+        ],
+        "total": 460,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            91,
+            86,
+            88,
+            84,
+            76
+          ],
+          "cli/claude:claude-opus-4-7": [
+            92,
+            91,
+            93,
+            90,
+            92
+          ],
+          "cli/gemini:gemini-3.1-pro-preview": [
+            100,
+            100,
+            100,
+            100,
+            100
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
+      },
       "claude-opus-4-7": {
         "scores": [
           94,
@@ -11778,36 +12807,43 @@
       }
     },
     "spherical_inversion_mapping": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          4,
-          15,
-          2,
-          3,
-          6
+          48,
+          29,
+          50,
+          38,
+          65
         ],
-        "total": 30,
+        "total": 230,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            5,
-            35,
-            2,
-            4,
-            12
+            58,
+            36,
+            62,
+            34,
+            48
           ],
           "cli/claude:claude-opus-4-7": [
-            5,
-            4,
-            3,
-            5,
-            4
+            55,
+            32,
+            58,
+            40,
+            48
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            1,
-            5,
-            1,
-            1,
-            1
+            30,
+            20,
+            30,
+            40,
+            100
           ]
         },
         "has_image": true,
@@ -11885,6 +12921,13 @@
       }
     },
     "spinning_gear_assembly": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           83,
@@ -11992,36 +13035,43 @@
       }
     },
     "spinning_vortex_funnel": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          12,
-          15,
-          8,
-          9,
-          12
+          67,
+          69,
+          59,
+          67,
+          65
         ],
-        "total": 56,
+        "total": 327,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            22,
-            28,
-            12,
-            14,
-            20
+            60,
+            73,
+            34,
+            67,
+            48
           ],
           "cli/claude:claude-opus-4-7": [
-            5,
-            8,
-            3,
-            4,
-            5
+            52,
+            50,
+            48,
+            45,
+            52
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            10,
-            10
+            90,
+            85,
+            95,
+            90,
+            95
           ]
         },
         "has_image": true,
@@ -12099,6 +13149,13 @@
       }
     },
     "spiral_staircase_tower": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": null,
         "total": null,
@@ -12150,6 +13207,13 @@
       }
     },
     "stella_octangula": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           95,
@@ -12229,6 +13293,13 @@
       }
     },
     "superformula_explorer": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           79,
@@ -12301,34 +13372,34 @@
       },
       "codex-gpt-5.5-high": {
         "scores": [
-          9,
-          18,
-          21,
-          9,
-          9
+          70,
+          66,
+          69,
+          64,
+          66
         ],
-        "total": 66,
+        "total": 335,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            8,
-            28,
-            18,
-            10,
-            6
+            56,
+            63,
+            61,
+            55,
+            39
           ],
           "cli/claude:claude-opus-4-7": [
-            8,
-            12,
-            30,
-            8,
-            10
+            70,
+            60,
+            76,
+            62,
+            68
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            15,
-            15,
-            10,
-            10
+            85,
+            75,
+            70,
+            75,
+            90
           ]
         },
         "has_image": true,
@@ -12336,6 +13407,13 @@
       }
     },
     "taper_shear_transformation": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": null,
         "total": null,
@@ -12387,36 +13465,43 @@
       }
     },
     "topology_fabric_texture": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          7,
-          15,
-          6,
-          6,
-          6
+          10,
+          24,
+          10,
+          9,
+          10
         ],
-        "total": 40,
+        "total": 63,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
+            12,
+            34,
             6,
-            24,
-            3,
-            4,
-            3
+            7,
+            6
           ],
           "cli/claude:claude-opus-4-7": [
-            6,
-            10,
-            4,
-            4,
-            4
+            8,
+            22,
+            9,
+            9,
+            10
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
             10,
+            15,
+            15,
             10,
-            10,
-            10,
-            10
+            15
           ]
         },
         "has_image": true,
@@ -12494,6 +13579,13 @@
       }
     },
     "torus_donut_parametric": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": null,
         "total": null,
@@ -12503,34 +13595,34 @@
       },
       "gemini-3.1-pro-preview": {
         "scores": [
-          5,
-          11,
-          13,
-          8,
-          7
+          82,
+          69,
+          88,
+          73,
+          77
         ],
-        "total": 44,
+        "total": 389,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            5,
-            18,
-            8,
-            6,
-            4
+            84,
+            78,
+            88,
+            82,
+            76
           ],
           "cli/claude:claude-opus-4-7": [
-            8,
-            12,
-            30,
-            18,
-            15
+            72,
+            68,
+            82,
+            62,
+            70
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            1,
-            2,
-            1,
-            1,
-            2
+            90,
+            60,
+            95,
+            75,
+            85
           ]
         },
         "has_image": true,
@@ -12573,6 +13665,13 @@
       }
     },
     "trefoil_alexander_polynomial": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           39,
@@ -12652,6 +13751,13 @@
       }
     },
     "trigonometric_mandalas": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           83,
@@ -12759,6 +13865,13 @@
       }
     },
     "truncated_icosahedron": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           47,
@@ -12866,6 +13979,13 @@
       }
     },
     "twisted_stellated_polyhedron": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           53,
@@ -12945,6 +14065,13 @@
       }
     },
     "voronoi_diagram": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           88,
@@ -13024,36 +14151,43 @@
       }
     },
     "wave_deformation_field": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
-          21,
-          22,
-          23,
-          20,
-          18
+          90,
+          86,
+          93,
+          88,
+          86
         ],
-        "total": 104,
+        "total": 443,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            34,
-            42,
-            48,
-            30,
-            28
+            84,
+            81,
+            92,
+            82,
+            77
           ],
           "cli/claude:claude-opus-4-7": [
-            18,
-            15,
-            15,
-            14,
-            15
+            87,
+            84,
+            89,
+            86,
+            84
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            5,
-            15,
-            10
+            98,
+            92,
+            98,
+            95,
+            98
           ]
         },
         "has_image": true,
@@ -13096,34 +14230,34 @@
       },
       "codex-gpt-5.5-high": {
         "scores": [
-          18,
-          13,
-          25,
-          12,
-          18
+          74,
+          59,
+          86,
+          56,
+          66
         ],
-        "total": 86,
+        "total": 341,
         "scores_by_judge": {
           "cli/codex:gpt-5.5:high": [
-            34,
-            22,
-            42,
-            18,
-            31
+            78,
+            74,
+            82,
+            62,
+            76
           ],
           "cli/claude:claude-opus-4-7": [
-            10,
-            8,
-            22,
-            9,
-            12
+            78,
+            72,
+            80,
+            70,
+            78
           ],
           "cli/gemini:gemini-3.1-pro-preview": [
-            10,
-            10,
-            10,
-            10,
-            10
+            65,
+            30,
+            95,
+            35,
+            45
           ]
         },
         "has_image": true,
@@ -13131,6 +14265,13 @@
       }
     },
     "weierstrass_function": {
+      "claude-fable-5": {
+        "scores": null,
+        "total": null,
+        "scores_by_judge": null,
+        "has_image": false,
+        "status": "missing"
+      },
       "claude-opus-4-7": {
         "scores": [
           74,
@@ -13239,16 +14380,41 @@
     }
   },
   "summary": {
+    "claude-fable-5": {
+      "ok": 9,
+      "permanent_fail": 0,
+      "total": 9,
+      "avg_total_filtered": 391.6666666666667,
+      "avg_total_with_zeros": 391.6666666666667,
+      "avg_total_by_judge_filtered": {
+        "cli/codex:gpt-5.5:high": 357.77777777777777,
+        "cli/claude:claude-opus-4-7": 354.22222222222223,
+        "cli/gemini:gemini-3.1-pro-preview": 463.6666666666667
+      },
+      "judge_score_counts": {
+        "cli/codex:gpt-5.5:high": 9,
+        "cli/claude:claude-opus-4-7": 9,
+        "cli/gemini:gemini-3.1-pro-preview": 9
+      },
+      "best_problem": {
+        "name": "sierpinski_triangle_6_iterations",
+        "total": 460
+      },
+      "worst_problem": {
+        "name": "hopf_fibration_base_loops",
+        "total": 208
+      }
+    },
     "claude-opus-4-7": {
       "ok": 117,
       "permanent_fail": 13,
       "total": 130,
-      "avg_total_filtered": 261.28205128205127,
-      "avg_total_with_zeros": 235.15384615384616,
+      "avg_total_filtered": 317.86324786324786,
+      "avg_total_with_zeros": 286.0769230769231,
       "avg_total_by_judge_filtered": {
-        "cli/codex:gpt-5.5:high": 252.8803418803419,
-        "cli/claude:claude-opus-4-7": 236.25641025641025,
-        "cli/gemini:gemini-3.1-pro-preview": 294.79487179487177
+        "cli/codex:gpt-5.5:high": 308.63247863247864,
+        "cli/claude:claude-opus-4-7": 287.8888888888889,
+        "cli/gemini:gemini-3.1-pro-preview": 357.0854700854701
       },
       "judge_score_counts": {
         "cli/codex:gpt-5.5:high": 117,
@@ -13260,25 +14426,25 @@
         "total": 476
       },
       "worst_problem": {
-        "name": "menger_cube_fractal",
-        "total": 19
+        "name": "mandelbulb_fractal",
+        "total": 31
       }
     },
     "gemini-3.1-pro-preview": {
       "ok": 111,
       "permanent_fail": 19,
       "total": 130,
-      "avg_total_filtered": 262.39639639639637,
-      "avg_total_with_zeros": 224.04615384615386,
+      "avg_total_filtered": 285.1801801801802,
+      "avg_total_with_zeros": 243.5,
       "avg_total_by_judge_filtered": {
-        "cli/codex:gpt-5.5:high": 259.47747747747746,
-        "cli/claude:claude-opus-4-7": 221.02702702702703,
-        "cli/gemini:gemini-3.1-pro-preview": 306.55855855855856
+        "cli/codex:gpt-5.5:high": 283.64864864864865,
+        "cli/claude:claude-opus-4-7": 242.45045045045046,
+        "cli/gemini:gemini-3.1-pro-preview": 331.9259259259259
       },
       "judge_score_counts": {
         "cli/codex:gpt-5.5:high": 111,
         "cli/claude:claude-opus-4-7": 111,
-        "cli/gemini:gemini-3.1-pro-preview": 111
+        "cli/gemini:gemini-3.1-pro-preview": 108
       },
       "best_problem": {
         "name": "epicycloids",
@@ -13293,25 +14459,25 @@
       "ok": 122,
       "permanent_fail": 8,
       "total": 130,
-      "avg_total_filtered": 258.07377049180326,
-      "avg_total_with_zeros": 242.19230769230768,
+      "avg_total_filtered": 272.8524590163934,
+      "avg_total_with_zeros": 256.0615384615385,
       "avg_total_by_judge_filtered": {
-        "cli/codex:gpt-5.5:high": 277.4590163934426,
-        "cli/claude:claude-opus-4-7": 219.5,
-        "cli/gemini:gemini-3.1-pro-preview": 277.60655737704917
+        "cli/codex:gpt-5.5:high": 292.6311475409836,
+        "cli/claude:claude-opus-4-7": 235.827868852459,
+        "cli/gemini:gemini-3.1-pro-preview": 292.35833333333335
       },
       "judge_score_counts": {
         "cli/codex:gpt-5.5:high": 122,
         "cli/claude:claude-opus-4-7": 122,
-        "cli/gemini:gemini-3.1-pro-preview": 122
+        "cli/gemini:gemini-3.1-pro-preview": 120
       },
       "best_problem": {
         "name": "five_pointed_star_polygon",
         "total": 466
       },
       "worst_problem": {
-        "name": "archimedean_spiral_galaxy",
-        "total": 14
+        "name": "coxeter_reflection_kaleidoscope",
+        "total": 22
       }
     }
   }

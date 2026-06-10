@@ -1,3 +1,4 @@
+import asyncio
 import os
 import base64
 import re
@@ -198,7 +199,11 @@ class Judge:
         """Score the shader image. Routes to OpenRouter or a local CLI based
         on `judge_model` (`cli/...` → CLI). Returns (scores, usage)."""
         if self.is_cli_judge:
-            return self._evaluate_via_cli(judge_prompt, context)
+            # to_thread is load-bearing: _evaluate_via_cli blocks on
+            # subprocess.run, which would freeze the event loop and serialize
+            # every judge in the panel. The 4-slot CLI judge semaphore in the
+            # harness only delivers real concurrency because of this hop.
+            return await asyncio.to_thread(self._evaluate_via_cli, judge_prompt, context)
         return await self._evaluate_via_openrouter(judge_prompt, context)
 
     async def _evaluate_via_openrouter(self, judge_prompt: str, context: EvaluationContext) -> Tuple[List[int], Dict[str, Any]]:
@@ -478,9 +483,22 @@ class Judge:
             '--output-format', 'text',
             '--no-session-persistence',
             '--allowedTools', 'Read',
+            # Same rationale as the gen path: skip-permissions auto-approves
+            # everything, so only an explicit disallow list actually blocks
+            # the judge from writing files.
+            '--disallowedTools', 'Write,Edit,NotebookEdit,Bash',
         ]
         if self.cli_judge_model_q:
             cmd += ['--model', self.cli_judge_model_q]
+        if self.cli_judge_extra:
+            # Spec extra slot = reasoning effort, same convention as the
+            # codex judge (cli/claude:<model>:<effort> -> --effort <effort>).
+            cmd += ['--effort', self.cli_judge_extra]
+        # Same opt-in as the gen path: --bare stops claude -p from auto-
+        # loading repo + user CLAUDE.md into the judge's context. Off by
+        # default for comparability with the published judge panels.
+        if os.environ.get('SHADER_BENCH_CLAUDE_BARE') == '1':
+            cmd += ['--bare']
         try:
             result = subprocess.run(
                 cmd, input=prompt, capture_output=True, text=True,

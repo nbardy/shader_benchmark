@@ -40,6 +40,14 @@ DOCS = REPO / "docs"
 # the hub points to.
 RUNS = [
     {
+        "key": "claude-fable-5",
+        "label": "Claude Fable 5",
+        "run_dirs": [
+            "ee3dcad2_cli_claude_claude-fable-5_20260610_030343",  # first 5 problems (effort: high, CLI default)
+            "2cebf07b_cli_claude_claude-fable-5_high_20260610_033742",  # 4 frontier/4D problems (effort recorded in spec)
+        ],
+    },
+    {
         "key": "claude-opus-4-7",
         "label": "Claude Opus 4.7",
         "run_dirs": [

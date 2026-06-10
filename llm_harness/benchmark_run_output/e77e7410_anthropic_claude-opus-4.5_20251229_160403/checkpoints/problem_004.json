@@ -26,7 +26,7 @@
         "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/e77e7410_anthropic_claude-opus-4.5_20251229_160403/results/004_archimedean_spiral_galaxy/artifacts/result.png"
       }
     },
-    "judge": {
+    "judge:anthropic_claude-3.5-haiku": {
       "status": "complete",
       "timestamp": "2025-12-29T16:11:57.126977",
       "data": {
@@ -38,7 +38,8 @@
           0
         ],
         "failure_reason": "ALL_BLACK",
-        "judge_skipped": true
+        "judge_skipped": true,
+        "judge_model": "anthropic/claude-3.5-haiku"
       }
     }
   },

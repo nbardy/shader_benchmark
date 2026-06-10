@@ -105,6 +105,66 @@ source ~/.cargo/env && which cargo  # Should show: /Users/username/.cargo/bin/ca
 bash -c "source ~/.cargo/env && which cargo"  # Should show same path
 ```
 
+## CLI Model Backends (`cli/...` specs) — June 2026 notes
+
+The harness can use local CLIs as generators/judges: `cli/claude:<model>[:<effort>]`,
+`cli/codex:<model>[:<effort>]`, `cli/gemini[:<model>]`. These bill the local
+subscription (Anthropic Max / ChatGPT / Google AI Pro), not OpenRouter credits.
+
+Subtle issues fixed in June 2026 (see comments at the code sites):
+
+- **Event-loop blocking (was: everything serial)**: the CLI executors call
+  blocking `subprocess.run` inside `async def`. Without `asyncio.to_thread`
+  (now in `llm_client.py CliExecutor.execute` and `judge.py Judge.evaluate`)
+  every CLI call froze the event loop, so generation and the judge panel ran
+  strictly one-at-a-time and checkpoint files lagged behind reality.
+- **Usage recording**: the claude gen path now uses `--output-format json`
+  and records real token counts per generation (thinking is billed as output
+  tokens), plus `cost_usd_equivalent` (API-equivalent price; `cost` stays 0.0
+  because subscription runs spend no OpenRouter credits) and the raw usage
+  envelope. Older runs (incl. all published columns + the first fable run
+  `ee3dcad2`) have zeroed usage.
+- **Reasoning effort**: encode it in the spec (`cli/claude:claude-fable-5:high`
+  → `--effort high`) so it's recorded in `config.json`/run-dir name. Fable 5
+  always uses extended thinking; effort (`low|medium|high|xhigh|max`, CLI
+  default `high`) is the only knob. The `ee3dcad2` fable run predates this and
+  ran at the default; its config.json is annotated post-hoc.
+- **CLAUDE.md contamination (known, deliberately kept)**: `claude -p` without
+  `--bare` auto-loads this repo's CLAUDE.md (which describes the scoring
+  system) + the user's global CLAUDE.md into the model under test. All
+  published columns ran that way, so bare mode is opt-in for comparability:
+  set `SHADER_BENCH_CLAUDE_BARE=1` (applies to claude gen + judge calls) for
+  future clean re-runs. gemini stages work in a tempdir so it never saw the
+  repo; codex would read AGENTS.md but the repo has none.
+
+Publishing: `tools/build_docs.py` has a hardcoded `RUNS` list — add a model
+entry with one or more `run_dirs` (partial runs merge per-problem; later
+dirs override earlier ones) and re-run it to regenerate `docs/`.
+
+## The uniform-padding trap (fixed June 2026)
+
+The biggest scoring artifact found to date: `shader_harness` zero-filled the
+last 8 bytes of the Params uniform buffer while the prompt spec INVITED
+models to declare `time`/`aspect` fields there ("Add your float32 fields
+here"). GPU uniform bindings are raw bytes with no field-name checking, so
+those fields silently read 0.0 — and any shader multiplying a coordinate
+axis by `aspect` collapsed into stripes (the recurring "stripe failure"
+look), while `/aspect` produced NaN/black frames. 56 stored renders across
+all models were affected (~18% of the published benchmark), including
+several headline "mystery failures" (Opus geometric_cube 45, Codex
+archimedean_spiral_galaxy 14).
+
+Fix: `shader_harness/src/main.rs` now writes `time=0.0, aspect=1.0` and the
+spec in `language_specs.py` states the exact struct instead of inviting new
+fields. `tools/rerender_uniform_fix.py` is the one-off heal: re-renders
+cached shaders, pixel-compares, and with `--apply` swaps changed images
+(backup: `result_pre_uniform_fix.png`) and resets their `judge:*` checkpoint
+stages so `benchmark_harness.py --resume <run_dir>` re-judges only them.
+
+Related smaller gotcha (open): `judge.py _parse_scores` falls back to
+scavenging "any 5 numbers" from prose when no `<scores>` block parses —
+a silent fallback that can fabricate scores from a malformed judge response.
+
 ## Scoring System Architecture
 
 ### Current State: Multi-Criteria Structured Evaluation

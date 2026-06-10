@@ -163,17 +163,21 @@ fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
 
 BIND GROUP CONTRACT:
 ---------------------------------------------
-All uniforms must use this structure (modify contents, not layout):
+The runtime provides EXACTLY this uniform struct — these are the only
+values that exist. Do NOT add other fields; they would silently read
+garbage (the buffer is raw bytes with no field-name checking).
 
 @group(0) @binding(0) var<uniform> params: Params;
 
 struct Params {
-    // Add your float32 fields here
-    // Example:
-    // time: f32,
-    // aspect: f32,
-    // resolution: vec2<f32>,
+    resolution: vec2<f32>,  // render target size in pixels (square)
+    time: f32,              // always 0.0 — you are rendering ONE static frame
+    aspect: f32,            // width/height — always 1.0 (square target)
 };
+
+You may declare a shorter prefix of this struct (e.g. resolution only),
+but never reorder fields or invent new ones. Design for a static image:
+animation driven by `time` will be frozen at t=0.
 
 TYPE REQUIREMENTS:
 ---------------------------------------------
@@ -201,10 +205,23 @@ CRITICAL WGSL OPERATORS (⚠️ COMPILATION FAILURES):
    ✅ CORRECT:   let value = select(false_val, true_val, condition);
    ❌ WRONG:     let value = if (condition) { true_val } else { false_val };
 
+⚠️ RUNTIME ARRAY INDEXING: an array you index with a loop variable or any
+   runtime value MUST be declared as `var`, NOT `let`/`const` — naga fails
+   with "may only be indexed by a constant" otherwise.
+   ✅ CORRECT:   var seeds: array<vec2<f32>, 8> = array<vec2<f32>, 8>(...);
+                 let d = length(uv - seeds[i]);
+   ❌ WRONG:     let seeds = array<vec2<f32>, 8>(...);   // ← compile error
+                 let d = length(uv - seeds[i]);          //   when i is runtime
+
 WGSL RESERVED KEYWORDS (⚠️ DO NOT USE AS VARIABLE NAMES):
 ---------------------------------------------
-⚠️ Reserved words: target, handle, using, namespace, typedef
-   Use alternatives: target_pos, target_point, focal_point, aim_vector, handle_obj, etc.
+⚠️ WGSL reserves MANY ordinary English words. These have all caused real
+   compile failures: target, active, pass, module, macro, handle, filter,
+   common, final, new, type, set, get, self, this, import, export, match,
+   ref, union, static, std, meta, demote, resource, attribute, layout,
+   precise, smooth, shared, public, mod
+   Use suffixed alternatives: target_pos, active_flag, pass_idx, module_id,
+   filter_w, set_v, type_id, etc. When in doubt, suffix with _v.
 
 ⚠️ NEVER use underscore as identifier:
    ❌ WRONG:     let _ = some_function();

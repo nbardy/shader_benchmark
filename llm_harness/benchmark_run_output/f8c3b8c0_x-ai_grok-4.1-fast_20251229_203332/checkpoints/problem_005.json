@@ -26,7 +26,7 @@
         "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/f8c3b8c0_x-ai_grok-4.1-fast_20251229_203332/results/005_archimedes_spiral/artifacts/result.png"
       }
     },
-    "judge": {
+    "judge:anthropic_claude-3.5-haiku": {
       "status": "complete",
       "timestamp": "2025-12-29T20:58:28.397687",
       "data": {
@@ -36,7 +36,8 @@
           1,
           1,
           1
-        ]
+        ],
+        "judge_model": "anthropic/claude-3.5-haiku"
       }
     }
   },

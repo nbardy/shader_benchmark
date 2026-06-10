@@ -9,5 +9,14 @@
   "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d5c3460a_google_gemini-3-flash-preview_20251229_185850/results/008_brahmagupta_cyclic_quadrilaterals",
   "status": "completed",
   "execution_success": true,
-  "has_image": true
+  "has_image": true,
+  "scores_by_judge": {
+    "anthropic/claude-3.5-haiku": [
+      65,
+      75,
+      50,
+      55,
+      40
+    ]
+  }
 }

@@ -26,7 +26,7 @@
         "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/97fe1f08_anthropic_claude-haiku-4.5_20251026_154624/results/000_geometric_cube/artifacts/result.png"
       }
     },
-    "judge": {
+    "judge:anthropic_claude-haiku-4.5": {
       "status": "complete",
       "timestamp": "2025-10-26T15:46:54.756457",
       "data": {
@@ -36,7 +36,8 @@
           33,
           62,
           32
-        ]
+        ],
+        "judge_model": "anthropic/claude-haiku-4.5"
       }
     }
   },

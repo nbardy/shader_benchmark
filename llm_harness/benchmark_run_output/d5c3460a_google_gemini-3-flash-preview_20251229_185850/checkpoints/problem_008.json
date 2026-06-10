@@ -26,7 +26,7 @@
         "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d5c3460a_google_gemini-3-flash-preview_20251229_185850/results/008_brahmagupta_cyclic_quadrilaterals/artifacts/result.png"
       }
     },
-    "judge": {
+    "judge:anthropic_claude-3.5-haiku": {
       "status": "complete",
       "timestamp": "2025-12-29T19:01:23.710084",
       "data": {
@@ -36,7 +36,8 @@
           50,
           55,
           40
-        ]
+        ],
+        "judge_model": "anthropic/claude-3.5-haiku"
       }
     }
   },

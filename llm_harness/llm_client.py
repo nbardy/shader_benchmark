@@ -1,3 +1,4 @@
+import asyncio
 import os
 import requests
 import json
@@ -46,11 +47,16 @@ def parse_cli_spec(spec: str) -> Tuple[str, Optional[str], Optional[str]]:
     Examples:
       cli/claude                       -> ('claude', None, None)
       cli/claude:claude-opus-4-7       -> ('claude', 'claude-opus-4-7', None)
+      cli/claude:claude-fable-5:high   -> ('claude', 'claude-fable-5', 'high')
       cli/codex                        -> ('codex', None, None)
       cli/codex:gpt-5.5:high           -> ('codex', 'gpt-5.5', 'high')
 
-    The tool's per-CLI handler decides what `model`/`extra` mean (e.g. for
-    codex: `-m <model>` and `-c reasoning_effort=<extra>`).
+    The tool's per-CLI handler decides what `model`/`extra` mean (for codex:
+    `-m <model>` and `-c reasoning_effort=<extra>`; for claude:
+    `--model <model>` and `--effort <extra>`). Encode effort in the spec
+    rather than hardcoding flags: the spec string is what lands in
+    config.json and the run-dir name, so reasoning settings stay recorded
+    with the results.
     """
     if not spec.startswith('cli/'):
         raise ValueError(f"Not a CLI spec: {spec!r}")
@@ -96,12 +102,17 @@ class CliExecutor(LLMExecutor):
         label = f"cli/{tool}" + (f":{model}" if model else "") + (f":{extra}" if extra else "")
         print(f"🚀 Using local CLI runner: {label}")
 
+        # to_thread is load-bearing: these handlers call blocking
+        # subprocess.run, which would otherwise freeze the event loop and
+        # serialize the whole pipeline (one CLI call at a time, including
+        # checkpoint writes lagging behind reality). The harness semaphores
+        # only provide real concurrency because of this hop.
         if tool == 'claude':
-            return self._run_claude(full_prompt, reference_image_path, model)
+            return await asyncio.to_thread(self._run_claude, full_prompt, reference_image_path, model, extra)
         if tool == 'codex':
-            return self._run_codex(full_prompt, reference_image_path, model, extra)
+            return await asyncio.to_thread(self._run_codex, full_prompt, reference_image_path, model, extra)
         if tool == 'gemini':
-            return self._run_gemini(full_prompt, reference_image_path, model)
+            return await asyncio.to_thread(self._run_gemini, full_prompt, reference_image_path, model)
         raise Exception(f"Unsupported CLI runner: cli/{tool}")
 
     def _base_env(self) -> Dict[str, str]:
@@ -125,21 +136,44 @@ class CliExecutor(LLMExecutor):
         )
 
     def _run_claude(self, full_prompt: str, reference_image_path: Optional[str],
-                    model: Optional[str] = None) -> Tuple[str, Dict[str, Any]]:
+                    model: Optional[str] = None,
+                    effort: Optional[str] = None) -> Tuple[str, Dict[str, Any]]:
         prompt = full_prompt
         if reference_image_path:
             prompt = self._append_image_instruction(prompt, str(Path(reference_image_path).absolute()), 'Read')
-        # --allowedTools Read keeps the agent from acting on the prompt's
-        # `<shader file="shader.wgsl">` output marker as a Write instruction.
+        # --disallowedTools is the actual guard against the agent writing
+        # shader.wgsl to disk instead of returning it inline: with
+        # --dangerously-skip-permissions every tool is AUTO-APPROVED, so
+        # --allowedTools Read alone restricts nothing (it's an approval
+        # allowlist, not a tool restriction). Several published-run failures
+        # were the agent replying "I've written shader.wgsl..." with prose
+        # in the shader tags. Disallow wins over allow in Claude Code.
+        # --output-format json (vs text) is how we get usage: the json result
+        # envelope carries token counts (incl. thinking, billed as output)
+        # and total_cost_usd. text mode reports nothing.
         cmd = [
             'claude', '-p',
             '--dangerously-skip-permissions',
-            '--output-format', 'text',
+            '--output-format', 'json',
             '--no-session-persistence',
             '--allowedTools', 'Read',
+            '--disallowedTools', 'Write,Edit,NotebookEdit,Bash',
         ]
         if model:
             cmd += ['--model', model]
+        if effort:
+            # Reasoning effort (low|medium|high|xhigh|max). Unset = CLI
+            # default (high). Fable 5 always thinks; effort is the only knob.
+            cmd += ['--effort', effort]
+        # Benchmark-validity vs comparability tradeoff: without --bare,
+        # claude -p auto-loads CLAUDE.md from cwd (this repo — which
+        # documents the scoring system) plus the user's global CLAUDE.md.
+        # The published Opus/Gemini/Codex columns all ran WITHOUT --bare, so
+        # bare mode is opt-in to keep new columns apples-to-apples; set it
+        # for any future full re-run. (gemini avoids repo contamination by
+        # running from a tempdir; codex would read AGENTS.md but none exists.)
+        if os.environ.get('SHADER_BENCH_CLAUDE_BARE') == '1':
+            cmd += ['--bare']
         try:
             result = subprocess.run(
                 cmd, input=prompt, capture_output=True, text=True,
@@ -149,7 +183,39 @@ class CliExecutor(LLMExecutor):
             raise Exception("claude CLI timed out after 1800s")
         if result.returncode != 0:
             raise Exception(f"claude CLI failed (exit {result.returncode}): {(result.stderr or '')[:1000]}")
-        return result.stdout, dict(_ZERO_USAGE)
+        return self._parse_claude_json_envelope(result.stdout)
+
+    @staticmethod
+    def _parse_claude_json_envelope(stdout: str) -> Tuple[str, Dict[str, Any]]:
+        """Unpack `claude -p --output-format json` into (text, usage).
+
+        Usage keys follow the OpenRouter shape the rest of the harness
+        consumes; `cost` stays 0.0 because CLI runs bill the subscription,
+        not OpenRouter — the API-equivalent price is preserved separately as
+        `cost_usd_equivalent`, and the untouched envelope usage block as
+        `raw_usage` (field names vary across CLI versions).
+        """
+        try:
+            envelope = json.loads(stdout)
+        except json.JSONDecodeError as e:
+            raise Exception(f"claude CLI returned unparseable JSON envelope: {e}: {stdout[:500]}")
+        if envelope.get('subtype') != 'success':
+            raise Exception(f"claude CLI reported failure envelope: {str(envelope)[:1000]}")
+        text = envelope.get('result')
+        if not isinstance(text, str) or not text:
+            raise Exception(f"claude CLI envelope has no result text: {str(envelope)[:500]}")
+        usage = envelope.get('usage') or {}
+        prompt_tokens = usage.get('input_tokens', 0)
+        completion_tokens = usage.get('output_tokens', 0)
+        return text, {
+            'prompt_tokens': prompt_tokens,
+            'completion_tokens': completion_tokens,
+            'total_tokens': prompt_tokens + completion_tokens,
+            'cost': 0.0,
+            'cached_tokens': usage.get('cache_read_input_tokens', 0),
+            'cost_usd_equivalent': envelope.get('total_cost_usd', 0.0),
+            'raw_usage': usage,
+        }
 
     def _run_codex(self, full_prompt: str, reference_image_path: Optional[str],
                    model: Optional[str] = None, reasoning_effort: Optional[str] = None) -> Tuple[str, Dict[str, Any]]:

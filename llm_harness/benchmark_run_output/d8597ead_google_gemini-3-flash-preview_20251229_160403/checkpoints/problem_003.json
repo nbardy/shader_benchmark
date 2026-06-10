@@ -26,7 +26,7 @@
         "image_path": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/d8597ead_google_gemini-3-flash-preview_20251229_160403/results/003_apollonius_conic_sections/artifacts/result.png"
       }
     },
-    "judge": {
+    "judge:anthropic_claude-3.5-haiku": {
       "status": "complete",
       "timestamp": "2025-12-29T16:06:31.201659",
       "data": {
@@ -36,7 +36,8 @@
           55,
           60,
           50
-        ]
+        ],
+        "judge_model": "anthropic/claude-3.5-haiku"
       }
     }
   },

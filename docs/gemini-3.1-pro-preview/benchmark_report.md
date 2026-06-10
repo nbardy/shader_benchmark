@@ -1,7 +1,7 @@
 # Shader Benchmark Report
 
 **Model:** cli/gemini
-**Generated:** 2026-05-06 01:02:00
+**Generated:** 2026-06-10 13:20:00
 **Total Tests:** 91
 **Successful Renders:** 91
 **Success Rate:** 91/91 (100.0%)
@@ -15,12 +15,12 @@
 
 | Category | Average Score |
 |----------|---------------|
-| Mathematical Accuracy | 53.0/100 |
-| Visual Quality | 56.7/100 |
-| Color Implementation | 52.5/100 |
-| Geometric Completeness | 51.7/100 |
-| Reference Elements | 50.7/100 |
-| **Overall Average** | **52.9/100** |
+| Mathematical Accuracy | 55.9/100 |
+| Visual Quality | 60.1/100 |
+| Color Implementation | 55.6/100 |
+| Geometric Completeness | 55.1/100 |
+| Reference Elements | 53.3/100 |
+| **Overall Average** | **56.0/100** |
 
 ### Performance Highlights
 
@@ -151,13 +151,13 @@
 
 | Category | Score |
 |----------|-------|
-| Mathematical Accuracy | 5/100 |
-| Visual Quality | 14/100 |
-| Color Implementation | 3/100 |
-| Geometric Completeness | 8/100 |
-| Reference Elements | 3/100 |
-| **Total** | **33/500** |
-| **Average** | **6.6/100** |
+| Mathematical Accuracy | 11/100 |
+| Visual Quality | 42/100 |
+| Color Implementation | 12/100 |
+| Geometric Completeness | 26/100 |
+| Reference Elements | 10/100 |
+| **Total** | **101/500** |
+| **Average** | **20.2/100** |
 
 
 #### Rendered Output
@@ -426,13 +426,13 @@
 
 | Category | Score |
 |----------|-------|
-| Mathematical Accuracy | 3/100 |
-| Visual Quality | 16/100 |
-| Color Implementation | 1/100 |
-| Geometric Completeness | 6/100 |
-| Reference Elements | 2/100 |
-| **Total** | **28/500** |
-| **Average** | **5.6/100** |
+| Mathematical Accuracy | 4/100 |
+| Visual Quality | 19/100 |
+| Color Implementation | 2/100 |
+| Geometric Completeness | 9/100 |
+| Reference Elements | 3/100 |
+| **Total** | **37/500** |
+| **Average** | **7.4/100** |
 
 
 #### Rendered Output
@@ -894,13 +894,13 @@
 
 | Category | Score |
 |----------|-------|
-| Mathematical Accuracy | 2/100 |
-| Visual Quality | 3/100 |
-| Color Implementation | 2/100 |
-| Geometric Completeness | 2/100 |
-| Reference Elements | 2/100 |
-| **Total** | **11/500** |
-| **Average** | **2.2/100** |
+| Mathematical Accuracy | 52/100 |
+| Visual Quality | 36/100 |
+| Color Implementation | 62/100 |
+| Geometric Completeness | 46/100 |
+| Reference Elements | 42/100 |
+| **Total** | **238/500** |
+| **Average** | **47.6/100** |
 
 
 #### Rendered Output
@@ -1106,13 +1106,13 @@
 
 | Category | Score |
 |----------|-------|
-| Mathematical Accuracy | 5/100 |
-| Visual Quality | 4/100 |
-| Color Implementation | 4/100 |
-| Geometric Completeness | 4/100 |
-| Reference Elements | 4/100 |
-| **Total** | **21/500** |
-| **Average** | **4.2/100** |
+| Mathematical Accuracy | 25/100 |
+| Visual Quality | 48/100 |
+| Color Implementation | 13/100 |
+| Geometric Completeness | 29/100 |
+| Reference Elements | 15/100 |
+| **Total** | **130/500** |
+| **Average** | **26.0/100** |
 
 
 #### Rendered Output
@@ -1419,13 +1419,13 @@
 
 | Category | Score |
 |----------|-------|
-| Mathematical Accuracy | 8/100 |
-| Visual Quality | 10/100 |
-| Color Implementation | 6/100 |
-| Geometric Completeness | 6/100 |
-| Reference Elements | 7/100 |
-| **Total** | **37/500** |
-| **Average** | **7.4/100** |
+| Mathematical Accuracy | 12/100 |
+| Visual Quality | 20/100 |
+| Color Implementation | 9/100 |
+| Geometric Completeness | 11/100 |
+| Reference Elements | 8/100 |
+| **Total** | **60/500** |
+| **Average** | **12.0/100** |
 
 
 #### Rendered Output
@@ -2272,13 +2272,13 @@
 
 | Category | Score |
 |----------|-------|
-| Mathematical Accuracy | 1/100 |
-| Visual Quality | 8/100 |
-| Color Implementation | 1/100 |
-| Geometric Completeness | 2/100 |
-| Reference Elements | 2/100 |
-| **Total** | **14/500** |
-| **Average** | **2.8/100** |
+| Mathematical Accuracy | 63/100 |
+| Visual Quality | 78/100 |
+| Color Implementation | 60/100 |
+| Geometric Completeness | 74/100 |
+| Reference Elements | 56/100 |
+| **Total** | **331/500** |
+| **Average** | **66.2/100** |
 
 
 #### Rendered Output
@@ -3879,13 +3879,13 @@
 
 | Category | Score |
 |----------|-------|
-| Mathematical Accuracy | 20/100 |
-| Visual Quality | 24/100 |
-| Color Implementation | 14/100 |
-| Geometric Completeness | 24/100 |
-| Reference Elements | 9/100 |
-| **Total** | **91/500** |
-| **Average** | **18.2/100** |
+| Mathematical Accuracy | 27/100 |
+| Visual Quality | 46/100 |
+| Color Implementation | 36/100 |
+| Geometric Completeness | 47/100 |
+| Reference Elements | 26/100 |
+| **Total** | **182/500** |
+| **Average** | **36.4/100** |
 
 
 #### Rendered Output
@@ -4198,13 +4198,13 @@
 
 | Category | Score |
 |----------|-------|
-| Mathematical Accuracy | 36/100 |
-| Visual Quality | 35/100 |
-| Color Implementation | 37/100 |
-| Geometric Completeness | 34/100 |
-| Reference Elements | 35/100 |
-| **Total** | **177/500** |
-| **Average** | **35.4/100** |
+| Mathematical Accuracy | 79/100 |
+| Visual Quality | 79/100 |
+| Color Implementation | 78/100 |
+| Geometric Completeness | 81/100 |
+| Reference Elements | 73/100 |
+| **Total** | **390/500** |
+| **Average** | **78.0/100** |
 
 
 #### Rendered Output
@@ -4674,13 +4674,13 @@
 
 | Category | Score |
 |----------|-------|
-| Mathematical Accuracy | 5/100 |
-| Visual Quality | 11/100 |
-| Color Implementation | 13/100 |
-| Geometric Completeness | 8/100 |
-| Reference Elements | 7/100 |
-| **Total** | **44/500** |
-| **Average** | **8.8/100** |
+| Mathematical Accuracy | 82/100 |
+| Visual Quality | 69/100 |
+| Color Implementation | 88/100 |
+| Geometric Completeness | 73/100 |
+| Reference Elements | 77/100 |
+| **Total** | **389/500** |
+| **Average** | **77.8/100** |
 
 
 #### Rendered Output

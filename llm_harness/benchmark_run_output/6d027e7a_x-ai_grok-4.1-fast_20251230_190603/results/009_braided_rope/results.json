@@ -9,5 +9,14 @@
   "test_folder": "/Users/nicholasbardy/git/shader_benchmark/llm_harness/benchmark_run_output/6d027e7a_x-ai_grok-4.1-fast_20251230_190603/results/009_braided_rope",
   "status": "completed",
   "execution_success": true,
-  "has_image": true
+  "has_image": true,
+  "scores_by_judge": {
+    "anthropic/claude-3.5-haiku": [
+      85,
+      90,
+      75,
+      88,
+      82
+    ]
+  }
 }

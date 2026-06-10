@@ -349,35 +349,39 @@ class TestRunner:
             # Save logs (automatically saves error_log if failed)
             save_subprocess_output(test_folder, "render", result, run_cmd)
 
-            if result.returncode != 0:
-                # COMPILE FAILED: Try to repair based on actual compiler error
+            # Repair loop: each WGSLRepair pass fixes exactly one reported
+            # error (e.g. one reserved keyword), and naga only reports the
+            # first error it hits — so a shader with several independent
+            # issues needs several rounds. Bounded to avoid ping-ponging on
+            # a repair that doesn't converge.
+            repair_round = 0
+            while result.returncode != 0 and repair_round < 4:
                 error_output = result.stderr + result.stdout
-                print(f"\n  ⚠️ Shader execution failed, attempting repair...")
+                print(f"\n  ⚠️ Shader execution failed, attempting repair (round {repair_round + 1})...")
                 print(f"  Error message (first 200 chars): {error_output[:200]}")
 
-                # Try repair if we detect a compilable error
-                if self._attempt_repair_and_retry(
+                if not self._attempt_repair_and_retry(
                     test_folder, main_shader, error_output, run_cmd
                 ):
-                    # Retry after repair
-                    result = await loop.run_in_executor(
-                        None,
-                        lambda: subprocess.run(
-                            ["bash", "-c", run_cmd],
-                            capture_output=True,
-                            text=True,
-                            timeout=60,
-                            cwd=str(test_folder),
-                        )
-                    )
-                    save_subprocess_output(test_folder, "render_retry", result, run_cmd)
-
-                    if result.returncode != 0:
-                        raise RuntimeError(
-                            f"Shader execution still failing after repair: {result.stderr[:500]}"
-                        )
-                else:
                     raise RuntimeError(f"Shader execution failed: {result.stderr[:500]}")
+
+                repair_round += 1
+                result = await loop.run_in_executor(
+                    None,
+                    lambda: subprocess.run(
+                        ["bash", "-c", run_cmd],
+                        capture_output=True,
+                        text=True,
+                        timeout=60,
+                        cwd=str(test_folder),
+                    )
+                )
+                save_subprocess_output(test_folder, f"render_retry{repair_round}", result, run_cmd)
+
+            if result.returncode != 0:
+                raise RuntimeError(
+                    f"Shader execution still failing after {repair_round} repair round(s): {result.stderr[:500]}"
+                )
 
             # Check output was generated
             if not output_path.exists():
@@ -402,7 +406,7 @@ class TestRunner:
         # Repair was successful - write back to file
         with open(shader_path, 'w') as f:
             f.write(repaired)
-        print(f"  ✅ Applied repair - removed duplicate definitions")
+        print(f"  ✅ Applied repair")
         return True
 
     async def run_test(self, test_folder: Path) -> Path:

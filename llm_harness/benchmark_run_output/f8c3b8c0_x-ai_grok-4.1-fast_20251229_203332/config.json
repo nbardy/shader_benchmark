@@ -17,5 +17,8 @@
   ],
   "total_problems": 10,
   "max_parallel": 100,
-  "created": "2025-12-29T20:33:32.077298"
+  "created": "2025-12-29T20:33:32.077298",
+  "judge_models": [
+    "anthropic/claude-3.5-haiku"
+  ]
 }

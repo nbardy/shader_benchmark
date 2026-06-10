@@ -17,8 +17,11 @@ class WGSLRepair:
     - _fix_underscore_identifier: _ → _unused
     """
 
-    # WGSL reserved keywords (from WGSL spec 2024)
-    RESERVED_KEYWORDS = {'target', 'handle', 'using', 'namespace', 'typedef', 'ref', 'ptr'}
+    # NOTE: reserved-keyword repair is error-driven (the offending name is
+    # parsed out of naga's message), NOT list-driven. A hardcoded list here
+    # used to cover only 7 words while naga reserves dozens (`active`,
+    # `pass`, `module`, `macro`, `filter`, ... caused real published-run
+    # render failures the list-based repair silently couldn't fix).
 
     def repair_from_error(self, code: str, error: str) -> str:
         """Apply fixes based on actual compiler error."""
@@ -37,7 +40,7 @@ class WGSLRepair:
 
         # Fix reserved keywords
         if "reserved keyword" in error:
-            return self._fix_reserved_keywords(code)
+            return self._fix_reserved_keywords(code, error)
 
         # Fix numeric overflow
         if "numeric literal not representable" in error:
@@ -140,19 +143,21 @@ class WGSLRepair:
         pattern = r'\bmod\s*\(\s*([^,]+)\s*,\s*([^)]+)\s*\)'
         return re.sub(pattern, r'(\1 % \2)', code)
 
-    def _fix_reserved_keywords(self, code: str) -> str:
-        """Rename WGSL reserved keywords by appending _var.
+    def _fix_reserved_keywords(self, code: str, error: str) -> str:
+        """Rename the reserved word naga actually complained about.
 
-        See HAIKU_ERROR_PATTERNS.md section 3: Reserved Keywords
+        naga's message is stable: "name `X` is a reserved keyword". Renaming
+        exactly that identifier (every occurrence, word-bounded) is
+        semantics-preserving and covers naga's whole reserved list without
+        maintaining one here. If the message doesn't match, return the code
+        unchanged so the caller reports "no repair possible" loudly.
         """
         import re
-        for keyword in self.RESERVED_KEYWORDS:
-            # Match keyword as complete word (variable name)
-            # Use word boundaries to avoid matching substrings
-            pattern = r'\b' + keyword + r'\b'
-            replacement = keyword + '_var'
-            code = re.sub(pattern, replacement, code)
-        return code
+        m = re.search(r"name `(\w+)` is a reserved keyword", error)
+        if not m:
+            return code
+        keyword = m.group(1)
+        return re.sub(r'\b' + re.escape(keyword) + r'\b', keyword + '_var', code)
 
     def _fix_numeric_overflow(self, code: str) -> str:
         """Replace numeric literals > 1e38 with f32 max (3.4e38).
@@ -189,8 +194,23 @@ class WGSLRepair:
 
 
 class ShaderParser:
+    # Content gate applied to every extraction path. Published-run failures
+    # included agentic CLIs replying `<shader file="shader.wgsl">(file
+    # written to .../shader.wgsl)</shader>` — a prose annotation instead of
+    # code — which sailed through tag extraction straight into the compiler
+    # (guaranteed render crash, scored as a model failure). Anything without
+    # a recognizable entrypoint marker is not shader code; rejecting it here
+    # makes parse_response raise "No shader files found", which marks the
+    # generate stage failed/retryable instead.
+    SHADER_MARKERS = ('@fragment', '@vertex', 'fn fs_main', 'fn vs_main',
+                      'mainImage', 'CGPROGRAM', 'SV_Target', 'Shader "')
+
     def __init__(self, language_spec: Optional[ShaderLanguageSpec] = None):
         self.language_spec = language_spec or WGSLSpec()
+
+    @classmethod
+    def _looks_like_shader(cls, content: str) -> bool:
+        return any(m in content for m in cls.SHADER_MARKERS)
 
     def parse_response(self, llm_response: str) -> Tuple[Dict[str, str], str]:
         """Extract shader files from LLM response."""
@@ -199,12 +219,15 @@ class ShaderParser:
 
         shader_pattern = r'<shader\s+file="([^"]+)">(.*?)</shader>'
         for filename, content in re.findall(shader_pattern, llm_response, re.DOTALL):
-            shaders[filename] = content.strip()
+            if self._looks_like_shader(content):
+                shaders[filename] = content.strip()
 
         if not shaders:
             # Try markdown code blocks with language hints
             shader_code_pattern = r'```(?:wgsl|glsl|shadertoy|hlsl)\n(.*?)\n```'
             for i, content in enumerate(re.findall(shader_code_pattern, llm_response, re.DOTALL)):
+                if not self._looks_like_shader(content):
+                    continue
                 filename = f"shader_{i}{self.language_spec.file_extension}"
                 shaders[filename] = content.strip()
 
