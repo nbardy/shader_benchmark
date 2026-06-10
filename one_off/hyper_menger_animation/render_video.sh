@@ -16,6 +16,10 @@ FPS="${FPS:-30}"
 LOOP_SECONDS="${LOOP_SECONDS:-24.0}"  # must match LOOP_SECONDS in shader.wgsl
 SIZE="${SIZE:-1024}"
 OUT="${OUT:-menger_3sphere.mp4}"
+# Phase offset: the first frame is the video's hero/thumbnail image, and the
+# shape at phase 0 is a weak opener. The shader is LOOP-periodic, so any
+# offset keeps the loop seamless — 3.0 was chosen by eye.
+START_OFFSET="${START_OFFSET:-3.0}"
 
 BENCH="$(cd ../../shader_harness && pwd)/target/release/shader-bench"
 if [[ ! -x "$BENCH" ]]; then
@@ -26,7 +30,7 @@ command -v ffmpeg >/dev/null || { echo "ffmpeg not found (try: brew install ffmp
 
 mkdir -p frames
 for ((i = 0; i < FRAMES; i++)); do
-    t=$(awk -v i="$i" -v n="$FRAMES" -v l="$LOOP_SECONDS" 'BEGIN { printf "%.6f", l * i / n }')
+    t=$(awk -v i="$i" -v n="$FRAMES" -v l="$LOOP_SECONDS" -v o="$START_OFFSET" 'BEGIN { x = o + l * i / n; if (x >= l) x -= l; printf "%.6f", x }')
     out=$(printf "frames/frame_%04d.png" "$i")
     "$BENCH" --shader shader.wgsl --output "$out" --size "$SIZE" --time "$t" > /dev/null
     printf "\rframe %d/%d (t=%s)" "$((i + 1))" "$FRAMES" "$t"
