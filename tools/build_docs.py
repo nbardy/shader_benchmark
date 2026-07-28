@@ -28,6 +28,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 BENCH_DIR = REPO / "llm_harness" / "benchmark_run_output"
 PROBLEMS_DIR = REPO / "problems" / "base_set"
+CORE_SET_PATH = REPO / "problems" / "benchmark_sets" / "core30.json"
 DOCS = REPO / "docs"
 
 # Three completed runs we publish. Order = column order on the hub.
@@ -55,10 +56,12 @@ RUNS = [
     },
     {
         "key": "claude-fable-5",
-        "label": "Claude Fable 5",
+        "label": "Claude Fable 5 high (30/130)",
         "run_dirs": [
             "ee3dcad2_cli_claude_claude-fable-5_20260610_030343",  # first 5 problems (effort: high, CLI default)
             "2cebf07b_cli_claude_claude-fable-5_high_20260610_033742",  # 4 frontier/4D problems (effort recorded in spec)
+            "c1fe229b_cli_claude_claude-fable-5_high_20260610_155046",  # 10 reconstruction problems
+            "core30_fable5_high_expansion_20260729",  # frozen Core-30 expansion
         ],
     },
     {
@@ -379,6 +382,86 @@ def aggregate(runs: dict[str, dict], problems_sorted: list[str], problem_categor
     }
 
 
+def aggregate_core_set(runs: dict[str, dict], core_spec: dict) -> dict:
+    """Score a frozen comparison set with one identical judge.
+
+    Unlike the full-run summary, this never uses each run's panel mean. Every
+    usable row is read from the exact judge named in the Core-set manifest.
+    Missing or failed renders contribute zero, and a model is rank-eligible
+    only after all Core problems are settled.
+    """
+    judge_model = core_spec["scoring"]["judge"]
+    groups: dict[str, list[str]] = core_spec["groups"]
+    total_problems = sum(len(problems) for problems in groups.values())
+    full_suite_size = max(len(run["rows"]) for run in runs.values())
+    models = {}
+
+    for meta in RUNS:
+        key = meta["key"]
+        run_rows = runs[key]["rows"]
+        is_full_suite = len(run_rows) == full_suite_size
+        group_scores = {}
+        scored = 0
+        render_fails = 0
+        missing = 0
+
+        for group, problems in groups.items():
+            totals = []
+            group_scored = 0
+            group_fails = 0
+            group_missing = 0
+            for problem in problems:
+                row = run_rows.get(problem)
+                judge_scores = (row or {}).get("scores_by_judge") or {}
+                vec = judge_scores.get(judge_model)
+                if row and row.get("status") == "ok" and vec:
+                    totals.append(sum(vec))
+                    group_scored += 1
+                    scored += 1
+                else:
+                    totals.append(0)
+                    if row and row.get("status") == "render_fail":
+                        group_fails += 1
+                        render_fails += 1
+                    else:
+                        group_missing += 1
+                        missing += 1
+            group_scores[group] = {
+                "score": sum(totals) / len(problems),
+                "scored": group_scored,
+                "render_fails": group_fails,
+                "missing": group_missing,
+                "pending": 0 if is_full_suite else group_missing,
+                "zeroed_missing": group_missing if is_full_suite else 0,
+                "total": len(problems),
+            }
+
+        group_means = [entry["score"] for entry in group_scores.values()]
+        pending = 0 if is_full_suite else missing
+        settled = total_problems - pending
+        models[key] = {
+            "label": meta["label"],
+            "score": sum(group_means) / len(group_means),
+            "groups": group_scores,
+            "scored": scored,
+            "render_fails": render_fails,
+            "missing": missing,
+            "pending": pending,
+            "settled": settled,
+            "total": total_problems,
+            "eligible": pending == 0,
+        }
+
+    return {
+        "name": core_spec["name"],
+        "version": core_spec["version"],
+        "purpose": core_spec["purpose"],
+        "judge": judge_model,
+        "groups": groups,
+        "models": models,
+    }
+
+
 # ---------------------------------------------------------------------------
 # Asset copying
 # ---------------------------------------------------------------------------
@@ -596,6 +679,38 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
                 continue
             img_lookup[m["key"]][p] = find_image_filename(src, row["index"], p)
 
+    # --- frozen Core-set table -----
+    core = data["core30"]
+    core_models = list(core["models"].values())
+    core_models.sort(key=lambda item: (item["eligible"], item["score"]), reverse=True)
+    core_rows = []
+    for item in core_models:
+        score = item["score"]
+        score_pct = pct_from_total(score)
+        status = "ranked" if item["eligible"] else f"{item['pending']} pending"
+        group_cells = []
+        for group in ("Regular", "Frontier", "Reconstruction"):
+            gs = item["groups"][group]
+            group_cells.append(
+                f"<td data-sortval='{gs['score']:.4f}'>"
+                f"<strong>{gs['score']:.1f}</strong> / 500"
+                f"<div class='dim'>{gs['scored']}/{gs['total']} scored"
+                f"{f', {gs['render_fails']} fail' if gs['render_fails'] else ''}"
+                f"{f', {gs['zeroed_missing']} missing→0' if gs['zeroed_missing'] else ''}"
+                f"{f', {gs['pending']} pending' if gs['pending'] else ''}</div></td>"
+            )
+        core_rows.append(
+            f"<tr>"
+            f"<td class='mname'><strong>{item['label']}</strong></td>"
+            f"<td class='avgcell' data-sortval='{score:.4f}'>"
+            f"<span class='pctnum'>{score_pct}%</span> &middot; {score:.1f} / 500"
+            f"{bar_html(score_pct)}</td>"
+            f"{''.join(group_cells)}"
+            f"<td>{item['settled']}/{item['total']}<div class='dim'>{status}</div></td>"
+            f"</tr>"
+        )
+    core_html = "\n".join(core_rows)
+
     # --- model summary table -----
     # Three score-shaped columns, in order: avg-with-fails (most honest —
     # render fails count as 0), avg-of-judges (rendered-only), and
@@ -604,6 +719,10 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
     summary_rows = []
     for m in models:
         s = summary[m["key"]]
+        # Partial/specialized runs belong in the frozen Core comparison, not
+        # beside genuine full-suite runs.
+        if s["total"] != len(problems):
+            continue
         judge_avgs = s.get("avg_total_by_judge_filtered", {})
         judge_counts = s.get("judge_score_counts", {})
         avg_f_pct = avg_total_html(s["avg_total_filtered"])
@@ -889,9 +1008,22 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
 <body>
 <div class="wrap">
   <img class="hero" src="header.png" alt="Shader bench">
-  <p class="lead">Three frontier coding agents generating WGSL shaders from text prompts on {len(problems)} mathematical visualization problems ({group_note}). Scored 0&ndash;100 across five categories by one or more LLM judges against the rendered image.</p>
+  <p class="lead">Frontier coding agents generating WGSL shaders from text prompts on {len(problems)} mathematical visualization problems ({group_note}). Scored 0&ndash;100 across five categories against the rendered image.</p>
 
-  <h2>Model summary</h2>
+  <h2>{core["name"]} same-problem comparison</h2>
+  <p class="lead">A <a href="core30.json">frozen, capability-balanced set</a> of 10 regular, 10 frontier, and 10 reconstruction problems. Every score below uses the same <strong>Codex GPT-5.5 high</strong> judge; failures count as zero. Models with pending problems are shown for transparency but are not ranked.</p>
+  <table id="coresum">
+    <thead>
+      <tr>
+        <th>Model</th><th>Equal-weight score</th>
+        <th>Regular</th><th>Frontier</th><th>Reconstruction</th><th>Coverage</th>
+      </tr>
+    </thead>
+    <tbody>{core_html}</tbody>
+  </table>
+
+  <h2>Full 130-problem leaderboard</h2>
+  <p class="lead">Only models whose published run defines all {len(problems)} problems appear here. Partial runs such as Fable remain visible in the Core comparison and per-problem table, but cannot lead the full-suite ranking.</p>
   <table id="modelsum">
     <thead>
       <tr>
@@ -1078,6 +1210,7 @@ def render_html(data: dict, runs: dict[str, dict], ref_map: dict[str, str]) -> s
 
 def main() -> None:
     DOCS.mkdir(exist_ok=True)
+    core_spec = json.loads(CORE_SET_PATH.read_text())
 
     runs: dict[str, dict] = {}
     for r in RUNS:
@@ -1103,7 +1236,9 @@ def main() -> None:
     problems_sorted = grouped_problem_order(problem_set, problem_categories)
 
     data = aggregate(runs, problems_sorted, problem_categories)
+    data["core30"] = aggregate_core_set(runs, core_spec)
     (DOCS / "all_scores.json").write_text(json.dumps(data, indent=2))
+    (DOCS / "core30.json").write_text(json.dumps(core_spec, indent=2) + "\n")
 
     # Copy per-model detail reports (primary run only) + drawer images
     # (merged across all run_dirs).

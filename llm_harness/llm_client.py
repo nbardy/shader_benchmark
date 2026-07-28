@@ -182,7 +182,19 @@ class CliExecutor(LLMExecutor):
         except subprocess.TimeoutExpired:
             raise Exception("claude CLI timed out after 1800s")
         if result.returncode != 0:
-            raise Exception(f"claude CLI failed (exit {result.returncode}): {(result.stderr or '')[:1000]}")
+            detail = result.stderr or result.stdout or ""
+            if result.stdout:
+                try:
+                    failure = json.loads(result.stdout)
+                    detail = (
+                        failure.get("result")
+                        or failure.get("error")
+                        or failure.get("message")
+                        or json.dumps(failure, ensure_ascii=True)
+                    )
+                except json.JSONDecodeError:
+                    pass
+            raise Exception(f"claude CLI failed (exit {result.returncode}): {detail[:4000]}")
         return self._parse_claude_json_envelope(result.stdout)
 
     @staticmethod

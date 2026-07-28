@@ -1,0 +1,68 @@
+{
+  "name": "Core-30",
+  "version": 1,
+  "frozen": "2026-07-29",
+  "purpose": "A capability-balanced, budget-conscious comparison set. It is not a proportional sample of the full 130-problem benchmark.",
+  "scoring": {
+    "judge": "cli/codex:gpt-5.5:high",
+    "render_fail_score": 0,
+    "primary_aggregate": "equal-weight mean of the Regular, Frontier, and Reconstruction group means"
+  },
+  "selection_policy": [
+    "Freeze membership before generating the 11 expansion outputs.",
+    "Use 10 problems from each top-level capability group.",
+    "Within Regular and Frontier, span prior-model difficulty and distinct mathematical or visual capabilities.",
+    "Compare models only on the same 30 problems with the same judge."
+  ],
+  "groups": {
+    "Regular": [
+      "archimedean_spiral_galaxy",
+      "geometric_cube",
+      "hopf_fibration_base_loops",
+      "hyper_menger_cube_3sphere",
+      "mandelbulb_fractal",
+      "sierpinski_triangle_6_iterations",
+      "reaction_diffusion_patterns",
+      "penrose_tiling_p3",
+      "number_theory_music",
+      "regular_dodecahedron"
+    ],
+    "Frontier": [
+      "coxeter_reflection_kaleidoscope",
+      "minimal_surface_knot_boundaries",
+      "optimal_transport_mass_flow_tubes",
+      "reaction_diffusion_nonorientable_surfaces",
+      "cellular_potts_tissue_folding",
+      "navier_stokes_vortex_reconnection",
+      "error_correcting_code_decoding_landscape",
+      "qec_threshold_phase_diagram",
+      "differentiable_rendering_ambiguity_landscape",
+      "polyrhythm_phase_torus"
+    ],
+    "Reconstruction": [
+      "reproduce_image",
+      "reproduce_image_andrew_pons",
+      "reproduce_image_fabrice_villard",
+      "reproduce_image_jason_leung",
+      "reproduce_image_javier_penas",
+      "reproduce_image_mark_basarab",
+      "reproduce_image_photoholgic",
+      "reproduce_image_rayul",
+      "reproduce_image_sebastien_gabriel",
+      "reproduce_image_tim_stief"
+    ]
+  },
+  "new_fable_generation_problems": [
+    "reaction_diffusion_patterns",
+    "penrose_tiling_p3",
+    "number_theory_music",
+    "regular_dodecahedron",
+    "reaction_diffusion_nonorientable_surfaces",
+    "cellular_potts_tissue_folding",
+    "navier_stokes_vortex_reconnection",
+    "error_correcting_code_decoding_landscape",
+    "qec_threshold_phase_diagram",
+    "differentiable_rendering_ambiguity_landscape",
+    "polyrhythm_phase_torus"
+  ]
+}

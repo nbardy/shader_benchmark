@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-28T16:51:08.613028+00:00",
+  "generated": "2026-07-28T19:22:39.867133+00:00",
   "models": [
     {
       "key": "claude-opus-5-medium",
@@ -27,7 +27,7 @@
     },
     {
       "key": "claude-fable-5",
-      "label": "Claude Fable 5",
+      "label": "Claude Fable 5 high (30/130)",
       "run_id": "ee3dcad2_cli_claude_claude-fable-5_20260610_030343",
       "model": "cli/claude:claude-fable-5",
       "judge_model": "cli/codex:gpt-5.5:high",
@@ -657,11 +657,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          90,
+          88,
+          86,
+          89,
+          87
+        ],
+        "total": 440,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            90,
+            88,
+            86,
+            89,
+            87
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": [
@@ -1146,11 +1160,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          88,
+          84,
+          89,
+          82,
+          83
+        ],
+        "total": 426,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            88,
+            84,
+            89,
+            82,
+            83
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": [
@@ -1458,11 +1486,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          88,
+          84,
+          90,
+          82,
+          88
+        ],
+        "total": 432,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            88,
+            84,
+            90,
+            82,
+            88
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": [
@@ -2068,11 +2110,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          78,
+          86,
+          76,
+          84,
+          82
+        ],
+        "total": 406,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            78,
+            86,
+            76,
+            84,
+            82
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": null,
@@ -2529,11 +2585,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          88,
+          91,
+          84,
+          89,
+          87
+        ],
+        "total": 439,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            88,
+            91,
+            84,
+            89,
+            87
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": [
@@ -2841,11 +2911,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          88,
+          86,
+          91,
+          86,
+          82
+        ],
+        "total": 433,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            88,
+            86,
+            91,
+            86,
+            82
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": [
@@ -2969,11 +3053,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          76,
+          86,
+          73,
+          82,
+          78
+        ],
+        "total": 395,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            76,
+            86,
+            73,
+            82,
+            78
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": [
@@ -3565,11 +3663,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          58,
+          49,
+          62,
+          57,
+          55
+        ],
+        "total": 281,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            58,
+            49,
+            62,
+            57,
+            55
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": [
@@ -3693,11 +3805,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          42,
+          48,
+          45,
+          44,
+          47
+        ],
+        "total": 226,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            42,
+            48,
+            45,
+            44,
+            47
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": null,
@@ -3793,11 +3919,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          45,
+          62,
+          50,
+          60,
+          38
+        ],
+        "total": 255,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            45,
+            62,
+            50,
+            60,
+            38
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": [
@@ -3949,11 +4089,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          58,
+          72,
+          62,
+          70,
+          50
+        ],
+        "total": 312,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            58,
+            72,
+            62,
+            70,
+            50
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": [
@@ -4105,11 +4259,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          48,
+          58,
+          50,
+          60,
+          43
+        ],
+        "total": 259,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            48,
+            58,
+            50,
+            60,
+            43
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": null,
@@ -4233,11 +4401,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          48,
+          52,
+          55,
+          58,
+          50
+        ],
+        "total": 263,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            48,
+            52,
+            55,
+            58,
+            50
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": [
@@ -4389,11 +4571,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          58,
+          66,
+          61,
+          67,
+          55
+        ],
+        "total": 307,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            58,
+            66,
+            61,
+            67,
+            55
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": [
@@ -4545,11 +4741,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          58,
+          63,
+          60,
+          64,
+          55
+        ],
+        "total": 300,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            58,
+            63,
+            60,
+            64,
+            55
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": [
@@ -4673,11 +4883,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          62,
+          70,
+          65,
+          68,
+          58
+        ],
+        "total": 323,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            62,
+            70,
+            65,
+            68,
+            58
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": null,
@@ -4773,11 +4997,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          68,
+          63,
+          72,
+          62,
+          66
+        ],
+        "total": 331,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            68,
+            63,
+            72,
+            62,
+            66
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": null,
@@ -13974,11 +14212,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          76,
+          84,
+          70,
+          86,
+          74
+        ],
+        "total": 390,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            76,
+            84,
+            70,
+            86,
+            74
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": [
@@ -14542,11 +14794,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          84,
+          86,
+          85,
+          72,
+          78
+        ],
+        "total": 405,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            84,
+            86,
+            85,
+            72,
+            78
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": [
@@ -15606,11 +15872,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          62,
+          82,
+          70,
+          76,
+          66
+        ],
+        "total": 356,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            62,
+            82,
+            70,
+            76,
+            66
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": [
@@ -15762,11 +16042,25 @@
         "status": "ok"
       },
       "claude-fable-5": {
-        "scores": null,
-        "total": null,
-        "scores_by_judge": null,
-        "has_image": false,
-        "status": "missing"
+        "scores": [
+          84,
+          82,
+          88,
+          78,
+          83
+        ],
+        "total": 415,
+        "scores_by_judge": {
+          "cli/codex:gpt-5.5:high": [
+            84,
+            82,
+            88,
+            78,
+            83
+          ]
+        },
+        "has_image": true,
+        "status": "ok"
       },
       "claude-opus-4-7": {
         "scores": [
@@ -19837,18 +20131,18 @@
       }
     },
     "claude-fable-5": {
-      "ok": 9,
+      "ok": 30,
       "permanent_fail": 0,
-      "total": 9,
-      "avg_total_filtered": 391.6666666666667,
-      "avg_total_with_zeros": 391.6666666666667,
+      "total": 30,
+      "avg_total_filtered": 363.96666666666664,
+      "avg_total_with_zeros": 363.96666666666664,
       "avg_total_by_judge_filtered": {
-        "cli/codex:gpt-5.5:high": 357.77777777777777,
+        "cli/codex:gpt-5.5:high": 353.8,
         "cli/claude:claude-opus-4-7": 354.22222222222223,
         "cli/gemini:gemini-3.1-pro-preview": 463.6666666666667
       },
       "judge_score_counts": {
-        "cli/codex:gpt-5.5:high": 9,
+        "cli/codex:gpt-5.5:high": 30,
         "cli/claude:claude-opus-4-7": 9,
         "cli/gemini:gemini-3.1-pro-preview": 9
       },
@@ -19934,6 +20228,292 @@
       "worst_problem": {
         "name": "coxeter_reflection_kaleidoscope",
         "total": 22
+      }
+    }
+  },
+  "core30": {
+    "name": "Core-30",
+    "version": 1,
+    "purpose": "A capability-balanced, budget-conscious comparison set. It is not a proportional sample of the full 130-problem benchmark.",
+    "judge": "cli/codex:gpt-5.5:high",
+    "groups": {
+      "Regular": [
+        "archimedean_spiral_galaxy",
+        "geometric_cube",
+        "hopf_fibration_base_loops",
+        "hyper_menger_cube_3sphere",
+        "mandelbulb_fractal",
+        "sierpinski_triangle_6_iterations",
+        "reaction_diffusion_patterns",
+        "penrose_tiling_p3",
+        "number_theory_music",
+        "regular_dodecahedron"
+      ],
+      "Frontier": [
+        "coxeter_reflection_kaleidoscope",
+        "minimal_surface_knot_boundaries",
+        "optimal_transport_mass_flow_tubes",
+        "reaction_diffusion_nonorientable_surfaces",
+        "cellular_potts_tissue_folding",
+        "navier_stokes_vortex_reconnection",
+        "error_correcting_code_decoding_landscape",
+        "qec_threshold_phase_diagram",
+        "differentiable_rendering_ambiguity_landscape",
+        "polyrhythm_phase_torus"
+      ],
+      "Reconstruction": [
+        "reproduce_image",
+        "reproduce_image_andrew_pons",
+        "reproduce_image_fabrice_villard",
+        "reproduce_image_jason_leung",
+        "reproduce_image_javier_penas",
+        "reproduce_image_mark_basarab",
+        "reproduce_image_photoholgic",
+        "reproduce_image_rayul",
+        "reproduce_image_sebastien_gabriel",
+        "reproduce_image_tim_stief"
+      ]
+    },
+    "models": {
+      "claude-opus-5-medium": {
+        "label": "Claude Opus 5 medium",
+        "score": 359.40000000000003,
+        "groups": {
+          "Regular": {
+            "score": 381.9,
+            "scored": 10,
+            "render_fails": 0,
+            "missing": 0,
+            "pending": 0,
+            "zeroed_missing": 0,
+            "total": 10
+          },
+          "Frontier": {
+            "score": 390.2,
+            "scored": 9,
+            "render_fails": 1,
+            "missing": 0,
+            "pending": 0,
+            "zeroed_missing": 0,
+            "total": 10
+          },
+          "Reconstruction": {
+            "score": 306.1,
+            "scored": 10,
+            "render_fails": 0,
+            "missing": 0,
+            "pending": 0,
+            "zeroed_missing": 0,
+            "total": 10
+          }
+        },
+        "scored": 29,
+        "render_fails": 1,
+        "missing": 0,
+        "pending": 0,
+        "settled": 30,
+        "total": 30,
+        "eligible": true
+      },
+      "codex-gpt-5.6-sol-medium": {
+        "label": "Codex GPT-5.6 Sol medium",
+        "score": 345.0333333333333,
+        "groups": {
+          "Regular": {
+            "score": 341.6,
+            "scored": 10,
+            "render_fails": 0,
+            "missing": 0,
+            "pending": 0,
+            "zeroed_missing": 0,
+            "total": 10
+          },
+          "Frontier": {
+            "score": 397.9,
+            "scored": 10,
+            "render_fails": 0,
+            "missing": 0,
+            "pending": 0,
+            "zeroed_missing": 0,
+            "total": 10
+          },
+          "Reconstruction": {
+            "score": 295.6,
+            "scored": 10,
+            "render_fails": 0,
+            "missing": 0,
+            "pending": 0,
+            "zeroed_missing": 0,
+            "total": 10
+          }
+        },
+        "scored": 30,
+        "render_fails": 0,
+        "missing": 0,
+        "pending": 0,
+        "settled": 30,
+        "total": 30,
+        "eligible": true
+      },
+      "claude-fable-5": {
+        "label": "Claude Fable 5 high (30/130)",
+        "score": 353.8,
+        "groups": {
+          "Regular": {
+            "score": 360.9,
+            "scored": 10,
+            "render_fails": 0,
+            "missing": 0,
+            "pending": 0,
+            "zeroed_missing": 0,
+            "total": 10
+          },
+          "Frontier": {
+            "score": 414.8,
+            "scored": 10,
+            "render_fails": 0,
+            "missing": 0,
+            "pending": 0,
+            "zeroed_missing": 0,
+            "total": 10
+          },
+          "Reconstruction": {
+            "score": 285.7,
+            "scored": 10,
+            "render_fails": 0,
+            "missing": 0,
+            "pending": 0,
+            "zeroed_missing": 0,
+            "total": 10
+          }
+        },
+        "scored": 30,
+        "render_fails": 0,
+        "missing": 0,
+        "pending": 0,
+        "settled": 30,
+        "total": 30,
+        "eligible": true
+      },
+      "claude-opus-4-7": {
+        "label": "Claude Opus 4.7",
+        "score": 238.96666666666667,
+        "groups": {
+          "Regular": {
+            "score": 253.5,
+            "scored": 10,
+            "render_fails": 0,
+            "missing": 0,
+            "pending": 0,
+            "zeroed_missing": 0,
+            "total": 10
+          },
+          "Frontier": {
+            "score": 322.0,
+            "scored": 9,
+            "render_fails": 0,
+            "missing": 1,
+            "pending": 0,
+            "zeroed_missing": 1,
+            "total": 10
+          },
+          "Reconstruction": {
+            "score": 141.4,
+            "scored": 6,
+            "render_fails": 2,
+            "missing": 2,
+            "pending": 0,
+            "zeroed_missing": 2,
+            "total": 10
+          }
+        },
+        "scored": 25,
+        "render_fails": 2,
+        "missing": 3,
+        "pending": 0,
+        "settled": 30,
+        "total": 30,
+        "eligible": true
+      },
+      "gemini-3.1-pro-preview": {
+        "label": "Gemini 3.1-pro-preview",
+        "score": 225.26666666666665,
+        "groups": {
+          "Regular": {
+            "score": 237.1,
+            "scored": 10,
+            "render_fails": 0,
+            "missing": 0,
+            "pending": 0,
+            "zeroed_missing": 0,
+            "total": 10
+          },
+          "Frontier": {
+            "score": 280.6,
+            "scored": 9,
+            "render_fails": 0,
+            "missing": 1,
+            "pending": 0,
+            "zeroed_missing": 1,
+            "total": 10
+          },
+          "Reconstruction": {
+            "score": 158.1,
+            "scored": 7,
+            "render_fails": 3,
+            "missing": 0,
+            "pending": 0,
+            "zeroed_missing": 0,
+            "total": 10
+          }
+        },
+        "scored": 26,
+        "render_fails": 3,
+        "missing": 1,
+        "pending": 0,
+        "settled": 30,
+        "total": 30,
+        "eligible": true
+      },
+      "codex-gpt-5.5-high": {
+        "label": "Codex GPT-5.5 high",
+        "score": 255.53333333333333,
+        "groups": {
+          "Regular": {
+            "score": 215.8,
+            "scored": 9,
+            "render_fails": 0,
+            "missing": 1,
+            "pending": 0,
+            "zeroed_missing": 1,
+            "total": 10
+          },
+          "Frontier": {
+            "score": 335.8,
+            "scored": 10,
+            "render_fails": 0,
+            "missing": 0,
+            "pending": 0,
+            "zeroed_missing": 0,
+            "total": 10
+          },
+          "Reconstruction": {
+            "score": 215.0,
+            "scored": 9,
+            "render_fails": 1,
+            "missing": 0,
+            "pending": 0,
+            "zeroed_missing": 0,
+            "total": 10
+          }
+        },
+        "scored": 28,
+        "render_fails": 1,
+        "missing": 1,
+        "pending": 0,
+        "settled": 30,
+        "total": 30,
+        "eligible": true
       }
     }
   }
