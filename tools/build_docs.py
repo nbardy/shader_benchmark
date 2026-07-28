@@ -40,6 +40,20 @@ DOCS = REPO / "docs"
 # the hub points to.
 RUNS = [
     {
+        "key": "claude-opus-5-medium",
+        "label": "Claude Opus 5 medium",
+        "run_dirs": [
+            "e9f738e9_cli_claude_claude-opus-5_medium_20260727_044910",
+        ],
+    },
+    {
+        "key": "codex-gpt-5.6-sol-medium",
+        "label": "Codex GPT-5.6 Sol medium",
+        "run_dirs": [
+            "29f6a349_cli_codex_gpt-5.6-sol_medium_20260726_185836",
+        ],
+    },
+    {
         "key": "claude-fable-5",
         "label": "Claude Fable 5",
         "run_dirs": [
