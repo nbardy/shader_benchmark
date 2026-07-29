@@ -89,6 +89,7 @@ async def rejudge_run(run_dir: Path, panel: List[str], max_parallel: int) -> str
         language=cfg.get('language', 'wgsl'),
         runtime=cfg.get('runtime'),
         skip_judge=False,
+        prompt_profile=cfg.get('prompt_profile', 'baseline'),
     )
     return await harness.run_benchmark()
 

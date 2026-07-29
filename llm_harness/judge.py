@@ -433,30 +433,49 @@ class Judge:
 
     def _run_codex_judge(self, full_prompt: str, context: EvaluationContext) -> str:
         """codex exec with -i for each image; final assistant message via -o file."""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as out_f:
-            out_path = out_f.name
-        try:
+        with tempfile.TemporaryDirectory(
+            prefix="codex_judge_workspace_"
+        ) as workspace:
+            workspace_path = Path(workspace)
+            out_path = workspace_path / "final_response.txt"
+            staged_result = workspace_path / (
+                f"generated{context.result_image_path.suffix}"
+            )
+            shutil.copy2(context.result_image_path, staged_result)
+
+            staged_reference: Optional[Path] = None
+            if (
+                context.reference_image_path
+                and context.reference_image_path.exists()
+            ):
+                staged_reference = workspace_path / (
+                    f"reference{context.reference_image_path.suffix}"
+                )
+                shutil.copy2(context.reference_image_path, staged_reference)
+
             cmd = [
                 'codex', '-a', 'never', 'exec',
                 '-s', 'read-only',
                 '--skip-git-repo-check',
                 '--ephemeral',
+                '--ignore-user-config',
+                '--ignore-rules',
                 '--color', 'never',
-                '-o', out_path,
+                '-o', str(out_path),
             ]
             if self.cli_judge_model_q:
                 cmd += ['-m', self.cli_judge_model_q]
             if self.cli_judge_extra:
                 cmd += ['-c', f'reasoning_effort={self.cli_judge_extra}']
-            cmd += ['-i', str(context.result_image_path.absolute())]
-            if context.reference_image_path and context.reference_image_path.exists():
-                cmd += ['-i', str(context.reference_image_path.absolute())]
+            cmd += ['-i', str(staged_result)]
+            if staged_reference:
+                cmd += ['-i', str(staged_reference)]
             cmd += ['-']
 
             try:
                 result = subprocess.run(
                     cmd, input=full_prompt, capture_output=True, text=True,
-                    timeout=900, env=self._judge_cli_env(),
+                    timeout=900, env=self._judge_cli_env(), cwd=workspace,
                 )
             except subprocess.TimeoutExpired:
                 raise Exception("codex judge timed out after 900s")
@@ -464,51 +483,58 @@ class Judge:
                 raise Exception(f"codex judge failed (exit {result.returncode}): {(result.stderr or '')[:500]}")
             with open(out_path, 'r', encoding='utf-8') as f:
                 return f.read()
-        finally:
-            try:
-                os.unlink(out_path)
-            except OSError:
-                pass
 
     def _run_claude_judge(self, full_prompt: str, context: EvaluationContext) -> str:
         """claude -p with Read tool authorized so it can load the images by path."""
-        prompt = full_prompt + "\n\nThe images you need to evaluate are at these absolute paths — use your Read tool to view them:\n"
-        prompt += f"- generated result: {context.result_image_path.absolute()}\n"
-        if context.reference_image_path and context.reference_image_path.exists():
-            prompt += f"- reference: {context.reference_image_path.absolute()}\n"
-
-        cmd = [
-            'claude', '-p',
-            '--dangerously-skip-permissions',
-            '--output-format', 'text',
-            '--no-session-persistence',
-            '--allowedTools', 'Read',
-            # Same rationale as the gen path: skip-permissions auto-approves
-            # everything, so only an explicit disallow list actually blocks
-            # the judge from writing files.
-            '--disallowedTools', 'Write,Edit,NotebookEdit,Bash',
-        ]
-        if self.cli_judge_model_q:
-            cmd += ['--model', self.cli_judge_model_q]
-        if self.cli_judge_extra:
-            # Spec extra slot = reasoning effort, same convention as the
-            # codex judge (cli/claude:<model>:<effort> -> --effort <effort>).
-            cmd += ['--effort', self.cli_judge_extra]
-        # Same opt-in as the gen path: --bare stops claude -p from auto-
-        # loading repo + user CLAUDE.md into the judge's context. Off by
-        # default for comparability with the published judge panels.
-        if os.environ.get('SHADER_BENCH_CLAUDE_BARE') == '1':
-            cmd += ['--bare']
-        try:
-            result = subprocess.run(
-                cmd, input=prompt, capture_output=True, text=True,
-                timeout=900, env=self._judge_cli_env(),
+        with tempfile.TemporaryDirectory(
+            prefix="claude_judge_workspace_"
+        ) as workspace:
+            workspace_path = Path(workspace)
+            staged_result = workspace_path / (
+                f"generated{context.result_image_path.suffix}"
             )
-        except subprocess.TimeoutExpired:
-            raise Exception("claude judge timed out after 900s")
-        if result.returncode != 0:
-            raise Exception(f"claude judge failed (exit {result.returncode}): {(result.stderr or '')[:500]}")
-        return result.stdout
+            shutil.copy2(context.result_image_path, staged_result)
+            prompt = (
+                f"{full_prompt}\n\nThe images you need to evaluate are at "
+                "these absolute paths — use your Read tool to view them:\n"
+                f"- generated result: {staged_result}\n"
+            )
+            if (
+                context.reference_image_path
+                and context.reference_image_path.exists()
+            ):
+                staged_reference = workspace_path / (
+                    f"reference{context.reference_image_path.suffix}"
+                )
+                shutil.copy2(context.reference_image_path, staged_reference)
+                prompt += f"- reference: {staged_reference}\n"
+
+            cmd = [
+                'claude', '-p',
+                '--dangerously-skip-permissions',
+                '--output-format', 'text',
+                '--no-session-persistence',
+                '--bare',
+                '--allowedTools', 'Read',
+                '--disallowedTools', 'Write,Edit,NotebookEdit,Bash',
+            ]
+            if self.cli_judge_model_q:
+                cmd += ['--model', self.cli_judge_model_q]
+            if self.cli_judge_extra:
+                cmd += ['--effort', self.cli_judge_extra]
+            try:
+                result = subprocess.run(
+                    cmd, input=prompt, capture_output=True, text=True,
+                    timeout=900, env=self._judge_cli_env(), cwd=workspace,
+                )
+            except subprocess.TimeoutExpired:
+                raise Exception("claude judge timed out after 900s")
+            if result.returncode != 0:
+                raise Exception(
+                    f"claude judge failed (exit {result.returncode}): "
+                    f"{(result.stderr or '')[:500]}"
+                )
+            return result.stdout
 
     def _run_gemini_judge(self, full_prompt: str, context: EvaluationContext) -> str:
         """gemini -p with images staged into an isolated tempdir workspace.

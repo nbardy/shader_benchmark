@@ -30,9 +30,8 @@ The struct MUST be defined BEFORE the binding statement in the file order.
 
 struct Params {
     resolution: vec2<f32>,       // Viewport dimensions (width, height)
-    time: f32,                   // Elapsed time in seconds
-    aspect: f32,                 // Aspect ratio (width / height)
-    // Optional: Add problem-specific fields as needed
+    time: f32,                   // Always 0.0: one static benchmark frame
+    aspect: f32,                 // Always 1.0: square render target
 };
 
 @group(0) @binding(0) var<uniform> params: Params;
@@ -40,7 +39,7 @@ struct Params {
 ⚠️ CRITICAL: The variable name MUST be lowercase `params` to avoid conflict with struct name `Params`.
 The struct definition MUST come before @group/@binding in your shader code.
 Do NOT change the names, types, or order of the standard three fields.
-You may ONLY add new fields at the end of the struct if your shader needs them.
+Do NOT add fields: the runtime supplies exactly these 16 bytes.
 
 EXAMPLES:
 - let pixelCoord = uv * params.resolution;
@@ -323,7 +322,7 @@ fn tree(max_depth: u32) -> f32 {
 SYNTAX YOU MUST NOT USE:
 ---------------------------------------------
 ❌ @vertex, @fragment in function bodies (only as attributes)
-❌ var without address space (e.g., var x: f32; is WRONG)
+❌ var<function> for function-local variables (write `var x: f32` instead)
 ❌ Implicit casts (e.g., f32(1) where 1 is i32)
 ❌ gl_* variables
 ❌ #ifdef, #define, or any preprocessor
@@ -458,7 +457,6 @@ struct Params {
     resolution: vec2<f32>,
     time: f32,
     aspect: f32,
-    // Add problem-specific fields here
 };
 
 @group(0) @binding(0) var<uniform> params: Params;

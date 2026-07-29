@@ -25,13 +25,13 @@ How accurately does the result match the mathematical and technical requirements
 **S2: Visual Quality (Generic)** 
 How aesthetic, polished, and technically sound is the visual result? Consider image resolution, anti-aliasing, freedom from visual glitches, appropriate lighting/shading, color choices, and overall visual appeal.
 
-**S3: Mathematical Accuracy Section**
+**S3: Problem-Specific Criterion 1**
 {question_1}
 
-**S4: Visual Implementation Section**  
+**S4: Problem-Specific Criterion 2**
 {question_2}
 
-**S5: Completeness & Specifications Section**
+**S5: Problem-Specific Criterion 3**
 {question_3}
 
 **EVALUATION INSTRUCTIONS:**
@@ -59,11 +59,13 @@ after the closing </scores> tag."""
         """Parse structured sections from critic file content."""
         questions = {}
         
-        # Try new format first: __SECTION_NAME__ or __MATHEMATICAL_ACCURACY__ etc.
+        # The mathematical set and reconstruction set use different semantic
+        # section names, but both define three ordered problem-specific
+        # criteria. Parse either vocabulary into S3/S4/S5.
         section_patterns = [
-            r'__MATHEMATICAL_ACCURACY__(.*?)(?=__[A-Z_]+__|$)',
-            r'__VISUAL_IMPLEMENTATION__(.*?)(?=__[A-Z_]+__|$)', 
-            r'__COMPLETENESS_AND_SPECIFICATIONS__(.*?)(?=__[A-Z_]+__|$)'
+            r'__(?:MATHEMATICAL_ACCURACY|VISUAL_MATCH)__(.*?)(?=__[A-Z_]+__|$)',
+            r'__(?:VISUAL_IMPLEMENTATION|PROCEDURAL_INTEGRITY)__(.*?)(?=__[A-Z_]+__|$)',
+            r'__(?:COMPLETENESS_AND_SPECIFICATIONS|COMPLETENESS)__(.*?)(?=__[A-Z_]+__|$)'
         ]
         
         section_matches = []

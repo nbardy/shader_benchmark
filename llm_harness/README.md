@@ -138,6 +138,204 @@ python benchmark_harness.py \
 
 **Generates:** `benchmark_run_output/UUID_MODEL_TIMESTAMP/benchmark_report.md` with aggregate analysis
 
+### ChatGPT + Shader Harness prompt experiment
+
+These launchers use the same generator model, compiler, renderer, and judges as
+the baseline. They change only the recorded generation prompt profile.
+`scratchpad_shader_harness.py` adds the technical design brief;
+`chatgpt_shader_harness.py` adds the separate art-direction guide before that
+brief.
+
+```bash
+python chatgpt_shader_harness.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --judge-model "cli/codex:gpt-5.5:high" \
+  --problems reproduce_image_andrew_pons \
+  --max-parallel 1 \
+  --new
+```
+
+Equivalent advanced usage:
+
+```bash
+python benchmark_harness.py \
+  --prompt-profile chatgpt-shader-harness-v1 \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --problems reproduce_image_andrew_pons
+```
+
+The profile is stored in `config.json` and included in new run directory names,
+preventing auto-resume from mixing profile and baseline generations.
+
+For a controlled three-arm prompt ablation, use the same model, problems, and
+judge with:
+
+1. `baseline` — original shader prompt only.
+2. `scratchpad-v1` — public technical production plan, then WGSL.
+3. `scratchpad-art-direction-v1` — a separate
+   `<artistic_subtleties_and_elegance>` guide, the same technical plan, then
+   WGSL. The art guide focuses on emotional hierarchy and controlled departures
+   from mathematically perfect repetition.
+
+```bash
+python benchmark_harness.py --prompt-profile baseline ...
+python benchmark_harness.py --prompt-profile scratchpad-v1 ...
+python benchmark_harness.py --prompt-profile scratchpad-art-direction-v1 ...
+```
+
+### Ambitious true-3D profile
+
+`ambitious-3d-v1` makes genuine 3D the default for volumetric subjects. It
+requires a 3D camera ray, ray-marched or analytic geometry, computed normals,
+depth-aware lighting and occlusion, and a bounded performance budget. The
+primary subject cannot fall back to layered 2.5D merely because full-detail 3D
+would be expensive; the model must simplify the 3D scene instead.
+
+```bash
+python ambitious_3d_shader_harness.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --judge-model "cli/codex:gpt-5.5:high" \
+  --problems reproduce_image_andrew_pons \
+  --max-parallel 1 \
+  --new
+```
+
+### N-round visual revision harness
+
+The iterative harness generates a complete shader, renders and judges it, then
+supplies the next round with:
+
+- the actual executed WGSL, including any mechanical WGSL repairs;
+- a labeled contact sheet containing the target reference and current render;
+- any render failure that must be fixed;
+- an explicit requirement to return a complete replacement shader.
+
+Every round is stored separately and scored, so progression is visible and an
+interrupted run can resume.
+
+```bash
+python iterative_shader_harness.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --judge-model "cli/codex:gpt-5.5:high" \
+  --prompt-profile ambitious-3d-v1 \
+  --problems reproduce_image_andrew_pons \
+  --rounds 3
+```
+
+Resume or extend a run:
+
+```bash
+python iterative_shader_harness.py \
+  --resume RUN_DIRECTORY_NAME \
+  --rounds 5
+```
+
+`--prompt-profile` works with every iterative run, including `baseline`, so
+the prompt-profile effect and the visual-revision effect can be measured
+independently.
+
+### Persistent agent render-tool harness
+
+`agentic_shader_harness.py` is a different experiment from the N-round
+orchestrator. It gives one persistent Codex session three fixed-path MCP tools:
+
+- `write_shader` replaces the complete working WGSL file;
+- `render_shader` compiles it and returns the actual PNG image plus compiler
+  feedback;
+- `submit_final` freezes the current revision, but only if that exact revision
+  rendered successfully.
+
+The model decides when to edit, render again, or finish. A server-side
+`--render-budget` is enforced even when compilation fails. The tool server
+never accepts a path, so it cannot use the tools to inspect other benchmark
+runs, judges, or contestants. Codex itself runs in a fresh temporary directory
+with user config and repository rules disabled and a read-only sandbox.
+
+```bash
+python agentic_shader_harness.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --problem reproduce_image_andrew_pons \
+  --prompt-profile baseline \
+  --render-budget 3 \
+  --min-successful-revisions 2 \
+  --judge-model "cli/codex:gpt-5.5:high"
+```
+
+This costs one persistent model call with up to three tool renders, unlike
+`iterative_shader_harness.py --rounds 3`, which costs three independent model
+calls. Each run saves `agent_trace.jsonl`, every shader revision, every render
+and compiler log, `submission.json`, and a visual HTML report. A response that
+does not call `submit_final` is a failed run.
+
+The loop strategy is independently selectable:
+
+- `latest-v1` reproduces the original experiment: target + immediately prior
+  render, plus the latest executed shader.
+- `history-critique-v2` supplies a score-blind history sheet containing the
+  target and up to four prior renders. It still carries only the latest
+  executed shader, then requires a compact `<revision_critique>` identifying
+  the strongest prior round, features to preserve, at most three concrete
+  changes, and regression checks before the replacement shader.
+- `history-code-critique-v3` keeps that visual/critique contract and also
+  supplies up to three exact prior executed shaders. If an older render is
+  stronger, the model can branch from its actual implementation instead of
+  trying to reconstruct it from the newest code.
+
+```bash
+python iterative_shader_harness.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --judge-model "cli/codex:gpt-5.5:high" \
+  --prompt-profile baseline \
+  --loop-strategy history-critique-v2 \
+  --problems reproduce_image_andrew_pons \
+  --rounds 3
+```
+
+Judge scores and prose are deliberately excluded from the generation loop.
+This keeps `history-critique-v2` a self-critique treatment instead of allowing
+the generator to optimize against its grader.
+
+### Repeated prompt-ablation matrix
+
+`prompt_matrix_harness.py` separates independent stochastic repeats from
+visual revision rounds:
+
+- a **trial** starts a fresh CLI/model session and creates a fresh round-1
+  shader;
+- a **round** is a dependent rewrite that receives the prior shader and a
+  target-vs-current contact sheet.
+
+The default matrix includes baseline, scratchpad, scratchpad + art direction,
+scratchpad + ambitious 3D, and scratchpad + art direction + ambitious 3D:
+
+```bash
+python prompt_matrix_harness.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --problems reproduce_image_andrew_pons \
+  --trials 3 \
+  --rounds 3 \
+  --max-parallel 3 \
+  --judge-model "cli/codex:gpt-5.5:high"
+```
+
+That command performs `5 profiles × 3 trials × 3 rounds = 45` generations.
+Every child run is independently resumable. The matrix report shows each
+round trajectory plus final-round and best-round mean ± sample standard
+deviation.
+
+### Local-context isolation
+
+CLI generator and judge calls run from fresh temporary working directories.
+Only the explicitly supplied reference or feedback images are staged there.
+Codex runs ephemerally with user configuration and discovered rules ignored;
+Claude runs in bare mode. Every run records the isolation protocol in
+`config.json`.
+
+This prevents accidental loading of repository `AGENTS.md`/`CLAUDE.md` files
+and prior benchmark artifacts. It is practical benchmark isolation, not a
+container-level guarantee against a model guessing and reading an unrelated
+absolute path; use an OS sandbox or container for that stronger threat model.
+
 **Output Location Example:**
 ```
 benchmark_run_output/97fe1f08_anthropic_claude-3.5-sonnet-20241022_20251026_154624/

@@ -12,6 +12,7 @@ from typing import Dict, Any, Optional, Tuple, List
 from abc import ABC, abstractmethod
 from dotenv import load_dotenv
 from language_specs import ShaderLanguageSpec, WGSLSpec
+from prompt_profiles import BASELINE_PROFILE, apply_prompt_profile
 
 def extract_usage_data(api_response: dict) -> Dict[str, Any]:
     """Extract usage/cost data from OpenRouter API response."""
@@ -39,6 +40,29 @@ _ZERO_USAGE: Dict[str, Any] = {
     'cost': 0.0,
     'cached_tokens': 0,
 }
+
+CLI_ISOLATION_PROTOCOL = "isolated-temp-workspace-v1"
+
+
+def generation_isolation_metadata(model_name: str) -> Dict[str, Any]:
+    """Describe the local-context boundary used for a generation backend."""
+    if model_name.startswith("cli/"):
+        return {
+            "protocol": CLI_ISOLATION_PROTOCOL,
+            "temporary_working_directory": True,
+            "repository_context_loaded": False,
+            "provided_inputs_only": True,
+            "security_note": (
+                "Practical benchmark isolation, not an OS/container guarantee "
+                "against a model guessing and reading an unrelated absolute path."
+            ),
+        }
+    return {
+        "protocol": "remote-api-no-local-tools",
+        "temporary_working_directory": False,
+        "repository_context_loaded": False,
+        "provided_inputs_only": True,
+    }
 
 
 def parse_cli_spec(spec: str) -> Tuple[str, Optional[str], Optional[str]]:
@@ -138,64 +162,63 @@ class CliExecutor(LLMExecutor):
     def _run_claude(self, full_prompt: str, reference_image_path: Optional[str],
                     model: Optional[str] = None,
                     effort: Optional[str] = None) -> Tuple[str, Dict[str, Any]]:
-        prompt = full_prompt
-        if reference_image_path:
-            prompt = self._append_image_instruction(prompt, str(Path(reference_image_path).absolute()), 'Read')
-        # --disallowedTools is the actual guard against the agent writing
-        # shader.wgsl to disk instead of returning it inline: with
-        # --dangerously-skip-permissions every tool is AUTO-APPROVED, so
-        # --allowedTools Read alone restricts nothing (it's an approval
-        # allowlist, not a tool restriction). Several published-run failures
-        # were the agent replying "I've written shader.wgsl..." with prose
-        # in the shader tags. Disallow wins over allow in Claude Code.
-        # --output-format json (vs text) is how we get usage: the json result
-        # envelope carries token counts (incl. thinking, billed as output)
-        # and total_cost_usd. text mode reports nothing.
-        cmd = [
-            'claude', '-p',
-            '--dangerously-skip-permissions',
-            '--output-format', 'json',
-            '--no-session-persistence',
-            '--allowedTools', 'Read',
-            '--disallowedTools', 'Write,Edit,NotebookEdit,Bash',
-        ]
-        if model:
-            cmd += ['--model', model]
-        if effort:
-            # Reasoning effort (low|medium|high|xhigh|max). Unset = CLI
-            # default (high). Fable 5 always thinks; effort is the only knob.
-            cmd += ['--effort', effort]
-        # Benchmark-validity vs comparability tradeoff: without --bare,
-        # claude -p auto-loads CLAUDE.md from cwd (this repo — which
-        # documents the scoring system) plus the user's global CLAUDE.md.
-        # The published Opus/Gemini/Codex columns all ran WITHOUT --bare, so
-        # bare mode is opt-in to keep new columns apples-to-apples; set it
-        # for any future full re-run. (gemini avoids repo contamination by
-        # running from a tempdir; codex would read AGENTS.md but none exists.)
-        if os.environ.get('SHADER_BENCH_CLAUDE_BARE') == '1':
-            cmd += ['--bare']
-        try:
-            result = subprocess.run(
-                cmd, input=prompt, capture_output=True, text=True,
-                timeout=1800, env=self._base_env(),
-            )
-        except subprocess.TimeoutExpired:
-            raise Exception("claude CLI timed out after 1800s")
-        if result.returncode != 0:
-            detail = result.stderr or result.stdout or ""
-            if result.stdout:
-                try:
-                    failure = json.loads(result.stdout)
-                    detail = (
-                        failure.get("result")
-                        or failure.get("error")
-                        or failure.get("message")
-                        or json.dumps(failure, ensure_ascii=True)
-                    )
-                except json.JSONDecodeError:
-                    pass
-            raise Exception(f"claude CLI failed (exit {result.returncode}): {detail[:4000]}")
-        return self._parse_claude_json_envelope(result.stdout)
+        with tempfile.TemporaryDirectory(
+            prefix="claude_shader_workspace_"
+        ) as workspace:
+            staged_ref: Optional[Path] = None
+            if reference_image_path:
+                source = Path(reference_image_path).resolve()
+                staged_ref = Path(workspace) / f"reference{source.suffix}"
+                shutil.copy2(source, staged_ref)
+
+            prompt = full_prompt
+            if staged_ref:
+                prompt = self._append_image_instruction(
+                    prompt, str(staged_ref), "Read"
+                )
+
+            # --bare and the empty temporary cwd prevent repository/user
+            # instruction files and prior benchmark artifacts from entering
+            # the model context. Only the explicitly staged reference is
+            # visible through the permitted Read tool.
+            cmd = [
+                'claude', '-p',
+                '--dangerously-skip-permissions',
+                '--output-format', 'json',
+                '--no-session-persistence',
+                '--bare',
+                '--allowedTools', 'Read',
+                '--disallowedTools', 'Write,Edit,NotebookEdit,Bash',
+            ]
+            if model:
+                cmd += ['--model', model]
+            if effort:
+                cmd += ['--effort', effort]
+            try:
+                result = subprocess.run(
+                    cmd, input=prompt, capture_output=True, text=True,
+                    timeout=1800, env=self._base_env(), cwd=workspace,
+                )
+            except subprocess.TimeoutExpired:
+                raise Exception("claude CLI timed out after 1800s")
+            if result.returncode != 0:
+                detail = result.stderr or result.stdout or ""
+                if result.stdout:
+                    try:
+                        failure = json.loads(result.stdout)
+                        detail = (
+                            failure.get("result")
+                            or failure.get("error")
+                            or failure.get("message")
+                            or json.dumps(failure, ensure_ascii=True)
+                        )
+                    except json.JSONDecodeError:
+                        pass
+                raise Exception(
+                    f"claude CLI failed (exit {result.returncode}): "
+                    f"{detail[:4000]}"
+                )
+            return self._parse_claude_json_envelope(result.stdout)
 
     @staticmethod
     def _parse_claude_json_envelope(stdout: str) -> Tuple[str, Dict[str, Any]]:
@@ -235,9 +258,17 @@ class CliExecutor(LLMExecutor):
         # borders, banners, "tokens used" footer). The supported way to get
         # ONLY the final assistant message is `-o <file>`, which we then read.
         # Image input has no Read-tool equivalent — must be attached via -i.
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as out_f:
-            out_path = out_f.name
-        try:
+        with tempfile.TemporaryDirectory(
+            prefix="codex_shader_workspace_"
+        ) as workspace:
+            workspace_path = Path(workspace)
+            out_path = workspace_path / "final_response.txt"
+            staged_ref: Optional[Path] = None
+            if reference_image_path:
+                source = Path(reference_image_path).resolve()
+                staged_ref = workspace_path / f"reference{source.suffix}"
+                shutil.copy2(source, staged_ref)
+
             # NOTE on flag ordering for codex 0.125+: `-a/--ask-for-approval`
             # is a TOP-LEVEL codex flag and must come BEFORE the `exec`
             # subcommand. `-s`, `--ephemeral`, etc. live on `exec`.
@@ -249,21 +280,23 @@ class CliExecutor(LLMExecutor):
                 '-s', 'read-only',              # sandbox: deny all file writes
                 '--skip-git-repo-check',        # cwd may not be a git repo
                 '--ephemeral',                  # no resumable session
+                '--ignore-user-config',         # no personal prompt/config
+                '--ignore-rules',               # no AGENTS.md/rules discovery
                 '--color', 'never',             # disable ANSI in stdout (banner remains)
-                '-o', out_path,                 # write final assistant msg here
+                '-o', str(out_path),            # write final assistant msg here
             ]
             if model:
                 cmd += ['-m', model]
             if reasoning_effort:
                 cmd += ['-c', f'reasoning_effort={reasoning_effort}']
-            if reference_image_path:
-                cmd += ['-i', str(Path(reference_image_path).absolute())]
+            if staged_ref:
+                cmd += ['-i', str(staged_ref)]
             cmd += ['-']  # read prompt from stdin
 
             try:
                 result = subprocess.run(
                     cmd, input=full_prompt, capture_output=True, text=True,
-                    timeout=1800, env=self._base_env(),
+                    timeout=1800, env=self._base_env(), cwd=workspace,
                 )
             except subprocess.TimeoutExpired:
                 raise Exception("codex CLI timed out after 1800s")
@@ -272,11 +305,6 @@ class CliExecutor(LLMExecutor):
             with open(out_path, 'r') as f:
                 content = f.read()
             return content, dict(_ZERO_USAGE)
-        finally:
-            try:
-                os.unlink(out_path)
-            except OSError:
-                pass
 
     @staticmethod
     def _gemini_preflight() -> None:
@@ -494,10 +522,18 @@ class LLMClient:
         """Initialize LLM client with language specification."""
         self.language_spec = language_spec or WGSLSpec()
 
-    async def generate_shaders(self, model_name: str, prompt: str, reference_image_path: Optional[str] = None) -> Tuple[str, Dict[str, Any]]:
+    async def generate_shaders(
+        self,
+        model_name: str,
+        prompt: str,
+        reference_image_path: Optional[str] = None,
+        prompt_profile: str = BASELINE_PROFILE,
+        post_profile_instructions: str = "",
+    ) -> Tuple[str, Dict[str, Any]]:
         """Generate shader code using the specified model."""
-        shader_harness_example = self._get_shader_harness_example()
-        full_prompt = self._format_prompt_template(prompt, shader_harness_example)
+        full_prompt = self.build_generation_prompt(
+            prompt, prompt_profile, post_profile_instructions
+        )
 
         content_payload = [{"type": "text", "text": full_prompt}]
         
@@ -519,6 +555,27 @@ class LLMClient:
             
         return await executor.execute(model_name, content_payload, full_prompt, reference_image_path)
 
+    def build_generation_prompt(
+        self,
+        problem_prompt: str,
+        prompt_profile: str = BASELINE_PROFILE,
+        post_profile_instructions: str = "",
+    ) -> str:
+        """Build the exact text prompt before backend-specific image attachment."""
+        shader_harness_example = self._get_shader_harness_example()
+        baseline_prompt = self._format_prompt_template(
+            problem_prompt, shader_harness_example
+        )
+        profiled_prompt = apply_prompt_profile(
+            baseline_prompt, prompt_profile
+        )
+        if not post_profile_instructions:
+            return profiled_prompt
+        return (
+            f"{profiled_prompt.rstrip()}\n\n"
+            f"{post_profile_instructions.strip()}\n"
+        )
+
     def _get_shader_harness_example(self) -> str:
         """Load language-specific reference examples from shader_harness."""
         script_dir = Path(__file__).parent.absolute()
@@ -528,8 +585,9 @@ class LLMClient:
 
     def _format_prompt_template(self, problem_prompt: str, shader_harness_example: str) -> str:
         """Format prompt template using language_spec constraints."""
+        template_path = Path(__file__).with_name("prompt_template.txt")
         try:
-            with open("prompt_template.txt", 'r') as f:
+            with open(template_path, 'r') as f:
                 template = f.read()
 
             template = template.replace("{problem_prompt}", problem_prompt)

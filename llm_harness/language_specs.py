@@ -104,7 +104,7 @@ class WGSLSpec(ShaderLanguageSpec):
 
     Key characteristics:
     - Explicit types (vec2<f32> not vec2)
-    - Address spaces required (var<function>, var<uniform>)
+    - Address spaces required for resource bindings (for example var<uniform>)
     - @vertex, @fragment, @compute stage attributes
     - @group/@binding for resource bindings
     - Strict type checking (no implicit conversions)
@@ -167,13 +167,13 @@ The runtime provides EXACTLY this uniform struct — these are the only
 values that exist. Do NOT add other fields; they would silently read
 garbage (the buffer is raw bytes with no field-name checking).
 
-@group(0) @binding(0) var<uniform> params: Params;
-
 struct Params {
     resolution: vec2<f32>,  // render target size in pixels (square)
     time: f32,              // always 0.0 — you are rendering ONE static frame
     aspect: f32,            // width/height — always 1.0 (square target)
 };
+
+@group(0) @binding(0) var<uniform> params: Params;
 
 You may declare a shorter prefix of this struct (e.g. resolution only),
 but never reorder fields or invent new ones. Design for a static image:
@@ -185,7 +185,7 @@ TYPE REQUIREMENTS:
 - Use i32, u32, f32 for scalars (NOT int, uint, float)
 - NO implicit type conversions
 - Array indexing ONLY with integer expressions: array[u32(expr)]
-- Use var<function> for function-local variables
+- Use var for mutable function-local variables; do NOT write var<function>
 - Use let for immutable bindings
 
 CRITICAL NUMERIC LIMITS (⚠️ COMPILATION FAILURES):
@@ -230,7 +230,7 @@ WGSL RESERVED KEYWORDS (⚠️ DO NOT USE AS VARIABLE NAMES):
 SYNTAX YOU MUST NOT USE:
 ---------------------------------------------
 ❌ @vertex, @fragment in function bodies (only as attributes)
-❌ var without address space (e.g., var x: f32; is WRONG)
+❌ var<function> for function-local variables (write `var x: f32` instead)
 ❌ Implicit casts (e.g., f32(1) where 1 is i32)
 ❌ gl_* variables
 ❌ #ifdef, #define, or any preprocessor
@@ -249,11 +249,13 @@ fn vs_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<
     return vec4<f32>(x, y, 0.0, 1.0);
 }
 
-@group(0) @binding(0) var<uniform> params: Params;
-
 struct Params {
     resolution: vec2<f32>,
+    time: f32,
+    aspect: f32,
 };
+
+@group(0) @binding(0) var<uniform> params: Params;
 
 @fragment
 fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {

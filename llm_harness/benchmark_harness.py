@@ -20,7 +20,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Import pipeline components
-from llm_client import LLMClient
+from llm_client import LLMClient, generation_isolation_metadata
 from prompt_loader import PromptLoader
 from shader_parser import ShaderParser
 from test_runner import TestRunner
@@ -33,13 +33,20 @@ from judge_panel import (
 from debug_logger import DebugLogger
 from language_specs import get_language_spec
 from runtimes import get_runtime, default_runtime_for_language
+from prompt_profiles import (
+    BASELINE_PROFILE,
+    prompt_profile_choices,
+    validate_prompt_profile,
+)
 
 class BenchmarkHarness:
     def __init__(self, model: str, problems: List[str], max_parallel: int = 100,
                  judge_model: Union[str, List[str]] = "anthropic/claude-opus-4-6",
                  run_id: str = None, language: str = "wgsl", runtime: str = None,
-                 skip_judge: bool = False):
+                 skip_judge: bool = False,
+                 prompt_profile: str = BASELINE_PROFILE):
         self.model = model
+        self.prompt_profile = validate_prompt_profile(prompt_profile)
         # judge_model accepts either a single string (legacy) or a list (panel).
         # self.judge_models is the canonical list; self.judge_model is the
         # first member, kept for backwards-compatible logging/manifest fields.
@@ -60,11 +67,16 @@ class BenchmarkHarness:
         # Generate or reuse run ID for checkpoint/resume
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         model_safe = self.model.replace('/', '_').replace(':', '_')
+        profile_suffix = (
+            ""
+            if self.prompt_profile == BASELINE_PROFILE
+            else f"_{self.prompt_profile.replace('-', '_')}"
+        )
 
         # NEW STRUCTURE: Use UUID for run uniqueness
         import uuid
         run_uuid = str(uuid.uuid4())[:8]  # Short UUID prefix
-        self.run_id = run_id or f"{run_uuid}_{model_safe}_{timestamp}"
+        self.run_id = run_id or f"{run_uuid}_{model_safe}{profile_suffix}_{timestamp}"
 
         # CRITICAL: Directory naming convention used throughout the system
         # Pattern: benchmark_run_output/{run_id}_{model}_{timestamp}/
@@ -166,6 +178,12 @@ class BenchmarkHarness:
             'judge_models': list(self.judge_models),
             'language': self.language,
             'runtime': self.runtime.name if hasattr(self, 'runtime') and self.runtime else None,
+            'prompt_profile': self.prompt_profile,
+            'generation_isolation': generation_isolation_metadata(self.model),
+            'judge_isolation': {
+                model: generation_isolation_metadata(model)
+                for model in self.judge_models
+            },
             'problems': self.problems,
             'total_problems': len(self.problems),
             'max_parallel': self.max_parallel,
@@ -221,6 +239,7 @@ class BenchmarkHarness:
             'model': self.model,
             'judge_model': self.judge_models[0],
             'judge_models': list(self.judge_models),
+            'prompt_profile': self.prompt_profile,
             'total_problems': len(self.problems),
             'problems': self.problems,
             'created': datetime.now().isoformat() if not self.manifest_file.exists() else None,
@@ -486,7 +505,12 @@ class BenchmarkHarness:
 
                         self.logger.log_api_call(problem_index, problem, "LLM generation", f"model={self.model}, language={self.language}")
                         llm_client = LLMClient(language_spec=self.language_spec)
-                        llm_response, generation_usage = await llm_client.generate_shaders(self.model, request_prompt, ref_img_str)
+                        llm_response, generation_usage = await llm_client.generate_shaders(
+                            self.model,
+                            request_prompt,
+                            ref_img_str,
+                            prompt_profile=self.prompt_profile,
+                        )
                         self.logger.log_api_response(problem_index, problem, "LLM generation", len(llm_response), True)
                         self.logger.log_info(problem_index, problem, f"Generation cost: ${generation_usage.get('cost', 0):.4f} ({generation_usage.get('total_tokens', 0)} tokens)")
 
@@ -545,11 +569,17 @@ class BenchmarkHarness:
                 request_path = problem_result_dir / "llm_request.txt"
                 response_path = problem_result_dir / "llm_response.txt"
                 try:
-                    # Save the original request prompt
+                    # Save the exact generated text prompt (before the
+                    # backend-specific reference-image path/attachment).
                     prompt_loader = PromptLoader()
                     original_prompt = prompt_loader.load_request_prompt(str(problem_path))
+                    saved_prompt = LLMClient(
+                        language_spec=self.language_spec
+                    ).build_generation_prompt(
+                        original_prompt, self.prompt_profile
+                    )
                     with open(request_path, 'w') as f:
-                        f.write(original_prompt)
+                        f.write(saved_prompt)
                     # Save the LLM response
                     with open(response_path, 'w') as f:
                         f.write(llm_response)
@@ -825,6 +855,7 @@ class BenchmarkHarness:
                                        self._is_stage_complete(i, 'render')))
 
         print(f"🎯 Benchmark Harness - Testing {self.model}")
+        print(f"🧭 Prompt profile: {self.prompt_profile}")
         print(f"🆔 Run ID: {self.run_id}")
         print(f"📊 Total tests: {len(self.problems)}")
         print(f"✅ Fully completed (cached): {fully_completed}")
@@ -913,7 +944,7 @@ class BenchmarkHarness:
         
         return report_path
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description='Shader Benchmark Harness - Tier 2 (Pipeline Parallel)')
     parser.add_argument('--model', help='LLM model to test (required unless using --resume)')
     # nargs='+' so we can pass a panel: --judge-model cli/codex:gpt-5.5:high cli/claude:sonnet-4.6 google/gemini-2.5-pro
@@ -938,6 +969,15 @@ def main():
     parser.add_argument('--runtime', type=str, default=None,
                        choices=['wgpu', 'shadertoy'],
                        help='Rendering runtime (default: derived from --language: shadertoy→shadertoy, else wgpu)')
+    parser.add_argument(
+        '--prompt-profile',
+        choices=prompt_profile_choices(),
+        default=None,
+        help=(
+            'Generation prompt variant. Defaults to baseline for new runs and '
+            'to the recorded profile when resuming.'
+        ),
+    )
     parser.add_argument('--resume', type=str, default=None,
                        help=('Resume a specific run folder (e.g. benchmark_run_output/abc123_…). '
                              'Pass "latest" as an explicit alias for default auto-detect.'))
@@ -953,7 +993,7 @@ def main():
                              'using the cached render image. Lets you decouple gen-side '
                              'quotas (Anthropic, Google) from judge-side quotas (codex).'))
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     # Default behavior: auto-resume the most recent matching run unless the
     # user opted out with --new or named a specific run with --resume <path>.
@@ -999,6 +1039,9 @@ def main():
                     if cfg.get('model') != args.model:
                         continue
                     if cfg.get('language', 'wgsl') != args.language:
+                        continue
+                    requested_profile = args.prompt_profile or BASELINE_PROFILE
+                    if cfg.get('prompt_profile', BASELINE_PROFILE) != requested_profile:
                         continue
                     cfg_runtime = cfg.get('runtime')
                     if args.runtime and cfg_runtime and cfg_runtime != args.runtime:
@@ -1121,8 +1164,19 @@ def main():
         max_parallel = args.max_parallel if args.max_parallel != 100 else config.get('max_parallel', 100)
         language = args.language if args.language != 'wgsl' else config.get('language', 'wgsl')
         runtime = args.runtime or config.get('runtime')
+        recorded_profile = config.get('prompt_profile', BASELINE_PROFILE)
+        if args.prompt_profile and args.prompt_profile != recorded_profile:
+            parser.error(
+                "Cannot change --prompt-profile while resuming: "
+                f"run records {recorded_profile!r}, requested "
+                f"{args.prompt_profile!r}. Start a --new run instead."
+            )
+        prompt_profile = recorded_profile
 
-        harness = BenchmarkHarness(model, problems, max_parallel, judge_model, run_id, language, runtime, args.skip_judge)
+        harness = BenchmarkHarness(
+            model, problems, max_parallel, judge_model, run_id, language,
+            runtime, args.skip_judge, prompt_profile
+        )
     else:
         # Standard mode - require model and problems
         if not args.model:
@@ -1137,7 +1191,12 @@ def main():
         if not args.problems:
             parser.error("--problems or --all is required (unless using --resume)")
 
-        harness = BenchmarkHarness(args.model, args.problems, args.max_parallel, args.judge_model, args.run_id, args.language, args.runtime, args.skip_judge)
+        prompt_profile = args.prompt_profile or BASELINE_PROFILE
+        harness = BenchmarkHarness(
+            args.model, args.problems, args.max_parallel, args.judge_model,
+            args.run_id, args.language, args.runtime, args.skip_judge,
+            prompt_profile
+        )
 
     report_path = asyncio.run(harness.run_benchmark())
 
