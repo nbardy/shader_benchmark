@@ -248,6 +248,22 @@ python prompt_matrix_harness.py \
   --max-parallel 3
 ```
 
+The sequential IQ-inspired development profiles are also available for focused
+experiments:
+
+| Profile | Measured intervention |
+|---|---|
+| `domain-expert-v2` | Lean, mechanically verifiable true-3D gate |
+| `domain-expert-v3` | Surface-flow plumage plus sparse hero feathers |
+| `domain-expert-v4` | Multi-scale plumage geometry/material coupling |
+| `domain-expert-v5` | Exact parent-shell containment and designed variation |
+
+These are development treatments, not a claimed quality ladder. On the parrot
+run, v3 had the highest final judge score of the four while none achieved the
+desired human visual bar. See
+`research/parrot_prompt_ablation_blog_notes_2026-07-30.md` for the trajectories
+and visual findings.
+
 ### N-round visual revision harness
 
 The iterative harness generates a complete shader, renders and judges it, then

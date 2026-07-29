@@ -12,6 +12,10 @@ SCRATCHPAD_ART_DIRECTION_AMBITIOUS_3D_PROFILE = (
     "scratchpad-art-direction-ambitious-3d-v1"
 )
 DOMAIN_EXPERT_PROFILE = "domain-expert-v1"
+DOMAIN_EXPERT_V2_PROFILE = "domain-expert-v2"
+DOMAIN_EXPERT_V3_PROFILE = "domain-expert-v3"
+DOMAIN_EXPERT_V4_PROFILE = "domain-expert-v4"
+DOMAIN_EXPERT_V5_PROFILE = "domain-expert-v5"
 
 
 _SCRATCHPAD_BRIEF = r"""
@@ -456,6 +460,286 @@ scratchpad must translate that direction into concrete coordinate systems,
 object-level repetition, geometry, materials, reflectance, lighting, bounding
 acceleration, and a bounded implementation budget. Then implement the strongest
 complete version. Do not merely restate this directive in comments.
+""".strip(),
+    DOMAIN_EXPERT_V2_PROFILE: r"""
+
+EXPERIMENTAL PROFILE: DOMAIN EXPERT V2 — LEAN 3D GATE
+=====================================================
+
+Return exactly:
+
+<scratchpad>
+...a public implementation specification under 550 words...
+</scratchpad>
+<shader file="shader.wgsl">
+...complete WGSL...
+</shader>
+
+No hidden chain-of-thought or other prose. The reference image is evidence, not
+a texture to import.
+
+SUCCESS GATE
+------------
+This parrot is a volumetric subject. The primary bird MUST be rendered as a
+genuine 3D scene. The completed WGSL must visibly contain all of:
+
+1. a perspective 3D camera ray with origin and direction;
+2. analytic 3D intersections, a `mapScene(vec3)`-style distance field, or a
+   deliberate hybrid that returns hit distance plus material identity;
+3. body, head, wing, face patch, and both beak lobes as occluding 3D forms;
+4. normals derived from those 3D surfaces;
+5. material-dependent albedo, roughness/specular response, and lighting;
+6. at least soft shadow or ambient occlusion plus atmospheric depth;
+7. feather groups evaluated in object/world coordinates as curved 3D
+   ellipsoids, capsules, cones, or displaced surface structures.
+
+Screen-space masks may create only the background, bokeh, and final
+post-processing. They MUST NOT construct the bird, its feathers, eye, or beak.
+If code or compute budget becomes tight, remove microdetail and keep the 3D
+architecture. A simple complete 3D parrot is better than a detailed 2.5D one.
+
+THREE IQ-DERIVED PRINCIPLES
+---------------------------
+
+- Hierarchical bounds: intersect cheap body/head/wing envelopes before
+  evaluating detailed geometry. March or test feather detail only inside its
+  parent region.
+- Structured variation: preserve the silhouette, pose, and feather flow.
+  Instance a modest number of real feather forms with correlated row position,
+  overlap, scale, angle, bend, color, and roughness. Use stable cell/instance
+  identity, clusters, sparse omissions, and low-frequency drift. Never tile one
+  identical motif across the visible surface.
+- Unified surfaces: object-space variation must affect geometry or normals and
+  feed a coherent material/light pipeline. Couple geometric normal, subtle bump,
+  albedo, roughness, Fresnel/specular, shadow/AO, rim or transmission, fog, and
+  final grading. Never paint a pattern onto one uniformly shiny blob.
+
+The scratchpad must name the exact 3D primitives, bounds, camera, feather
+placement coordinates, materials, and hard budgets for primary steps, shadow
+steps, feather instances, and antialiasing. Define a compact palette ladder:
+deep canopy, warm bokeh, macaw blue, golden yellow, facial ivory, and blue-black
+beak, with value and temperature relationships.
+
+Implement the strongest complete static frame at time 0 using only the supplied
+WGSL ABI. No textures, extra bindings, files, or runtime changes.
+""".strip(),
+    DOMAIN_EXPERT_V3_PROFILE: r"""
+
+EXPERIMENTAL PROFILE: DOMAIN EXPERT V3 — ORGANIC FEATHER FLOW
+=============================================================
+
+Return exactly one public <scratchpad> under 600 words followed by one complete
+<shader file="shader.wgsl">. No hidden chain-of-thought or other prose.
+
+3D ARCHITECTURE GATE
+--------------------
+Render the primary parrot through a perspective 3D camera and genuine analytic
+or ray-marched 3D geometry. Body, head, wing, facial patch, eye, and both beak
+lobes must occlude in depth; normals must come from those surfaces; materials
+must drive roughness/specular response, shadow or AO, atmosphere, and grading.
+Screen-space construction is limited to background bokeh and post-processing.
+If constrained, simplify detail rather than returning to 2.5D.
+
+V3 HYPOTHESIS: PLUMAGE IS A FLOWING SURFACE, NOT A PARTS GRID
+-------------------------------------------------------------
+Do not cover the bird with rectangular row/column loops of identical capsules,
+cones, beads, scales, or ellipsoids. No repeated peg-board silhouette.
+
+Build plumage in two levels:
+
+1. Coherent surface field
+   - Define object-space plumage-flow directions that follow the head, breast,
+     shoulder, and wing curvature.
+   - Use low-frequency drift plus a warped, non-axis-aligned cell or
+     quasi-random/golden-angle distribution in surface coordinates.
+   - Let the field subtly displace the parent SDF or perturb its geometric
+     normal with anisotropic grooves, overlaps, and value/roughness changes.
+   - Preserve broad smooth masses and use detail to reveal their curvature.
+
+2. Sparse hero feathers
+   - Add only a small, asymmetrical set of genuinely 3D overlapping forms where
+     they change the silhouette: crown tufts, shoulder coverts, and long flight
+     feathers.
+   - Each hero feather must have a leaf/lens or curved tapered profile, not a
+     capsule with a round bead end. Vary attachment point, tangent direction,
+     length, width, bend, twist, overlap depth, color, and roughness coherently.
+   - Derive placement from a curved wing envelope or surface frame. Use parent
+     bounds before evaluating these forms.
+
+Variation must be correlated and hierarchical: large feather-flow arcs first,
+clusters and gaps second, individual jitter last. Adjacent feathers should
+share direction and scale trends. Avoid independent hash noise and evenly
+spaced rows.
+
+COMPOSITION AND SURFACE
+-----------------------
+Match the reference's tight portrait crop, broad golden breast, swept blue wing,
+compact crown, ivory striped face, small alert eye, and strongly hooked
+blue-black beak. Use a dark green canopy with irregular warm bokeh so the bird
+dominates the frame.
+
+Use one coherent surface pipeline: geometric normal → restrained anisotropic
+bump → material albedo/roughness → warm key and cool fill/rim → soft shadow/AO
+→ atmospheric separation → restrained final grade. Feather material is broad
+and satin-matte; only the beak and eye receive tight glossy highlights.
+
+The scratchpad must name the surface-coordinate mapping, flow field, hero
+feather placement rule, 3D primitives, bounds, materials, and hard ray/detail
+budgets. Implement a complete static frame at time 0 with the supplied WGSL ABI
+only; no textures, files, extra bindings, or runtime changes.
+""".strip(),
+    DOMAIN_EXPERT_V4_PROFILE: r"""
+
+EXPERIMENTAL PROFILE: DOMAIN EXPERT V4 — PLUMAGE MATERIAL SYSTEM
+===============================================================
+
+Return one public <scratchpad> under 600 words, then one complete
+<shader file="shader.wgsl">. No other prose or hidden chain-of-thought.
+
+KEEP THE V3 3D GATE
+-------------------
+The parrot must remain a perspective, genuinely 3D analytic/ray-marched scene.
+Major forms occlude in depth, normals come from geometry, and screen-space work
+is restricted to background and post-processing. Preserve a tight portrait
+crop: bird about 90% of image height, head in the upper third, beak pointing
+right, broad golden breast, swept blue wing, and irregular feathered outline.
+
+V4 HYPOTHESIS: FEATHERS ARE A MATERIAL-SCALE GEOMETRIC SYSTEM
+-------------------------------------------------------------
+The prior failure modes are forbidden:
+
+- no global sine bands or evenly spaced ribs across head, breast, or wing;
+- no rectangular feather grid;
+- no isolated oval decals, beads, cones, or round-ended pegs;
+- no uniformly glossy cyan/yellow plastic plumage.
+
+Use a three-scale object-space plumage system:
+
+1. Macro: clean ellipsoid/capsule/curved SDF envelopes establish anatomy,
+   gesture, wing sweep, and silhouette.
+2. Meso: a warped non-axis-aligned feather-cell field creates shallow
+   overlapping lens/chevron edges on the surface. Use stable neighboring-cell
+   evaluation, but modulate density, phase, size, orientation, and occupancy
+   with a low-frequency 3D field so rows bend, merge, disappear, and cluster.
+   Align each local cell to a material-specific tangent flow around the body.
+3. Micro: restrained rotated-octave noise affects only fiber-scale normal,
+   roughness, and subtle albedo—not the silhouette.
+
+The meso field should primarily displace the parent surface or perturb its
+normal, producing many implied feathers without ray-marching dozens of separate
+objects. Add only 6–12 flattened, curved hero feathers where overlap changes the
+wing or crown silhouette. Hero feathers need pointed/tapered tips, asymmetric
+curvature, variable attachment depth, and coherent flow.
+
+UNIFIED MATERIAL/LIGHT PIPELINE
+-------------------------------
+Carry material identity from `mapScene` into shading. Use deliberately different
+responses:
+
+- blue/yellow feathers: satin-matte, roughness roughly 0.65–0.9, broad weak
+  highlights, anisotropic fiber normal, warm transmission/rim;
+- facial skin: matte ivory with restrained dark curved markings;
+- beak: blue-black, smoother and denser with a controlled Fresnel highlight;
+- eye: tiny, glossy, high-contrast catchlight.
+
+Use geometry normal → bounded plumage normal perturbation → material albedo and
+roughness → warm key/cool fill → AO/soft shadow → subtle rim/transmission → fog
+and restrained color grade. Clamp bump amplitude so it never destroys anatomy.
+
+IQ-STYLE BUDGETING
+------------------
+Use cheap macro bounds before meso detail. Limit primary marching, shadow steps,
+cell-neighbor evaluations, hero-feather primitives, and FBM octaves explicitly.
+Spend the budget on the focal head/shoulder; reduce detail toward the lower body
+and far side.
+
+The scratchpad must name the 3D camera, macro primitives, surface coordinates,
+tangent-flow rule, meso cell construction, material parameters, bounds, and
+hard budgets. Implement a complete static frame at time 0 with the supplied
+WGSL ABI only; no textures, files, extra bindings, or runtime changes.
+""".strip(),
+    DOMAIN_EXPERT_V5_PROFILE: r"""
+
+EXPERIMENTAL PROFILE: DOMAIN EXPERT V5 — CONTAINED DESIGNED VARIATION
+====================================================================
+
+Return one public <scratchpad> under 650 words and one complete
+<shader file="shader.wgsl">. No other prose or hidden chain-of-thought.
+
+PRIMARY GOAL
+------------
+Create a tightly cropped, recognizable, elegant 3D macaw portrait—not a flat
+illustration, peg-board toy, rippled plastic egg, or unbounded pattern demo.
+Use a perspective 3D camera, robust analytic/ray-marched geometry, geometric
+normals, real occlusion, material IDs, soft shadow/AO, atmosphere, and grading.
+Screen-space construction is background/post only.
+
+ROBUST MACRO SCENE FIRST
+------------------------
+Build and compile the complete macro bird before adding detail:
+
+- long asymmetric torso/breast, compact crown, swept shoulder/wing;
+- ivory facial patch, small alert eye, strongly hooked two-lobed beak;
+- tight reference-like crop with the head in the upper third and beak right.
+
+Use simple ellipsoids, capsules, curved cones/lenses, and subtraction/smooth
+union. Preserve the macro silhouette if any detail must be dropped.
+
+EXACT CONTAINMENT — THE CRITICAL V5 RULE
+----------------------------------------
+A performance `if` is not geometric containment. Every procedural or repeated
+detail field must be mathematically clipped to its parent region. For SDF
+intersection use the equivalent of:
+
+`dContained = max(dDetail, dParentRegion)`
+
+For surface-only relief, intersect detail with a thin parent shell such as:
+
+`dShell = abs(dParentSurface) - shellThickness`
+`dContained = max(dDetail, dShell)`
+
+Return FAR outside the parent bound. No feather, cell, or folded coordinate may
+exist beyond its breast, wing, crown, or facial region. Never apply unbounded
+`fract`, `mod`, or periodic folding directly to world space.
+
+DESIGNED DISTRIBUTION, THEN SMALL VARIATION
+-------------------------------------------
+Do not generate a universal feather lattice. Use three tailored treatments:
+
+1. Breast: keep the broad golden volume. Suggest overlapping plumage through a
+   clipped, surface-tangent chevron/lens normal field with low contrast.
+2. Wing: create 7–10 explicitly bounded 3D flight feathers along one curved
+   attachment arc. Progress length, angle, bend, width, and overlap smoothly;
+   then add only ±10–15% correlated variation. Use pointed flattened
+   lens/tapered forms, never round-ended pegs.
+3. Crown/shoulder: add 3–6 asymmetrical silhouette tufts or coverts, clustered
+   toward the focal head and clipped to local envelopes.
+
+Use low-frequency 3D drift to bend flow and vary density. Use restrained rotated
+noise only for fiber normals, roughness, and subtle albedo. Randomness modifies
+a designed sequence; it does not design the composition.
+
+MATERIAL AND ART DIRECTION
+--------------------------
+Feathers are satin-matte with broad weak highlights and soft warm rim or
+transmission. Facial skin is matte ivory with curved dark markings. The beak is
+blue-black and smoother with one controlled Fresnel highlight; the tiny eye is
+glossy. Use a deep green canopy, irregular warm bokeh, golden breast, cyan-blue
+wing with darker overlap valleys, and a restrained warm-key/cool-fill grade.
+Concentrate contrast and detail around eye, face, beak, and shoulder.
+
+WGSL AND BUDGET SAFETY
+----------------------
+Do not call `select()` on structs; choose `SceneHit` values with an explicit
+`if`. Do not assign to vector swizzles. Use bounded loops and explicit types.
+Budget at most about 120 primary steps, 24 shadow steps, 10 flight feathers,
+6 crown/shoulder details, 4 noise octaves, and one ray per pixel. Use cheap
+parent bounds before evaluating local detail.
+
+The scratchpad must specify macro primitives, camera, containment equations,
+the three tailored feather treatments, materials, and budgets. Implement a
+complete static time-0 frame using only the supplied WGSL ABI; no textures,
+files, extra bindings, or runtime changes.
 """.strip(),
 }
 

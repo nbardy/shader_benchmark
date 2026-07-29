@@ -129,3 +129,137 @@ The honest conclusion is negative but useful:
 
 Do not claim success from one attractive output. The evidence here supports
 smaller, falsifiable expert interventions rather than one maximal prompt.
+
+## Iterative expert-prompt development: v2–v5
+
+The next phase is sequential prompt development rather than a parallel
+leaderboard. Each version gets one three-round parrot run; its actual renders
+and WGSL determine the smallest change in the next version.
+
+The IQ kernel suggests three generative-art principles:
+
+1. **Hierarchical scene architecture.** Cheap bounds and envelopes decide where
+   expensive geometry, marching, shadows, and volumes are evaluated.
+2. **Structured variation.** A stable macro-form is populated with real object
+   instances whose position, scale, angle, shape, material, and occupancy vary
+   coherently across neighboring cells and larger density fields.
+3. **Unified surface response.** Geometry and displacement produce normals;
+   normals, material, lighting, atmosphere, and final color grading form one
+   pipeline rather than independent effects.
+
+[Current GPT-5.6 guidance](https://developers.openai.com/api/docs/guides/model-guidance?model=gpt-5.6#prompting-best-practices)
+favors lean, outcome-oriented prompts and recommends removing repeated
+scaffolding one group at a time. V2 therefore tests one hypothesis: a concise,
+mechanically verifiable 3D gate will preserve true 3D better than v1's maximal
+expert checklist.
+
+### V2 — lean 3D gate
+
+Trajectory: 307 → 316 → 331.
+
+V2 succeeded architecturally. The round-3 WGSL uses a perspective camera,
+ray-marched `mapScene`, occluding 3D ellipsoids and beak forms, geometric
+normals, material IDs, roughness, Fresnel, soft shadow, AO, fog, and bounded
+feather functions. It did not fall back to screen-space construction.
+
+Visually it became a toy parrot made from repeated parts. The breast and wing
+are populated by regular rows of tapered capsules/cones with similar spacing,
+orientation, and glossy bead-like ends. Iteration improved crop and detail but
+made the regimented pattern more obvious. The score rose monotonically while
+the central artistic defect remained.
+
+V3 changes only the feather representation: replace the parts grid with a
+surface-following plumage field plus sparse, asymmetrical hero feathers whose
+placement follows a curved wing frame.
+
+### V3 — organic feather flow
+
+Trajectory: render failure → 316 → 334.
+
+V3 preserved genuine 3D after compiler recovery and removed the regimented
+capsule grid. It overcorrected toward smooth parent volumes: the final bird has
+global rib-like surface waves and a few isolated oval/blob details instead of
+convincing plumage. Crop and head scale improved, but the body still reads as a
+toy made of glossy primitive masses.
+
+V4 keeps the same macro 3D gate and changes the surface layer only. It bans
+global sine ribs, plastic feather materials, and oval decals, then specifies a
+three-scale system: macro anatomy, a warped surface-aligned meso feather field,
+and restrained fiber-scale normal/roughness variation.
+
+### V4 — plumage material system
+
+Trajectory: render failure → 238 → render failure.
+
+V4 was the worst treatment. Two rounds used `select()` on a `SceneHit` struct,
+which WGSL/naga rejects. The only render showed a separate mathematical failure:
+periodic feather geometry escaped the bird and formed long chains through the
+background. The prompt requested cheap parent bounds, but that encouraged
+conditional evaluation rather than true SDF intersection. A branch can save
+work; it does not guarantee the repeated field is clipped.
+
+V5 returns to v2's stable macro scene, adds the exact containment equation
+`max(dDetail, dParentRegion)`, forbids unbounded world-space folding, and replaces
+the universal cell field with three designed treatments: subtle breast relief,
+7–10 bounded flight feathers along a curved arc, and a few crown/shoulder
+silhouette details. It also records the two repeated WGSL hazards: struct
+`select()` and swizzle assignment.
+
+### V5 — contained designed variation
+
+Trajectory: render failure → 279 → 328.
+
+V5 successfully contained the feather work to the bird and recovered a
+recognizable, tightly cropped 3D macaw with a stronger facial patch, eye, and
+hooked beak. Round 1 still violated the explicit no-swizzle-assignment rule and
+failed after repair, showing that prompt text is not a reliable compiler
+boundary.
+
+The final render's macro anatomy is the strongest of v4/v5, but the intended
+flight feathers collapse into thin wire/crease artifacts. Large body and wing
+surfaces remain smooth and plastic. Exact containment fixed v4's catastrophic
+pattern escape; it did not solve the hard meso-geometry design problem.
+
+## V2–V5 development summary
+
+| Version | Round 1 | Round 2 | Round 3 | Human read |
+|---|---:|---:|---:|---|
+| v2 lean 3D gate | 307 | 316 | 331 | Genuine 3D and explicit feathers, but a regular peg grid |
+| v3 organic flow | fail | 316 | 334 | Cleaner masses and crop, but ribbed/plastic with sparse blobs |
+| v4 material system | fail | 238 | fail | Periodic detail escapes the bird; mechanically fragile |
+| v5 contained design | fail | 279 | 328 | Best late macro anatomy; feather detail degenerates into wires |
+
+Run IDs:
+
+- `parrot_domain_expert_v2_iq_20260730`
+- `parrot_domain_expert_v3_iq_20260730`
+- `parrot_domain_expert_v4_iq_20260730`
+- `parrot_domain_expert_v5_iq_20260730`
+
+None of the four is an IQ-level artistic parrot. The original combined
+art-direction + ambitious-3D trial 3 round 3 still has the strongest overall
+photographic volume and material presence to the human reviewer.
+
+## What the iteration actually established
+
+The three IQ-derived principles remain sound, but prose alone does not reliably
+instantiate them:
+
+1. **Bounds need equations, not adjectives.** V4 interpreted “bound detail” as
+   a performance branch; v5's explicit SDF intersection fixed the escape.
+2. **Structured variation needs a domain-specific representation.** Asking for
+   repeated real objects produced a peg grid; asking for a field produced ribs;
+   asking for both produced fragile geometry. A close-up feather coat needs a
+   reusable surface-coordinate feather primitive or worked scaffold, not more
+   vocabulary.
+3. **Materials cannot rescue weak geometry.** Roughness, Fresnel, AO, fog, and
+   grading were present, but broad primitive anatomy plus weak meso detail still
+   read as plastic.
+
+The next meaningful system experiment is not v6 prompt accretion. It is to give
+the model a small, tested WGSL production scaffold: robust scene-hit selection,
+ellipsoid/capsule/lens primitives, safe transforms, parent-shell clipping,
+surface frames, and one bounded feather-field helper. Then let the model spend
+test-time compute on composition and art direction while compile/render gates
+enforce the architecture mechanically. Pair that with blinded human preference,
+because the scalar judge did not track the preferred image reliably.

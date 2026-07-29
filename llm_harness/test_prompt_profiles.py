@@ -5,6 +5,10 @@ from prompt_profiles import (
     CHATGPT_SHADER_HARNESS_PROFILE,
     AMBITIOUS_3D_PROFILE,
     DOMAIN_EXPERT_PROFILE,
+    DOMAIN_EXPERT_V2_PROFILE,
+    DOMAIN_EXPERT_V3_PROFILE,
+    DOMAIN_EXPERT_V4_PROFILE,
+    DOMAIN_EXPERT_V5_PROFILE,
     SCRATCHPAD_ART_DIRECTION_PROFILE,
     SCRATCHPAD_ART_DIRECTION_AMBITIOUS_3D_PROFILE,
     SCRATCHPAD_PROFILE,
@@ -139,6 +143,80 @@ class PromptProfileTests(unittest.TestCase):
             "A flat shiny primitive",
             "bounding planes",
             "Do not merely restate this directive",
+        ):
+            self.assertIn(required, normalized)
+
+    def test_domain_expert_v2_is_lean_and_has_a_verifiable_3d_gate(self):
+        result = apply_prompt_profile("BASE", DOMAIN_EXPERT_V2_PROFILE)
+        normalized = " ".join(result.split())
+        self.assertIn("<scratchpad>", result)
+        self.assertNotIn("<artistic_subtleties_and_elegance>", result)
+        self.assertLess(
+            result.index("<scratchpad>"),
+            result.index('<shader file="shader.wgsl">'),
+        )
+        for required in (
+            "LEAN 3D GATE",
+            "perspective 3D camera ray",
+            "mapScene(vec3)",
+            "normals derived from those 3D surfaces",
+            "feather groups evaluated in object/world coordinates",
+            "MUST NOT construct the bird",
+            "Hierarchical bounds",
+            "Structured variation",
+            "Unified surfaces",
+            "remove microdetail and keep the 3D architecture",
+        ):
+            self.assertIn(required, normalized)
+
+    def test_domain_expert_v3_replaces_regular_parts_with_surface_flow(self):
+        result = apply_prompt_profile("BASE", DOMAIN_EXPERT_V3_PROFILE)
+        normalized = " ".join(result.split())
+        for required in (
+            "ORGANIC FEATHER FLOW",
+            "perspective 3D camera",
+            "No repeated peg-board silhouette",
+            "Coherent surface field",
+            "golden-angle distribution",
+            "Sparse hero feathers",
+            "leaf/lens or curved tapered profile",
+            "Derive placement from a curved wing envelope",
+            "Variation must be correlated and hierarchical",
+            "Feather material is broad and satin-matte",
+        ):
+            self.assertIn(required, normalized)
+
+    def test_domain_expert_v4_defines_multiscale_plumage_material(self):
+        result = apply_prompt_profile("BASE", DOMAIN_EXPERT_V4_PROFILE)
+        normalized = " ".join(result.split())
+        for required in (
+            "PLUMAGE MATERIAL SYSTEM",
+            "perspective, genuinely 3D",
+            "no global sine bands",
+            "three-scale object-space plumage system",
+            "warped non-axis-aligned feather-cell field",
+            "stable neighboring-cell evaluation",
+            "material-specific tangent flow",
+            "roughness roughly 0.65–0.9",
+            "bounded plumage normal perturbation",
+            "cheap macro bounds before meso detail",
+        ):
+            self.assertIn(required, normalized)
+
+    def test_domain_expert_v5_requires_containment_and_designed_sequences(self):
+        result = apply_prompt_profile("BASE", DOMAIN_EXPERT_V5_PROFILE)
+        normalized = " ".join(result.split())
+        for required in (
+            "CONTAINED DESIGNED VARIATION",
+            "Build and compile the complete macro bird before adding detail",
+            "A performance `if` is not geometric containment",
+            "dContained = max(dDetail, dParentRegion)",
+            "Never apply unbounded `fract`, `mod`, or periodic folding",
+            "Randomness modifies a designed sequence",
+            "7–10 explicitly bounded 3D flight feathers",
+            "Do not call `select()` on structs",
+            "Do not assign to vector swizzles",
+            "cheap parent bounds before evaluating local detail",
         ):
             self.assertIn(required, normalized)
 
