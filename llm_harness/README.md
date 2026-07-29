@@ -200,6 +200,54 @@ python ambitious_3d_shader_harness.py \
   --new
 ```
 
+### Domain-expert profile
+
+`domain-expert-v1` combines the strongest art-direction and true-3D guidance
+with three production-shader disciplines that the parrot ablation exposed:
+
+- object-level spatial cells using `floor`/`fract`, neighbor searches, stable
+  per-instance hashes, clustered occupancy, and bounded repetition of geometry
+  rather than wallpaper-like texture stamps;
+- a named palette ladder and commented color helpers that preserve deliberate
+  hue, value, chroma, temperature, and area relationships;
+- material-specific normals, albedo, roughness/specular response, Fresnel,
+  shadow/occlusion, and lighting so procedural detail changes the surface
+  response instead of decorating a uniformly shiny primitive.
+
+The profile also asks for IQ-inspired production architecture—coarse bounds,
+hybrid analytic/ray-marched geometry, multi-scale fields, and explicit work
+budgets—without importing the reference kernel or any external textures.
+
+```bash
+python domain_expert_shader_harness.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --judge-model "cli/codex:gpt-5.5:high" \
+  --problems reproduce_image_andrew_pons \
+  --max-parallel 1 \
+  --new
+```
+
+It can also be combined with the N-round harness:
+
+```bash
+python iterative_shader_harness.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --judge-model "cli/codex:gpt-5.5:high" \
+  --prompt-profile domain-expert-v1 \
+  --problems reproduce_image_andrew_pons \
+  --rounds 3
+```
+
+To append the profile to an existing matrix without regenerating completed
+arms:
+
+```bash
+python prompt_matrix_harness.py \
+  --resume EXISTING_MATRIX_RUN_ID \
+  --profiles domain-expert-v1 \
+  --max-parallel 3
+```
+
 ### N-round visual revision harness
 
 The iterative harness generates a complete shader, renders and judges it, then

@@ -5,7 +5,11 @@ from pathlib import Path
 
 from PIL import Image
 
-from prompt_matrix_harness import PromptMatrixHarness, build_trial_specs
+from prompt_matrix_harness import (
+    PromptMatrixHarness,
+    build_trial_specs,
+    merge_prompt_profiles,
+)
 
 
 class PromptMatrixHarnessTests(unittest.TestCase):
@@ -30,6 +34,43 @@ class PromptMatrixHarnessTests(unittest.TestCase):
     def test_trial_count_must_be_positive(self):
         with self.assertRaises(ValueError):
             build_trial_specs("matrix-one", ["baseline"], trials=0)
+
+    def test_resume_can_append_a_profile_without_duplicate_work(self):
+        self.assertEqual(
+            merge_prompt_profiles(
+                ["baseline", "scratchpad-v1"],
+                ["scratchpad-v1", "domain-expert-v1"],
+            ),
+            ["baseline", "scratchpad-v1", "domain-expert-v1"],
+        )
+
+    def test_active_profiles_limit_execution_without_hiding_report_rows(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            harness = PromptMatrixHarness(
+                model="test-model",
+                problems=["test-problem"],
+                profiles=["baseline", "domain-expert-v1"],
+                trials=2,
+                rounds=3,
+                judge_models=[],
+                run_id="matrix-active-test",
+                active_profiles=["domain-expert-v1"],
+            )
+            try:
+                self.assertEqual(len(harness.specs), 4)
+                self.assertEqual(len(harness.run_specs), 2)
+                self.assertTrue(
+                    all(
+                        spec.profile == "domain-expert-v1"
+                        for spec in harness.run_specs
+                    )
+                )
+            finally:
+                # The harness output root is repository-local; remove only the
+                # exact synthetic run created by this test.
+                import shutil
+
+                shutil.rmtree(harness.run_dir, ignore_errors=True)
 
     def test_visual_report_groups_methods_by_trial_and_round(self):
         with tempfile.TemporaryDirectory() as temporary:

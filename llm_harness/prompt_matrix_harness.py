@@ -28,6 +28,7 @@ from llm_client import generation_isolation_metadata
 from prompt_profiles import (
     AMBITIOUS_3D_PROFILE,
     BASELINE_PROFILE,
+    DOMAIN_EXPERT_PROFILE,
     SCRATCHPAD_ART_DIRECTION_AMBITIOUS_3D_PROFILE,
     SCRATCHPAD_ART_DIRECTION_PROFILE,
     SCRATCHPAD_PROFILE,
@@ -41,6 +42,7 @@ DEFAULT_ABLATION_PROFILES = (
     SCRATCHPAD_ART_DIRECTION_PROFILE,
     AMBITIOUS_3D_PROFILE,
     SCRATCHPAD_ART_DIRECTION_AMBITIOUS_3D_PROFILE,
+    DOMAIN_EXPERT_PROFILE,
 )
 
 
@@ -83,6 +85,13 @@ def build_trial_specs(
     ]
 
 
+def merge_prompt_profiles(
+    existing: Sequence[str], additions: Optional[Sequence[str]]
+) -> List[str]:
+    """Append new ablation arms without duplicating completed profiles."""
+    return list(dict.fromkeys([*existing, *(additions or ())]))
+
+
 class PromptMatrixHarness:
     """Run profile × independent-trial cells, each with an N-round chain."""
 
@@ -100,6 +109,7 @@ class PromptMatrixHarness:
         runtime: Optional[str] = None,
         skip_judge: bool = False,
         loop_strategy: str = LATEST_LOOP_STRATEGY,
+        active_profiles: Optional[Sequence[str]] = None,
     ):
         if trials < 1:
             raise ValueError("trials must be at least 1")
@@ -119,6 +129,7 @@ class PromptMatrixHarness:
         self.runtime = runtime
         self.skip_judge = skip_judge
         self.loop_strategy = validate_loop_strategy(loop_strategy)
+        self.active_profiles = list(active_profiles or self.profiles)
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.run_id = run_id or (
@@ -131,6 +142,10 @@ class PromptMatrixHarness:
         self.config_path = self.run_dir / "config.json"
         self.state_path = self.run_dir / "matrix_state.json"
         self.specs = build_trial_specs(self.run_id, self.profiles, self.trials)
+        self.run_specs = [
+            spec for spec in self.specs
+            if spec.profile in self.active_profiles
+        ]
         self._save_config()
 
     def _save_config(self) -> None:
@@ -715,16 +730,22 @@ revision rounds progress left-to-right.</p>
     async def run(self) -> Path:
         print(f"🧫 Prompt matrix: {self.model}")
         print(
-            f"   {len(self.profiles)} profiles × {self.trials} trials × "
+            f"   {len(self.active_profiles)} active profiles × "
+            f"{self.trials} trials × "
             f"{self.rounds} rounds = "
-            f"{len(self.profiles) * self.trials * self.rounds} generations"
+            f"{len(self.run_specs) * self.rounds} generation slots"
         )
+        if len(self.active_profiles) != len(self.profiles):
+            print(
+                f"   Report retains {len(self.profiles)} total profiles; "
+                "inactive completed arms are not reopened"
+            )
         print(
             "   Trial = independent start; round = dependent visual rewrite"
         )
         semaphore = asyncio.Semaphore(self.max_parallel)
         results = await asyncio.gather(
-            *(self._run_trial(spec, semaphore) for spec in self.specs)
+            *(self._run_trial(spec, semaphore) for spec in self.run_specs)
         )
         _write_json(
             self.state_path,
@@ -763,7 +784,13 @@ def main(argv=None) -> None:
     parser.add_argument("--model")
     parser.add_argument("--problems", nargs="+")
     parser.add_argument(
-        "--profiles", nargs="+", choices=prompt_profile_choices()
+        "--profiles",
+        nargs="+",
+        choices=prompt_profile_choices(),
+        help=(
+            "Profiles for a new matrix. With --resume, append any missing "
+            "profiles while preserving completed arms."
+        ),
     )
     parser.add_argument("--trials", type=int, default=3)
     parser.add_argument("--rounds", type=int, default=3)
@@ -793,7 +820,9 @@ def main(argv=None) -> None:
         harness = PromptMatrixHarness(
             model=config["model"],
             problems=config["problems"],
-            profiles=config["profiles"],
+            profiles=merge_prompt_profiles(
+                config["profiles"], args.profiles
+            ),
             trials=int(config["trials"]),
             rounds=int(config["rounds"]),
             judge_models=(
@@ -809,6 +838,7 @@ def main(argv=None) -> None:
             loop_strategy=config.get(
                 "loop_strategy", LATEST_LOOP_STRATEGY
             ),
+            active_profiles=args.profiles,
         )
     else:
         if not args.model:

@@ -11,6 +11,7 @@ AMBITIOUS_3D_PROFILE = "ambitious-3d-v1"
 SCRATCHPAD_ART_DIRECTION_AMBITIOUS_3D_PROFILE = (
     "scratchpad-art-direction-ambitious-3d-v1"
 )
+DOMAIN_EXPERT_PROFILE = "domain-expert-v1"
 
 
 _SCRATCHPAD_BRIEF = r"""
@@ -68,6 +69,87 @@ The <artistic_subtleties_and_elegance> block MUST identify:
 
 Every proposed irregularity must serve a named artistic or material purpose.
 Randomness alone is not realism, and complexity alone is not elegance.
+""".strip()
+
+
+_DOMAIN_EXPERT_GUIDE = r"""
+DOMAIN-EXPERT DIRECTIVE
+-----------------------
+Work like a production shader artist who can allocate a strict real-time budget
+across composition, geometry, spatial variation, material response, lighting,
+and color. The goal is not merely to include these topics in the plan: the WGSL
+must contain concrete functions and fields that implement the chosen subset.
+
+1. Object-level spatial composition, not wallpaper
+   - Separate a cell's integer identity from its local coordinates using
+     floor/fract (or the WGSL equivalent). Use the cell identity to hash stable,
+     correlated instance attributes such as presence, position, scale, angle,
+     bend, species/form variant, material, and color—not only a texture value.
+   - When the scene benefits from repeated elements, repeat actual 3D or
+     analytic objects: feather groups, foliage, scales, stones, fibers, clouds,
+     architectural pieces, or other subject-specific forms. Search neighboring
+     cells where necessary so shifted instances do not create seams.
+   - Break grid regularity deliberately with occupancy masks, clusters and
+     clearings, low-frequency density drift, hierarchical cells, sparse hero
+     exceptions, domain warping, and bounded per-instance variation. Preserve
+     the large-scale silhouette and focal hierarchy.
+   - Repetition is an acceleration and composition technique, not a license to
+     stamp one motif everywhere. Bound the repeated-object region and skip or
+     simplify work outside its envelope.
+
+2. Multi-scale procedural form
+   - Assign distinct jobs to frequency bands: analytic/SDF macro shape;
+     low-frequency gesture and asymmetry; mid-frequency object variation;
+     restrained high-frequency surface detail.
+   - Prefer rotated octave bases, derivative-aware noise when useful, and
+     object/material-space fields over screen-space noise. If derivatives are
+     too expensive, use stable finite differences or a cheaper justified
+     approximation.
+   - Distort geometry only where it improves the named material or silhouette.
+     Do not let noise destroy distance-field stepping safety, normals, or the
+     recognizable macro form.
+
+3. Palette architecture and color pipeline
+   - In the public plan, define a palette ladder before coding: dominant,
+     shadow, light, accent, atmospheric/background, and neutral colors. Describe
+     their hue, value, saturation/chroma, temperature, contrast, and area
+     relationships.
+   - In WGSL, place concise color-theory comments next to named palette
+     constants and reusable helpers. Prefer meaningful operations such as
+     value-preserving hue bias, warm/cool light separation, saturation control,
+     luminance-aware mixing, atmospheric extinction, and a restrained final
+     grade over unrelated literal colors.
+   - Keep color variation correlated with geometry, material, lighting, or
+     composition. Do not spray independent RGB noise over the image.
+
+4. Material and reflectance design
+   - Define the material signal explicitly: at minimum albedo plus roughness or
+     specular response, and add transmission, subsurface-like wrap, metallic,
+     emission, or anisotropy only when the subject needs it.
+   - Generate bump/normal variation in object or material coordinates and keep
+     it subordinate to the geometric normal. A flat shiny primitive with a
+     screen-space pattern is not an acceptable substitute for material.
+   - Couple lighting to the material using a coherent diffuse/specular model,
+     view-dependent Fresnel, roughness-dependent highlight width, soft shadow or
+     ambient occlusion, and plausible rim/transmission where appropriate.
+   - Let different surfaces respond differently. State how each major material
+     changes the normal field, albedo, roughness, specular color, and light
+     transport.
+
+5. Scene architecture and budget
+   - Use a real 3D camera and genuine geometry for volumetric subjects. Choose
+     analytic intersections, bounded ray-marched SDFs, height fields, volume
+     integration, or a hybrid according to the form. Use bounding planes,
+     spheres, envelopes, or intervals before expensive marching.
+   - Spend computation hierarchically: silhouette and pose first, then major
+     overlaps, materials and light, characteristic repeated forms, and finally
+     microdetail. A simpler complete scene beats an unfinished technical demo.
+   - State hard budgets for primary steps, shadow/volume steps, neighborhood
+     searches, primitive evaluations, antialiasing, and the static t=0 frame.
+
+The attached reference is evidence about the target, not a texture to import.
+The final shader must be self-contained and procedural with no external files,
+textures, extra bindings, or runtime changes.
 """.strip()
 
 
@@ -338,6 +420,42 @@ Then implement the strongest complete version. Preserve the problem's
 mathematical requirements and reference composition. The shader must remain
 self-contained and procedural: no external textures, files, extra bindings, or
 runtime changes.
+""".strip(),
+    DOMAIN_EXPERT_PROFILE: f"""
+
+EXPERIMENTAL PROFILE: DOMAIN EXPERT SHADER V1
+=============================================
+
+This section extends the baseline response contract. The <shader> element must
+contain only valid WGSL. Return exactly these three elements in this order:
+
+<artistic_subtleties_and_elegance>
+...compact art direction, palette architecture, and controlled variation...
+</artistic_subtleties_and_elegance>
+<scratchpad>
+...compact scene architecture, math, material, and performance specification...
+</scratchpad>
+<shader file="shader.wgsl">
+...complete WGSL...
+</shader>
+
+Do not output a <think> section, hidden chain-of-thought, or prose outside those
+three elements. These are concise public design artifacts, not a transcript of
+private reasoning. Keep both planning blocks together under 1,250 words so the
+complete shader retains most of the output budget.
+
+{_ART_DIRECTION_GUIDE}
+
+{_DOMAIN_EXPERT_GUIDE}
+
+{_SCRATCHPAD_BRIEF}
+
+The art-direction block must define the palette ladder and identify which
+regularities preserve the subject versus which are deliberately broken. The
+scratchpad must translate that direction into concrete coordinate systems,
+object-level repetition, geometry, materials, reflectance, lighting, bounding
+acceleration, and a bounded implementation budget. Then implement the strongest
+complete version. Do not merely restate this directive in comments.
 """.strip(),
 }
 

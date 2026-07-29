@@ -4,6 +4,7 @@ from prompt_profiles import (
     BASELINE_PROFILE,
     CHATGPT_SHADER_HARNESS_PROFILE,
     AMBITIOUS_3D_PROFILE,
+    DOMAIN_EXPERT_PROFILE,
     SCRATCHPAD_ART_DIRECTION_PROFILE,
     SCRATCHPAD_ART_DIRECTION_AMBITIOUS_3D_PROFILE,
     SCRATCHPAD_PROFILE,
@@ -115,6 +116,31 @@ class PromptProfileTests(unittest.TestCase):
             "bounded budget for",
         ):
             self.assertIn(required, result)
+
+    def test_domain_expert_profile_turns_critiques_into_observable_contract(self):
+        result = apply_prompt_profile("BASE", DOMAIN_EXPERT_PROFILE)
+        art = result.index("<artistic_subtleties_and_elegance>")
+        scratchpad = result.index("<scratchpad>")
+        shader = result.index('<shader file="shader.wgsl">')
+        self.assertLess(art, scratchpad)
+        self.assertLess(scratchpad, shader)
+        self.assertNotIn("\n<think>\n", result)
+        normalized = " ".join(result.split())
+
+        for required in (
+            "floor/fract",
+            "repeat actual 3D or analytic objects",
+            "Search neighboring cells",
+            "clusters and clearings",
+            "palette ladder",
+            "color-theory comments",
+            "albedo plus roughness",
+            "view-dependent Fresnel",
+            "A flat shiny primitive",
+            "bounding planes",
+            "Do not merely restate this directive",
+        ):
+            self.assertIn(required, normalized)
 
 
 if __name__ == "__main__":
