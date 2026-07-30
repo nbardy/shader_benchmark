@@ -2,9 +2,10 @@
 """A deliberately narrow MCP tool server for agentic shader iteration.
 
 The server owns exactly one shader workspace. It can write the complete shader,
-render the current revision with the benchmark binary, and freeze a rendered
-revision as the final submission. Paths and budgets come from the parent
-harness through environment variables; model-supplied paths are never accepted.
+render the current revision with the benchmark binary, record bounded visual
+studies, and freeze a rendered revision as the final submission. Paths and
+budgets come from the parent harness through environment variables;
+model-supplied paths are never accepted.
 """
 
 from __future__ import annotations
@@ -52,11 +53,19 @@ class ShaderAgentState:
     render_budget: int
     render_size: int = 1024
     min_successful_revisions: int = 1
+    required_studies: int = 0
     revision: int = 0
     render_calls: int = 0
     submitted: bool = False
     current_hash: str | None = None
     successful_render_by_revision: dict[int, Path] = field(default_factory=dict)
+    successful_render_stage_by_revision: dict[int, str] = field(
+        default_factory=dict
+    )
+    latest_successful_study_render: dict[int, dict[str, int]] = field(
+        default_factory=dict
+    )
+    study_records: dict[int, dict[str, Any]] = field(default_factory=dict)
     attempted_revisions: set[int] = field(default_factory=set)
     events: list[dict[str, Any]] = field(default_factory=list)
 
@@ -68,6 +77,14 @@ class ShaderAgentState:
         if not 1 <= self.min_successful_revisions <= self.render_budget:
             raise ValueError(
                 "min_successful_revisions must be between 1 and render_budget"
+            )
+        if not 0 <= self.required_studies <= 8:
+            raise ValueError("required_studies must be between 0 and 8")
+        minimum_budget = self.required_studies + self.min_successful_revisions
+        if self.render_budget < minimum_budget:
+            raise ValueError(
+                "render budget must allow every required study plus the "
+                "minimum successful final revisions"
             )
         if not self.renderer.is_file():
             raise FileNotFoundError(f"renderer not found: {self.renderer}")
@@ -91,12 +108,19 @@ class ShaderAgentState:
 
     def _persist(self) -> None:
         payload = {
-            "protocol": "persistent-agent-render-tools-v1",
+            "protocol": "persistent-agent-render-tools-v2",
             "render_budget": self.render_budget,
             "render_calls": self.render_calls,
             "remaining_renders": max(0, self.render_budget - self.render_calls),
             "min_successful_revisions": self.min_successful_revisions,
             "successful_revisions": len(self.successful_render_by_revision),
+            "successful_final_revisions": sum(
+                stage == "final"
+                for stage in self.successful_render_stage_by_revision.values()
+            ),
+            "required_studies": self.required_studies,
+            "completed_studies": sorted(self.study_records),
+            "study_records": self.study_records,
             "revision": self.revision,
             "current_hash": self.current_hash,
             "submitted": self.submitted,
@@ -151,8 +175,49 @@ class ShaderAgentState:
         self._event("write_shader", **result)
         return result
 
-    def render_shader(self) -> tuple[dict[str, Any], Path | None]:
+    def render_shader(
+        self,
+        stage: str = "final",
+        study_index: int = 0,
+    ) -> tuple[dict[str, Any], Path | None]:
         """Render the current revision and return metadata plus its image path."""
+        if stage not in {"study", "final"}:
+            result = {
+                "ok": False,
+                "error": "stage must be either 'study' or 'final'.",
+            }
+            self._event("render_rejected", **result)
+            return result, None
+        if stage == "study":
+            if not 1 <= study_index <= self.required_studies:
+                result = {
+                    "ok": False,
+                    "error": (
+                        "study_index must identify one of the required "
+                        f"studies (1-{self.required_studies})."
+                    ),
+                }
+                self._event("render_rejected", **result)
+                return result, None
+        elif study_index != 0:
+            result = {
+                "ok": False,
+                "error": "study_index must be 0 for a final render.",
+            }
+            self._event("render_rejected", **result)
+            return result, None
+        if stage == "final" and len(self.study_records) < self.required_studies:
+            result = {
+                "ok": False,
+                "error": (
+                    "Complete and record every required visual study before "
+                    "rendering the final reconstruction."
+                ),
+                "completed_studies": sorted(self.study_records),
+                "required_studies": self.required_studies,
+            }
+            self._event("render_rejected", **result)
+            return result, None
         if self.submitted:
             result = {
                 "ok": False,
@@ -243,6 +308,13 @@ class ShaderAgentState:
         success = returncode == 0 and output_path.is_file()
         if success:
             self.successful_render_by_revision[self.revision] = output_path
+            self.successful_render_stage_by_revision[self.revision] = stage
+            if stage == "study":
+                self.latest_successful_study_render[study_index] = {
+                    "revision": self.revision,
+                    "render_call": call_number,
+                }
+                self.study_records.pop(study_index, None)
 
         result = {
             "ok": success,
@@ -250,6 +322,8 @@ class ShaderAgentState:
             "render_budget": self.render_budget,
             "remaining_renders": self.render_budget - call_number,
             "revision": self.revision,
+            "stage": stage,
+            "study_index": study_index,
             "sha256": self.current_hash,
             "image": str(output_path) if success else None,
             "log": str(log_path),
@@ -258,6 +332,71 @@ class ShaderAgentState:
         }
         self._event("render_shader", **result)
         return result, output_path if success else None
+
+    def record_study(
+        self,
+        study_index: int,
+        subject: str,
+        selected_variant: str,
+        selection_rationale: str,
+        handoff_requirements: str,
+    ) -> dict[str, Any]:
+        """Record public evidence from a successfully rendered study atlas."""
+        if self.submitted:
+            return {
+                "ok": False,
+                "error": "The final shader has already been submitted.",
+            }
+        rendered = self.latest_successful_study_render.get(study_index)
+        if rendered is None:
+            return {
+                "ok": False,
+                "error": (
+                    "Render this study successfully before recording its "
+                    "selection."
+                ),
+            }
+        variant = selected_variant.strip().upper()
+        if variant not in {"A", "B", "C", "D", "E", "F"}:
+            return {
+                "ok": False,
+                "error": "selected_variant must be one of A, B, C, D, E, or F.",
+            }
+        if len(subject.strip()) < 4:
+            return {"ok": False, "error": "subject is too short."}
+        if len(selection_rationale.strip()) < 80:
+            return {
+                "ok": False,
+                "error": (
+                    "selection_rationale must contain at least 80 characters "
+                    "of visible comparison evidence."
+                ),
+            }
+        if len(handoff_requirements.strip()) < 80:
+            return {
+                "ok": False,
+                "error": (
+                    "handoff_requirements must contain at least 80 characters "
+                    "naming the reusable code, coordinates, and parameters."
+                ),
+            }
+        record = {
+            "study_index": study_index,
+            "subject": subject.strip()[:300],
+            "selected_variant": variant,
+            "selection_rationale": selection_rationale.strip()[:4_000],
+            "handoff_requirements": handoff_requirements.strip()[:4_000],
+            **rendered,
+        }
+        self.study_records[study_index] = record
+        result = {
+            "ok": True,
+            **record,
+            "completed_studies": sorted(self.study_records),
+            "required_studies": self.required_studies,
+        }
+        self._event("record_study", **result)
+        return result
 
     def submit_final(self, summary: str = "") -> dict[str, Any]:
         """Freeze the current revision, which must have rendered successfully."""
@@ -279,16 +418,38 @@ class ShaderAgentState:
             }
             self._event("submit_rejected", **result)
             return result
-        if len(self.successful_render_by_revision) < self.min_successful_revisions:
+        if self.successful_render_stage_by_revision.get(self.revision) != "final":
+            result = {
+                "ok": False,
+                "error": (
+                    "The current revision is a study atlas, not a final "
+                    "reconstruction. Integrate the selected studies and render "
+                    "the final stage before submitting."
+                ),
+            }
+            self._event("submit_rejected", **result)
+            return result
+        if len(self.study_records) < self.required_studies:
+            result = {
+                "ok": False,
+                "error": "Every required study must be recorded before submission.",
+                "completed_studies": sorted(self.study_records),
+                "required_studies": self.required_studies,
+            }
+            self._event("submit_rejected", **result)
+            return result
+        successful_final_revisions = sum(
+            stage == "final"
+            for stage in self.successful_render_stage_by_revision.values()
+        )
+        if successful_final_revisions < self.min_successful_revisions:
             result = {
                 "ok": False,
                 "error": (
                     "More distinct successfully rendered revisions are required "
                     "before submission."
                 ),
-                "successful_revisions": len(
-                    self.successful_render_by_revision
-                ),
+                "successful_revisions": successful_final_revisions,
                 "min_successful_revisions": self.min_successful_revisions,
                 "remaining_renders": self.render_budget - self.render_calls,
             }
@@ -346,15 +507,19 @@ def _state_from_environment() -> ShaderAgentState:
         min_successful_revisions=int(
             os.environ.get("SHADER_AGENT_MIN_SUCCESSFUL_REVISIONS", "1")
         ),
+        required_studies=int(
+            os.environ.get("SHADER_AGENT_REQUIRED_STUDIES", "0")
+        ),
     )
 
 
 def create_mcp(state: ShaderAgentState) -> FastMCP:
-    """Bind the fixed workspace state to the three-tool MCP surface."""
+    """Bind the fixed workspace state to the bounded MCP surface."""
     server = FastMCP(
         "shader-render-tools",
         instructions=(
-            "Work only through write_shader, render_shader, and submit_final. "
+            "Work only through write_shader, render_shader, record_study, and "
+            "submit_final. "
             "Every render consumes one unit of the fixed budget, including "
             "compile failures. Inspect each returned image before revising. "
             "submit_final accepts only the current revision after a successful "
@@ -373,15 +538,38 @@ def create_mcp(state: ShaderAgentState) -> FastMCP:
         )
 
     @server.tool(structured_output=False)
-    def render_shader() -> CallToolResult:
+    def render_shader(
+        stage: str = "final",
+        study_index: int = 0,
+    ) -> CallToolResult:
         """Render the current shader. Return compiler feedback and the image."""
-        result, image_path = state.render_shader()
+        result, image_path = state.render_shader(stage, study_index)
         content: list[Any] = [
             TextContent(type="text", text=json.dumps(result, indent=2))
         ]
         if image_path is not None:
             content.append(Image(path=image_path).to_image_content())
         return CallToolResult(content=content, isError=False)
+
+    @server.tool()
+    def record_study(
+        study_index: int,
+        subject: str,
+        selected_variant: str,
+        selection_rationale: str,
+        handoff_requirements: str,
+    ) -> str:
+        """Record the chosen A-F cell and exact final-scene handoff."""
+        return json.dumps(
+            state.record_study(
+                study_index,
+                subject,
+                selected_variant,
+                selection_rationale,
+                handoff_requirements,
+            ),
+            indent=2,
+        )
 
     @server.tool()
     def submit_final(summary: str = "") -> str:

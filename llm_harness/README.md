@@ -301,11 +301,13 @@ independently.
 ### Persistent agent render-tool harness
 
 `agentic_shader_harness.py` is a different experiment from the N-round
-orchestrator. It gives one persistent Codex session three fixed-path MCP tools:
+orchestrator. It gives one persistent Codex session four fixed-path MCP tools:
 
 - `write_shader` replaces the complete working WGSL file;
-- `render_shader` compiles it and returns the actual PNG image plus compiler
-  feedback;
+- `render_shader` compiles it with a `study` or `final` stage and returns the
+  actual PNG image plus compiler feedback;
+- `record_study` records visible comparison evidence, the selected A–F atlas
+  cell, and the implementation details that must carry into the final scene;
 - `submit_final` freezes the current revision, but only if that exact revision
   rendered successfully.
 
@@ -330,6 +332,40 @@ This costs one persistent model call with up to three tool renders, unlike
 calls. Each run saves `agent_trace.jsonl`, every shader revision, every render
 and compiler log, `submission.json`, and a visual HTML report. A response that
 does not call `submit_final` is a failed run.
+
+The optional `sketchbook-3x2-v1` workflow makes component exploration
+mechanical instead of advisory. Before any final-scene render, the agent must:
+
+1. choose three subject-specific, high-risk core elements;
+2. render each as a 3×2 atlas of six materially different variants;
+3. inspect the atlas and record the winning A–F cell with visible evidence;
+4. name the functions, coordinate frame, parameters, and aesthetic properties
+   that must be reused in the final shader.
+
+The three studies normally cover macro silhouette/scene architecture, a
+signature meso-scale shape plus its surface-following distribution, and
+material/palette/light response. These are roles, not hardcoded subjects, so
+the same workflow can study feathers, foliage, clouds, lettering, plotted
+marks, architectural modules, or abstract motifs. Placement studies explicitly
+compare parent-surface frames, curvature-following orientation, overlap,
+low-frequency fBm/domain warp, correlated jitter, density drift, and sparse
+exceptions. Noise must modulate designed structure rather than replace it.
+
+```bash
+python agentic_shader_harness.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --problem reproduce_image_andrew_pons \
+  --prompt-profile domain-expert-v5 \
+  --workflow sketchbook-3x2-v1 \
+  --render-budget 10 \
+  --min-successful-revisions 2 \
+  --judge-model "cli/codex:gpt-5.5:high"
+```
+
+The server rejects final renders until all three studies are successfully
+rendered and recorded. Study renders do not count toward
+`--min-successful-revisions`, and only final-stage renders are sent to the
+benchmark judge.
 
 The loop strategy is independently selectable:
 

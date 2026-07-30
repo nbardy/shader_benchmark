@@ -28,8 +28,15 @@ from prompt_profiles import (
 from test_runner import TestRunner
 
 
-PROTOCOL = "persistent-agent-render-tools-v1"
-MCP_TOOLS = ("write_shader", "render_shader", "submit_final")
+PROTOCOL = "persistent-agent-render-tools-v2"
+STANDARD_WORKFLOW = "standard"
+SKETCHBOOK_WORKFLOW = "sketchbook-3x2-v1"
+MCP_TOOLS = (
+    "write_shader",
+    "render_shader",
+    "record_study",
+    "submit_final",
+)
 
 
 def _json_config(value: Any) -> str:
@@ -42,6 +49,7 @@ def build_agent_prompt(
     prompt_profile: str,
     render_budget: int,
     min_successful_revisions: int = 2,
+    workflow: str = STANDARD_WORKFLOW,
 ) -> str:
     language_spec = get_language_spec("wgsl")
     canonical_prompt = f"""\
@@ -52,6 +60,64 @@ PROBLEM CONTEXT
 {problem_request.strip()}
 """
     profiled_prompt = apply_prompt_profile(canonical_prompt, prompt_profile)
+    if workflow not in {STANDARD_WORKFLOW, SKETCHBOOK_WORKFLOW}:
+        raise ValueError(f"unknown agent workflow: {workflow}")
+    required_studies = 3 if workflow == SKETCHBOOK_WORKFLOW else 0
+    sketchbook_contract = (
+        r"""
+
+MANDATORY 3×2 VISUAL SKETCHBOOK
+==============================
+
+Before building the final reconstruction, use rendered evidence to resolve
+three high-risk, subject-specific design decisions. This is a public production
+study, not hidden chain-of-thought. Select the three core elements from the
+reference rather than hardcoding the examples below.
+
+Study selection:
+- Study 1 normally resolves macro form, silhouette, pose, projection, or scene
+  architecture.
+- Study 2 normally resolves the signature meso-scale element and how it is
+  distributed, oriented, overlapped, or wrapped over its parent form.
+- Study 3 normally resolves material response, palette relationships, lighting,
+  atmospheric treatment, or another unresolved identity-carrying element.
+- Adapt these roles when a mathematical plot, landscape, typography, fluid,
+  architecture, or abstract target has different dominant risks.
+
+For EACH study:
+1. Write a self-contained study shader whose entire image is a clean 3-column
+   by 2-row atlas. The six cells are variants A, B, C, D, E, F in reading order.
+   Give every cell equal scale, safe margins, a consistent comparison camera,
+   and a visibly distinct construction. Tiny random-seed or parameter changes
+   do not count as six alternatives.
+2. For shape studies, vary the actual representation: silhouette/profile,
+   thickness, curvature, taper, overlap, deformation, normal construction, or
+   primitive/CSG/intersection method. Do not compare six copies of one peg,
+   capsule, disk, or decal.
+3. For placement studies, test a parent-surface coordinate frame and coherent
+   distribution fields. Compare useful combinations of curvature-following
+   orientation, layered overlap, low-frequency fBm/domain warp, correlated
+   jitter, density drift, clusters, and sparse exceptions. Noise must modulate
+   a designed structure; it must not erase the parent silhouette or become
+   screen-space static.
+4. Call render_shader(stage="study", study_index=N), inspect the returned atlas,
+   and revise/render that study if the variants do not answer the design
+   question and budget remains.
+5. Call record_study only after inspecting a successful atlas. Record the
+   selected A-F cell using visible comparison evidence and name the exact
+   function family, coordinate frame, parameter ranges, and aesthetic
+   properties that must be carried into the final shader.
+
+After all three selections are recorded, replace the atlas with the complete
+reconstruction. The final shader must materially reuse the selected
+representations and handoff requirements; do not restart from generic
+primitives. Render it with render_shader(stage="final", study_index=0), compare
+it to the reference, and iterate the final scene. Study atlases are experiments,
+not valid final submissions.
+"""
+        if required_studies
+        else ""
+    )
     return f"""\
 {profiled_prompt.rstrip()}
 
@@ -65,13 +131,18 @@ iteration loop and do not put WGSL in your final chat response.
 You have exactly these benchmark tools:
 - write_shader(shader_source, revision_critique): replace the complete working
   WGSL program; every rewrite after revision 1 requires a concise critique;
-- render_shader(): compile and render the current revision, returning both
-  compiler feedback and the actual rendered image;
+- render_shader(stage, study_index): compile and render the current revision,
+  returning both compiler feedback and the actual rendered image;
+- record_study(study_index, subject, selected_variant, selection_rationale,
+  handoff_requirements): preserve public visual-study evidence and its exact
+  implementation handoff;
 - submit_final(summary): freeze the current successfully rendered revision.
+{sketchbook_contract}
 
 Workflow requirements:
 1. Study the reference and plan a strong procedural reconstruction.
-2. Call write_shader with a complete shader, then call render_shader.
+2. Call write_shader with a complete shader, then call render_shader. Use
+   stage="final" and study_index=0 unless the sketchbook contract above applies.
 3. Visually compare every returned render with the reference. Diagnose the
    largest concrete mismatch in silhouette, composition, depth, color,
    lighting, material, or texture before editing.
@@ -86,9 +157,10 @@ Workflow requirements:
    failed run.
 
 You must produce at least {min_successful_revisions} distinct successfully
-rendered revisions before submitting. Re-rendering unchanged code is rejected
-without consuming budget. Each rewrite should respond to visible evidence, not
-merely satisfy the counter.
+rendered FINAL revisions before submitting. The {required_studies} required
+study renders do not count toward that final-revision minimum. Re-rendering
+unchanged code is rejected without consuming budget. Each rewrite should
+respond to visible evidence, not merely satisfy the counter.
 
 For each rewrite, put the target-versus-render evidence, strongest feature to
 preserve, and bounded changes you are making in write_shader's
@@ -110,6 +182,7 @@ def build_codex_command(
     render_budget: int,
     render_size: int,
     min_successful_revisions: int,
+    required_studies: int,
     trace_path: Path,
     last_message_path: Path,
 ) -> list[str]:
@@ -171,6 +244,9 @@ def build_codex_command(
         "mcp_servers.shader_tools.env.SHADER_AGENT_MIN_SUCCESSFUL_REVISIONS": str(
             min_successful_revisions
         ),
+        "mcp_servers.shader_tools.env.SHADER_AGENT_REQUIRED_STUDIES": str(
+            required_studies
+        ),
     }
     for key, value in configs.items():
         command.extend(["--config", f"{key}={_json_config(value)}"])
@@ -213,6 +289,7 @@ def _agentic_isolation_metadata() -> dict[str, Any]:
             "fixed_path_mcp_tools": list(MCP_TOOLS),
             "codex_sandbox": "read-only",
             "mcp_server_mutations": "one temporary shader workspace only",
+            "study_records_are_public_decision_evidence": True,
         }
     )
     return metadata
@@ -269,6 +346,7 @@ async def _judge_render_sequence(
         (int(event["render_call"]), int(event["revision"]))
         for event in state.get("events", [])
         if event.get("type") == "render_shader" and event.get("ok")
+        and event.get("stage", "final") == "final"
     ]
     return list(
         await asyncio.gather(
@@ -311,13 +389,20 @@ def _render_report(
     for event in render_events:
         if event.get("ok"):
             render_call = event["render_call"]
+            stage = event.get("stage", "final")
+            study_index = int(event.get("study_index", 0))
             judged = judged_by_call.get(int(render_call))
             score_caption = (
                 f" · {judged['total']} / 500" if judged else ""
             )
             panels.append(
                 (
-                    f"Render {render_call} · revision {event['revision']}",
+                    (
+                        f"Study {study_index} · render {render_call}"
+                        if stage == "study"
+                        else f"Final render {render_call}"
+                    )
+                    + f" · revision {event['revision']}",
                     output_dir / "renders" / f"render_{render_call:02d}.png",
                     (
                         f"{event.get('remaining_renders', 0)} renders left"
@@ -342,6 +427,26 @@ def _render_report(
         if judge
         else "<p>No judge score.</p>"
     )
+    study_records = state.get("study_records", {})
+    study_html = ""
+    if study_records:
+        items = "\n".join(
+            "<li><strong>Study "
+            + html.escape(str(record.get("study_index", index)))
+            + ": "
+            + html.escape(str(record.get("subject", "")))
+            + "</strong> — selected "
+            + html.escape(str(record.get("selected_variant", "")))
+            + "<br>"
+            + html.escape(str(record.get("selection_rationale", "")))
+            + "<br><em>Handoff:</em> "
+            + html.escape(str(record.get("handoff_requirements", "")))
+            + "</li>"
+            for index, record in sorted(
+                study_records.items(), key=lambda item: int(item[0])
+            )
+        )
+        study_html = f"<h2>Recorded study decisions</h2><ol>{items}</ol>"
     report = output_dir / "agentic_report.html"
     report.write_text(
         f"""<!doctype html><meta charset="utf-8"><title>Agentic shader run</title>
@@ -357,10 +462,12 @@ code{{color:#9ecbff}}
 <div class="meta">
 <p><strong>Model:</strong> {html.escape(result['model'])} ·
 <strong>Profile:</strong> {html.escape(result['prompt_profile'])} ·
+<strong>Workflow:</strong> {html.escape(result.get('workflow', STANDARD_WORKFLOW))} ·
 <strong>Budget:</strong> {result['render_budget']} renders ·
 <strong>Used:</strong> {state.get('render_calls', 0)}</p>
 {judge_html}
 <p>Protocol: <code>{PROTOCOL}</code></p>
+{study_html}
 </div><div class="grid">{panel_html}</div>""",
         encoding="utf-8",
     )
@@ -375,14 +482,23 @@ async def run_agentic_shader(
     render_budget: int,
     render_size: int,
     min_successful_revisions: int,
+    workflow: str,
     judge_model: str | None,
     run_id: str | None,
 ) -> Path:
     if render_budget < 1:
         raise ValueError("render_budget must be at least 1")
+    required_studies = 3 if workflow == SKETCHBOOK_WORKFLOW else 0
+    if workflow not in {STANDARD_WORKFLOW, SKETCHBOOK_WORKFLOW}:
+        raise ValueError(f"unknown agent workflow: {workflow}")
     if not 1 <= min_successful_revisions <= render_budget:
         raise ValueError(
             "min_successful_revisions must be between 1 and render_budget"
+        )
+    if render_budget < required_studies + min_successful_revisions:
+        raise ValueError(
+            "render_budget must allow all required studies plus the minimum "
+            "successful final revisions"
         )
     script_dir = Path(__file__).parent.resolve()
     repo_root = script_dir.parent
@@ -414,6 +530,7 @@ async def run_agentic_shader(
         prompt_profile,
         render_budget,
         min_successful_revisions,
+        workflow,
     )
     (output_dir / "agent_prompt.txt").write_text(prompt, encoding="utf-8")
 
@@ -438,6 +555,7 @@ async def run_agentic_shader(
             render_budget=render_budget,
             render_size=render_size,
             min_successful_revisions=min_successful_revisions,
+            required_studies=required_studies,
             trace_path=trace_path,
             last_message_path=last_message_path,
         )
@@ -475,6 +593,8 @@ async def run_agentic_shader(
         "render_budget": render_budget,
         "render_size": render_size,
         "min_successful_revisions": min_successful_revisions,
+        "workflow": workflow,
+        "required_studies": required_studies,
         "codex_returncode": completed.returncode,
         "submitted": submitted,
         "state": state,
@@ -531,6 +651,15 @@ def main(argv: list[str] | None = None) -> None:
     )
     parser.add_argument("--render-budget", type=int, default=3)
     parser.add_argument(
+        "--workflow",
+        choices=(STANDARD_WORKFLOW, SKETCHBOOK_WORKFLOW),
+        default=STANDARD_WORKFLOW,
+        help=(
+            "Use the ordinary render loop or require three rendered 3x2 "
+            "component studies before final-scene iteration."
+        ),
+    )
+    parser.add_argument(
         "--min-successful-revisions",
         type=int,
         default=2,
@@ -551,6 +680,7 @@ def main(argv: list[str] | None = None) -> None:
             render_budget=args.render_budget,
             render_size=args.render_size,
             min_successful_revisions=args.min_successful_revisions,
+            workflow=args.workflow,
             judge_model=args.judge_model,
             run_id=args.run_id,
         )

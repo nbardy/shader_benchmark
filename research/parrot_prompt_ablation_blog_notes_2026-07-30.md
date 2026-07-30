@@ -263,3 +263,73 @@ surface frames, and one bounded feather-field helper. Then let the model spend
 test-time compute on composition and art direction while compile/render gates
 enforce the architecture mechanically. Pair that with blinded human preference,
 because the scalar judge did not track the preferred image reliably.
+
+## Visual sketchbook hypothesis
+
+The v2 image makes the remaining failure unusually concrete. The shader does
+have real 3D, lighting, materials, and repeated feather objects, but its
+placement is effectively fixed row/column indexing with small hash offsets and
+its feather primitive is a tapered capsule. fBm cannot turn that representation
+into layered plumage: it can only make a peg grid slightly crooked. There is no
+parent-surface coordinate frame carrying tangent, bitangent, normal, curvature,
+or a wing/body boundary, so instances cannot convincingly wrap around anatomy.
+
+The next experiment therefore changes the inference workflow rather than adding
+another expert paragraph. Before the final reconstruction, one persistent
+render-tool session must build three visual sketchbooks. Each sketchbook is a
+3×2 atlas with six materially different alternatives for a high-risk component.
+The expected roles are macro silhouette/architecture, signature meso shape and
+surface-following distribution, and material/palette/light response, but the
+agent must choose subjects from the reference so the protocol generalizes
+beyond parrots.
+
+After inspecting an atlas, the agent records a public selection: winning A–F
+cell, visible reasons, and the exact function family, coordinate frame,
+parameter ranges, and aesthetic properties to carry into the final shader. The
+tool server blocks final rendering until all three records exist and requires
+at least two successful final revisions afterward. This tests whether rendered
+component search produces better primitives and placement fields than asking a
+single full-scene rollout to invent, integrate, and critique everything at
+once.
+
+### First sketchbook run
+
+Run: `parrot_sketchbook_3x2_v1_sol_medium_20260730`
+
+The agent used seven of ten render calls:
+
+1. the first macro atlas failed compilation;
+2. the repaired macro atlas selected variant C;
+3. the feather/distribution atlas selected variant B;
+4. the palette/material/light atlas selected variant E;
+5. the first integrated final failed compilation;
+6. final revision 1 scored 324/500;
+7. final revision 2 scored 332/500 and was submitted.
+
+The server behavior worked as designed. All three study records existed before
+the first final render, study renders were excluded from judging, and the two
+successful full-scene renders alone satisfied the submission minimum. The
+second final corrected the portrait-facing direction and improved its score by
+eight points.
+
+The visual hypothesis only partially succeeded. The submitted bird has a much
+clearer overlapping feather cascade than v2's peg rows, but the feathers are
+still smooth ellipsoid petals rather than thin, curved, asymmetric feather
+forms. The final WGSL uses 24 explicit wing ellipsoids in a fixed 4×6 loop plus
+small hash displacement; it contains no fBm or domain-warped surface frame.
+Study 1 and Study 3 mostly compare conservative parameter changes. Even Study
+2 varies coverage, flow, and density more than the underlying primitive.
+
+The judge score, 332, is effectively tied with the original v2 round 3 score of
+331. Human inspection sees a real meso-structure improvement but not a more
+photographic reconstruction: anatomy, facial geometry, feather edge structure,
+and material variation remain toy-like.
+
+The experiment reveals the next enforcement gap. A 3×2 atlas requirement
+guarantees six cells, not six representation families. The model can satisfy
+the workflow with six nearby parameterizations, then write a confident study
+record that overstates their diversity. For repeated organic detail, the next
+version should separate the individual component-shape study from the
+parent-surface placement study and require an explicit A–F representation
+inventory. Better still, a tested surface-frame and curved-feather scaffold
+would move this from prose compliance to executable architecture.
