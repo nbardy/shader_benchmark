@@ -456,3 +456,76 @@ invariants: minimum parent coverage/overlap, preservation checks for selected
 instance count and helper calls, and a study-to-final comparison that can
 reject a semantic downgrade. The inexpensive RGB gate should remain a guard,
 not be treated as a judge of conceptual or artistic diversity.
+
+### Hierarchical wide-search v5: representation breadth before refinement
+
+Runs:
+
+- interrupted diagnostic:
+  `parrot_hierarchical_wide_search_v5_sol_medium_20260731`
+- completed treatment:
+  `parrot_hierarchical_wide_search_v5b_sol_medium_20260731`
+
+V5 addressed two failures in v4: the macro subject was still assembled from
+independent world-space ovals, and the second study pass explicitly encouraged
+nearby refinements of two early winners. The new workflow uses six dependent
+topics:
+
+1. root scaffold and dependency graph;
+2. primary volume along the scaffold;
+3. parent-attached appendage;
+4. identity-carrying local element;
+5. dense overlapping sheet/field;
+6. hierarchical integration and transitions.
+
+Every topic requires three accepted 3×2 atlases. Passes 1 and 2 survey twelve
+different representation families; Pass 3 synthesizes six hybrid
+architectures. Thus the completed run inspected 108 study cells before final
+integration. Each A–F manifest must name `family=`, `construction=`, and
+`structural_difference=` before the render budget is consumed.
+
+The first v5 attempt exposed a new evaluation loophole. Its six cells differed
+inside each atlas, so the local diversity test passed, but the model reused the
+same Pass-1 image for Studies 1–5 and likewise reused one Pass-3 template. The
+manifests changed while the images were pixel-identical. The run was stopped
+after 15 renders instead of spending the remaining budget.
+
+The harness then added whole-atlas novelty checks:
+
+- a new pass must differ by at least 1.0% RGB MAE from every accepted pass of
+  the same study;
+- a new topic must differ by at least 0.5% from every accepted atlas belonging
+  to other studies.
+
+The completed v5b run cleared those checks with large margins. Representative
+within-study separations included 6.20% for the scaffold, 12.06% for the
+attached-form study, and 16.18% for the overlapping-sheet study. Two atlases
+were rejected for low internal diversity and regenerated. One integrated final
+failed on the WGSL reserved word `patch`, then compiled after repair.
+
+The final code now contains an actual dependency chain:
+
+- `bodyCenter(s)` and `bodyFrame(s)` define a curved root scaffold;
+- `bodyVolume` builds changing cross-sections along it;
+- `wingCoords` derives its root and basis from `bodyFrame(0.47)`;
+- `wingShell` constructs a thin deformed shell in that local space;
+- `featherField` places 24 overlapping units in wing coordinates.
+
+This is materially different from v4's independent body and wing ellipsoids.
+Visually, the wing is now a dense shingled field rather than twelve sparse
+plates glued onto a blue oval.
+
+The two final renders scored 313 and 309. The submitted last revision scored
+`[58, 63, 42, 96, 50]`, 16 points above v4's submitted 293 and 5 points above
+v3's best 304, although below the simpler v1's 332. The judge credited the more
+complete procedural parrot but penalized chunky oversized feathers, excessive
+body occlusion, a blocky beak, and low photographic fidelity.
+
+V5 therefore validates the main process hypothesis: enforced representation
+breadth and geometry-relative dependencies change the generated architecture
+and improve the score over v3/v4. It also displaces the failure. The bottleneck
+is no longer sparse decoration on an independent wing oval; it is the local
+shape and scale of a successfully dense sheet. A next treatment should keep
+the v5 hierarchy but add a silhouette/coverage constraint: feathers must remain
+thin, curved, and small enough that the sheet reveals the body and wing contour
+rather than covering the bird with large geometric armor.

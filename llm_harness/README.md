@@ -367,7 +367,7 @@ rendered and recorded. Study renders do not count toward
 `--min-successful-revisions`, and only final-stage renders are sent to the
 benchmark judge.
 
-Three stricter workflows isolate failures found by the first parrot trial:
+Four stricter workflows isolate failures found by the first parrot trial:
 
 - `sketchbook-curved-elements-v2` separates the individual signature-element
   shape study from its parent-surface placement study, runs studies in order,
@@ -382,19 +382,26 @@ Three stricter workflows isolate failures found by the first parrot trial:
   refinement pass before it can be recorded. Each render must predeclare its
   six constructions, and a local 3×2 cell-difference check rejects visually
   near-duplicate atlases even when they compile.
+- `sketchbook-hierarchical-wide-search-v5` starts from a rooted dependency
+  graph and requires six studies: scaffold, primary volume, attached form,
+  local element, overlapping sheet, and hierarchical integration. Each study
+  renders two disjoint six-family surveys and one six-family synthesis—18
+  candidates per topic. The server validates structured A–F manifests and
+  rejects both internally uniform atlases and whole-atlas reuse across passes
+  or study topics.
 
-V4 is the strongest process experiment for repeated detail that must belong to
-a larger form. It is still generic: for a non-organic target, the same ladder
-means fundamental unit → composed system → larger coordinate structure →
-finished scene.
+V5 is the strongest process experiment for repeated detail attached through a
+geometry hierarchy. It is generic: body→wing→feather can become
+trunk→branch→leaf, building frame→facade→panel, terrain→riverbed→water detail,
+or curve→transported mark.
 
 ```bash
 python agentic_shader_harness.py \
   --model "cli/codex:gpt-5.6-sol:medium" \
   --problem reproduce_image_andrew_pons \
   --prompt-profile domain-expert-v2 \
-  --workflow sketchbook-progressive-application-v4 \
-  --render-budget 18 \
+  --workflow sketchbook-hierarchical-wide-search-v5 \
+  --render-budget 28 \
   --min-successful-revisions 2 \
   --judge-model "cli/codex:gpt-5.5:high"
 ```
@@ -402,8 +409,10 @@ python agentic_shader_harness.py \
 The diversity check is deliberately a cheap local guard, not a semantic judge.
 It detects low pixel separation between atlas cells; the predeclared A–F
 manifest and recorded comparison make the intended conceptual differences
-auditable. Passing the gate does not prove that six variants are artistically
-good, nor that the final shader preserved their full density and fidelity.
+auditable. V5 additionally checks whole-atlas separation from every accepted
+pass and prior topic, preventing a model from relabeling one reusable atlas.
+Passing these gates does not prove that variants are artistically good, nor
+that the final shader preserved their full density and fidelity.
 
 The loop strategy is independently selectable:
 

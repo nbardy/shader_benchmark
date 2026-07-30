@@ -9,6 +9,8 @@ from PIL import Image
 from shader_agent_mcp import (
     ShaderAgentState,
     _atlas_diversity_metrics,
+    _cross_render_diversity_metrics,
+    _structural_manifest_errors,
     create_mcp,
 )
 
@@ -511,6 +513,126 @@ class ShaderAgentStateTests(unittest.TestCase):
             self.assertEqual(rejected["missing_variant_labels"], ["C:", "D:", "E:", "F:"])
             self.assertEqual(state.render_calls, 0)
             self.assertIsNone(image_path)
+
+    def test_wide_search_requires_structural_fields_for_every_variant(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            renderer = root / "renderer"
+            renderer.write_text("fake", encoding="utf-8")
+            state = ShaderAgentState(
+                root / "workspace",
+                renderer,
+                render_budget=4,
+                render_size=64,
+                min_successful_revisions=1,
+                required_studies=1,
+                min_successful_study_renders=3,
+                require_study_diversity=True,
+            )
+            state.write_shader(VALID_SHADER)
+            weak_manifest = " ".join(
+                f"{label}: a nearby oval with a different size and offset."
+                for label in "ABCDEF"
+            )
+            rejected, image_path = state.render_shader(
+                "study", 1, weak_manifest
+            )
+            self.assertFalse(rejected["ok"])
+            self.assertTrue(rejected["structural_manifest_errors"])
+            self.assertEqual(state.render_calls, 0)
+            self.assertIsNone(image_path)
+
+            strong_manifest = " ".join(
+                (
+                    f"{label}: family={label} distinct swept topology; "
+                    f"construction=derive a {label} frame from a parent curve "
+                    "and build changing cross-sections with a unique implicit "
+                    "composition; structural_difference=changes representation, "
+                    "topology, coordinate frame, and attachment mechanism rather "
+                    "than only dimensions, offsets, or numeric parameters."
+                )
+                for label in "ABCDEF"
+            )
+            self.assertEqual(_structural_manifest_errors(strong_manifest), [])
+
+    def test_cross_render_gate_rejects_a_recycled_atlas(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            renderer = root / "renderer"
+            renderer.write_text("fake", encoding="utf-8")
+            state = ShaderAgentState(
+                root / "workspace",
+                renderer,
+                render_budget=4,
+                render_size=64,
+                min_successful_revisions=1,
+                required_studies=1,
+                min_successful_study_renders=2,
+                require_study_diversity=True,
+            )
+            render_number = 0
+
+            def fake_run(command, **kwargs):
+                nonlocal render_number
+                render_number += 1
+                output_index = command.index("--output") + 1
+                output = Path(command[output_index])
+                atlas = Image.new("RGB", (300, 200), "black")
+                colors = ["red", "green", "blue", "yellow", "cyan", "magenta"]
+                if render_number == 3:
+                    colors = list(reversed(colors))
+                for index, color in enumerate(colors):
+                    left = (index % 3) * 100
+                    top = (index // 3) * 100
+                    atlas.paste(color, (left, top, left + 100, top + 100))
+                atlas.save(output)
+                return type(
+                    "Completed",
+                    (),
+                    {"returncode": 0, "stdout": "ok", "stderr": ""},
+                )()
+
+            manifest = (
+                "A: red topology with a broad shell. "
+                "B: green branching construction with deep overlap. "
+                "C: blue swept ribbon rooted in a parent frame. "
+                "D: yellow loft with changing cross sections. "
+                "E: cyan geodesic field with attached children. "
+                "F: magenta layered membrane with a tapered seam."
+            )
+            with patch("shader_agent_mcp.subprocess.run", fake_run):
+                state.write_shader(VALID_SHADER)
+                first, first_path = state.render_shader("study", 1, manifest)
+                self.assertTrue(first["study_pass_qualified"])
+                state.write_shader(
+                    VALID_SHADER + "\n// recycled image\n",
+                    "The next representation pass changes its structural code.",
+                )
+                recycled, recycled_path = state.render_shader(
+                    "study", 1, manifest
+                )
+                self.assertFalse(recycled["study_pass_qualified"])
+                self.assertEqual(
+                    recycled["cross_render_diversity"][
+                        "same_study_min_mae_percent"
+                    ],
+                    0.0,
+                )
+                self.assertEqual(state.successful_study_render_count[1], 1)
+                state.write_shader(
+                    VALID_SHADER + "\n// genuinely new image\n",
+                    "The recycled atlas failed; this changes all six constructions.",
+                )
+                changed, _ = state.render_shader("study", 1, manifest)
+            self.assertTrue(changed["study_pass_qualified"])
+            self.assertTrue(
+                _cross_render_diversity_metrics(
+                    recycled_path,
+                    1,
+                    {1: [first_path]},
+                )["qualifies"]
+                is False
+            )
 
 
 if __name__ == "__main__":

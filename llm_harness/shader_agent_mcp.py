@@ -31,6 +31,36 @@ from PIL import ImageChops, ImageStat
 MAX_SHADER_BYTES = 512_000
 STUDY_DIVERSITY_MEAN_MAE_MIN = 1.0
 STUDY_DIVERSITY_MAX_MAE_MIN = 1.75
+STUDY_CROSS_PASS_MAE_MIN = 1.0
+STUDY_CROSS_TOPIC_MAE_MIN = 0.5
+
+
+def _structural_manifest_errors(manifest: str) -> list[str]:
+    """Validate auditable A-F representation-family declarations."""
+    upper = manifest.upper()
+    labels = ("A:", "B:", "C:", "D:", "E:", "F:")
+    errors: list[str] = []
+    for index, label in enumerate(labels):
+        start = upper.find(label)
+        if start < 0:
+            errors.append(f"{label} missing")
+            continue
+        end = (
+            upper.find(labels[index + 1], start + len(label))
+            if index + 1 < len(labels)
+            else len(upper)
+        )
+        section = upper[start:end]
+        for field_name in (
+            "FAMILY=",
+            "CONSTRUCTION=",
+            "STRUCTURAL_DIFFERENCE=",
+        ):
+            if field_name not in section:
+                errors.append(f"{label} missing {field_name.lower()}")
+    if len(manifest.strip()) < 480:
+        errors.append("manifest shorter than 480 characters")
+    return errors
 
 
 def _atlas_diversity_metrics(path: Path) -> dict[str, Any]:
@@ -81,6 +111,56 @@ def _atlas_diversity_metrics(path: Path) -> dict[str, Any]:
     }
 
 
+def _image_mae_percent(first_path: Path, second_path: Path) -> float:
+    """Measure whole-image RGB separation between two study atlases."""
+    first = PILImage.open(first_path).convert("RGB").resize((192, 192))
+    second = PILImage.open(second_path).convert("RGB").resize((192, 192))
+    difference = ImageChops.difference(first, second)
+    channel_means = ImageStat.Stat(difference).mean
+    return sum(channel_means) / (len(channel_means) * 255.0) * 100.0
+
+
+def _cross_render_diversity_metrics(
+    current_path: Path,
+    study_index: int,
+    prior_paths: dict[int, list[Path]],
+) -> dict[str, Any]:
+    """Reject recycled atlases within a study or across study topics."""
+    same_study = [
+        _image_mae_percent(current_path, prior_path)
+        for prior_path in prior_paths.get(study_index, [])
+    ]
+    other_studies = [
+        _image_mae_percent(current_path, prior_path)
+        for prior_study, paths in prior_paths.items()
+        if prior_study != study_index
+        for prior_path in paths
+    ]
+    same_study_min = min(same_study) if same_study else None
+    other_study_min = min(other_studies) if other_studies else None
+    qualifies = (
+        (same_study_min is None or same_study_min >= STUDY_CROSS_PASS_MAE_MIN)
+        and (
+            other_study_min is None
+            or other_study_min >= STUDY_CROSS_TOPIC_MAE_MIN
+        )
+    )
+    return {
+        "method": "whole-atlas-rgb-mae-v1",
+        "same_study_comparisons": len(same_study),
+        "other_study_comparisons": len(other_studies),
+        "same_study_min_mae_percent": (
+            round(same_study_min, 3) if same_study_min is not None else None
+        ),
+        "other_study_min_mae_percent": (
+            round(other_study_min, 3) if other_study_min is not None else None
+        ),
+        "same_study_threshold_percent": STUDY_CROSS_PASS_MAE_MIN,
+        "other_study_threshold_percent": STUDY_CROSS_TOPIC_MAE_MIN,
+        "qualifies": qualifies,
+    }
+
+
 def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -122,6 +202,9 @@ class ShaderAgentState:
         default_factory=dict
     )
     successful_study_render_count: dict[int, int] = field(default_factory=dict)
+    qualified_study_render_paths: dict[int, list[Path]] = field(
+        default_factory=dict
+    )
     study_records: dict[int, dict[str, Any]] = field(default_factory=dict)
     attempted_revisions: set[int] = field(default_factory=set)
     events: list[dict[str, Any]] = field(default_factory=list)
@@ -170,7 +253,7 @@ class ShaderAgentState:
 
     def _persist(self) -> None:
         payload = {
-            "protocol": "persistent-agent-render-tools-v4",
+            "protocol": "persistent-agent-render-tools-v5",
             "render_budget": self.render_budget,
             "render_calls": self.render_calls,
             "remaining_renders": max(0, self.render_budget - self.render_calls),
@@ -185,6 +268,10 @@ class ShaderAgentState:
             "min_successful_study_renders": self.min_successful_study_renders,
             "require_study_diversity": self.require_study_diversity,
             "successful_study_render_count": self.successful_study_render_count,
+            "qualified_study_render_paths": {
+                str(index): [str(path) for path in paths]
+                for index, paths in self.qualified_study_render_paths.items()
+            },
             "completed_studies": sorted(self.study_records),
             "study_records": self.study_records,
             "revision": self.revision,
@@ -302,6 +389,22 @@ class ShaderAgentState:
                     }
                     self._event("render_rejected", **result)
                     return result, None
+                if self.min_successful_study_renders >= 3:
+                    structural_errors = _structural_manifest_errors(manifest)
+                    if structural_errors:
+                        result = {
+                            "ok": False,
+                            "error": (
+                                "This wide-search study requires an auditable "
+                                "A-F structural manifest. Every variant needs "
+                                "family=, construction=, and "
+                                "structural_difference= fields."
+                            ),
+                            "structural_manifest_errors": structural_errors,
+                            "render_budget_consumed": False,
+                        }
+                        self._event("render_rejected", **result)
+                        return result, None
         elif study_index != 0:
             result = {
                 "ok": False,
@@ -417,12 +520,23 @@ class ShaderAgentState:
                     self.successful_study_render_count.get(study_index, 0) + 1
                 )
                 study_diversity = _atlas_diversity_metrics(output_path)
+                cross_render_diversity = _cross_render_diversity_metrics(
+                    output_path,
+                    study_index,
+                    self.qualified_study_render_paths,
+                )
                 study_pass_qualified = (
                     not self.require_study_diversity
-                    or bool(study_diversity["qualifies"])
+                    or (
+                        bool(study_diversity["qualifies"])
+                        and bool(cross_render_diversity["qualifies"])
+                    )
                 )
                 if study_pass_qualified:
                     self.successful_study_render_count[study_index] = study_pass
+                    self.qualified_study_render_paths.setdefault(
+                        study_index, []
+                    ).append(output_path)
                     self.latest_successful_study_render[study_index] = {
                         "revision": self.revision,
                         "render_call": call_number,
@@ -432,10 +546,12 @@ class ShaderAgentState:
             else:
                 study_pass = 0
                 study_diversity = None
+                cross_render_diversity = None
                 study_pass_qualified = True
         else:
             study_pass = 0
             study_diversity = None
+            cross_render_diversity = None
             study_pass_qualified = False
 
         result = {
@@ -449,6 +565,7 @@ class ShaderAgentState:
             "study_pass": study_pass,
             "study_pass_qualified": study_pass_qualified,
             "study_diversity": study_diversity,
+            "cross_render_diversity": cross_render_diversity,
             "variation_manifest": variation_manifest.strip()[:4_000],
             "sha256": self.current_hash,
             "image": str(output_path) if success else None,
@@ -694,8 +811,11 @@ def create_mcp(state: ShaderAgentState) -> FastMCP:
             "compile failures. Inspect each returned image before revising. "
             "When required, variation_manifest must predeclare materially "
             "different A-F constructions before a study render. "
+            "Three-pass wide-search studies require family=, construction=, "
+            "and structural_difference= for every A-F entry. "
             "When study_pass_qualified is false, the atlas was too visually "
-            "similar to count and must be revised despite compiling. "
+            "similar internally or recycled a prior pass/topic, so it must be "
+            "revised despite compiling. "
             "submit_final accepts only the current revision after a successful "
             "render."
         ),

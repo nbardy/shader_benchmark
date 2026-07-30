@@ -28,17 +28,19 @@ from prompt_profiles import (
 from test_runner import TestRunner
 
 
-PROTOCOL = "persistent-agent-render-tools-v4"
+PROTOCOL = "persistent-agent-render-tools-v5"
 STANDARD_WORKFLOW = "standard"
 SKETCHBOOK_WORKFLOW = "sketchbook-3x2-v1"
 CURVED_ELEMENT_SKETCHBOOK_WORKFLOW = "sketchbook-curved-elements-v2"
 CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW = "sketchbook-continuous-elements-v3"
 PROGRESSIVE_APPLICATION_WORKFLOW = "sketchbook-progressive-application-v4"
+HIERARCHICAL_WIDE_SEARCH_WORKFLOW = "sketchbook-hierarchical-wide-search-v5"
 SKETCHBOOK_WORKFLOWS = (
     SKETCHBOOK_WORKFLOW,
     CURVED_ELEMENT_SKETCHBOOK_WORKFLOW,
     CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
     PROGRESSIVE_APPLICATION_WORKFLOW,
+    HIERARCHICAL_WIDE_SEARCH_WORKFLOW,
 )
 MCP_TOOLS = (
     "write_shader",
@@ -53,6 +55,7 @@ def workflow_requires_variant_inventory(workflow: str) -> bool:
         CURVED_ELEMENT_SKETCHBOOK_WORKFLOW,
         CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
         PROGRESSIVE_APPLICATION_WORKFLOW,
+        HIERARCHICAL_WIDE_SEARCH_WORKFLOW,
     }
 
 
@@ -61,6 +64,8 @@ def workflow_required_studies(workflow: str) -> int:
         return 0
     if workflow == PROGRESSIVE_APPLICATION_WORKFLOW:
         return 4
+    if workflow == HIERARCHICAL_WIDE_SEARCH_WORKFLOW:
+        return 6
     if workflow in SKETCHBOOK_WORKFLOWS:
         return 3
     raise ValueError(f"unknown agent workflow: {workflow}")
@@ -108,8 +113,8 @@ Study selection:
   distributed, oriented, overlapped, or wrapped over its parent form.
 - Study 3 normally resolves material response, palette relationships, lighting,
   atmospheric treatment, or another unresolved identity-carrying element.
-- A workflow-specific contract below may replace these default roles or add a
-  fourth dependent study.
+- A workflow-specific contract below may replace these default roles and
+  define a longer dependent study chain.
 - Adapt these roles when a mathematical plot, landscape, typography, fluid,
   architecture, or abstract target has different dominant risks.
 
@@ -347,6 +352,149 @@ system → placement in the larger coordinate structure → finished scene.
         if workflow == PROGRESSIVE_APPLICATION_WORKFLOW
         else ""
     )
+    hierarchical_wide_search_contract = (
+        r"""
+
+HIERARCHICAL GEOMETRY + WIDE REPRESENTATION SEARCH
+==================================================
+
+The previous workflow found a better local detail but converged too early on
+independent oval body parts and nearby parameter tweaks. This workflow forbids
+hyperparameter search as a substitute for design exploration.
+
+WIDE SEARCH — THREE QUALIFIED PASSES PER STUDY
+----------------------------------------------
+
+Each study must render THREE visually diverse successful 3×2 atlases before it
+can be recorded: 18 candidate constructions total.
+
+- Pass 1 — STRUCTURAL SURVEY A: A–F are six mutually distinct representation
+  families. Changing only dimensions, offsets, counts, bend values, noise
+  seeds, or colors does not create a new family.
+- Pass 2 — STRUCTURAL SURVEY B: A–F are six NEW representation families, not
+  refinements or parameter neighbors of any Pass-1 candidate. Deliberately try
+  different topology, coordinate construction, composition rule, implicit
+  operation, or mathematical model.
+- Pass 3 — SYNTHESIS: create six structurally distinct hybrids. Every candidate
+  must combine useful mechanisms from at least two earlier families while
+  fixing a visible failure. This is the first pass where refinement is allowed,
+  but A–F must still be different architectures rather than six settings.
+- Only after inspecting all three passes may record_study select a result. Its
+  rationale must compare evidence across all 18 candidates.
+
+Before every render, variation_manifest must describe A: through F: using this
+auditable form for each cell:
+
+  family=<representation family>;
+  construction=<equations/topology/coordinate method>;
+  structural_difference=<what changes besides parameters>
+
+Do not claim a new family when the code still calls the same primitive with
+different constants. Inspect study_pass_qualified and study_diversity after
+every render. Also inspect cross_render_diversity: the server compares the
+whole atlas with qualified passes from this and every earlier study. Reusing a
+prior atlas or topic template does not advance the study even when its six
+cells differ internally.
+
+ROOTED GEOMETRY DEPENDENCY GRAPH
+--------------------------------
+
+The final construction must be a rooted procedural scene graph, not a list of
+independent world-space shapes. Only the root/camera may be positioned directly
+in world space. Each attached child must derive its origin and basis from its
+parent geometry:
+
+  worldPoint =
+      rootTransform
+    * parentFrame(parentCoordinate)
+    * attachmentTransform
+    * childFrame(childCoordinate)
+    * localPoint
+
+For surfaces, parentFrame includes P, T, B, and N. For curves or skeletons it
+includes a centerline point and transported local frame. Store attachment
+coordinates such as shoulder-s, branch-s, facade-bay, curve-t, or another
+domain coordinate—not an unrelated world-space center. When the parent bends,
+rotates, changes proportion, or moves, every descendant must follow.
+
+An attached appendage must be modeled as its own appropriate geometry: a thin
+swept/cambered shell, branching extrusion, loft, ribbon, membrane, or other
+task-specific form. A full ellipsoid, sphere, capsule, or disk placed beside
+the parent is not an acceptable wing, branch, petal layer, roof, limb, or
+analogous child merely because its color and silhouette are plausible.
+
+SIX DEPENDENT STUDIES
+---------------------
+
+1. ROOT SCAFFOLD + DEPENDENCY STUDY
+   Render clay-like whole-subject maquettes. Explore different skeletons,
+   centerline graphs, attachment graphs, proportions, poses, and projection
+   strategies. Identify the root, parent-child edges, attachment coordinates,
+   and frame functions. Major parts must already read as one articulated
+   subject rather than neighboring blobs.
+
+2. PRIMARY VOLUME STUDY
+   Replace generic base ovals with geometry derived along the selected
+   scaffold: swept varying cross-sections, lofts, bent profiles, blended
+   anatomical masses, shells, constructive intersections, or other suitable
+   families. Cross-section width, thickness, asymmetry, and orientation should
+   vary along the parent coordinate. Preserve the dependency graph.
+
+3. ATTACHED FORM / APPENDAGE STUDY
+   Build the dominant child form from a parent attachment frame. Explore thin
+   shells, swept ribbons, lofted outlines, cambered membranes, branched forms,
+   layered surfaces, and other task-relevant families. Include attachment
+   stress tests: across the atlas, change the parent's pose/proportion and show
+   that the child root, orientation, seam, and silhouette follow automatically.
+   A separately positioned oval or capsule fails this study.
+
+4. IDENTITY-CARRYING LOCAL ELEMENT STUDY
+   Isolate and broadly search the important local unit. For organic elongated
+   elements, use continuous centerline/width/thickness/camber profiles rather
+   than bead chains or ovals. For other domains, choose the corresponding
+   high-information primitive. Study internal structure and material as part
+   of the representation, not as a color afterthought.
+
+5. OVERLAPPING SHEET / FIELD STUDY
+   Build a dense assembly from the selected unit on the selected child
+   geometry. Search genuinely different assembly algorithms: staggered
+   shingles, geodesic bands, transported flow lines, clustered/Voronoi fields,
+   hierarchical branching, adaptive tiling, layered shell extrusion, or other
+   domain-appropriate approaches. The cells must differ in construction, not
+   just row offsets.
+
+   A successful overlapping sheet has visible root-to-tip or upstream-to-
+   downstream occlusion, covers most of its parent without erasing the parent
+   silhouette, varies density and scale coherently, and contains designed
+   irregularity. Adjacent decorations with open gaps are not a sheet. Preserve
+   comparable coverage and instance density in the final scene.
+
+6. HIERARCHICAL INTEGRATION + TRANSITION STUDY
+   Combine the rooted scaffold, primary volume, attached form, and overlapping
+   field. Explore seams, ownership, occlusion, silhouette transitions, and
+   material/light continuity between parent and child. Stress the dependency
+   graph again with parent pose variations. Record exact helper functions,
+   frame composition, attachment domains, coverage/overlap rules, and scene-
+   graph edges that the final must preserve.
+
+FINAL HANDOFF INVARIANTS
+------------------------
+
+The final shader must call the selected scaffold, parent-frame, attached-form,
+local-element, and assembly functions directly. It must preserve the recorded
+parent-child graph and approximately the selected sheet coverage/overlap. Do
+not collapse the studied child into an independently positioned oval, replace
+the sheet with sparse decorations, or restart from unrelated primitives.
+
+For a target without organic anatomy, reinterpret the same general structure:
+root scaffold → parent geometry → attached subsystem → local unit → composed
+field → contextual integration. Examples include trunk→branch→leaf, terrain→
+riverbed→water detail, building frame→facade system→panels, curve→transported
+marks, or network→edge bundle→nodes.
+"""
+        if workflow == HIERARCHICAL_WIDE_SEARCH_WORKFLOW
+        else ""
+    )
     return f"""\
 {profiled_prompt.rstrip()}
 
@@ -372,6 +520,7 @@ You have exactly these benchmark tools:
 {curved_element_contract}
 {continuous_element_contract}
 {progressive_application_contract}
+{hierarchical_wide_search_contract}
 
 Workflow requirements:
 1. Study the reference and plan a strong procedural reconstruction.
@@ -645,6 +794,28 @@ def _render_report(
             score_caption = (
                 f" · {judged['total']} / 500" if judged else ""
             )
+            diversity_caption = ""
+            if stage == "study":
+                within = event.get("study_diversity") or {}
+                cross = event.get("cross_render_diversity") or {}
+                measurements = []
+                if within.get("mean_pairwise_mae_percent") is not None:
+                    measurements.append(
+                        "cell Δ "
+                        f"{within['mean_pairwise_mae_percent']:.3f}%"
+                    )
+                if cross.get("same_study_min_mae_percent") is not None:
+                    measurements.append(
+                        "pass Δ "
+                        f"{cross['same_study_min_mae_percent']:.3f}%"
+                    )
+                if cross.get("other_study_min_mae_percent") is not None:
+                    measurements.append(
+                        "topic Δ "
+                        f"{cross['other_study_min_mae_percent']:.3f}%"
+                    )
+                if measurements:
+                    diversity_caption = " · " + " · ".join(measurements)
             panels.append(
                 (
                     (
@@ -660,6 +831,7 @@ def _render_report(
                     (
                         f"{event.get('remaining_renders', 0)} renders left"
                         f"{score_caption}"
+                        f"{diversity_caption}"
                         + (
                             " · diversity gate failed"
                             if stage == "study"
@@ -762,11 +934,16 @@ async def run_agentic_shader(
             "min_successful_revisions must be between 1 and render_budget"
         )
     min_successful_study_renders = (
-        2 if workflow == PROGRESSIVE_APPLICATION_WORKFLOW else 1
+        3
+        if workflow == HIERARCHICAL_WIDE_SEARCH_WORKFLOW
+        else 2
+        if workflow == PROGRESSIVE_APPLICATION_WORKFLOW
+        else 1
     )
-    require_study_diversity = (
-        workflow == PROGRESSIVE_APPLICATION_WORKFLOW
-    )
+    require_study_diversity = workflow in {
+        PROGRESSIVE_APPLICATION_WORKFLOW,
+        HIERARCHICAL_WIDE_SEARCH_WORKFLOW,
+    }
     minimum_render_budget = (
         required_studies * min_successful_study_renders
         + min_successful_revisions

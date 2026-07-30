@@ -5,6 +5,7 @@ from pathlib import Path
 from agentic_shader_harness import (
     CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
     CURVED_ELEMENT_SKETCHBOOK_WORKFLOW,
+    HIERARCHICAL_WIDE_SEARCH_WORKFLOW,
     MCP_TOOLS,
     PROGRESSIVE_APPLICATION_WORKFLOW,
     SKETCHBOOK_WORKFLOW,
@@ -97,6 +98,34 @@ class AgenticShaderHarnessTests(unittest.TestCase):
         self.assertIn("fundamental unit → composed", prompt)
         self.assertEqual(
             workflow_required_studies(PROGRESSIVE_APPLICATION_WORKFLOW), 4
+        )
+
+    def test_hierarchical_workflow_forces_wide_search_and_relative_geometry(self):
+        prompt = build_agent_prompt(
+            "Draw the target.",
+            "baseline",
+            20,
+            min_successful_revisions=2,
+            workflow=HIERARCHICAL_WIDE_SEARCH_WORKFLOW,
+        )
+        self.assertIn("HIERARCHICAL GEOMETRY + WIDE REPRESENTATION SEARCH", prompt)
+        self.assertIn("18 candidate constructions total", prompt)
+        self.assertIn("STRUCTURAL SURVEY A", prompt)
+        self.assertIn("STRUCTURAL SURVEY B", prompt)
+        self.assertIn("SYNTHESIS", prompt)
+        self.assertIn("not a list of\nindependent world-space shapes", prompt)
+        self.assertIn("parentFrame(parentCoordinate)", prompt)
+        self.assertIn("ATTACHED FORM / APPENDAGE STUDY", prompt)
+        self.assertIn("OVERLAPPING SHEET / FIELD STUDY", prompt)
+        self.assertIn("Adjacent decorations with open gaps are not a sheet", prompt)
+        self.assertIn("approximately the selected sheet coverage/overlap", prompt)
+        self.assertEqual(
+            workflow_required_studies(HIERARCHICAL_WIDE_SEARCH_WORKFLOW), 6
+        )
+        self.assertTrue(
+            workflow_requires_variant_inventory(
+                HIERARCHICAL_WIDE_SEARCH_WORKFLOW
+            )
         )
 
     def test_codex_command_is_isolated_and_tool_allowlisted(self):
