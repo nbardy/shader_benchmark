@@ -367,6 +367,29 @@ rendered and recorded. Study renders do not count toward
 `--min-successful-revisions`, and only final-stage renders are sent to the
 benchmark judge.
 
+Two stricter workflows isolate failures found by the first parrot trial:
+
+- `sketchbook-curved-elements-v2` separates the individual signature-element
+  shape study from its parent-surface placement study, runs studies in order,
+  and requires an explicit A–F construction inventory.
+- `sketchbook-continuous-elements-v3` additionally forbids building one organic
+  element from a smooth-unioned chain of spheres, ellipsoids, or capsules. It
+  supplies an inverse-bend implicit-profile scaffold with independent
+  centerline, width, thickness, camber, shoulder, and taper functions.
+
+For repeated organic detail, v3 is the current recommended experiment:
+
+```bash
+python agentic_shader_harness.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --problem reproduce_image_andrew_pons \
+  --prompt-profile domain-expert-v2 \
+  --workflow sketchbook-continuous-elements-v3 \
+  --render-budget 12 \
+  --min-successful-revisions 2 \
+  --judge-model "cli/codex:gpt-5.5:high"
+```
+
 The loop strategy is independently selectable:
 
 - `latest-v1` reproduces the original experiment: target + immediately prior

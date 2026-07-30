@@ -28,15 +28,29 @@ from prompt_profiles import (
 from test_runner import TestRunner
 
 
-PROTOCOL = "persistent-agent-render-tools-v2"
+PROTOCOL = "persistent-agent-render-tools-v3"
 STANDARD_WORKFLOW = "standard"
 SKETCHBOOK_WORKFLOW = "sketchbook-3x2-v1"
+CURVED_ELEMENT_SKETCHBOOK_WORKFLOW = "sketchbook-curved-elements-v2"
+CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW = "sketchbook-continuous-elements-v3"
+SKETCHBOOK_WORKFLOWS = (
+    SKETCHBOOK_WORKFLOW,
+    CURVED_ELEMENT_SKETCHBOOK_WORKFLOW,
+    CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
+)
 MCP_TOOLS = (
     "write_shader",
     "render_shader",
     "record_study",
     "submit_final",
 )
+
+
+def workflow_requires_variant_inventory(workflow: str) -> bool:
+    return workflow in {
+        CURVED_ELEMENT_SKETCHBOOK_WORKFLOW,
+        CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
+    }
 
 
 def _json_config(value: Any) -> str:
@@ -60,9 +74,9 @@ PROBLEM CONTEXT
 {problem_request.strip()}
 """
     profiled_prompt = apply_prompt_profile(canonical_prompt, prompt_profile)
-    if workflow not in {STANDARD_WORKFLOW, SKETCHBOOK_WORKFLOW}:
+    if workflow not in {STANDARD_WORKFLOW, *SKETCHBOOK_WORKFLOWS}:
         raise ValueError(f"unknown agent workflow: {workflow}")
-    required_studies = 3 if workflow == SKETCHBOOK_WORKFLOW else 0
+    required_studies = 3 if workflow in SKETCHBOOK_WORKFLOWS else 0
     sketchbook_contract = (
         r"""
 
@@ -118,6 +132,122 @@ not valid final submissions.
         if required_studies
         else ""
     )
+    curved_element_contract = (
+        r"""
+
+CURVED-ELEMENT AND SURFACE-WRAPPING GATE
+========================================
+
+The previous 3×2 workflow can fail by comparing six arrangements while keeping
+one weak oval/capsule primitive. This workflow separates shape search from
+placement search whenever repeated organic or bent elements carry the subject's
+identity (feathers, leaves, petals, scales, hair clumps, cloth strips, fins,
+tiles on a curved shell, layered clouds, or analogous motifs).
+
+Study 2 — isolated element-shape laboratory:
+- Fill 65–80% of each cell with ONE enlarged element under the same camera and
+  lighting. Do not show a full arrangement.
+- A–F must be six different construction families or centerline/width/cross-
+  section combinations. A uniformly scaled ellipsoid, capsule, lozenge, disk,
+  or pointed oval is not an acceptable organic element.
+- Give the element a longitudinal coordinate s in [0,1], a curved centerline
+  C(s), and independently designed width w(s), thickness h(s), lift/camber,
+  root attachment, and tip. At minimum compare quadratic or cubic bend, swept
+  tapered segments, asymmetric vane/profile, and a layered or notched option
+  when appropriate.
+- A useful generic family is:
+    C(s) = p0 + T*L*s + B*(bend*s*s + sweep*sin(pi*s))
+                 + N*(lift*sin(pi*s) + camber*s*(1-s))
+    w(s) = mix(rootWidth, maxWidth, smoothstep(0, shoulder, s))
+           * (1 - smoothstep(taperStart, 1, s))
+    h(s) = thickness * (0.35 + 0.65*sin(pi*s))
+  This is a design scaffold, not a requirement to make all six variants from
+  one formula. Use bounded segment sweeps, inverse-bend coordinates, Bezier
+  centerlines, SDF intersection/subtraction, or another robust construction.
+- The study record must inventory what A, B, C, D, E, and F actually changed.
+
+Study 3 — parent-surface attachment and distribution laboratory:
+- Reuse the selected Study-2 function. Do not replace it with a cheaper oval.
+- Show the same curved parent form in all six cells and vary how the elements
+  fit it. Compute or approximate a surface point P(u,v), normal N, flow tangent
+  T, and bitangent B. Transform each element through that local frame so its
+  root is embedded, its body follows curvature, and its tip lifts or overlaps.
+- Apply low-frequency fBm/domain warp to (u,v), density, bend, and flow angle,
+  not merely to screen-space color or world-space row positions. Combine it
+  with bounded correlated jitter and deliberate sparse exceptions.
+- Compare staggered rows, geodesic/flow-following arcs, scale gradients,
+  occlusion order, root-to-tip overlap, boundary clipping, and silhouette hero
+  elements. Preserve the parent silhouette and prevent geometry from escaping.
+- The selected handoff must name the parent parameterization/frame, warp
+  amplitude and frequency range, overlap rule, containment rule, and which
+  shape parameters vary coherently across instances.
+
+For targets without a repeated bent/organic signature element, reinterpret
+Study 2 as an isolated laboratory for the most important non-rigid primitive
+and Study 3 as its coordinate-aware integration into the parent structure.
+The mathematical requirement remains general: design a nonuniform local shape
+first, then test how its frame and parameters follow the larger form.
+"""
+        if workflow
+        in {
+            CURVED_ELEMENT_SKETCHBOOK_WORKFLOW,
+            CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
+        }
+        else ""
+    )
+    continuous_element_contract = (
+        r"""
+
+CONTINUOUS IMPLICIT ELEMENT GATE
+================================
+
+Do not build one organic element by looping over and unioning spheres,
+ellipsoids, capsules, or bead-like segments. Smooth-min only rounds the seams;
+it still produces a caterpillar or worm. Each studied and final element must
+use one continuous local implicit profile whose center, width, and thickness
+vary with its longitudinal coordinate.
+
+Use this robust inverse-bend pattern as the baseline implementation, adapting
+axes and parameters to the subject:
+
+    // q is already in the element's local (B,T,N) surface frame.
+    s = clamp(q.y / length + 0.5, 0.0, 1.0)
+    centerX = bend*s*s + sweep*sin(PI*s)
+    centerZ = lift*sin(PI*s) + camber*s*(1.0-s)
+    x = q.x - centerX
+    z = q.z - centerZ
+    grow = smoothstep(0.0, shoulder, s)
+    taper = 1.0 - smoothstep(taperStart, 1.0, s)
+    width = max(epsilon, mix(rootWidth, maxWidth, grow) * taper)
+    thick = max(epsilon, baseThickness
+                * mix(rootThicknessFactor, 1.0, sin(PI*s)) * taper)
+    crossSection = (length(vec2(x/width, z/thick)) - 1.0)
+                   * min(width, thick)
+    axialBounds = max(-q.y - 0.5*length, q.y - 0.5*length)
+    d = max(crossSection, axialBounds)
+
+This is an approximate distance field under deformation, so use conservative
+ray-march steps (roughly 0.5–0.7 times d) and finite-difference normals. Improve
+the profile continuously with asymmetric left/right widths, a rachis, a shallow
+vane groove, edge notches, or a tip cut only when those operations preserve one
+coherent silhouette.
+
+Study 2 must show the isolated continuous profiles large enough to verify:
+- narrow embedded root;
+- shoulder that widens at a deliberate s rather than at the midpoint by habit;
+- nonuniform left/right width where appropriate;
+- visible centerline curvature without bead lobes;
+- thickness/camber that changes from root through tip;
+- a thin, tapered or notched terminal shape rather than a round cap.
+
+Study 3 and the final scene must call the selected continuous function directly.
+No lower-fidelity ellipsoid/capsule replacement is allowed during integration.
+The study record's handoff must name the function and the exact bend, sweep,
+shoulder, taper-start, width, thickness, camber, and surface-frame ranges.
+"""
+        if workflow == CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW
+        else ""
+    )
     return f"""\
 {profiled_prompt.rstrip()}
 
@@ -134,10 +264,13 @@ You have exactly these benchmark tools:
 - render_shader(stage, study_index): compile and render the current revision,
   returning both compiler feedback and the actual rendered image;
 - record_study(study_index, subject, selected_variant, selection_rationale,
-  handoff_requirements): preserve public visual-study evidence and its exact
-  implementation handoff;
+  handoff_requirements, variant_inventory): preserve public visual-study
+  evidence, the A–F construction inventory, and its exact implementation
+  handoff;
 - submit_final(summary): freeze the current successfully rendered revision.
 {sketchbook_contract}
+{curved_element_contract}
+{continuous_element_contract}
 
 Workflow requirements:
 1. Study the reference and plan a strong procedural reconstruction.
@@ -183,6 +316,7 @@ def build_codex_command(
     render_size: int,
     min_successful_revisions: int,
     required_studies: int,
+    require_variant_inventory: bool,
     trace_path: Path,
     last_message_path: Path,
 ) -> list[str]:
@@ -246,6 +380,9 @@ def build_codex_command(
         ),
         "mcp_servers.shader_tools.env.SHADER_AGENT_REQUIRED_STUDIES": str(
             required_studies
+        ),
+        "mcp_servers.shader_tools.env.SHADER_AGENT_REQUIRE_VARIANT_INVENTORY": (
+            "1" if require_variant_inventory else "0"
         ),
     }
     for key, value in configs.items():
@@ -439,6 +576,12 @@ def _render_report(
             + html.escape(str(record.get("selected_variant", "")))
             + "<br>"
             + html.escape(str(record.get("selection_rationale", "")))
+            + (
+                "<br><em>Variants:</em> "
+                + html.escape(str(record.get("variant_inventory", "")))
+                if record.get("variant_inventory")
+                else ""
+            )
             + "<br><em>Handoff:</em> "
             + html.escape(str(record.get("handoff_requirements", "")))
             + "</li>"
@@ -488,8 +631,9 @@ async def run_agentic_shader(
 ) -> Path:
     if render_budget < 1:
         raise ValueError("render_budget must be at least 1")
-    required_studies = 3 if workflow == SKETCHBOOK_WORKFLOW else 0
-    if workflow not in {STANDARD_WORKFLOW, SKETCHBOOK_WORKFLOW}:
+    required_studies = 3 if workflow in SKETCHBOOK_WORKFLOWS else 0
+    require_variant_inventory = workflow_requires_variant_inventory(workflow)
+    if workflow not in {STANDARD_WORKFLOW, *SKETCHBOOK_WORKFLOWS}:
         raise ValueError(f"unknown agent workflow: {workflow}")
     if not 1 <= min_successful_revisions <= render_budget:
         raise ValueError(
@@ -556,6 +700,7 @@ async def run_agentic_shader(
             render_size=render_size,
             min_successful_revisions=min_successful_revisions,
             required_studies=required_studies,
+            require_variant_inventory=require_variant_inventory,
             trace_path=trace_path,
             last_message_path=last_message_path,
         )
@@ -595,6 +740,7 @@ async def run_agentic_shader(
         "min_successful_revisions": min_successful_revisions,
         "workflow": workflow,
         "required_studies": required_studies,
+        "require_variant_inventory": require_variant_inventory,
         "codex_returncode": completed.returncode,
         "submitted": submitted,
         "state": state,
@@ -652,7 +798,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--render-budget", type=int, default=3)
     parser.add_argument(
         "--workflow",
-        choices=(STANDARD_WORKFLOW, SKETCHBOOK_WORKFLOW),
+        choices=(STANDARD_WORKFLOW, *SKETCHBOOK_WORKFLOWS),
         default=STANDARD_WORKFLOW,
         help=(
             "Use the ordinary render loop or require three rendered 3x2 "

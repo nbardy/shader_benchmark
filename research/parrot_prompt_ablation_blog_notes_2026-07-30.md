@@ -333,3 +333,59 @@ version should separate the individual component-shape study from the
 parent-surface placement study and require an explicit A–F representation
 inventory. Better still, a tested surface-frame and curved-feather scaffold
 would move this from prose compliance to executable architecture.
+
+### Curved-element v2: separating shape from placement
+
+Run: `parrot_sketchbook_curved_elements_v2_sol_medium_20260730`
+
+V2 made Study 2 an enlarged individual-feather laboratory and Study 3 a
+separate wing-attachment laboratory. It also forced ordered studies and a
+public A–F construction inventory. This exposed another representation failure:
+the model implemented each curved feather as a smooth union of nine ellipsoidal
+segments. The isolated atlas looked like six tapered caterpillars, and wrapping
+them over an ellipsoid wing produced organized rows of bead stacks.
+
+The first integrated render scored 323. Its revision smoothed the segments into
+larger bent worm-like chunks and regressed to 277. The inventory gate improved
+auditability but did not stop the model from over-describing six similar
+segmented constructions as distinct families.
+
+### Continuous-element v3: one variable-width implicit profile
+
+Run: `parrot_sketchbook_continuous_elements_v3_sol_medium_20260730`
+
+V3 explicitly prohibited segment unions for a single element and supplied an
+inverse-bend field:
+
+- a longitudinal `s` coordinate;
+- curved centerline from quadratic bend plus sinusoidal sweep;
+- independent root growth, shoulder, and tip taper;
+- asymmetric left/right width;
+- thickness, lift, and camber varying with `s`;
+- a single continuous cross-section intersected with axial bounds.
+
+This was the first study to eliminate both ovals and caterpillars. Its six
+enlarged variants are continuous, tapered, visibly curved vane-like shapes;
+variant F adds a restrained central groove. Study 3 preserved the selected
+function on a shared curved wing, and both final renders reused that exact
+continuous function.
+
+The final scores were 301 and 304, lower than the simpler v1's 332. Human
+inspection nevertheless identifies a real representation advance: feathers
+now bend, widen, thin, and taper instead of reading as blobs. The new dominant
+failure is integration. The instances are too pale, sparse, small, and shallow;
+many appear to float on the wing rather than embedding their roots and
+overlapping into a dense coat.
+
+The final WGSL still does not implement fBm. It applies one scalar hash jitter
+to row placement and bend, computes the ellipsoid front depth, then rotates the
+element only in the image-plane XY basis. It does not construct the full
+surface `(T,B,N)` frame promised by the study record. Thus v3 fixes the local
+shape but only partially fixes body conformance.
+
+The next change should be code architecture rather than a v4 paragraph:
+provide tested WGSL helpers for ellipsoid/parent UV parameterization, analytic
+or gradient normals, tangent/bitangent construction, UV-space fBm/domain warp,
+root embedding, and overlap depth. The continuous feather helper from v3 can
+then be transformed through that frame without being reinterpreted by the
+model.

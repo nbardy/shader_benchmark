@@ -54,6 +54,7 @@ class ShaderAgentState:
     render_size: int = 1024
     min_successful_revisions: int = 1
     required_studies: int = 0
+    require_variant_inventory: bool = False
     revision: int = 0
     render_calls: int = 0
     submitted: bool = False
@@ -108,7 +109,7 @@ class ShaderAgentState:
 
     def _persist(self) -> None:
         payload = {
-            "protocol": "persistent-agent-render-tools-v2",
+            "protocol": "persistent-agent-render-tools-v3",
             "render_budget": self.render_budget,
             "render_calls": self.render_calls,
             "remaining_renders": max(0, self.render_budget - self.render_calls),
@@ -119,6 +120,7 @@ class ShaderAgentState:
                 for stage in self.successful_render_stage_by_revision.values()
             ),
             "required_studies": self.required_studies,
+            "require_variant_inventory": self.require_variant_inventory,
             "completed_studies": sorted(self.study_records),
             "study_records": self.study_records,
             "revision": self.revision,
@@ -196,6 +198,22 @@ class ShaderAgentState:
                         "study_index must identify one of the required "
                         f"studies (1-{self.required_studies})."
                     ),
+                }
+                self._event("render_rejected", **result)
+                return result, None
+            missing_prior = [
+                index
+                for index in range(1, study_index)
+                if index not in self.study_records
+            ]
+            if missing_prior:
+                result = {
+                    "ok": False,
+                    "error": (
+                        "Record each earlier study before rendering this one, "
+                        "so later studies can reuse the selected construction."
+                    ),
+                    "missing_prior_studies": missing_prior,
                 }
                 self._event("render_rejected", **result)
                 return result, None
@@ -340,6 +358,7 @@ class ShaderAgentState:
         selected_variant: str,
         selection_rationale: str,
         handoff_requirements: str,
+        variant_inventory: str = "",
     ) -> dict[str, Any]:
         """Record public evidence from a successfully rendered study atlas."""
         if self.submitted:
@@ -364,6 +383,22 @@ class ShaderAgentState:
             }
         if len(subject.strip()) < 4:
             return {"ok": False, "error": "subject is too short."}
+        if self.require_variant_inventory:
+            inventory = variant_inventory.strip()
+            missing_variants = [
+                label
+                for label in ("A:", "B:", "C:", "D:", "E:", "F:")
+                if label not in inventory.upper()
+            ]
+            if len(inventory) < 180 or missing_variants:
+                return {
+                    "ok": False,
+                    "error": (
+                        "variant_inventory must describe materially distinct "
+                        "A: through F: constructions in at least 180 characters."
+                    ),
+                    "missing_variant_labels": missing_variants,
+                }
         if len(selection_rationale.strip()) < 80:
             return {
                 "ok": False,
@@ -384,6 +419,7 @@ class ShaderAgentState:
             "study_index": study_index,
             "subject": subject.strip()[:300],
             "selected_variant": variant,
+            "variant_inventory": variant_inventory.strip()[:4_000],
             "selection_rationale": selection_rationale.strip()[:4_000],
             "handoff_requirements": handoff_requirements.strip()[:4_000],
             **rendered,
@@ -510,6 +546,9 @@ def _state_from_environment() -> ShaderAgentState:
         required_studies=int(
             os.environ.get("SHADER_AGENT_REQUIRED_STUDIES", "0")
         ),
+        require_variant_inventory=(
+            os.environ.get("SHADER_AGENT_REQUIRE_VARIANT_INVENTORY", "0") == "1"
+        ),
     )
 
 
@@ -558,6 +597,7 @@ def create_mcp(state: ShaderAgentState) -> FastMCP:
         selected_variant: str,
         selection_rationale: str,
         handoff_requirements: str,
+        variant_inventory: str = "",
     ) -> str:
         """Record the chosen A-F cell and exact final-scene handoff."""
         return json.dumps(
@@ -567,6 +607,7 @@ def create_mcp(state: ShaderAgentState) -> FastMCP:
                 selected_variant,
                 selection_rationale,
                 handoff_requirements,
+                variant_inventory,
             ),
             indent=2,
         )

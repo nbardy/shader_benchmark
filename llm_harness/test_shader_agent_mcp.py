@@ -264,6 +264,75 @@ class ShaderAgentStateTests(unittest.TestCase):
             rejected = state.record_study(1, "shape", "G", "x" * 100, "y" * 100)
             self.assertFalse(rejected["ok"])
 
+    def test_curved_workflow_requires_a_thorough_a_to_f_inventory(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            renderer = root / "renderer"
+            renderer.write_text("fake", encoding="utf-8")
+            state = ShaderAgentState(
+                root / "workspace",
+                renderer,
+                render_budget=2,
+                render_size=64,
+                min_successful_revisions=1,
+                required_studies=1,
+                require_variant_inventory=True,
+            )
+            state.latest_successful_study_render[1] = {
+                "revision": 1,
+                "render_call": 1,
+            }
+            rejected = state.record_study(
+                1,
+                "curved element",
+                "C",
+                "x" * 100,
+                "y" * 100,
+                "A: oval B: oval C: oval",
+            )
+            self.assertFalse(rejected["ok"])
+            accepted = state.record_study(
+                1,
+                "curved element",
+                "C",
+                (
+                    "Variant C visibly has the strongest curved centerline, "
+                    "controlled root, asymmetric width, and tapered lifted tip."
+                ),
+                (
+                    "Reuse its cubic centerline, surface-local frame, shoulder "
+                    "width, taper start, camber, and root attachment parameters."
+                ),
+                (
+                    "A: quadratic swept lens with a broad shoulder. "
+                    "B: cubic Bezier vane with asymmetric edges. "
+                    "C: segmented tapered sweep with camber and a lifted tip. "
+                    "D: inverse-bent notched profile. "
+                    "E: layered rachis and paired vanes. "
+                    "F: intersected shell with a narrow curved root."
+                ),
+            )
+            self.assertTrue(accepted["ok"])
+
+    def test_later_study_requires_the_previous_selection(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            renderer = root / "renderer"
+            renderer.write_text("fake", encoding="utf-8")
+            state = ShaderAgentState(
+                root / "workspace",
+                renderer,
+                render_budget=4,
+                render_size=64,
+                min_successful_revisions=1,
+                required_studies=3,
+            )
+            state.write_shader(VALID_SHADER)
+            rejected, _ = state.render_shader("study", 2)
+            self.assertFalse(rejected["ok"])
+            self.assertEqual(rejected["missing_prior_studies"], [1])
+            self.assertEqual(state.render_calls, 0)
+
 
 if __name__ == "__main__":
     unittest.main()
