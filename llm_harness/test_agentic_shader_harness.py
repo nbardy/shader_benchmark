@@ -6,9 +6,11 @@ from agentic_shader_harness import (
     CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
     CURVED_ELEMENT_SKETCHBOOK_WORKFLOW,
     MCP_TOOLS,
+    PROGRESSIVE_APPLICATION_WORKFLOW,
     SKETCHBOOK_WORKFLOW,
     build_agent_prompt,
     build_codex_command,
+    workflow_required_studies,
     workflow_requires_variant_inventory,
 )
 
@@ -29,7 +31,7 @@ class AgenticShaderHarnessTests(unittest.TestCase):
             workflow=SKETCHBOOK_WORKFLOW,
         )
         self.assertIn("MANDATORY 3×2 VISUAL SKETCHBOOK", prompt)
-        self.assertIn("three high-risk, subject-specific", prompt)
+        self.assertIn("3 high-risk, subject-specific", prompt)
         self.assertIn('stage="study"', prompt)
         self.assertIn("variants A, B, C, D, E, F", prompt)
         self.assertIn("parent-surface coordinate frame", prompt)
@@ -75,6 +77,28 @@ class AgenticShaderHarnessTests(unittest.TestCase):
             )
         )
 
+    def test_progressive_workflow_requires_refinement_and_application_ladder(self):
+        prompt = build_agent_prompt(
+            "Draw the target.",
+            "baseline",
+            10,
+            min_successful_revisions=2,
+            workflow=PROGRESSIVE_APPLICATION_WORKFLOW,
+        )
+        self.assertIn("PROGRESSIVE STUDY-APPLICATION LADDER", prompt)
+        self.assertIn("TWO distinct, visually diverse successful renders", prompt)
+        self.assertIn("Pass 1 — DIVERGE", prompt)
+        self.assertIn("Pass 2 — REFINE", prompt)
+        self.assertIn("variation_manifest", prompt)
+        self.assertIn("study_pass_qualified", prompt)
+        self.assertIn("PRIMITIVE STUDY", prompt)
+        self.assertIn("ASSEMBLY / SHEET STUDY", prompt)
+        self.assertIn("PARENT-INTEGRATION / COAT STUDY", prompt)
+        self.assertIn("fundamental unit → composed", prompt)
+        self.assertEqual(
+            workflow_required_studies(PROGRESSIVE_APPLICATION_WORKFLOW), 4
+        )
+
     def test_codex_command_is_isolated_and_tool_allowlisted(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -89,6 +113,8 @@ class AgenticShaderHarnessTests(unittest.TestCase):
                 min_successful_revisions=2,
                 required_studies=3,
                 require_variant_inventory=True,
+                min_successful_study_renders=2,
+                require_study_diversity=True,
                 trace_path=root / "trace.jsonl",
                 last_message_path=root / "last.txt",
             )
@@ -102,6 +128,8 @@ class AgenticShaderHarnessTests(unittest.TestCase):
         self.assertIn("SHADER_AGENT_RENDER_BUDGET", joined)
         self.assertIn("SHADER_AGENT_REQUIRED_STUDIES", joined)
         self.assertIn("SHADER_AGENT_REQUIRE_VARIANT_INVENTORY", joined)
+        self.assertIn("SHADER_AGENT_MIN_SUCCESSFUL_STUDY_RENDERS", joined)
+        self.assertIn("SHADER_AGENT_REQUIRE_STUDY_DIVERSITY", joined)
 
 
 if __name__ == "__main__":

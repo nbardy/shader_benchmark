@@ -6,7 +6,11 @@ from unittest.mock import patch
 
 from PIL import Image
 
-from shader_agent_mcp import ShaderAgentState, create_mcp
+from shader_agent_mcp import (
+    ShaderAgentState,
+    _atlas_diversity_metrics,
+    create_mcp,
+)
 
 
 VALID_SHADER = """
@@ -261,6 +265,7 @@ class ShaderAgentStateTests(unittest.TestCase):
                 "revision": 1,
                 "render_call": 1,
             }
+            state.successful_study_render_count[1] = 1
             rejected = state.record_study(1, "shape", "G", "x" * 100, "y" * 100)
             self.assertFalse(rejected["ok"])
 
@@ -282,6 +287,7 @@ class ShaderAgentStateTests(unittest.TestCase):
                 "revision": 1,
                 "render_call": 1,
             }
+            state.successful_study_render_count[1] = 1
             rejected = state.record_study(
                 1,
                 "curved element",
@@ -332,6 +338,179 @@ class ShaderAgentStateTests(unittest.TestCase):
             self.assertFalse(rejected["ok"])
             self.assertEqual(rejected["missing_prior_studies"], [1])
             self.assertEqual(state.render_calls, 0)
+
+    def test_progressive_study_requires_two_successful_render_passes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            renderer = root / "renderer"
+            renderer.write_text("fake", encoding="utf-8")
+            state = ShaderAgentState(
+                root / "workspace",
+                renderer,
+                render_budget=3,
+                render_size=64,
+                min_successful_revisions=1,
+                required_studies=1,
+                min_successful_study_renders=2,
+            )
+
+            def fake_run(command, **kwargs):
+                output_index = command.index("--output") + 1
+                Image.new("RGB", (8, 8), "blue").save(command[output_index])
+                return type(
+                    "Completed",
+                    (),
+                    {"returncode": 0, "stdout": "ok", "stderr": ""},
+                )()
+
+            with patch("shader_agent_mcp.subprocess.run", fake_run):
+                state.write_shader(VALID_SHADER)
+                first, _ = state.render_shader("study", 1)
+                self.assertEqual(first["study_pass"], 1)
+                rejected = state.record_study(
+                    1,
+                    "primitive shape",
+                    "A",
+                    (
+                        "Variant A has the clearest readable silhouette while "
+                        "the alternatives reveal useful curvature tradeoffs."
+                    ),
+                    (
+                        "Reuse the selected primitive function, its local frame, "
+                        "width profile, taper, material, and bounded parameters."
+                    ),
+                )
+                self.assertFalse(rejected["ok"])
+                state.write_shader(
+                    VALID_SHADER + "\n// refinement pass\n",
+                    (
+                        "The first atlas found two viable silhouettes; this "
+                        "second atlas refines their curvature, taper, internal "
+                        "structure, and material response at larger contrast."
+                    ),
+                )
+                second, _ = state.render_shader("study", 1)
+                self.assertEqual(second["study_pass"], 2)
+            accepted = state.record_study(
+                1,
+                "primitive shape",
+                "F",
+                (
+                    "Across both passes, F preserves the strongest first-pass "
+                    "gesture while the refinement fixes its root and tip."
+                ),
+                (
+                    "Reuse the refined F function, local frame, shoulder and "
+                    "taper ranges, material response, and internal structure."
+                ),
+            )
+            self.assertTrue(accepted["ok"])
+            self.assertEqual(accepted["study_pass"], 2)
+
+    def test_visual_diversity_gate_rejects_duplicate_atlas_cells(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            renderer = root / "renderer"
+            renderer.write_text("fake", encoding="utf-8")
+            state = ShaderAgentState(
+                root / "workspace",
+                renderer,
+                render_budget=3,
+                render_size=64,
+                min_successful_revisions=1,
+                required_studies=1,
+                require_study_diversity=True,
+            )
+            render_number = 0
+
+            def fake_run(command, **kwargs):
+                nonlocal render_number
+                render_number += 1
+                output_index = command.index("--output") + 1
+                output = Path(command[output_index])
+                if render_number == 1:
+                    Image.new("RGB", (300, 200), "blue").save(output)
+                else:
+                    atlas = Image.new("RGB", (300, 200), "black")
+                    colors = ("red", "green", "blue", "yellow", "cyan", "magenta")
+                    for index, color in enumerate(colors):
+                        left = (index % 3) * 100
+                        top = (index // 3) * 100
+                        atlas.paste(color, (left, top, left + 100, top + 100))
+                    atlas.save(output)
+                return type(
+                    "Completed",
+                    (),
+                    {"returncode": 0, "stdout": "ok", "stderr": ""},
+                )()
+
+            with patch("shader_agent_mcp.subprocess.run", fake_run):
+                state.write_shader(VALID_SHADER)
+                duplicate, duplicate_path = state.render_shader(
+                    "study",
+                    1,
+                    (
+                        "A: broad symmetric leaf with a blunt tip. "
+                        "B: narrow swept leaf with a hooked tip. "
+                        "C: asymmetric vane with a deep center groove. "
+                        "D: layered feather with a split terminal notch. "
+                        "E: strongly cambered blade with a narrow embedded root. "
+                        "F: scalloped silhouette with an offset rachis and lifted tip."
+                    ),
+                )
+                self.assertTrue(duplicate["ok"])
+                self.assertFalse(duplicate["study_pass_qualified"])
+                self.assertEqual(
+                    state.successful_study_render_count.get(1, 0), 0
+                )
+                self.assertFalse(
+                    _atlas_diversity_metrics(duplicate_path)["qualifies"]
+                )
+                state.write_shader(
+                    VALID_SHADER + "\n// visibly different atlas\n",
+                    (
+                        "The first atlas was locally measured as near-duplicate; "
+                        "this revision exaggerates six independent alternatives."
+                    ),
+                )
+                varied, _ = state.render_shader(
+                    "study",
+                    1,
+                    (
+                        "A: broad symmetric leaf refined for shoulder width. "
+                        "B: narrow swept leaf refined for stronger hook. "
+                        "C: asymmetric vane refined with a visible center groove. "
+                        "D: layered feather refined with a deeper terminal notch. "
+                        "E: cambered blade refined with a thinner embedded root. "
+                        "F: scalloped vane refined with offset rachis and tip lift."
+                    ),
+                )
+            self.assertTrue(varied["study_pass_qualified"])
+            self.assertEqual(state.successful_study_render_count[1], 1)
+
+    def test_diversity_workflow_requires_a_predeclared_a_to_f_manifest(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            renderer = root / "renderer"
+            renderer.write_text("fake", encoding="utf-8")
+            state = ShaderAgentState(
+                root / "workspace",
+                renderer,
+                render_budget=3,
+                render_size=64,
+                min_successful_revisions=1,
+                required_studies=1,
+                require_study_diversity=True,
+            )
+            state.write_shader(VALID_SHADER)
+            rejected, image_path = state.render_shader(
+                "study", 1, "A: one shape. B: another shape."
+            )
+            self.assertFalse(rejected["ok"])
+            self.assertFalse(rejected["render_budget_consumed"])
+            self.assertEqual(rejected["missing_variant_labels"], ["C:", "D:", "E:", "F:"])
+            self.assertEqual(state.render_calls, 0)
+            self.assertIsNone(image_path)
 
 
 if __name__ == "__main__":

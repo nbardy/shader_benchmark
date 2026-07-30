@@ -389,3 +389,70 @@ or gradient normals, tangent/bitangent construction, UV-space fBm/domain warp,
 root embedding, and overlap depth. The continuous feather helper from v3 can
 then be transformed through that frame without being reinterpreted by the
 model.
+
+### Progressive-application v4: forcing study depth and scale
+
+Run: `parrot_sketchbook_progressive_application_v4_sol_medium_20260731`
+
+V4 tested whether a longer, enforced study chain could close the local-shape
+versus final-integration gap. It changed the protocol, not merely the prose:
+
+- four ordered studies: primitive → assembly/sheet → parent integration/coat →
+  relationships/layer transitions;
+- two qualified renders per study: a broad A–F divergence pass followed by
+  A/B/C and D/E/F refinements of the two strongest families;
+- a required pre-render A–F variation manifest, rejected without consuming
+  render budget when incomplete;
+- a local 3×2 atlas diversity check based on pairwise RGB mean absolute
+  differences, with near-duplicate renders compiling but not advancing the
+  study;
+- explicit parent-surface requirements: `P(u,v)`, `N`, `T`, `B`, UV-space
+  variation, root embedding, and primitive transformation through the local
+  frame.
+
+The agent used 12 of 18 available renders. Two study attempts were rejected by
+the visual gate:
+
+- the first sheet/assembly pass was too uniform;
+- the first parent-coat pass measured 0.964% mean cell difference, just below
+  the 1.0% threshold.
+
+After revision, every study completed two qualified passes. Mean pairwise cell
+differences for the recorded passes were:
+
+| Stage | Pass 1 | Pass 2 |
+| --- | ---: | ---: |
+| Continuous feather primitive | 2.817% | 1.234% |
+| Feather sheet/assembly | 3.973% | 3.161% |
+| Parent-wrapped wing coat | 2.713% | 1.863% |
+| Body/wing/face relationships | 3.147% | 2.016% |
+
+This is clear process progress. Study 1 refined a genuinely curved continuous
+feather; Study 2 constructed a staggered sheet; Study 3 placed the sheet on an
+ellipsoid using an explicit surface frame; and Study 4 compared wing depth,
+shoulder overlap, chest exposure, and boundary feathers against the other bird
+forms. V3 had only one accepted render per study, and its first and third
+atlases were effectively near-duplicates.
+
+The visual endpoint is nevertheless worse by the benchmark judge. The two
+final renders scored 297 and 293; the submitted revision scored
+`[45, 76, 34, 96, 42]`. The judge called it a recognizable, polished,
+procedural parrot but a simplified toy-like reconstruction with plastic
+materials, weak feather density, inaccurate anatomy and beak, and missing
+photographic feather/facial detail.
+
+Human inspection agrees with the core failure. The wing now has an explicit
+surface frame and the feather plates sit at different depths on a curved
+parent, so this is more than the old image-plane placement. But the final still
+reads as a smooth blue ellipsoid with a sparse grid of raised plates. The
+assembly study did not force root-to-tip occlusion strongly enough, and the
+final composition reduced a richer study sheet to only twelve instances.
+
+The main lesson is that enforcing iteration and variation is necessary but not
+sufficient. V4 made the reasoning path measurable and caught two false passes;
+it did not guarantee that the final preserves study density or earns a
+photographic material model. A likely v5 should add executable handoff
+invariants: minimum parent coverage/overlap, preservation checks for selected
+instance count and helper calls, and a study-to-final comparison that can
+reject a semantic downgrade. The inexpensive RGB gate should remain a guard,
+not be treated as a judge of conceptual or artistic diversity.

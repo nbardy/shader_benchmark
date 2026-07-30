@@ -28,15 +28,17 @@ from prompt_profiles import (
 from test_runner import TestRunner
 
 
-PROTOCOL = "persistent-agent-render-tools-v3"
+PROTOCOL = "persistent-agent-render-tools-v4"
 STANDARD_WORKFLOW = "standard"
 SKETCHBOOK_WORKFLOW = "sketchbook-3x2-v1"
 CURVED_ELEMENT_SKETCHBOOK_WORKFLOW = "sketchbook-curved-elements-v2"
 CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW = "sketchbook-continuous-elements-v3"
+PROGRESSIVE_APPLICATION_WORKFLOW = "sketchbook-progressive-application-v4"
 SKETCHBOOK_WORKFLOWS = (
     SKETCHBOOK_WORKFLOW,
     CURVED_ELEMENT_SKETCHBOOK_WORKFLOW,
     CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
+    PROGRESSIVE_APPLICATION_WORKFLOW,
 )
 MCP_TOOLS = (
     "write_shader",
@@ -50,7 +52,18 @@ def workflow_requires_variant_inventory(workflow: str) -> bool:
     return workflow in {
         CURVED_ELEMENT_SKETCHBOOK_WORKFLOW,
         CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
+        PROGRESSIVE_APPLICATION_WORKFLOW,
     }
+
+
+def workflow_required_studies(workflow: str) -> int:
+    if workflow == STANDARD_WORKFLOW:
+        return 0
+    if workflow == PROGRESSIVE_APPLICATION_WORKFLOW:
+        return 4
+    if workflow in SKETCHBOOK_WORKFLOWS:
+        return 3
+    raise ValueError(f"unknown agent workflow: {workflow}")
 
 
 def _json_config(value: Any) -> str:
@@ -76,16 +89,16 @@ PROBLEM CONTEXT
     profiled_prompt = apply_prompt_profile(canonical_prompt, prompt_profile)
     if workflow not in {STANDARD_WORKFLOW, *SKETCHBOOK_WORKFLOWS}:
         raise ValueError(f"unknown agent workflow: {workflow}")
-    required_studies = 3 if workflow in SKETCHBOOK_WORKFLOWS else 0
+    required_studies = workflow_required_studies(workflow)
     sketchbook_contract = (
-        r"""
+        f"""
 
 MANDATORY 3×2 VISUAL SKETCHBOOK
 ==============================
 
 Before building the final reconstruction, use rendered evidence to resolve
-three high-risk, subject-specific design decisions. This is a public production
-study, not hidden chain-of-thought. Select the three core elements from the
+{required_studies} high-risk, subject-specific design decisions. This is a
+public production study, not hidden chain-of-thought. Select the core elements from the
 reference rather than hardcoding the examples below.
 
 Study selection:
@@ -95,6 +108,8 @@ Study selection:
   distributed, oriented, overlapped, or wrapped over its parent form.
 - Study 3 normally resolves material response, palette relationships, lighting,
   atmospheric treatment, or another unresolved identity-carrying element.
+- A workflow-specific contract below may replace these default roles or add a
+  fourth dependent study.
 - Adapt these roles when a mathematical plot, landscape, typography, fluid,
   architecture, or abstract target has different dominant risks.
 
@@ -122,7 +137,7 @@ For EACH study:
    function family, coordinate frame, parameter ranges, and aesthetic
    properties that must be carried into the final shader.
 
-After all three selections are recorded, replace the atlas with the complete
+After all required selections are recorded, replace the atlas with the complete
 reconstruction. The final shader must materially reuse the selected
 representations and handoff requirements; do not restart from generic
 primitives. Render it with render_shader(stage="final", study_index=0), compare
@@ -192,6 +207,7 @@ first, then test how its frame and parameters follow the larger form.
         in {
             CURVED_ELEMENT_SKETCHBOOK_WORKFLOW,
             CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
+            PROGRESSIVE_APPLICATION_WORKFLOW,
         }
         else ""
     )
@@ -245,7 +261,90 @@ No lower-fidelity ellipsoid/capsule replacement is allowed during integration.
 The study record's handoff must name the function and the exact bend, sweep,
 shoulder, taper-start, width, thickness, camber, and surface-frame ranges.
 """
-        if workflow == CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW
+        if workflow
+        in {
+            CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
+            PROGRESSIVE_APPLICATION_WORKFLOW,
+        }
+        else ""
+    )
+    progressive_application_contract = (
+        r"""
+
+PROGRESSIVE STUDY-APPLICATION LADDER
+====================================
+
+This workflow requires TWO distinct, visually diverse successful renders of
+every study before record_study can accept it. A compile failure or a
+near-duplicate atlas is not a pass.
+
+For each study:
+- Pass 1 — DIVERGE: render six broad A–F alternatives that span the plausible
+  design space. Exaggerate meaningful axes enough to make the differences easy
+  to judge. These are prototypes, not six timid finalists.
+- Inspect Pass 1. Choose the strongest two candidates and identify their
+  visible strengths and weaknesses.
+- Pass 2 — REFINE: render a new 3×2 atlas. A/B/C must be three purposeful
+  refinements of the first candidate; D/E/F must refine the second. Change
+  shape, assembly, or integration variables that answer the observed problems.
+  Do not merely rerender Pass 1 or make six tiny seed changes.
+- Only after inspecting Pass 2 may you call record_study. Its rationale must
+  compare both passes and its handoff must name what survived refinement.
+- Additional study renders are allowed when neither pass answers the question
+  and the server reports enough remaining budget.
+- Before every study render, pass variation_manifest to render_shader. It must
+  predeclare materially different A: through F: constructions and the
+  meaningful design axis each changes. This is a precommitment, not a
+  description written after seeing the atlas.
+- After every study render, inspect study_pass_qualified and study_diversity.
+  If the pass is rejected as visually near-duplicate, exaggerate structural
+  differences and rerender; compilation alone does not advance the study.
+
+The study chain forms a scale ladder. Each later study MUST call and visibly
+reuse the selected code from the previous study:
+
+1. PRIMITIVE STUDY
+   Isolate one identity-carrying unit at large scale: a feather, leaf, branch,
+   cloud lobe, stone, tile, facade module, glyph/mark, curve segment, particle,
+   material flake, or another task-specific primitive. Resolve its shape,
+   internal structure, coordinate system, and material response.
+
+2. ASSEMBLY / SHEET STUDY
+   Build a neutral planar or gently curved swatch from the selected primitive.
+   Compare packing, overlap, orientation flow, scale and density gradients,
+   clustering, gaps, low-frequency warp, correlated variation, and exceptions.
+   The unit must remain recognizable; this is a sheet/coat/grove/facade/field,
+   not a texture painted over an unrelated surface.
+
+3. PARENT-INTEGRATION / COAT STUDY
+   Transform the selected assembly through the parent object's or scene's
+   coordinate frame. Compare surface attachment, tangent/bitangent/normal or
+   analogous local bases, root embedding, curvature following, overlap depth,
+   containment, boundary behavior, silhouette elements, and art-directed
+   domain variation. Show enough of the parent to judge whether the assembly
+   belongs to it.
+   For a surface, implement this relationship explicitly: evaluate P(u,v);
+   compute N from its gradient or derivatives; compute T=dP/du and B=dP/dv (or
+   a stable orthonormal equivalent); warp and vary (u,v), not world XY; embed
+   each root at P-depth*N; and transform every primitive through (T,B,N).
+   Merely computing a curved z position while leaving the primitive in the
+   camera/image basis does not count as surface wrapping.
+
+4. RELATIONSHIPS / LAYER-TRANSITION STUDY
+   Place the coated parent next to the major forms it touches. Explore how the
+   assembly transitions into neighboring layers, disappears under overlaps,
+   changes scale or orientation across seams, contributes to the silhouette,
+   and shares light/material response. For an organic coat, compare crown,
+   shoulder, chest, wing-edge, and body-to-wing transitions rather than
+   rendering an isolated shell. For other domains, study the corresponding
+   module-to-system and system-to-context relationships.
+
+Then integrate the selected parent treatment into the complete final scene and
+iterate at least two successful final renders. For targets without repeated
+organic elements, preserve the same abstraction: fundamental unit → composed
+system → placement in the larger coordinate structure → finished scene.
+"""
+        if workflow == PROGRESSIVE_APPLICATION_WORKFLOW
         else ""
     )
     return f"""\
@@ -261,8 +360,9 @@ iteration loop and do not put WGSL in your final chat response.
 You have exactly these benchmark tools:
 - write_shader(shader_source, revision_critique): replace the complete working
   WGSL program; every rewrite after revision 1 requires a concise critique;
-- render_shader(stage, study_index): compile and render the current revision,
-  returning both compiler feedback and the actual rendered image;
+- render_shader(stage, study_index, variation_manifest): compile and render the
+  current revision, returning compiler feedback, local study-diversity
+  measurements, and the actual rendered image;
 - record_study(study_index, subject, selected_variant, selection_rationale,
   handoff_requirements, variant_inventory): preserve public visual-study
   evidence, the A–F construction inventory, and its exact implementation
@@ -271,6 +371,7 @@ You have exactly these benchmark tools:
 {sketchbook_contract}
 {curved_element_contract}
 {continuous_element_contract}
+{progressive_application_contract}
 
 Workflow requirements:
 1. Study the reference and plan a strong procedural reconstruction.
@@ -291,9 +392,10 @@ Workflow requirements:
 
 You must produce at least {min_successful_revisions} distinct successfully
 rendered FINAL revisions before submitting. The {required_studies} required
-study renders do not count toward that final-revision minimum. Re-rendering
-unchanged code is rejected without consuming budget. Each rewrite should
-respond to visible evidence, not merely satisfy the counter.
+studies and their required render passes do not count toward that
+final-revision minimum. Re-rendering unchanged code is rejected without
+consuming budget. Each rewrite should respond to visible evidence, not merely
+satisfy the counter.
 
 For each rewrite, put the target-versus-render evidence, strongest feature to
 preserve, and bounded changes you are making in write_shader's
@@ -317,6 +419,8 @@ def build_codex_command(
     min_successful_revisions: int,
     required_studies: int,
     require_variant_inventory: bool,
+    min_successful_study_renders: int,
+    require_study_diversity: bool,
     trace_path: Path,
     last_message_path: Path,
 ) -> list[str]:
@@ -357,6 +461,8 @@ def build_codex_command(
         "--quiet",
         "--with",
         "mcp>=1,<2",
+        "--with",
+        "Pillow>=10",
         "python",
         str(server_script),
     ]
@@ -383,6 +489,12 @@ def build_codex_command(
         ),
         "mcp_servers.shader_tools.env.SHADER_AGENT_REQUIRE_VARIANT_INVENTORY": (
             "1" if require_variant_inventory else "0"
+        ),
+        "mcp_servers.shader_tools.env.SHADER_AGENT_MIN_SUCCESSFUL_STUDY_RENDERS": str(
+            min_successful_study_renders
+        ),
+        "mcp_servers.shader_tools.env.SHADER_AGENT_REQUIRE_STUDY_DIVERSITY": (
+            "1" if require_study_diversity else "0"
         ),
     }
     for key, value in configs.items():
@@ -528,6 +640,7 @@ def _render_report(
             render_call = event["render_call"]
             stage = event.get("stage", "final")
             study_index = int(event.get("study_index", 0))
+            study_pass = int(event.get("study_pass", 0))
             judged = judged_by_call.get(int(render_call))
             score_caption = (
                 f" · {judged['total']} / 500" if judged else ""
@@ -535,7 +648,10 @@ def _render_report(
             panels.append(
                 (
                     (
-                        f"Study {study_index} · render {render_call}"
+                        (
+                            f"Study {study_index} · pass {study_pass}"
+                            f" · render {render_call}"
+                        )
                         if stage == "study"
                         else f"Final render {render_call}"
                     )
@@ -544,6 +660,12 @@ def _render_report(
                     (
                         f"{event.get('remaining_renders', 0)} renders left"
                         f"{score_caption}"
+                        + (
+                            " · diversity gate failed"
+                            if stage == "study"
+                            and not event.get("study_pass_qualified", True)
+                            else ""
+                        )
                     ),
                 )
             )
@@ -631,7 +753,7 @@ async def run_agentic_shader(
 ) -> Path:
     if render_budget < 1:
         raise ValueError("render_budget must be at least 1")
-    required_studies = 3 if workflow in SKETCHBOOK_WORKFLOWS else 0
+    required_studies = workflow_required_studies(workflow)
     require_variant_inventory = workflow_requires_variant_inventory(workflow)
     if workflow not in {STANDARD_WORKFLOW, *SKETCHBOOK_WORKFLOWS}:
         raise ValueError(f"unknown agent workflow: {workflow}")
@@ -639,10 +761,20 @@ async def run_agentic_shader(
         raise ValueError(
             "min_successful_revisions must be between 1 and render_budget"
         )
-    if render_budget < required_studies + min_successful_revisions:
+    min_successful_study_renders = (
+        2 if workflow == PROGRESSIVE_APPLICATION_WORKFLOW else 1
+    )
+    require_study_diversity = (
+        workflow == PROGRESSIVE_APPLICATION_WORKFLOW
+    )
+    minimum_render_budget = (
+        required_studies * min_successful_study_renders
+        + min_successful_revisions
+    )
+    if render_budget < minimum_render_budget:
         raise ValueError(
-            "render_budget must allow all required studies plus the minimum "
-            "successful final revisions"
+            "render_budget must allow every required successful study render "
+            "plus the minimum successful final revisions"
         )
     script_dir = Path(__file__).parent.resolve()
     repo_root = script_dir.parent
@@ -701,6 +833,8 @@ async def run_agentic_shader(
             min_successful_revisions=min_successful_revisions,
             required_studies=required_studies,
             require_variant_inventory=require_variant_inventory,
+            min_successful_study_renders=min_successful_study_renders,
+            require_study_diversity=require_study_diversity,
             trace_path=trace_path,
             last_message_path=last_message_path,
         )
@@ -741,6 +875,8 @@ async def run_agentic_shader(
         "workflow": workflow,
         "required_studies": required_studies,
         "require_variant_inventory": require_variant_inventory,
+        "min_successful_study_renders": min_successful_study_renders,
+        "require_study_diversity": require_study_diversity,
         "codex_returncode": completed.returncode,
         "submitted": submitted,
         "state": state,
