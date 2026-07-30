@@ -3,6 +3,8 @@ import unittest
 from pathlib import Path
 
 from agentic_shader_harness import (
+    COMPOSITION_FIRST_HIERARCHY_WORKFLOW,
+    COMPOSITION_FIRST_SHAPED_DETAIL_WORKFLOW,
     CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
     CURVED_ELEMENT_SKETCHBOOK_WORKFLOW,
     HIERARCHICAL_WIDE_SEARCH_WORKFLOW,
@@ -126,6 +128,57 @@ class AgenticShaderHarnessTests(unittest.TestCase):
             workflow_requires_variant_inventory(
                 HIERARCHICAL_WIDE_SEARCH_WORKFLOW
             )
+        )
+
+    def test_composition_first_workflow_preserves_quality_in_final_context(self):
+        prompt = build_agent_prompt(
+            "Draw the target.",
+            "baseline",
+            10,
+            min_successful_revisions=2,
+            workflow=COMPOSITION_FIRST_HIERARCHY_WORKFLOW,
+        )
+        self.assertIn("COMPOSITION-FIRST, QUALITY-PRESERVING HIERARCHY", prompt)
+        self.assertIn("THREE FINAL-CONTEXT STUDIES", prompt)
+        self.assertIn("strongest visible feature that must survive", prompt)
+        self.assertIn("COMPOSITION + ROOTED MACRO FORM", prompt)
+        self.assertIn("ATTACHED DETAIL COAT", prompt)
+        self.assertIn("ART DIRECTION + MATERIAL IN CONTEXT", prompt)
+        self.assertIn("many modest elements", prompt)
+        self.assertIn("root = parentPoint(s, u, v)", prompt)
+        self.assertIn("Complexity\nis not a tiebreaker", prompt)
+        self.assertEqual(
+            workflow_required_studies(COMPOSITION_FIRST_HIERARCHY_WORKFLOW),
+            3,
+        )
+        self.assertFalse(
+            workflow_requires_variant_inventory(
+                COMPOSITION_FIRST_HIERARCHY_WORKFLOW
+            )
+        )
+
+    def test_shaped_detail_workflow_rejects_finger_primitives(self):
+        prompt = build_agent_prompt(
+            "Draw the target.",
+            "baseline",
+            10,
+            min_successful_revisions=2,
+            workflow=COMPOSITION_FIRST_SHAPED_DETAIL_WORKFLOW,
+        )
+        self.assertIn("COMPOSITION-FIRST, QUALITY-PRESERVING HIERARCHY", prompt)
+        self.assertIn("VISIBLE ELEMENT-MORPHOLOGY GATE", prompt)
+        self.assertIn("capsule, finger, peg, pill, wire, comb tooth", prompt)
+        self.assertIn("continuous longitudinal coordinate s", prompt)
+        self.assertIn("off-center shoulder", prompt)
+        self.assertIn("25–45% of length", prompt)
+        self.assertIn("cannot be the complete visible unit", prompt)
+        self.assertIn("avoid straight vertical rails", prompt)
+        self.assertIn("tapered varying-width silhouettes", prompt)
+        self.assertEqual(
+            workflow_required_studies(
+                COMPOSITION_FIRST_SHAPED_DETAIL_WORKFLOW
+            ),
+            3,
         )
 
     def test_codex_command_is_isolated_and_tool_allowlisted(self):

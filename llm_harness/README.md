@@ -367,7 +367,7 @@ rendered and recorded. Study renders do not count toward
 `--min-successful-revisions`, and only final-stage renders are sent to the
 benchmark judge.
 
-Four stricter workflows isolate failures found by the first parrot trial:
+Six stricter workflows isolate failures found by the first parrot trial:
 
 - `sketchbook-curved-elements-v2` separates the individual signature-element
   shape study from its parent-surface placement study, runs studies in order,
@@ -389,11 +389,50 @@ Four stricter workflows isolate failures found by the first parrot trial:
   candidates per topic. The server validates structured A–F manifests and
   rejects both internally uniform atlases and whole-atlas reuse across passes
   or study topics.
+- `sketchbook-composition-first-hierarchy-v6` returns to the successful
+  three-study, ten-render shape of v1 while adding one focused treatment:
+  final-context studies must preserve the whole composition, and attached
+  detail derives from a lightweight parent frame without hiding the silhouette,
+  face, major color masses, or parent contour. It explicitly prefers many
+  modest overlapping elements to a few mathematically elaborate armor plates.
+- `sketchbook-composition-first-shaped-detail-v7` keeps v6 unchanged except
+  for one morphology gate. The visible repeated unit needs a bent continuous
+  centerline, narrow root, off-center shoulder, varying width/thickness, and a
+  tapered tip; capsules may support hidden roots but cannot remain visible as
+  fingers, wires, vertical rails, or a decorative comb.
 
 V5 is the strongest process experiment for repeated detail attached through a
 geometry hierarchy. It is generic: body→wing→feather can become
 trunk→branch→leaf, building frame→facade→panel, terrain→riverbed→water detail,
 or curve→transported mark.
+
+V6 is the controlled quality-preserving follow-up. It keeps v1's study count,
+render budget, model profile, and judge setup so the added composition-first
+hierarchy contract can be evaluated without also increasing test-time compute.
+
+```bash
+python agentic_shader_harness.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --problem reproduce_image_andrew_pons \
+  --prompt-profile domain-expert-v2 \
+  --workflow sketchbook-composition-first-hierarchy-v6 \
+  --render-budget 10 \
+  --min-successful-revisions 2 \
+  --judge-model "cli/codex:gpt-5.5:high"
+```
+
+V7 tests the remaining local-shape failure without adding more render passes:
+
+```bash
+python agentic_shader_harness.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --problem reproduce_image_andrew_pons \
+  --prompt-profile domain-expert-v2 \
+  --workflow sketchbook-composition-first-shaped-detail-v7 \
+  --render-budget 10 \
+  --min-successful-revisions 2 \
+  --judge-model "cli/codex:gpt-5.5:high"
+```
 
 ```bash
 python agentic_shader_harness.py \

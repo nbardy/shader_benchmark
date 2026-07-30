@@ -529,3 +529,75 @@ shape and scale of a successfully dense sheet. A next treatment should keep
 the v5 hierarchy but add a silhouette/coverage constraint: feathers must remain
 thin, curved, and small enough that the sheet reveals the body and wing contour
 rather than covering the bird with large geometric armor.
+
+### Composition-first hierarchy v6: return to the strongest control
+
+Human review still prefers the simpler v1 final at 332/500. Its advantages are
+global: a clearer compact silhouette, visible yellow chest, graceful feather
+cascade, stronger color balance, and more immediate bird likeness. V5's added
+hierarchy solved a real implementation problem but spent 21 study renders
+optimizing machinery before integration, then let 24 large boxy feather units
+cover most of the subject. The extra compute reduced final-image quality.
+
+V6 is therefore a controlled return to v1's three-study, ten-render topology
+with the same `domain-expert-v2` profile, Sol medium model, and Codex 5.5 high
+judge. It adds one prompt treatment: every study remains in final portrait
+context, attached detail uses a lightweight parent-relative frame, and explicit
+regression checks preserve the silhouette, face, exposed major color masses,
+parent contour, modest detail scale, overlap rhythm, palette, and focal light.
+The hypothesis is falsifiable: if this focused hierarchy beats v1 visually
+without the v5 armor failure, the useful ingredient was relative attachment
+under composition constraints—not maximal search breadth.
+
+Two independent v6 runs used only five renders each:
+
+| run | first final | submitted | human read |
+| --- | ---: | ---: | --- |
+| v6 | 335 | 329 | Clear bird and preserved chest, but rigid 4×4 vertical coat; second final regressed |
+| v6b | 326 | 345 | Strong full-frame silhouette and diagonal 3×6 coat; visible units still look like fingers |
+
+The replicate establishes a useful signal despite rollout variance. Both runs
+avoided v5's armor failure and preserved the global yellow/blue composition;
+v6b also independently recovered a diagonal modest-scale cascade. The 16-point
+submitted-score spread and v6's higher-scoring earlier final show why one run
+or the last revision alone is not a reliable winner. Human review still prefers
+v1's wider petal-like feather rhythm to v6b's thin capsule fingers.
+
+### Shaped-detail v7: isolate the remaining primitive failure
+
+V7 leaves v6's three studies, ten-render budget, model, profile, and judge
+unchanged. Its only treatment is an executable morphology contract: the visible
+unit needs a bent longitudinal centerline, narrow embedded root, off-center
+width shoulder, varying camber/thickness, and tapered terminal silhouette.
+Capsules may support a hidden rachis but cannot be the full visible unit; rows
+of fingers, wires, vertical rails, broad armor, and decorative combs are
+explicit rejection cases. This tests whether the process can retain v6's
+composition gains while recovering v1's graceful local rhythm.
+
+The first v7 run used six renders. Its macro atlas needed one correction, then
+the coat study selected a three-row diagonal field of flat pointed vanes. The
+two final renders scored 307 and 338; the second was submitted.
+
+The treatment worked mechanically. The final WGSL contains a continuous
+`feather(q,id)` profile whose width grows away from a narrow root, reaches a
+shoulder, tapers to the tip, bends quadratically in-plane, and cambers with a
+sine term. Twenty-four units are placed in four staggered rows. The visible
+units no longer read as v6b's uniform capsule fingers.
+
+The whole image did not become the human winner. The first final had an
+oversized beak and washed-out palette; the second reduced the beak, deepened the
+canopy, and increased feather density, but retained a blunt toy-like face and
+overly regular rows. The current evidence therefore has three different
+winners:
+
+- best human overall composition and feather rhythm: v1, 332;
+- best judge score and macro likeness: v6b, 345;
+- best explicit local feather morphology: v7, 338.
+
+This separation is valuable. It shows that prompt gates can move one failure at
+a time, but solving the local SDF does not guarantee that integration preserves
+art direction. A next experiment should not add another longer study chain.
+It should branch from the strongest whole-image implementation, keep its exact
+camera/anatomy/palette code available, and replace only the wing-unit function
+and distribution. That is closer to controlled program surgery than another
+fresh generative rollout.

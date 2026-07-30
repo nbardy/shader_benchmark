@@ -253,7 +253,7 @@ class ShaderAgentState:
 
     def _persist(self) -> None:
         payload = {
-            "protocol": "persistent-agent-render-tools-v5",
+            "protocol": "persistent-agent-render-tools-v7",
             "render_budget": self.render_budget,
             "render_calls": self.render_calls,
             "remaining_renders": max(0, self.render_budget - self.render_calls),

@@ -28,19 +28,27 @@ from prompt_profiles import (
 from test_runner import TestRunner
 
 
-PROTOCOL = "persistent-agent-render-tools-v5"
+PROTOCOL = "persistent-agent-render-tools-v7"
 STANDARD_WORKFLOW = "standard"
 SKETCHBOOK_WORKFLOW = "sketchbook-3x2-v1"
 CURVED_ELEMENT_SKETCHBOOK_WORKFLOW = "sketchbook-curved-elements-v2"
 CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW = "sketchbook-continuous-elements-v3"
 PROGRESSIVE_APPLICATION_WORKFLOW = "sketchbook-progressive-application-v4"
 HIERARCHICAL_WIDE_SEARCH_WORKFLOW = "sketchbook-hierarchical-wide-search-v5"
+COMPOSITION_FIRST_HIERARCHY_WORKFLOW = (
+    "sketchbook-composition-first-hierarchy-v6"
+)
+COMPOSITION_FIRST_SHAPED_DETAIL_WORKFLOW = (
+    "sketchbook-composition-first-shaped-detail-v7"
+)
 SKETCHBOOK_WORKFLOWS = (
     SKETCHBOOK_WORKFLOW,
     CURVED_ELEMENT_SKETCHBOOK_WORKFLOW,
     CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
     PROGRESSIVE_APPLICATION_WORKFLOW,
     HIERARCHICAL_WIDE_SEARCH_WORKFLOW,
+    COMPOSITION_FIRST_HIERARCHY_WORKFLOW,
+    COMPOSITION_FIRST_SHAPED_DETAIL_WORKFLOW,
 )
 MCP_TOOLS = (
     "write_shader",
@@ -495,6 +503,149 @@ marks, or network→edge bundle→nodes.
         if workflow == HIERARCHICAL_WIDE_SEARCH_WORKFLOW
         else ""
     )
+    composition_first_hierarchy_contract = (
+        r"""
+
+COMPOSITION-FIRST, QUALITY-PRESERVING HIERARCHY
+===============================================
+
+This is a focused three-study treatment. Do not spend the render budget
+maximizing mathematical novelty in isolated parts. Optimize the final image:
+recognizable silhouette, expressive pose, clean overlap rhythm, focal contrast,
+palette relationships, and material response. Geometry hierarchy is useful
+only when it improves those visible qualities.
+
+PRESERVATION TARGETS
+--------------------
+
+Before every rewrite, name the strongest visible feature that must survive.
+Do not accept a more sophisticated construction if it makes the subject less
+recognizable, hides an identity-carrying color region, weakens the silhouette,
+or turns graceful repeated detail into bulky armor, tiles, pegs, or wires.
+
+For a portrait-like target, keep the subject large in frame and preserve a
+clear outer contour, readable face, major front/side color masses, and useful
+negative space between the focal anatomy and the image edge. For other targets,
+translate these into the corresponding global composition invariants.
+
+THREE FINAL-CONTEXT STUDIES
+---------------------------
+
+Every atlas cell must show enough of the whole target, at approximately the
+final camera and scale, to judge the studied decision in context. Do not make
+an isolated technical demo whose success cannot be compared with the reference.
+
+1. COMPOSITION + ROOTED MACRO FORM
+   Compare six complete clay/color-block maquettes. Resolve silhouette, pose,
+   projection, proportions, focal placement, and the parent-child attachment
+   graph together. Favor the simplest rooted representation that preserves the
+   target's character. Only the root/camera may use an absolute placement;
+   attached major forms derive their origin and basis from a parent coordinate
+   or frame.
+
+2. ATTACHED DETAIL COAT
+   Starting from the selected whole-subject maquette, compare six complete
+   treatments of the signature repeated detail and its parent form. The parent
+   must remain visible enough to judge its contour and attachment. For an
+   organic coat, use a thin shell/ribbon/loft or surface domain attached to the
+   parent—not a second full oval placed beside it—and place detail in that
+   local domain.
+
+   Prefer a readable cascade of many modest elements over a few oversized
+   units. Elements should have embedded roots, deliberate overlap, tapered
+   ends, changing width, restrained thickness, and coherent flow. Their scale
+   must not erase the face, primary silhouette, or major contrasting color
+   mass. Use low-frequency domain variation or correlated jitter only where it
+   improves natural rhythm; regular structure is allowed when it reads better.
+   Avoid both perfect wallpaper and arbitrary high-frequency disorder.
+
+3. ART DIRECTION + MATERIAL IN CONTEXT
+   Keep the selected geometry and compare six complete lighting, palette,
+   roughness/specular, atmospheric-depth, and background treatments. Establish
+   a color ladder and focal hierarchy. Materials should reveal curvature and
+   layer separation without making every part equally glossy.
+
+LIGHTWEIGHT RELATIVE-GEOMETRY HANDOFF
+-------------------------------------
+
+The final shader must retain the selected subject-scale composition and call
+the chosen parent-frame, attached-form, and detail-distribution mechanisms
+directly. A child root should be computed schematically as:
+
+  root = parentPoint(s, u, v)
+  local = vec3(dot(p-root, B), dot(p-root, T), dot(p-root, N))
+
+where T/B/N or the domain-equivalent follow the parent. This requirement does
+not justify replacing a visually successful portrait with a conspicuous
+scaffold. Keep the math compact enough to leave iteration budget for the final
+image.
+
+FINAL REGRESSION CHECK
+----------------------
+
+Before submitting, compare the current render with the reference and the
+strongest earlier final render. Reject or undo a revision that regresses any
+of: subject readability, silhouette, face, exposed major color masses,
+detail-to-parent scale, overlap rhythm, palette, or focal lighting. Complexity
+is not a tiebreaker; the more elegant image wins.
+
+For non-organic or non-portrait targets, preserve the same general abstraction:
+global composition → parent-attached detail system → art direction in final
+context, with explicit regression checks on that target's dominant visual
+relationships.
+"""
+        if workflow
+        in {
+            COMPOSITION_FIRST_HIERARCHY_WORKFLOW,
+            COMPOSITION_FIRST_SHAPED_DETAIL_WORKFLOW,
+        }
+        else ""
+    )
+    shaped_detail_contract = (
+        r"""
+
+VISIBLE ELEMENT-MORPHOLOGY GATE
+===============================
+
+Keep the composition-first process above unchanged. This treatment changes one
+thing: the signature repeated unit must read as a designed thin shape rather
+than a capsule, finger, peg, pill, wire, comb tooth, or uniformly stretched
+oval.
+
+In Study 2 and the final:
+- Build the visible unit from a continuous longitudinal coordinate s in [0,1].
+  Its centerline bends in at least two axes; its width grows from a narrow
+  embedded root to an off-center shoulder, then tapers to a distinct terminal
+  point or notch. Thickness/camber also varies along s.
+- The visible vane/sheet/profile must be wider than a quill: target a maximum
+  width around 25–45% of length and thickness below 25% of maximum width unless
+  the reference clearly demands another proportion.
+- An ellipsoid or capsule may form a hidden root, rachis, or support, but it
+  cannot be the complete visible unit. Smooth-unioning one uniform capsule to
+  one uniform ellipsoid is still a finger unless a separate varying-width vane
+  controls the silhouette.
+- Across the parent, vary length, shoulder position, bend, orientation, and
+  color coherently with the parent domain. Preserve deliberate row overlap and
+  diagonal/curvilinear flow; avoid straight vertical rails.
+- Secondary surface detail must merge into the parent silhouette. Do not add a
+  row of protruding identical units around a head, roofline, branch, or other
+  boundary unless that comb-like outline is actually visible in the reference.
+
+Each Study-2 cell must show the whole target large enough that its signature
+units are individually legible. Reject every candidate whose elements read as
+fingers, wires, broad armor plates, or a decorative comb even if its attachment
+math is correct. The study handoff must record the chosen unit's root width,
+shoulder coordinate, maximum width, taper start, bend, length, thickness, and
+overlap ranges.
+
+Before submitting, inspect the final at image scale. If the repeated units lose
+their tapered varying-width silhouettes after integration, revise the actual
+unit function rather than merely shifting, recoloring, or rescaling the same
+primitive.
+"""
+        if workflow == COMPOSITION_FIRST_SHAPED_DETAIL_WORKFLOW
+        else ""
+    )
     return f"""\
 {profiled_prompt.rstrip()}
 
@@ -521,6 +672,8 @@ You have exactly these benchmark tools:
 {continuous_element_contract}
 {progressive_application_contract}
 {hierarchical_wide_search_contract}
+{composition_first_hierarchy_contract}
+{shaped_detail_contract}
 
 Workflow requirements:
 1. Study the reference and plan a strong procedural reconstruction.
