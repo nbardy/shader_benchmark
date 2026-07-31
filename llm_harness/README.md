@@ -301,15 +301,19 @@ independently.
 ### Persistent agent render-tool harness
 
 `agentic_shader_harness.py` is a different experiment from the N-round
-orchestrator. It gives one persistent Codex session four fixed-path MCP tools:
+orchestrator. It gives one persistent Codex session seven fixed-path MCP tools:
 
 - `write_shader` replaces the complete working WGSL file;
-- `render_shader` compiles it with a `study` or `final` stage and returns the
-  actual PNG image plus compiler feedback;
+- `render_shader` compiles it with a `study`, `promotion`, or `final` stage and
+  returns the actual PNG image plus compiler feedback;
+- `rank_study` asks a fresh isolated visual selector to rank the qualified
+  study cells;
 - `record_study` records visible comparison evidence, the selected A–F atlas
   cell, and the implementation details that must carry into the final scene;
-- `submit_final` freezes the current revision, but only if that exact revision
-  rendered successfully.
+- `promote_study` records that a selected artifact works in the full scene;
+- `restore_revision` branches from an immutable historical shader revision;
+- `submit_final` freezes any successfully rendered final revision, including
+  an earlier revision when the newest render regresses.
 
 The model decides when to edit, render again, or finish. A server-side
 `--render-budget` is enforced even when compilation fails. The tool server
@@ -400,6 +404,14 @@ Six stricter workflows isolate failures found by the first parrot trial:
   centerline, narrow root, off-center shoulder, varying width/thickness, and a
   tapered tip; capsules may support hidden roots but cannot remain visible as
   fingers, wires, vertical rails, or a decorative comb.
+- `sketchbook-artifact-lineage-v8` makes study selection and preservation
+  auditable. Each of three cumulative studies renders two qualified 3×2
+  passes with exact A–F source blocks. `rank_study` blindly ranks all twelve
+  cells, `record_study` extracts and locks the winning code and crop, and
+  `promote_study` requires a successful full-frame integration before the next
+  study. Later writes must retain and call locked blocks byte-for-byte, while
+  `restore_revision` and historical `submit_final(..., revision=N)` prevent a
+  late rewrite from silently replacing a stronger implementation or render.
 
 V5 is the strongest process experiment for repeated detail attached through a
 geometry hierarchy. It is generic: body→wing→feather can become
@@ -431,6 +443,31 @@ python agentic_shader_harness.py \
   --workflow sketchbook-composition-first-shaped-detail-v7 \
   --render-budget 10 \
   --min-successful-revisions 2 \
+  --judge-model "cli/codex:gpt-5.5:high"
+```
+
+V8 uses a separate selector model and needs at least eleven render calls for
+six study passes, three promotions, and two final renders:
+
+```bash
+python agentic_shader_harness.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --problem reproduce_image_andrew_pons \
+  --prompt-profile domain-expert-v2 \
+  --workflow sketchbook-artifact-lineage-v8 \
+  --render-budget 12 \
+  --min-successful-revisions 2 \
+  --study-selector-model "cli/codex:gpt-5.5:high" \
+  --judge-model "cli/codex:gpt-5.5:high"
+```
+
+If the outer model session disconnects, resume the same v8 checkpoint without
+regenerating completed studies or spending their render calls again:
+
+```bash
+python agentic_shader_harness.py \
+  --resume-run RUN_DIRECTORY_NAME \
+  --study-selector-model "cli/codex:gpt-5.5:high" \
   --judge-model "cli/codex:gpt-5.5:high"
 ```
 

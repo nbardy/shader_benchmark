@@ -28,7 +28,7 @@ from prompt_profiles import (
 from test_runner import TestRunner
 
 
-PROTOCOL = "persistent-agent-render-tools-v7"
+PROTOCOL = "persistent-agent-render-tools-v8"
 STANDARD_WORKFLOW = "standard"
 SKETCHBOOK_WORKFLOW = "sketchbook-3x2-v1"
 CURVED_ELEMENT_SKETCHBOOK_WORKFLOW = "sketchbook-curved-elements-v2"
@@ -41,6 +41,7 @@ COMPOSITION_FIRST_HIERARCHY_WORKFLOW = (
 COMPOSITION_FIRST_SHAPED_DETAIL_WORKFLOW = (
     "sketchbook-composition-first-shaped-detail-v7"
 )
+ARTIFACT_LINEAGE_WORKFLOW = "sketchbook-artifact-lineage-v8"
 SKETCHBOOK_WORKFLOWS = (
     SKETCHBOOK_WORKFLOW,
     CURVED_ELEMENT_SKETCHBOOK_WORKFLOW,
@@ -49,11 +50,15 @@ SKETCHBOOK_WORKFLOWS = (
     HIERARCHICAL_WIDE_SEARCH_WORKFLOW,
     COMPOSITION_FIRST_HIERARCHY_WORKFLOW,
     COMPOSITION_FIRST_SHAPED_DETAIL_WORKFLOW,
+    ARTIFACT_LINEAGE_WORKFLOW,
 )
 MCP_TOOLS = (
     "write_shader",
     "render_shader",
+    "rank_study",
     "record_study",
+    "promote_study",
+    "restore_revision",
     "submit_final",
 )
 
@@ -64,6 +69,7 @@ def workflow_requires_variant_inventory(workflow: str) -> bool:
         CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
         PROGRESSIVE_APPLICATION_WORKFLOW,
         HIERARCHICAL_WIDE_SEARCH_WORKFLOW,
+        ARTIFACT_LINEAGE_WORKFLOW,
     }
 
 
@@ -646,6 +652,116 @@ primitive.
         if workflow == COMPOSITION_FIRST_SHAPED_DETAIL_WORKFLOW
         else ""
     )
+    artifact_lineage_contract = (
+        r"""
+
+BLINDED SELECTION + EXECUTABLE ARTIFACT LINEAGE V8
+==================================================
+
+This workflow fixes a measured failure in earlier sketchbooks: the model could
+render an excellent candidate, self-select a weaker cell, summarize the choice
+only in prose, and later redraw a lower-fidelity approximation. Here, selection
+and preservation are server-owned, auditable operations.
+
+THREE CUMULATIVE STUDIES
+------------------------
+
+1. SIGNATURE MACRO FORM
+   Resolve the target's root silhouette, pose, major masses, characteristic
+   bends/twists, carved negative spaces, hard-versus-soft edge language, and
+   focal anatomy. Do not add a generic oval merely to make future attachment
+   convenient. A hooked subtraction or asymmetric swept form may be more
+   faithful than a collection of smooth positive ellipsoids.
+
+2. PARENT-ATTACHED SECONDARY SYSTEM
+   Keep the exact Study-1 artifact and vary the important shell, appendage,
+   branch, layer, or other secondary system in final-image context. Its origin,
+   axes, width, curvature, and boundary must derive from the parent geometry.
+   Test actual dependency, intersection, subtraction, overlap, and shell
+   conformance—not a second absolute-position volume placed nearby.
+
+3. SURFACE TREATMENT + ART DIRECTION
+   Keep both prior artifacts and vary the identity-carrying local units,
+   distribution, material, palette, lighting, and transitions. When repeated
+   units are appropriate, derive roots from a real parent surface P(u,v), use
+   its T/B/N frame, move overlap depth along N, and vary shape/flow coherently
+   in the surface domain. Avoid constant-z grids, detached batches, fingers,
+   broad armor plates, and regular patterns disguised only by color noise.
+
+For every study, render TWO qualified 3×2 passes:
+
+- Pass 1 is a broad but plausible visual survey. Six candidates must differ in
+  useful construction or form language, while every cell still clears a basic
+  reference-fidelity floor.
+- Inspect Pass 1. Pass 2 may refine, hybridize, or replace its strongest ideas,
+  but must remain materially different. Do not invent obviously invalid
+  topology merely to maximize pixel MAE. Diversity is a duplicate guard, not
+  the artistic objective.
+- Every cell shows the cumulative target in the same final portrait context,
+  camera, and scale. Vary only the current study's subsystem.
+
+EXACT A-F ARTIFACT BLOCKS
+-------------------------
+
+Every study shader must contain exactly six reusable blocks using this literal
+syntax (shown for Study 1 A):
+
+    // @shaderbench-artifact-begin id=study_1_A entry=artifact_s1_a
+    fn artifact_s1_a(...) -> ... {
+        ...
+    }
+    // @shaderbench-artifact-end id=study_1_A
+
+Use study_N_A through study_N_F and unique entry symbols. Put the complete
+candidate-specific dependency closure—its functions and constants—inside that
+one block. Only truly generic shared ABI/math helpers may live outside. The
+atlas dispatcher must call every entry outside its block. Keep the same
+signature across A-F for one study.
+
+After both passes:
+
+1. Call rank_study(study_index=N). It sends the reference and a deterministically
+   shuffled, opaque contact sheet of all 12 qualified cells to a fresh isolated
+   selector. The selector sees no generator rationale, code, pass labels,
+   treatment name, or future implementation convenience.
+2. Call record_study with exactly the selector's winning variant and render
+   call. The server extracts the historical block and image cell itself,
+   materializes both with hashes, and locks the exact block. The selector's
+   evidence—not a post-hoc generator rationale—is the recorded decision.
+3. Rewrite the winner into a full-frame cumulative scene. Include the selected
+   marker block byte-for-byte and call its entry. Render with
+   render_shader(stage="promotion", study_index=N).
+4. Inspect that promotion against the reference and the prior champion. If the
+   selected mechanism is good but its integration is poor, revise only unlocked
+   composition code and rerender promotion. Then call promote_study with
+   concrete visible evidence. The next study remains blocked until promotion.
+
+After selection, write_shader rejects any rewrite that deletes, edits, or stops
+calling a locked artifact. To avoid manually retranscribing a long selected
+block, put this server-owned placeholder at top-level in a later complete
+shader:
+
+    // @shaderbench-inject id=study_1_A
+
+Use the actual selected ID. write_shader replaces each single valid placeholder
+with the byte-identical locked source before hashing, saving, and validating
+the shader. You must still call its entry outside the injected block. Later
+studies add new exact artifacts around the old ones; they do not semantically
+rewrite old achievements from prose.
+
+FINAL REGRESSION CONTROL
+------------------------
+
+Render at least two distinct final revisions. Compare all successful finals.
+submit_final(summary, revision=N) may submit an earlier successful FINAL
+revision when the newest rewrite regresses. restore_revision(revision, reason)
+can branch the working head from exact historical source without spending a
+render, but it cannot restore a version that violates current artifact locks.
+The last revision is not automatically the best revision.
+"""
+        if workflow == ARTIFACT_LINEAGE_WORKFLOW
+        else ""
+    )
     return f"""\
 {profiled_prompt.rstrip()}
 
@@ -662,11 +778,17 @@ You have exactly these benchmark tools:
 - render_shader(stage, study_index, variation_manifest): compile and render the
   current revision, returning compiler feedback, local study-diversity
   measurements, and the actual rendered image;
+- rank_study(study_index): when required, blind-rank every qualified A-F cell
+  with an isolated visual selector;
 - record_study(study_index, subject, selected_variant, selection_rationale,
-  handoff_requirements, variant_inventory): preserve public visual-study
-  evidence, the A–F construction inventory, and its exact implementation
-  handoff;
-- submit_final(summary): freeze the current successfully rendered revision.
+  handoff_requirements, variant_inventory, selected_render_call): preserve
+  public visual-study evidence and, when required, materialize the exact
+  selected code/image artifact;
+- promote_study(study_index, integration_evidence): freeze a successful
+  full-frame use of an exact selected artifact;
+- restore_revision(revision, reason): branch from immutable historical source;
+- submit_final(summary, revision): freeze any successfully rendered FINAL
+  revision, including an earlier one when the newest regresses.
 {sketchbook_contract}
 {curved_element_contract}
 {continuous_element_contract}
@@ -674,6 +796,7 @@ You have exactly these benchmark tools:
 {hierarchical_wide_search_contract}
 {composition_first_hierarchy_contract}
 {shaped_detail_contract}
+{artifact_lineage_contract}
 
 Workflow requirements:
 1. Study the reference and plan a strong procedural reconstruction.
@@ -688,9 +811,9 @@ Workflow requirements:
 5. Preserve successful features and avoid blind rewrites. You may return to an
    earlier idea because this is one persistent session and your prior tool
    calls remain in context.
-6. Call submit_final only when the current exact revision has rendered
-   successfully. The harness treats a chat response without submit_final as a
-   failed run.
+6. Call submit_final only for an exact revision that rendered successfully at
+   the final stage. The harness treats a chat response without submit_final as
+   a failed run.
 
 You must produce at least {min_successful_revisions} distinct successfully
 rendered FINAL revisions before submitting. The {required_studies} required
@@ -723,6 +846,13 @@ def build_codex_command(
     require_variant_inventory: bool,
     min_successful_study_renders: int,
     require_study_diversity: bool,
+    require_artifact_blocks: bool,
+    require_study_selector: bool,
+    require_study_promotions: bool,
+    selector_model: str,
+    selector_effort: str,
+    resume_existing: bool,
+    context_images: tuple[Path, ...],
     trace_path: Path,
     last_message_path: Path,
 ) -> list[str]:
@@ -755,6 +885,8 @@ def build_codex_command(
         command.extend(["--model", model])
     if reference_image:
         command.extend(["--image", str(reference_image)])
+    for context_image in context_images:
+        command.extend(["--image", str(context_image)])
     if effort:
         command.extend(["--config", f"reasoning_effort={_json_config(effort)}"])
 
@@ -774,7 +906,7 @@ def build_codex_command(
         "mcp_servers.shader_tools.cwd": str(workspace),
         "mcp_servers.shader_tools.required": True,
         "mcp_servers.shader_tools.startup_timeout_sec": 30,
-        "mcp_servers.shader_tools.tool_timeout_sec": 180,
+        "mcp_servers.shader_tools.tool_timeout_sec": 300,
         "mcp_servers.shader_tools.enabled_tools": list(MCP_TOOLS),
         "mcp_servers.shader_tools.default_tools_approval_mode": "approve",
         "mcp_servers.shader_tools.env.SHADER_AGENT_WORKSPACE": str(workspace),
@@ -798,7 +930,29 @@ def build_codex_command(
         "mcp_servers.shader_tools.env.SHADER_AGENT_REQUIRE_STUDY_DIVERSITY": (
             "1" if require_study_diversity else "0"
         ),
+        "mcp_servers.shader_tools.env.SHADER_AGENT_REQUIRE_ARTIFACT_BLOCKS": (
+            "1" if require_artifact_blocks else "0"
+        ),
+        "mcp_servers.shader_tools.env.SHADER_AGENT_REQUIRE_STUDY_SELECTOR": (
+            "1" if require_study_selector else "0"
+        ),
+        "mcp_servers.shader_tools.env.SHADER_AGENT_REQUIRE_STUDY_PROMOTIONS": (
+            "1" if require_study_promotions else "0"
+        ),
+        "mcp_servers.shader_tools.env.SHADER_AGENT_SELECTOR_MODEL": (
+            selector_model
+        ),
+        "mcp_servers.shader_tools.env.SHADER_AGENT_SELECTOR_EFFORT": (
+            selector_effort
+        ),
+        "mcp_servers.shader_tools.env.SHADER_AGENT_RESUME_EXISTING": (
+            "1" if resume_existing else "0"
+        ),
     }
+    if reference_image is not None:
+        configs[
+            "mcp_servers.shader_tools.env.SHADER_AGENT_REFERENCE_IMAGE"
+        ] = str(reference_image)
     for key, value in configs.items():
         command.extend(["--config", f"{key}={_json_config(value)}"])
     command.append("-")
@@ -828,6 +982,31 @@ def _copy_workspace(workspace: Path, output_dir: Path) -> None:
             shutil.copytree(child, target, dirs_exist_ok=True)
         else:
             shutil.copy2(child, target)
+    source_prefix = str(workspace)
+    target_prefix = str(output_dir)
+
+    def rebase(value: Any) -> Any:
+        if isinstance(value, str) and value.startswith(source_prefix):
+            return target_prefix + value[len(source_prefix) :]
+        if isinstance(value, list):
+            return [rebase(item) for item in value]
+        if isinstance(value, dict):
+            return {key: rebase(item) for key, item in value.items()}
+        return value
+
+    json_paths = [
+        output_dir / "agent_state.json",
+        output_dir / "submission.json",
+        *(output_dir / "artifacts").glob("*/manifest.json"),
+    ]
+    for json_path in json_paths:
+        if not json_path.is_file():
+            continue
+        payload = json.loads(json_path.read_text(encoding="utf-8"))
+        json_path.write_text(
+            json.dumps(rebase(payload), indent=2),
+            encoding="utf-8",
+        )
 
 
 def _agentic_isolation_metadata() -> dict[str, Any]:
@@ -841,6 +1020,9 @@ def _agentic_isolation_metadata() -> dict[str, Any]:
             "codex_sandbox": "read-only",
             "mcp_server_mutations": "one temporary shader workspace only",
             "study_records_are_public_decision_evidence": True,
+            "optional_blinded_selector_is_fresh_and_read_only": True,
+            "artifact_lineage_is_exact_source_hashed": True,
+            "historical_final_submission_supported": True,
         }
     )
     return metadata
@@ -977,7 +1159,12 @@ def _render_report(
                             f" · render {render_call}"
                         )
                         if stage == "study"
-                        else f"Final render {render_call}"
+                        else (
+                            f"Study {study_index} promotion · render "
+                            f"{render_call}"
+                            if stage == "promotion"
+                            else f"Final render {render_call}"
+                        )
                     )
                     + f" · revision {event['revision']}",
                     output_dir / "renders" / f"render_{render_call:02d}.png",
@@ -992,6 +1179,39 @@ def _render_report(
                             else ""
                         )
                     ),
+                )
+            )
+    for index, record in sorted(
+        (state.get("study_records") or {}).items(),
+        key=lambda item: int(item[0]),
+    ):
+        artifact_id = record.get("artifact_id")
+        if not artifact_id:
+            continue
+        crop = output_dir / "artifacts" / str(artifact_id) / "selected.png"
+        panels.append(
+            (
+                (
+                    f"Study {record.get('study_index', index)} selected "
+                    f"artifact {record.get('selected_variant', '')}"
+                ),
+                crop,
+                (
+                    f"{record.get('selected_by', '')} · "
+                    f"render {record.get('render_call', '?')} · "
+                    f"SHA {str(record.get('sha256', ''))[:12]}"
+                ),
+            )
+        )
+        promotion = (
+            output_dir / "artifacts" / str(artifact_id) / "promotion.png"
+        )
+        if promotion.exists():
+            panels.append(
+                (
+                    f"Study {record.get('study_index', index)} promotion",
+                    promotion,
+                    "Exact selected artifact in cumulative full-frame context",
                 )
             )
     if (output_dir / "final_render.png").exists():
@@ -1021,8 +1241,22 @@ def _render_report(
             + html.escape(str(record.get("subject", "")))
             + "</strong> — selected "
             + html.escape(str(record.get("selected_variant", "")))
+            + (
+                " from render "
+                + html.escape(str(record.get("render_call", "")))
+                if record.get("render_call")
+                else ""
+            )
             + "<br>"
             + html.escape(str(record.get("selection_rationale", "")))
+            + (
+                "<br><em>Artifact:</em> "
+                + html.escape(str(record.get("artifact_id", "")))
+                + " · "
+                + html.escape(str(record.get("sha256", ""))[:16])
+                if record.get("artifact_id")
+                else ""
+            )
             + (
                 "<br><em>Variants:</em> "
                 + html.escape(str(record.get("variant_inventory", "")))
@@ -1075,6 +1309,7 @@ async def run_agentic_shader(
     workflow: str,
     judge_model: str | None,
     run_id: str | None,
+    study_selector_model: str = "cli/codex:gpt-5.5:high",
 ) -> Path:
     if render_budget < 1:
         raise ValueError("render_budget must be at least 1")
@@ -1090,15 +1325,33 @@ async def run_agentic_shader(
         3
         if workflow == HIERARCHICAL_WIDE_SEARCH_WORKFLOW
         else 2
-        if workflow == PROGRESSIVE_APPLICATION_WORKFLOW
+        if workflow
+        in {
+            PROGRESSIVE_APPLICATION_WORKFLOW,
+            ARTIFACT_LINEAGE_WORKFLOW,
+        }
         else 1
     )
     require_study_diversity = workflow in {
         PROGRESSIVE_APPLICATION_WORKFLOW,
         HIERARCHICAL_WIDE_SEARCH_WORKFLOW,
+        ARTIFACT_LINEAGE_WORKFLOW,
     }
+    require_artifact_blocks = workflow == ARTIFACT_LINEAGE_WORKFLOW
+    require_study_selector = workflow == ARTIFACT_LINEAGE_WORKFLOW
+    require_study_promotions = workflow == ARTIFACT_LINEAGE_WORKFLOW
+    selector_tool, selector_model, selector_effort = parse_cli_spec(
+        study_selector_model
+    )
+    if require_study_selector and (
+        selector_tool != "codex" or not selector_model
+    ):
+        raise ValueError(
+            "artifact-lineage selection currently requires cli/codex"
+        )
     minimum_render_budget = (
         required_studies * min_successful_study_renders
+        + (required_studies if require_study_promotions else 0)
         + min_successful_revisions
     )
     if render_budget < minimum_render_budget:
@@ -1165,6 +1418,13 @@ async def run_agentic_shader(
             require_variant_inventory=require_variant_inventory,
             min_successful_study_renders=min_successful_study_renders,
             require_study_diversity=require_study_diversity,
+            require_artifact_blocks=require_artifact_blocks,
+            require_study_selector=require_study_selector,
+            require_study_promotions=require_study_promotions,
+            selector_model=selector_model or "gpt-5.5",
+            selector_effort=selector_effort or "high",
+            resume_existing=False,
+            context_images=(),
             trace_path=trace_path,
             last_message_path=last_message_path,
         )
@@ -1177,7 +1437,11 @@ async def run_agentic_shader(
             input=prompt,
             capture_output=True,
             text=True,
-            timeout=1800,
+            timeout=(
+                3600
+                if workflow == ARTIFACT_LINEAGE_WORKFLOW
+                else 1800
+            ),
             env=_base_env(),
             cwd=workspace,
         )
@@ -1207,6 +1471,10 @@ async def run_agentic_shader(
         "require_variant_inventory": require_variant_inventory,
         "min_successful_study_renders": min_successful_study_renders,
         "require_study_diversity": require_study_diversity,
+        "require_artifact_blocks": require_artifact_blocks,
+        "require_study_selector": require_study_selector,
+        "require_study_promotions": require_study_promotions,
+        "study_selector_model": study_selector_model,
         "codex_returncode": completed.returncode,
         "submitted": submitted,
         "state": state,
@@ -1245,6 +1513,208 @@ async def run_agentic_shader(
     return report
 
 
+async def resume_agentic_shader(
+    *,
+    run_id: str,
+    judge_model: str | None,
+    study_selector_model: str | None = None,
+) -> Path:
+    """Resume an interrupted v8 run without repeating completed studies."""
+    script_dir = Path(__file__).parent.resolve()
+    repo_root = script_dir.parent
+    output_dir = script_dir / "benchmark_run_output" / run_id
+    result_path = output_dir / "result.json"
+    state_path = output_dir / "agent_state.json"
+    if not result_path.is_file() or not state_path.is_file():
+        raise FileNotFoundError(f"resume run not found: {output_dir}")
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    if result.get("workflow") != ARTIFACT_LINEAGE_WORKFLOW:
+        raise ValueError("checkpoint resume currently supports v8 only")
+    if state.get("submitted") or (output_dir / "submission.json").exists():
+        return _render_report(
+            output_dir,
+            repo_root / "problems" / "base_set" / result["problem"],
+            result,
+        )
+
+    problem_path = (
+        repo_root / "problems" / "base_set" / result["problem"]
+    ).resolve()
+    renderer = (
+        repo_root / "shader_harness" / "target" / "release" / "shader-bench"
+    )
+    if not renderer.is_file():
+        raise FileNotFoundError("shader-bench release binary is unavailable")
+    selector_spec = (
+        study_selector_model
+        or result.get("study_selector_model")
+        or "cli/codex:gpt-5.5:high"
+    )
+    selector_tool, selector_model, selector_effort = parse_cli_spec(
+        selector_spec
+    )
+    if selector_tool != "codex" or not selector_model:
+        raise ValueError("v8 resume selector must use cli/codex")
+
+    shader_template = (output_dir / "shader.wgsl").read_text(
+        encoding="utf-8"
+    )
+    for artifact_id in sorted(state.get("locked_artifacts", {})):
+        artifact_source = (
+            output_dir / "artifacts" / artifact_id / "artifact.wgsl"
+        ).read_text(encoding="utf-8")
+        if artifact_source not in shader_template:
+            raise ValueError(
+                f"current shader is missing locked artifact {artifact_id}"
+            )
+        shader_template = shader_template.replace(
+            artifact_source,
+            f"// @shaderbench-inject id={artifact_id}\n",
+            1,
+        )
+    successful_finals = [
+        event
+        for event in state.get("events", [])
+        if event.get("type") == "render_shader"
+        and event.get("ok")
+        and event.get("stage") == "final"
+    ]
+    latest_final = successful_finals[-1] if successful_finals else None
+    context_images = (
+        (Path(latest_final["image"]),) if latest_final else ()
+    )
+    original_prompt = (output_dir / "agent_prompt.txt").read_text(
+        encoding="utf-8"
+    )
+    resume_prompt = f"""\
+{original_prompt.rstrip()}
+
+RESUME AFTER TRANSPORT INTERRUPTION
+===================================
+
+The prior persistent model connection ended because the network disconnected.
+This is a checkpoint continuation, not a new experiment. The server has loaded
+revision {state.get('revision')}, {state.get('render_calls')} used renders, and
+{state.get('remaining_renders')} remaining renders. Completed studies are
+{state.get('completed_studies')}; completed promotions are
+{state.get('completed_promotions')}. Do NOT regenerate, rerank, rerecord, or
+repromote them. Their exact artifacts remain locked server-side.
+
+There are {len(successful_finals)} successful final revisions, but the run
+requires {result.get('min_successful_revisions')} distinct successful finals.
+The second attached image is the latest final render. Compare it to the first
+attached reference, make one bounded whole-image improvement while preserving
+the locked artifacts, render another FINAL, inspect it, and submit the best
+successful final revision (which may be the earlier one). Use additional final
+renders only when a concrete improvement remains plausible.
+
+The editable current shader template follows. The injection placeholders are
+expanded by write_shader into byte-identical locked source. Keep each
+placeholder once and keep calling every artifact entry from live scene code.
+
+```wgsl
+{shader_template}
+```
+"""
+    attempts = list(result.get("resume_attempts", []))
+    attempt_number = len(attempts) + 1
+    staged_reference = output_dir / "reference.png"
+    shutil.copy2(problem_path / "reference.png", staged_reference)
+    trace_path = output_dir / f"agent_trace_resume_{attempt_number:02d}.jsonl"
+    stderr_path = output_dir / f"codex_resume_{attempt_number:02d}.stderr.txt"
+    last_message_path = (
+        output_dir / f"resume_last_message_{attempt_number:02d}.txt"
+    )
+    command = build_codex_command(
+        model_spec=result["model"],
+        workspace=output_dir,
+        reference_image=staged_reference,
+        server_script=script_dir / "shader_agent_mcp.py",
+        renderer=renderer,
+        render_budget=int(result["render_budget"]),
+        render_size=int(result["render_size"]),
+        min_successful_revisions=int(result["min_successful_revisions"]),
+        required_studies=int(result["required_studies"]),
+        require_variant_inventory=bool(result["require_variant_inventory"]),
+        min_successful_study_renders=int(
+            result["min_successful_study_renders"]
+        ),
+        require_study_diversity=bool(result["require_study_diversity"]),
+        require_artifact_blocks=bool(result["require_artifact_blocks"]),
+        require_study_selector=bool(result["require_study_selector"]),
+        require_study_promotions=bool(result["require_study_promotions"]),
+        selector_model=selector_model,
+        selector_effort=selector_effort or "high",
+        resume_existing=True,
+        context_images=context_images,
+        trace_path=trace_path,
+        last_message_path=last_message_path,
+    )
+    (output_dir / f"command_resume_{attempt_number:02d}.json").write_text(
+        json.dumps(command, indent=2), encoding="utf-8"
+    )
+    completed = await asyncio.to_thread(
+        subprocess.run,
+        command,
+        input=resume_prompt,
+        capture_output=True,
+        text=True,
+        timeout=1800,
+        env=_base_env(),
+        cwd=output_dir,
+    )
+    trace_path.write_text(completed.stdout or "", encoding="utf-8")
+    stderr_path.write_text(completed.stderr or "", encoding="utf-8")
+    staged_reference.unlink(missing_ok=True)
+
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    submitted = (output_dir / "submission.json").exists()
+    attempts.append(
+        {
+            "attempt": attempt_number,
+            "returncode": completed.returncode,
+            "trace": str(trace_path),
+            "stderr": str(stderr_path),
+            "submitted": submitted,
+        }
+    )
+    result["resume_attempts"] = attempts
+    result["latest_codex_returncode"] = completed.returncode
+    result["submitted"] = submitted
+    result["state"] = state
+    if completed.returncode != 0:
+        result["error"] = (
+            completed.stderr or completed.stdout or "Codex resume failed"
+        )[-8_000:]
+    else:
+        result.pop("error", None)
+    if submitted and judge_model:
+        result["render_judges"] = await _judge_render_sequence(
+            output_dir, problem_path, judge_model, state
+        )
+        submission = json.loads(
+            (output_dir / "submission.json").read_text(encoding="utf-8")
+        )
+        chosen_call = submission.get("render_call")
+        result["judge"] = next(
+            (
+                item
+                for item in result["render_judges"]
+                if item["render_call"] == chosen_call
+            ),
+            None,
+        )
+    report = _render_report(output_dir, problem_path, result)
+    result["report"] = str(report)
+    result_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+    if not submitted:
+        raise RuntimeError(
+            f"Resumed agent did not submit. Inspect {trace_path}"
+        )
+    return report
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
         description=(
@@ -1255,7 +1725,11 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument(
         "--model", default="cli/codex:gpt-5.6-sol:medium"
     )
-    parser.add_argument("--problem", required=True)
+    parser.add_argument("--problem")
+    parser.add_argument(
+        "--resume-run",
+        help="Resume an interrupted v8 run directory by run id.",
+    )
     parser.add_argument(
         "--prompt-profile",
         choices=prompt_profile_choices(),
@@ -1282,8 +1756,27 @@ def main(argv: list[str] | None = None) -> None:
     )
     parser.add_argument("--render-size", type=int, default=1024)
     parser.add_argument("--judge-model", default=None)
+    parser.add_argument(
+        "--study-selector-model",
+        default="cli/codex:gpt-5.5:high",
+        help=(
+            "Fresh isolated visual selector used by artifact-lineage-v8."
+        ),
+    )
     parser.add_argument("--run-id", default=None)
     args = parser.parse_args(argv)
+    if args.resume_run:
+        report = asyncio.run(
+            resume_agentic_shader(
+                run_id=args.resume_run,
+                judge_model=args.judge_model,
+                study_selector_model=args.study_selector_model,
+            )
+        )
+        print(f"Agentic report: {report}")
+        return
+    if not args.problem:
+        parser.error("--problem is required unless --resume-run is used")
     report = asyncio.run(
         run_agentic_shader(
             model=args.model,
@@ -1295,6 +1788,7 @@ def main(argv: list[str] | None = None) -> None:
             workflow=args.workflow,
             judge_model=args.judge_model,
             run_id=args.run_id,
+            study_selector_model=args.study_selector_model,
         )
     )
     print(f"Agentic report: {report}")

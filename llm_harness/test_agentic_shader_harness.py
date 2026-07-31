@@ -3,6 +3,7 @@ import unittest
 from pathlib import Path
 
 from agentic_shader_harness import (
+    ARTIFACT_LINEAGE_WORKFLOW,
     COMPOSITION_FIRST_HIERARCHY_WORKFLOW,
     COMPOSITION_FIRST_SHAPED_DETAIL_WORKFLOW,
     CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
@@ -181,6 +182,36 @@ class AgenticShaderHarnessTests(unittest.TestCase):
             3,
         )
 
+    def test_artifact_lineage_workflow_selects_promotes_and_locks_code(self):
+        prompt = build_agent_prompt(
+            "Draw the target.",
+            "baseline",
+            14,
+            min_successful_revisions=2,
+            workflow=ARTIFACT_LINEAGE_WORKFLOW,
+        )
+        self.assertIn(
+            "BLINDED SELECTION + EXECUTABLE ARTIFACT LINEAGE V8",
+            prompt,
+        )
+        self.assertIn("SIGNATURE MACRO FORM", prompt)
+        self.assertIn("PARENT-ATTACHED SECONDARY SYSTEM", prompt)
+        self.assertIn("SURFACE TREATMENT + ART DIRECTION", prompt)
+        self.assertIn("render TWO qualified 3×2 passes", prompt)
+        self.assertIn("@shaderbench-artifact-begin", prompt)
+        self.assertIn("rank_study(study_index=N)", prompt)
+        self.assertIn('stage="promotion"', prompt)
+        self.assertIn("byte-for-byte", prompt)
+        self.assertIn("@shaderbench-inject", prompt)
+        self.assertIn("submit_final(summary, revision=N)", prompt)
+        self.assertEqual(
+            workflow_required_studies(ARTIFACT_LINEAGE_WORKFLOW),
+            3,
+        )
+        self.assertTrue(
+            workflow_requires_variant_inventory(ARTIFACT_LINEAGE_WORKFLOW)
+        )
+
     def test_codex_command_is_isolated_and_tool_allowlisted(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -197,6 +228,13 @@ class AgenticShaderHarnessTests(unittest.TestCase):
                 require_variant_inventory=True,
                 min_successful_study_renders=2,
                 require_study_diversity=True,
+                require_artifact_blocks=True,
+                require_study_selector=True,
+                require_study_promotions=True,
+                selector_model="gpt-5.5",
+                selector_effort="high",
+                resume_existing=False,
+                context_images=(),
                 trace_path=root / "trace.jsonl",
                 last_message_path=root / "last.txt",
             )
@@ -212,6 +250,10 @@ class AgenticShaderHarnessTests(unittest.TestCase):
         self.assertIn("SHADER_AGENT_REQUIRE_VARIANT_INVENTORY", joined)
         self.assertIn("SHADER_AGENT_MIN_SUCCESSFUL_STUDY_RENDERS", joined)
         self.assertIn("SHADER_AGENT_REQUIRE_STUDY_DIVERSITY", joined)
+        self.assertIn("SHADER_AGENT_REQUIRE_ARTIFACT_BLOCKS", joined)
+        self.assertIn("SHADER_AGENT_REQUIRE_STUDY_SELECTOR", joined)
+        self.assertIn("SHADER_AGENT_REQUIRE_STUDY_PROMOTIONS", joined)
+        self.assertIn("SHADER_AGENT_REFERENCE_IMAGE", joined)
 
 
 if __name__ == "__main__":

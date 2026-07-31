@@ -601,3 +601,98 @@ It should branch from the strongest whole-image implementation, keep its exact
 camera/anatomy/palette code available, and replace only the wing-unit function
 and distribution. That is closer to controlled program surgery than another
 fresh generative rollout.
+
+### V5 postmortem: the good intermediate forms were real
+
+A code-level replay changed the interpretation of v5. The user-preferred
+top-middle cells in Study-1 render 3 and Study-2 render 6 are both variant B,
+but the generator recorded F and C. Both B implementations create the important
+hooked negative space with an explicit subtraction; the recorded winners favor
+smoother positive volumes. A fresh isolated GPT-5.5-high selector, shown all 18
+cached cells for each topic in an opaque shuffled sheet, independently chose B
+for both studies. The attractive intermediate results were therefore not
+hindsight or screenshot ambiguity. The process found them and selected against
+them.
+
+The selected code was then reduced to prose. `record_study` retained a letter,
+rationale, and handoff description, but no source range, symbol, or hash. Later
+shaders invented new helper implementations. Some equations survived, yet the
+visually decisive negative-space body did not. The final also had no rollback:
+its 313-point first final was overwritten by the submitted 309-point rewrite.
+
+This moved the next hypothesis away from "ask for even more variants." Search
+breadth was already producing useful forms. The missing infrastructure was
+independent selection, executable provenance, integration evidence, and a
+champion that survives regressions.
+
+### Artifact-lineage v8: preserve what the studies actually proved
+
+Run: `parrot_artifact_lineage_v8_sol_medium_20260731`
+
+V8 makes selection and handoff server-owned. Every A-F candidate is a callable
+marked WGSL block. After two study passes, `rank_study` sends all qualified
+cells to a fresh blinded selector. `record_study` extracts the historical
+winner's exact source and image crop, hashes it, and locks the bytes. A
+full-frame promotion must call that block before the next study begins. Later
+rewrites cannot delete, mutate, or strand the artifact as dead code. The server
+can inject the exact block through a placeholder, so preservation does not
+depend on model transcription. Historical revisions are restorable, and any
+successful final—not merely the newest—can be submitted.
+
+The first run selected Study-1 B, Study-2 B, and Study-3 E, with exact promotion
+renders for all three. After final revision 11 the model's network connection
+failed. Checkpoint resume reconstructed the same three locks, every historical
+render, the remaining budget, and the first final without regenerating any
+study. It produced revision 12 and submitted it with six of 18 calls still
+unused. This is evidence that the recovery mechanism works, not just a unit
+test.
+
+The two finals scored 270 and 308. Human inspection agrees that revision 12 is
+better, but neither is the artistic breakthrough. It has stronger contrast and
+recognizable parrot color masses, yet the face is a huge white oval, the beak is
+blocky, the crest resembles a mohawk, and the wing is covered by regular
+capsule columns. The exact-lineage mechanism worked: the final contains and
+calls the selected implementations. The candidate set itself was mediocre.
+
+That distinction matters. V8 prevents the harness from forgetting a good
+candidate, but it also faithfully preserves a local maximum. Its third fixed
+study combines unit morphology, wing-surface coordinates, packing, material,
+palette, lighting, and seam transitions into one selection. When all candidates
+use weak capsule-like units, the selector can only choose the least-bad bundle.
+
+### Next hypothesis: a self-growing study DAG
+
+The next generalization should let the first model pass decompose the reference
+into a directed dependency graph, then let evidence at each promoted node grow
+a bounded subgraph. This is stronger than a fixed ladder because the number and
+topology of hard questions are not known in advance. It should be a DAG of
+reusable artifacts with a local search tree inside each node—not a pure tree and
+not a prompt-only planning ritual.
+
+For example, a feather-distribution node depends jointly on a wing-surface
+artifact and a feather-unit artifact. Those parent studies can run in parallel;
+their sheet join cannot. A face/material branch can also progress independently.
+Each evaluator decision must be structured as accept, revise, expand, split, or
+reject, with visible residual evidence, a failed rubric item, explicit parent
+artifacts, expected information gain, and a bounded cost. Vague recursive
+"improve it" nodes are not allowed.
+
+For this run, Study 3 should have split into a swept varying-width feather unit,
+a wing-shell P(u,v) and T/B/N frame, an overlap/packing join, and a boundary/body
+transition check. A synthesis node could also retain different role winners—for
+example the best silhouette and the best coordinate frame—rather than forcing
+one scalar winner to erase the other.
+
+The DAG does not replace the v8 controls. The planner decides what to study; the
+blinded selector chooses among rendered candidates; exact artifact locks preserve
+code; promotions validate composition; join nodes expose cross-component
+regressions; and historical champions provide rollback. Parallel siblings need
+separate branch workspaces assembled from content-addressed parent artifacts,
+otherwise one mutable shader file silently collapses the graph back into a
+linear session.
+
+A first v9 experiment should remain bounded: roughly 24-30 renders, at most
+eight accepted nodes, depth three, no more than two children from one residual,
+and two final renders reserved. The goal is not to spend unlimited test-time
+compute. It is to spend the existing budget on the causal uncertainties that
+the rendered evidence actually reveals.
