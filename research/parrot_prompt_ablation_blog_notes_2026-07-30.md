@@ -696,3 +696,56 @@ eight accepted nodes, depth three, no more than two children from one residual,
 and two final renders reserved. The goal is not to spend unlimited test-time
 compute. It is to spend the existing budget on the causal uncertainties that
 the rendered evidence actually reveals.
+
+### Adaptive study DAG v9: infrastructure success, search-policy failure
+
+Run: `parrot_adaptive_study_dag_v9_sol_medium_20260731`
+
+The first implementation made the graph real server state: strict append-only
+nodes, stable study indexes, dependency readiness, pass counts by node mode,
+bounded growth, render/final reserves, exact checkpoint restoration, graph
+closure, node-specific blinded selection, and a report that exposes the whole
+decision trace. The run completed cleanly with 11 of 24 renders and two finals.
+
+Its final scores were 287 and 313; revision 15 was correctly selected over the
+regressed first final. The 313 vector was `[58, 70, 42, 95, 48]`. That is five
+points over v8's 308, but below v1's 332, v7's 338, and v6b's 345. Visually it
+is still the familiar smooth toy: large oval torso, oversized white face, blunt
+beak, a smooth wing shell, and a handful of capsule-like blue feathers.
+
+Most importantly, the graph never grew. Sol proposed only the serial chain
+`macro_form → feather_flow → scene_integration`. It described the macro result
+as too oval and the feathers as too smooth/sparse, but scored those residuals
+at 0.22 and 0.20 with expected information gain below 0.1—just inside the
+server's acceptance gate. All three nodes were accepted, so thirteen available
+renders were left unused. This is a clean negative result: a self-growing graph
+cannot be driven solely by self-critique from the same generator. The model can
+rationalize its local minimum instead of buying information.
+
+V9 also found an artifact-lineage loophole. All three selected hashes are
+present and called in the final, yet each locked block is only a three-line
+zero-argument function returning four constants. The actual geometry remains
+in mutable code outside the block. Hashes alone are not executable provenance;
+the server must enforce a typed coordinate/input ABI and capture the selected
+implementation's dependency closure. The post-run patch now rejects commented
+or unreachable entries, external mutable helpers/constants, missing parent
+calls, artifact-path/hash corruption on resume, duplicate final hashes, and
+agent/DAG ledger drift. The final hardening also follows ordered reaching
+definitions through fields, indices, aliases, and constructor lanes, rejecting
+overwritten or dead-component calls that only look live at the variable-name
+level. A separately compiled artifact module remains the stronger long-term
+boundary.
+
+The next version should change controls, not add another essay to the prompt:
+
+- use a fresh isolated promotion critic to enforce accept versus expand;
+- apply universal critical visual gates in addition to model-authored criteria;
+- retain the new live typed-input, closure, and executable-parent validation;
+- prevent integration nodes from introducing unstudied identity geometry;
+- retain the DAG, selector, budget reserve, and historical-final rollback;
+- add branch-local workspaces before claiming true parallel sibling search.
+
+The useful lesson is narrower than "DAGs do not work." The DAG correctly made
+the missing decision layer visible. It showed that the first bottleneck is who
+controls graph growth and what counts as an executable artifact—not the graph
+data structure itself.

@@ -3,19 +3,24 @@ import unittest
 from pathlib import Path
 
 from agentic_shader_harness import (
+    ADAPTIVE_STUDY_DAG_WORKFLOW,
     ARTIFACT_LINEAGE_WORKFLOW,
+    BASE_MCP_TOOLS,
     COMPOSITION_FIRST_HIERARCHY_WORKFLOW,
     COMPOSITION_FIRST_SHAPED_DETAIL_WORKFLOW,
     CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
     CURVED_ELEMENT_SKETCHBOOK_WORKFLOW,
     HIERARCHICAL_WIDE_SEARCH_WORKFLOW,
-    MCP_TOOLS,
+    GRAPH_MCP_TOOLS,
+    PROTOCOL_V8,
+    PROTOCOL_V9,
     PROGRESSIVE_APPLICATION_WORKFLOW,
     SKETCHBOOK_WORKFLOW,
     build_agent_prompt,
     build_codex_command,
     workflow_required_studies,
     workflow_requires_variant_inventory,
+    workflow_uses_study_dag,
 )
 
 
@@ -212,6 +217,25 @@ class AgenticShaderHarnessTests(unittest.TestCase):
             workflow_requires_variant_inventory(ARTIFACT_LINEAGE_WORKFLOW)
         )
 
+    def test_adaptive_dag_workflow_exposes_bounded_public_graph_contract(self):
+        prompt = build_agent_prompt(
+            "Draw the target.",
+            "baseline",
+            24,
+            min_successful_revisions=2,
+            workflow=ADAPTIVE_STUDY_DAG_WORKFLOW,
+        )
+        self.assertIn("SELF-GROWING STUDY DAG + EXACT ARTIFACTS V9", prompt)
+        self.assertIn("define_study_graph(graph_json, rationale)", prompt)
+        self.assertIn("begin_study_node(node_id)", prompt)
+        self.assertIn("evaluate_study_node", prompt)
+        self.assertIn("expand_study_graph", prompt)
+        self.assertIn("close_study_graph", prompt)
+        self.assertIn("parallel-ready", prompt)
+        self.assertIn("cumulative/augmenting", prompt)
+        self.assertEqual(workflow_required_studies(ADAPTIVE_STUDY_DAG_WORKFLOW), 0)
+        self.assertTrue(workflow_uses_study_dag(ADAPTIVE_STUDY_DAG_WORKFLOW))
+
     def test_codex_command_is_isolated_and_tool_allowlisted(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -233,6 +257,12 @@ class AgenticShaderHarnessTests(unittest.TestCase):
                 require_study_promotions=True,
                 selector_model="gpt-5.5",
                 selector_effort="high",
+                protocol=PROTOCOL_V8,
+                graph_enabled=False,
+                min_graph_nodes=3,
+                max_graph_nodes=8,
+                max_graph_depth=3,
+                final_render_reserve=2,
                 resume_existing=False,
                 context_images=(),
                 trace_path=root / "trace.jsonl",
@@ -243,8 +273,10 @@ class AgenticShaderHarnessTests(unittest.TestCase):
         self.assertIn("read-only", command)
         joined = "\n".join(command)
         self.assertIn("mcp_servers.shader_tools.enabled_tools", joined)
-        for tool_name in MCP_TOOLS:
+        for tool_name in BASE_MCP_TOOLS:
             self.assertIn(tool_name, joined)
+        for tool_name in GRAPH_MCP_TOOLS:
+            self.assertNotIn(f'"{tool_name}"', joined)
         self.assertIn("SHADER_AGENT_RENDER_BUDGET", joined)
         self.assertIn("SHADER_AGENT_REQUIRED_STUDIES", joined)
         self.assertIn("SHADER_AGENT_REQUIRE_VARIANT_INVENTORY", joined)
@@ -254,6 +286,48 @@ class AgenticShaderHarnessTests(unittest.TestCase):
         self.assertIn("SHADER_AGENT_REQUIRE_STUDY_SELECTOR", joined)
         self.assertIn("SHADER_AGENT_REQUIRE_STUDY_PROMOTIONS", joined)
         self.assertIn("SHADER_AGENT_REFERENCE_IMAGE", joined)
+
+    def test_codex_command_enables_graph_tools_and_v9_environment(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            command = build_codex_command(
+                model_spec="cli/codex:gpt-5.6-sol:medium",
+                workspace=root,
+                reference_image=root / "reference.png",
+                server_script=root / "server.py",
+                renderer=root / "renderer",
+                render_budget=24,
+                render_size=512,
+                min_successful_revisions=2,
+                required_studies=0,
+                require_variant_inventory=True,
+                min_successful_study_renders=1,
+                require_study_diversity=True,
+                require_artifact_blocks=True,
+                require_study_selector=True,
+                require_study_promotions=True,
+                selector_model="gpt-5.5",
+                selector_effort="high",
+                protocol=PROTOCOL_V9,
+                graph_enabled=True,
+                min_graph_nodes=3,
+                max_graph_nodes=8,
+                max_graph_depth=3,
+                final_render_reserve=2,
+                resume_existing=False,
+                context_images=(),
+                trace_path=root / "trace.jsonl",
+                last_message_path=root / "last.txt",
+            )
+        joined = "\n".join(command)
+        for tool_name in (*BASE_MCP_TOOLS, *GRAPH_MCP_TOOLS):
+            self.assertIn(tool_name, joined)
+        self.assertIn(PROTOCOL_V9, joined)
+        self.assertIn("SHADER_AGENT_GRAPH_ENABLED", joined)
+        self.assertIn("SHADER_AGENT_MIN_GRAPH_NODES", joined)
+        self.assertIn("SHADER_AGENT_MAX_GRAPH_NODES", joined)
+        self.assertIn("SHADER_AGENT_MAX_GRAPH_DEPTH", joined)
+        self.assertIn("SHADER_AGENT_FINAL_RENDER_RESERVE", joined)
 
 
 if __name__ == "__main__":

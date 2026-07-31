@@ -10,6 +10,7 @@ model-supplied paths are never accepted.
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import itertools
 import json
@@ -28,6 +29,8 @@ from mcp.server.fastmcp import FastMCP, Image
 from mcp.types import CallToolResult, TextContent
 from PIL import Image as PILImage
 from PIL import ImageChops, ImageDraw, ImageStat
+
+from study_dag import AdaptiveStudyDAG, StudyDAGError
 
 
 MAX_SHADER_BYTES = 512_000
@@ -53,10 +56,633 @@ ARTIFACT_INJECT_RE = re.compile(
 VARIANTS = ("A", "B", "C", "D", "E", "F")
 
 
+def _wgsl_lexical_code(source: str) -> tuple[str, list[bool]]:
+    """Blank WGSL comments while preserving offsets and mark block comments."""
+    code = list(source)
+    block_mask = [False] * len(source)
+    cursor = 0
+    block_depth = 0
+    line_comment = False
+    while cursor < len(source):
+        pair = source[cursor : cursor + 2]
+        if line_comment:
+            if source[cursor] == "\n":
+                line_comment = False
+            else:
+                code[cursor] = " "
+            cursor += 1
+            continue
+        if block_depth:
+            block_mask[cursor] = True
+            if source[cursor] != "\n":
+                code[cursor] = " "
+            if pair == "/*":
+                if cursor + 1 < len(source):
+                    block_mask[cursor + 1] = True
+                    code[cursor + 1] = " "
+                block_depth += 1
+                cursor += 2
+            elif pair == "*/":
+                if cursor + 1 < len(source):
+                    block_mask[cursor + 1] = True
+                    code[cursor + 1] = " "
+                block_depth -= 1
+                cursor += 2
+            else:
+                cursor += 1
+            continue
+        if pair == "//":
+            code[cursor] = " "
+            if cursor + 1 < len(source):
+                code[cursor + 1] = " "
+            line_comment = True
+            cursor += 2
+            continue
+        if pair == "/*":
+            block_mask[cursor] = True
+            code[cursor] = " "
+            if cursor + 1 < len(source):
+                block_mask[cursor + 1] = True
+                code[cursor + 1] = " "
+            block_depth = 1
+            cursor += 2
+            continue
+        cursor += 1
+    return "".join(code), block_mask
+
+
+def _blank_static_false_blocks(code: str) -> str:
+    """Simplify literal WGSL branches while preserving all source offsets."""
+    blanked = list(code)
+    if_pattern = re.compile(
+        r"\bif\s*(?:\(\s*)?(true|false)(?:\s*\))?\s*\{"
+    )
+
+    def block_end(body_start: int) -> int | None:
+        depth = 0
+        for index in range(body_start, len(blanked)):
+            if blanked[index] == "{":
+                depth += 1
+            elif blanked[index] == "}":
+                depth -= 1
+                if depth == 0:
+                    return index
+        return None
+
+    def erase(start: int, end: int) -> None:
+        for index in range(start, end):
+            if blanked[index] != "\n":
+                blanked[index] = " "
+
+    # Re-scan after each rewrite so nested literal branches are also reduced.
+    while True:
+        current = "".join(blanked)
+        match = if_pattern.search(current)
+        if match is None:
+            break
+        then_start = match.end() - 1
+        then_end = block_end(then_start)
+        if then_end is None:
+            break
+        else_match = re.match(r"\s*else\s*\{", current[then_end + 1 :])
+        else_header_start = then_end + 1
+        else_start = None
+        else_end = None
+        if else_match is not None:
+            else_start = else_header_start + else_match.end() - 1
+            else_end = block_end(else_start)
+        if match.group(1) == "true":
+            # Keep the taken body but flatten its braces; erase an untaken else.
+            erase(match.start(), then_start + 1)
+            erase(then_end, then_end + 1)
+            if else_end is not None:
+                erase(else_header_start, else_end + 1)
+        else:
+            erase(match.start(), then_end + 1)
+            if else_start is not None and else_end is not None:
+                # A false-if's else body is unconditional.
+                erase(else_header_start, else_start + 1)
+                erase(else_end, else_end + 1)
+
+    while_pattern = re.compile(
+        r"\bwhile\s*(?:\(\s*)?false(?:\s*\))?\s*\{"
+    )
+    search_from = 0
+    while True:
+        match = while_pattern.search("".join(blanked), search_from)
+        if match is None:
+            break
+        body_start = match.end() - 1
+        body_end = block_end(body_start)
+        if body_end is None:
+            break
+        erase(match.start(), body_end + 1)
+        search_from = body_end + 1
+    return "".join(blanked)
+
+
+WGSLValueRef = tuple[str, tuple[tuple[str, str], ...]]
+
+
+def _wgsl_access_path(accessor: str) -> tuple[tuple[str, str], ...]:
+    """Normalize a WGSL field/swizzle/index chain for dependency matching."""
+    path: list[tuple[str, str]] = []
+    for match in re.finditer(
+        r"\.([A-Za-z_][A-Za-z0-9_]*)|\[([^\]]+)\]",
+        accessor,
+    ):
+        if match.group(1) is not None:
+            path.append(("field", match.group(1)))
+            continue
+        index = re.sub(r"\s+", "", match.group(2) or "")
+        path.append(("index", index))
+    return tuple(path)
+
+
+def _wgsl_expression_refs(expression: str) -> set[WGSLValueRef]:
+    """Extract base identifiers with any directly attached access path."""
+    refs: set[WGSLValueRef] = set()
+    reference_pattern = re.compile(
+        r"\b([A-Za-z_][A-Za-z0-9_]*)"
+        r"((?:\s*(?:\.[A-Za-z_][A-Za-z0-9_]*|\[[^\]]+\]))*)"
+    )
+    for match in reference_pattern.finditer(expression):
+        # Do not treat a member name following a complex expression, such as
+        # ``make_value().x``, as an independent variable named ``x``.
+        if match.start() > 0 and expression[match.start() - 1] == ".":
+            continue
+        accessor = match.group(2)
+        refs.add((match.group(1), _wgsl_access_path(accessor)))
+        # An index expression also controls which value is read.
+        for index_match in re.finditer(r"\[([^\]]+)\]", accessor):
+            refs.update(_wgsl_expression_refs(index_match.group(1)))
+    return refs
+
+
+def _wgsl_split_arguments(arguments: str) -> list[str]:
+    """Split a compact WGSL call/constructor argument list at top-level commas."""
+    parts: list[str] = []
+    start = 0
+    stack: list[str] = []
+    pairs = {")": "(", "]": "[", "}": "{"}
+    for index, character in enumerate(arguments):
+        if character in "([{":
+            stack.append(character)
+        elif character in pairs and stack and stack[-1] == pairs[character]:
+            stack.pop()
+        elif character == "," and not stack:
+            parts.append(arguments[start:index].strip())
+            start = index + 1
+    parts.append(arguments[start:].strip())
+    return [part for part in parts if part]
+
+
+def _wgsl_matching_paren(expression: str, open_index: int) -> int | None:
+    depth = 0
+    for index in range(open_index, len(expression)):
+        if expression[index] == "(":
+            depth += 1
+        elif expression[index] == ")":
+            depth -= 1
+            if depth == 0:
+                return index
+    return None
+
+
+def _wgsl_projected_expression_refs(
+    expression: str,
+    requested_path: tuple[tuple[str, str], ...] = (),
+) -> set[WGSLValueRef]:
+    """Follow simple aliases and scalar lanes through vector/array constructors."""
+    expression = expression.strip()
+    if not expression:
+        return set()
+
+    # Parenthesized aggregate projection: ``(vec2(a, b)).x``.
+    if expression.startswith("("):
+        close = _wgsl_matching_paren(expression, 0)
+        if close is not None:
+            suffix = expression[close + 1 :].strip()
+            if close == len(expression) - 1:
+                return _wgsl_projected_expression_refs(
+                    expression[1:close],
+                    requested_path,
+                )
+            if re.fullmatch(
+                r"(?:\s*(?:\.[A-Za-z_][A-Za-z0-9_]*|\[[^\]]+\]))+",
+                suffix,
+            ):
+                return _wgsl_projected_expression_refs(
+                    expression[1:close],
+                    _wgsl_access_path(suffix) + requested_path,
+                )
+
+    simple_reference = re.fullmatch(
+        r"([A-Za-z_][A-Za-z0-9_]*)"
+        r"((?:\s*(?:\.[A-Za-z_][A-Za-z0-9_]*|\[[^\]]+\]))*)",
+        expression,
+    )
+    if simple_reference is not None:
+        return {
+            (
+                simple_reference.group(1),
+                _wgsl_access_path(simple_reference.group(2)) + requested_path,
+            )
+        }
+
+    constructor = re.match(
+        r"(vec([234])|array)\s*(?:<[^>]+>)?\s*\(",
+        expression,
+    )
+    if constructor is not None:
+        open_index = constructor.end() - 1
+        close = _wgsl_matching_paren(expression, open_index)
+        if close is not None:
+            suffix = expression[close + 1 :].strip()
+            if not suffix or re.fullmatch(
+                r"(?:\s*(?:\.[A-Za-z_][A-Za-z0-9_]*|\[[^\]]+\]))+",
+                suffix,
+            ):
+                projection = _wgsl_access_path(suffix) + requested_path
+                arguments = _wgsl_split_arguments(
+                    expression[open_index + 1 : close]
+                )
+                lane_count = (
+                    int(constructor.group(2))
+                    if constructor.group(2) is not None
+                    else len(arguments)
+                )
+                # Lane mapping is unambiguous only for scalar-per-lane forms.
+                if projection and len(arguments) == lane_count:
+                    kind, value = projection[0]
+                    selected: list[int] = []
+                    if kind == "field":
+                        aliases = {
+                            "x": 0,
+                            "r": 0,
+                            "y": 1,
+                            "g": 1,
+                            "z": 2,
+                            "b": 2,
+                            "w": 3,
+                            "a": 3,
+                        }
+                        if value and all(char in aliases for char in value):
+                            selected = [aliases[char] for char in value]
+                    else:
+                        index_match = re.fullmatch(r"(\d+)[iu]?", value)
+                        if index_match is not None:
+                            selected = [int(index_match.group(1))]
+                    if selected and all(index < len(arguments) for index in selected):
+                        refs: set[WGSLValueRef] = set()
+                        for index in selected:
+                            refs.update(
+                                _wgsl_projected_expression_refs(
+                                    arguments[index],
+                                    projection[1:],
+                                )
+                            )
+                        return refs
+                if not projection:
+                    refs: set[WGSLValueRef] = set()
+                    for argument in arguments:
+                        refs.update(_wgsl_projected_expression_refs(argument))
+                    return refs
+
+    # For arbitrary arithmetic/calls, every referenced operand may contribute.
+    return _wgsl_expression_refs(expression)
+
+
+def _wgsl_swizzle_components(field: str) -> set[str] | None:
+    """Return canonical vector components, or None for a struct field."""
+    aliases = {
+        "x": "x",
+        "y": "y",
+        "z": "z",
+        "w": "w",
+        "r": "x",
+        "g": "y",
+        "b": "z",
+        "a": "w",
+    }
+    if not field or any(character not in aliases for character in field):
+        return None
+    return {aliases[character] for character in field}
+
+
+def _wgsl_path_tokens_overlap(
+    left: tuple[str, str],
+    right: tuple[str, str],
+) -> bool:
+    if left[0] != right[0]:
+        return False
+    if left[0] == "index":
+        left_static = re.fullmatch(r"\d+[iu]?", left[1])
+        right_static = re.fullmatch(r"\d+[iu]?", right[1])
+        return not (left_static and right_static) or left[1] == right[1]
+    left_components = _wgsl_swizzle_components(left[1])
+    right_components = _wgsl_swizzle_components(right[1])
+    if left_components is None or right_components is None:
+        return left[1] == right[1]
+    return bool(left_components & right_components)
+
+
+def _wgsl_paths_overlap(
+    left: tuple[tuple[str, str], ...],
+    right: tuple[tuple[str, str], ...],
+) -> bool:
+    """Whether two aggregate access paths may address shared data."""
+    for left_token, right_token in zip(left, right):
+        if not _wgsl_path_tokens_overlap(left_token, right_token):
+            return False
+    # A whole aggregate and any of its descendants overlap.
+    return True
+
+
+def _wgsl_path_covers(
+    assigned: tuple[tuple[str, str], ...],
+    read: tuple[tuple[str, str], ...],
+) -> bool:
+    """Whether a plain assignment replaces every component of a read path."""
+    if len(assigned) > len(read):
+        return False
+    for assigned_token, read_token in zip(assigned, read):
+        if assigned_token[0] != read_token[0]:
+            return False
+        if assigned_token[0] == "index":
+            if assigned_token[1] != read_token[1]:
+                return False
+            continue
+        assigned_components = _wgsl_swizzle_components(assigned_token[1])
+        read_components = _wgsl_swizzle_components(read_token[1])
+        if assigned_components is None or read_components is None:
+            if assigned_token[1] != read_token[1]:
+                return False
+        elif not read_components <= assigned_components:
+            return False
+    return True
+
+
+def _wgsl_return_dependencies(body: str) -> set[str]:
+    """Trace return dataflow with ordered, conservative reaching definitions.
+
+    A simple union of every assignment lets dead values masquerade as live
+    dependencies: ``d = artifact(p); d = 1.0; return d`` must not credit the
+    artifact.  Walk definitions backwards from each return instead.  A plain
+    assignment kills an earlier value when it is in the return's lexical block
+    or an ancestor block.  Assignments in sibling/conditional blocks are
+    conservatively additive because that path may not execute.
+    """
+    body = _blank_static_false_blocks(body)
+
+    # Record the containing brace stack at every source offset.  Comparing
+    # stacks is more accurate than comparing depth: a definition in an
+    # ancestor block definitely reaches a nested return, while a definition in
+    # a completed sibling block may not.
+    block_paths: list[tuple[int, ...]] = [()] * (len(body) + 1)
+    block_stack: list[int] = []
+    for offset, character in enumerate(body):
+        block_paths[offset] = tuple(block_stack)
+        if character == "{":
+            block_stack.append(offset)
+        elif character == "}" and block_stack:
+            block_stack.pop()
+    block_paths[len(body)] = tuple(block_stack)
+
+    assignments: list[dict[str, Any]] = []
+    declaration_pattern = re.compile(
+        r"\b(?:let|var(?:\s*<[^>;]+>)?)\s+"
+        r"([A-Za-z_][A-Za-z0-9_]*)"
+        r"(?:\s*:\s*[^=;]+)?\s*=\s*([^;]+);",
+        re.DOTALL,
+    )
+    for match in declaration_pattern.finditer(body):
+        assignments.append(
+            {
+                "start": match.start(1),
+                "target": match.group(1),
+                "access_path": (),
+                "expression": match.group(2),
+                "kills_previous": True,
+                "path": block_paths[match.start(1)],
+            }
+        )
+    assignment_pattern = re.compile(
+        r"(?m)(?:^|(?<=[;{}]))\s*"
+        r"([A-Za-z_][A-Za-z0-9_]*)"
+        r"((?:\s*(?:\.[A-Za-z_][A-Za-z0-9_]*|\[[^\]]+\]))*)\s*"
+        r"(<<=|>>=|\+=|-=|\*=|/=|%=|&=|\|=|\^=|=(?!=))\s*"
+        r"([^;]+);",
+        re.DOTALL,
+    )
+    for match in assignment_pattern.finditer(body):
+        accessor = match.group(2).strip()
+        operator = match.group(3)
+        assignments.append(
+            {
+                "start": match.start(1),
+                "target": match.group(1),
+                "access_path": _wgsl_access_path(accessor),
+                "expression": match.group(4),
+                # A plain component write replaces that component, while the
+                # path-coverage check below preserves untouched aggregate data.
+                # Compound assignments still depend on the prior lvalue.
+                "kills_previous": operator == "=",
+                "path": block_paths[match.start(1)],
+            }
+        )
+    assignments.sort(key=lambda assignment: int(assignment["start"]))
+
+    dependencies: set[WGSLValueRef] = set()
+    return_pattern = re.compile(r"\breturn\s+([^;]+);", re.DOTALL)
+    for return_match in return_pattern.finditer(body):
+        return_dependencies = _wgsl_projected_expression_refs(
+            return_match.group(1)
+        )
+        return_path = block_paths[return_match.start()]
+        for assignment in reversed(assignments):
+            if int(assignment["start"]) >= return_match.start():
+                continue
+            target = str(assignment["target"])
+            access_path = tuple(assignment["access_path"])
+            affected = {
+                dependency
+                for dependency in return_dependencies
+                if dependency[0] == target
+                and _wgsl_paths_overlap(access_path, dependency[1])
+            }
+            if not affected:
+                continue
+            lexical_path = tuple(assignment["path"])
+            is_ancestor_path = (
+                len(lexical_path) <= len(return_path)
+                and return_path[: len(lexical_path)] == lexical_path
+            )
+            if bool(assignment["kills_previous"]) and is_ancestor_path:
+                for dependency in affected:
+                    if _wgsl_path_covers(access_path, dependency[1]):
+                        return_dependencies.discard(dependency)
+            rhs_requested_paths: set[tuple[tuple[str, str], ...]] = set()
+            for dependency in affected:
+                if _wgsl_path_covers(access_path, dependency[1]):
+                    rhs_requested_paths.add(dependency[1][len(access_path) :])
+                else:
+                    rhs_requested_paths.add(())
+            for requested_path in rhs_requested_paths:
+                return_dependencies.update(
+                    _wgsl_projected_expression_refs(
+                        str(assignment["expression"]),
+                        requested_path,
+                    )
+                )
+        dependencies.update(return_dependencies)
+    return {base for base, _ in dependencies}
+
+
+def _wgsl_functions(source: str) -> dict[str, dict[str, Any]]:
+    """Extract live function bodies and call tokens with a bounded lexer."""
+    code, _ = _wgsl_lexical_code(source)
+    functions: dict[str, dict[str, Any]] = {}
+    for match in re.finditer(r"\bfn\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(", code):
+        name = match.group(1)
+        body_start = code.find("{", match.end())
+        if body_start < 0:
+            continue
+        depth = 0
+        body_end = None
+        for index in range(body_start, len(code)):
+            if code[index] == "{":
+                depth += 1
+            elif code[index] == "}":
+                depth -= 1
+                if depth == 0:
+                    body_end = index
+                    break
+        if body_end is None:
+            continue
+        body = _blank_static_false_blocks(code[body_start + 1 : body_end])
+        functions[name] = {
+            "body": body,
+            "calls": set(
+                re.findall(r"\b([A-Za-z_][A-Za-z0-9_]*)\s*\(", body)
+            ),
+            "span": (match.start(), body_end + 1),
+        }
+    user_names = set(functions)
+    for record in functions.values():
+        dependencies = _wgsl_return_dependencies(str(record["body"]))
+        record["return_dependencies"] = dependencies
+        record["contributing_calls"] = dependencies & user_names
+    return functions
+
+
+def _reachable_wgsl_functions(
+    functions: dict[str, dict[str, Any]],
+    root: str,
+) -> set[str]:
+    """Return user-defined functions reachable from one live entry point."""
+    if root not in functions:
+        return set()
+    reachable: set[str] = set()
+    pending = [root]
+    while pending:
+        name = pending.pop()
+        if name in reachable or name not in functions:
+            continue
+        reachable.add(name)
+        pending.extend(functions[name]["contributing_calls"] & functions.keys())
+    return reachable
+
+
+def _wgsl_module_symbols(source: str) -> set[str]:
+    """Collect user-defined module values/types that an artifact could capture."""
+    code, _ = _wgsl_lexical_code(source)
+    symbols = set(
+        re.findall(
+            r"\b(?:const|override|alias|var(?:\s*<[^>]*>)?)\s+"
+            r"([A-Za-z_][A-Za-z0-9_]*)",
+            code,
+        )
+    )
+    symbols.update(
+        re.findall(r"\bstruct\s+([A-Za-z_][A-Za-z0-9_]*)", code)
+    )
+    return symbols
+
+
+def _artifact_dependency_errors(
+    shader_source: str,
+    block: dict[str, Any],
+    *,
+    allowed_external_entries: set[str] | None = None,
+    required_parent_entries: set[str] | None = None,
+    enforce_self_contained: bool = True,
+) -> list[str]:
+    """Require a live, self-contained artifact linked to declared parents."""
+    allowed = set(allowed_external_entries or ())
+    required = set(required_parent_entries or ())
+    entry_symbol = str(block["entry_symbol"])
+    all_functions = _wgsl_functions(shader_source)
+    block_functions = _wgsl_functions(str(block["source"]))
+    errors: list[str] = []
+    if entry_symbol not in block_functions:
+        return [
+            f"{block['artifact_id']} entry {entry_symbol} has no live definition"
+        ]
+    reachable_from_entry = _reachable_wgsl_functions(all_functions, entry_symbol)
+    live_from_fragment = _reachable_wgsl_functions(all_functions, "fs_main")
+    if entry_symbol not in live_from_fragment:
+        errors.append(
+            f"{block['artifact_id']} entry {entry_symbol} is not reachable from fs_main"
+        )
+
+    internal_names = set(block_functions)
+    relevant_internal = _reachable_wgsl_functions(block_functions, entry_symbol)
+    external_calls: set[str] = set()
+    for name in relevant_internal:
+        external_calls.update(
+            block_functions[name]["calls"] & (all_functions.keys() - internal_names)
+        )
+    unexpected_calls = external_calls - allowed
+    if enforce_self_contained and unexpected_calls:
+        errors.append(
+            f"{block['artifact_id']} calls mutable helpers outside its block: "
+            + ", ".join(sorted(unexpected_calls))
+        )
+
+    missing_parents = required - reachable_from_entry
+    if missing_parents:
+        errors.append(
+            f"{block['artifact_id']} does not call required parent artifacts: "
+            + ", ".join(sorted(missing_parents))
+        )
+
+    if enforce_self_contained:
+        external_symbols = _wgsl_module_symbols(
+            shader_source
+        ) - _wgsl_module_symbols(str(block["source"]))
+        block_code, _ = _wgsl_lexical_code(str(block["source"]))
+        captured = {
+            symbol
+            for symbol in external_symbols
+            if re.search(rf"\b{re.escape(symbol)}\b", block_code)
+        }
+        if captured:
+            errors.append(
+                f"{block['artifact_id']} captures mutable module symbols outside "
+                "its block: " + ", ".join(sorted(captured))
+            )
+    return errors
+
+
 def _extract_artifact_blocks(shader_source: str) -> dict[str, dict[str, Any]]:
     """Extract exact, server-addressable study candidate blocks."""
     blocks: dict[str, dict[str, Any]] = {}
+    _, block_mask = _wgsl_lexical_code(shader_source)
     for match in ARTIFACT_MARKER_RE.finditer(shader_source):
+        end_offset = match.group(0).rfind("// @shaderbench-artifact-end")
+        if block_mask[match.start()] or block_mask[match.start() + end_offset]:
+            continue
         artifact_id = match.group(1)
         if artifact_id in blocks:
             raise ValueError(f"duplicate artifact block: {artifact_id}")
@@ -72,9 +698,61 @@ def _extract_artifact_blocks(shader_source: str) -> dict[str, dict[str, Any]]:
     return blocks
 
 
+def _artifact_entry_input_errors(block: dict[str, Any]) -> list[str]:
+    """Reject marker tokens that do not lock input-dependent implementation."""
+    source, _ = _wgsl_lexical_code(str(block["source"]))
+    entry_symbol = str(block["entry_symbol"])
+    signature = re.search(
+        rf"\bfn\s+{re.escape(entry_symbol)}\s*\((.*?)\)"
+        rf"\s*(?:->[^{{]+)?\{{",
+        source,
+        re.DOTALL,
+    )
+    if signature is None:
+        return [f"{block['artifact_id']} entry function is not defined in its block"]
+    parameter_text = signature.group(1).strip()
+    if not parameter_text:
+        return [
+            f"{block['artifact_id']} entry must accept scene coordinates or "
+            "another typed parent input; constant parameter tokens are not artifacts"
+        ]
+    parameter_names = re.findall(
+        r"(?:^|,)\s*(?:@[A-Za-z_][A-Za-z0-9_]*(?:\([^)]*\))?\s*)*"
+        r"([A-Za-z_][A-Za-z0-9_]*)\s*:",
+        parameter_text,
+    )
+    if not parameter_names:
+        return [f"{block['artifact_id']} entry parameters could not be validated"]
+    body_start = signature.end() - 1
+    depth = 0
+    body_end = None
+    for index in range(body_start, len(source)):
+        if source[index] == "{":
+            depth += 1
+        elif source[index] == "}":
+            depth -= 1
+            if depth == 0:
+                body_end = index
+                break
+    if body_end is None:
+        return [f"{block['artifact_id']} entry function body is malformed"]
+    executable_body = source[body_start + 1 : body_end]
+    return_dependencies = _wgsl_return_dependencies(executable_body)
+    if not any(name in return_dependencies for name in parameter_names):
+        return [
+            f"{block['artifact_id']} entry output does not consume any declared input; "
+            "lock the candidate implementation, not only constants"
+        ]
+    return []
+
+
 def _artifact_manifest_errors(
     shader_source: str,
     study_index: int,
+    *,
+    allowed_external_entries: set[str] | None = None,
+    required_parent_entries: set[str] | None = None,
+    enforce_self_contained: bool = True,
 ) -> list[str]:
     """Require one uniquely marked, callable implementation for every A-F cell."""
     errors: list[str] = []
@@ -82,8 +760,15 @@ def _artifact_manifest_errors(
         blocks = _extract_artifact_blocks(shader_source)
     except ValueError as error:
         return [str(error)]
-    begin_count = len(ARTIFACT_BEGIN_RE.findall(shader_source))
-    end_count = len(ARTIFACT_END_RE.findall(shader_source))
+    _, block_mask = _wgsl_lexical_code(shader_source)
+    begin_count = sum(
+        not block_mask[match.start()]
+        for match in ARTIFACT_BEGIN_RE.finditer(shader_source)
+    )
+    end_count = sum(
+        not block_mask[match.start()]
+        for match in ARTIFACT_END_RE.finditer(shader_source)
+    )
     if begin_count != end_count or begin_count != len(blocks):
         errors.append(
             "artifact markers are malformed, nested, duplicated, or unmatched"
@@ -106,14 +791,16 @@ def _artifact_manifest_errors(
         errors.append("A-F entry symbols must be unique")
     for artifact_id in sorted(expected & present):
         block = blocks[artifact_id]
-        outside = shader_source.replace(block["source"], "", 1)
-        if not re.search(
-            rf"\b{re.escape(block['entry_symbol'])}\s*\(",
-            outside,
-        ):
-            errors.append(
-                f"{artifact_id} entry {block['entry_symbol']} is never called"
+        errors.extend(_artifact_entry_input_errors(block))
+        errors.extend(
+            _artifact_dependency_errors(
+                shader_source,
+                block,
+                allowed_external_entries=allowed_external_entries,
+                required_parent_entries=required_parent_entries,
+                enforce_self_contained=enforce_self_contained,
             )
+        )
     return errors
 
 
@@ -317,6 +1004,12 @@ class ShaderAgentState:
     selector_effort: str = "high"
     selector_runner: Any | None = field(default=None, repr=False)
     resume_existing: bool = False
+    protocol: str = "persistent-agent-render-tools-v8"
+    graph_enabled: bool = False
+    min_graph_nodes: int = 3
+    max_graph_nodes: int = 8
+    max_graph_depth: int = 3
+    final_render_reserve: int = 2
     revision: int = 0
     render_calls: int = 0
     submitted: bool = False
@@ -345,12 +1038,26 @@ class ShaderAgentState:
     study_records: dict[int, dict[str, Any]] = field(default_factory=dict)
     promotion_records: dict[int, dict[str, Any]] = field(default_factory=dict)
     locked_artifacts: dict[str, dict[str, Any]] = field(default_factory=dict)
+    study_dag: AdaptiveStudyDAG | None = field(default=None, init=False)
+    node_evaluations: dict[str, list[dict[str, Any]]] = field(
+        default_factory=dict
+    )
+    graph_growth_events: list[dict[str, Any]] = field(default_factory=list)
     attempted_revisions: set[int] = field(default_factory=set)
     events: list[dict[str, Any]] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         self.workspace = self.workspace.resolve()
         self.renderer = self.renderer.resolve()
+        if self.protocol not in {
+            "persistent-agent-render-tools-v8",
+            "persistent-agent-render-tools-v9",
+        }:
+            raise ValueError("unsupported shader-agent protocol")
+        if self.graph_enabled and self.protocol != "persistent-agent-render-tools-v9":
+            raise ValueError("adaptive study graphs require the v9 protocol")
+        if not self.graph_enabled and self.protocol == "persistent-agent-render-tools-v9":
+            raise ValueError("the v9 protocol requires adaptive graph mode")
         if self.reference_image is not None:
             self.reference_image = self.reference_image.resolve()
         if self.render_budget < 1:
@@ -361,10 +1068,21 @@ class ShaderAgentState:
             )
         if not 0 <= self.required_studies <= 8:
             raise ValueError("required_studies must be between 0 and 8")
+        if self.graph_enabled and self.required_studies != 0:
+            raise ValueError("adaptive graph mode owns studies; required_studies must be 0")
+        if (
+            self.graph_enabled
+            and self.final_render_reserve < self.min_successful_revisions
+        ):
+            raise ValueError(
+                "final_render_reserve must cover min_successful_revisions"
+            )
         if self.min_successful_study_renders < 1:
             raise ValueError("min_successful_study_renders must be at least 1")
         minimum_budget = (
-            self.required_studies * self.min_successful_study_renders
+            self.min_successful_revisions
+            if self.graph_enabled
+            else self.required_studies * self.min_successful_study_renders
             + (
                 self.required_studies
                 if self.require_study_promotions
@@ -400,6 +1118,14 @@ class ShaderAgentState:
                 )
             self._load_checkpoint()
         else:
+            if self.graph_enabled:
+                self.study_dag = AdaptiveStudyDAG(
+                    min_initial_nodes=self.min_graph_nodes,
+                    max_nodes=self.max_graph_nodes,
+                    max_depth=self.max_graph_depth,
+                    render_budget=self.render_budget,
+                    final_render_reserve=self.final_render_reserve,
+                )
             self._persist()
 
     @property
@@ -410,6 +1136,40 @@ class ShaderAgentState:
     def state_path(self) -> Path:
         return self.workspace / "agent_state.json"
 
+    def _checkpoint_owned_file(
+        self,
+        raw_path: object,
+        expected_path: Path,
+        label: str,
+    ) -> Path:
+        """Resolve one persisted server file without trusting checkpoint paths."""
+        if not isinstance(raw_path, str) or not raw_path:
+            raise ValueError(f"checkpoint {label} path must be a non-empty string")
+        supplied = Path(raw_path)
+        if not supplied.is_absolute():
+            raise ValueError(f"checkpoint {label} path must be absolute")
+        expected = expected_path.absolute()
+        try:
+            relative = expected.relative_to(self.workspace)
+        except ValueError as error:
+            raise ValueError(f"checkpoint {label} expected path escaped workspace") from error
+        cursor = self.workspace
+        for component in relative.parts:
+            cursor /= component
+            if cursor.is_symlink():
+                raise ValueError(f"checkpoint {label} path contains a symlink")
+        try:
+            resolved = supplied.resolve(strict=True)
+        except FileNotFoundError as error:
+            raise FileNotFoundError(
+                f"checkpoint {label} file is missing: {supplied}"
+            ) from error
+        if not resolved.is_relative_to(self.workspace) or resolved != expected.resolve():
+            raise ValueError(f"checkpoint {label} path escaped its server-owned path")
+        if not resolved.is_file():
+            raise ValueError(f"checkpoint {label} path is not a regular file")
+        return resolved
+
     def _event(self, event_type: str, **details: Any) -> None:
         self.events.append(
             {"timestamp": _utc_now(), "type": event_type, **details}
@@ -419,12 +1179,28 @@ class ShaderAgentState:
     def _load_checkpoint(self) -> None:
         """Rehydrate exact state after an interrupted outer model session."""
         payload = json.loads(self.state_path.read_text(encoding="utf-8"))
-        if payload.get("protocol") != "persistent-agent-render-tools-v8":
-            raise ValueError("only v8 shader-agent checkpoints can resume")
+        if payload.get("protocol") != self.protocol:
+            raise ValueError("checkpoint protocol does not match this server")
         if int(payload.get("render_budget", -1)) != self.render_budget:
             raise ValueError("resume render budget does not match checkpoint")
-        self.revision = int(payload.get("revision", 0))
-        self.render_calls = int(payload.get("render_calls", 0))
+        raw_revision = payload.get("revision", 0)
+        if (
+            not isinstance(raw_revision, int)
+            or isinstance(raw_revision, bool)
+            or raw_revision < 0
+        ):
+            raise ValueError("checkpoint revision must be a non-negative integer")
+        raw_render_calls = payload.get("render_calls", 0)
+        if (
+            not isinstance(raw_render_calls, int)
+            or isinstance(raw_render_calls, bool)
+            or not 0 <= raw_render_calls <= self.render_budget
+        ):
+            raise ValueError(
+                "checkpoint render_calls must be an integer within render_budget"
+            )
+        self.revision = raw_revision
+        self.render_calls = raw_render_calls
         self.submitted = bool(payload.get("submitted", False))
         self.current_hash = payload.get("current_hash")
         self.events = list(payload.get("events", []))
@@ -435,12 +1211,34 @@ class ShaderAgentState:
             and event.get("revision") is not None
         }
         for event in self.events:
-            if event.get("type") != "render_shader" or not event.get("ok"):
+            if event.get("type") != "render_shader":
                 continue
-            revision = int(event["revision"])
-            image_path = event.get("image")
-            if image_path:
-                self.successful_render_by_revision[revision] = Path(image_path)
+            call = event.get("render_call")
+            revision_value = event.get("revision")
+            if (
+                not isinstance(call, int)
+                or isinstance(call, bool)
+                or call < 1
+                or not isinstance(revision_value, int)
+                or isinstance(revision_value, bool)
+                or revision_value < 0
+            ):
+                raise ValueError("checkpoint render event has invalid call/revision")
+            if event.get("log"):
+                self._checkpoint_owned_file(
+                    event["log"],
+                    self.workspace / "renders" / f"render_{call:02d}.log",
+                    f"render {call} log",
+                )
+            if not event.get("ok"):
+                continue
+            revision = revision_value
+            image_path = self._checkpoint_owned_file(
+                event.get("image"),
+                self.workspace / "renders" / f"render_{call:02d}.png",
+                f"render {call} image",
+            )
+            self.successful_render_by_revision[revision] = image_path
             self.successful_render_stage_by_revision[revision] = str(
                 event.get("stage", "final")
             )
@@ -462,7 +1260,16 @@ class ShaderAgentState:
             ).items()
         }
         self.qualified_study_render_paths = {
-            int(index): [Path(path) for path in paths]
+            int(index): [
+                self._checkpoint_owned_file(
+                    path,
+                    self.workspace
+                    / "renders"
+                    / f"render_{int(Path(str(path)).stem.split('_')[-1]):02d}.png",
+                    f"qualified study {index} render",
+                )
+                for path in paths
+            ]
             for index, paths in payload.get(
                 "qualified_study_render_paths", {}
             ).items()
@@ -471,8 +1278,23 @@ class ShaderAgentState:
             int(index): [
                 {
                     **candidate,
-                    "atlas_path": Path(candidate["atlas_path"]),
-                    "source_path": Path(candidate["source_path"]),
+                    "atlas_path": self._checkpoint_owned_file(
+                        candidate["atlas_path"],
+                        self.workspace
+                        / "renders"
+                        / f"render_{int(candidate['render_call']):02d}.png",
+                        f"study {index} candidate atlas",
+                    ),
+                    "source_path": self._checkpoint_owned_file(
+                        candidate["source_path"],
+                        self.workspace
+                        / "renders"
+                        / (
+                            f"render_{int(candidate['render_call']):02d}_"
+                            f"revision_{int(candidate['revision']):02d}.wgsl"
+                        ),
+                        f"study {index} candidate source",
+                    ),
                 }
                 for candidate in candidates
             ]
@@ -493,6 +1315,35 @@ class ShaderAgentState:
             int(index): record
             for index, record in payload.get("study_rankings", {}).items()
         }
+        for study_index, record in self.study_rankings.items():
+            record["candidate_sheet"] = str(
+                self._checkpoint_owned_file(
+                    record.get("candidate_sheet"),
+                    self.workspace
+                    / "selectors"
+                    / f"study_{study_index:02d}_candidates.png",
+                    f"study {study_index} selector sheet",
+                )
+            )
+            for candidate_id, candidate in record.get("candidate_map", {}).items():
+                render_call = int(candidate["render_call"])
+                revision = int(candidate["revision"])
+                candidate["atlas_path"] = str(
+                    self._checkpoint_owned_file(
+                        candidate["atlas_path"],
+                        self.workspace / "renders" / f"render_{render_call:02d}.png",
+                        f"study {study_index} selector {candidate_id} atlas",
+                    )
+                )
+                candidate["source_path"] = str(
+                    self._checkpoint_owned_file(
+                        candidate["source_path"],
+                        self.workspace
+                        / "renders"
+                        / f"render_{render_call:02d}_revision_{revision:02d}.wgsl",
+                        f"study {study_index} selector {candidate_id} source",
+                    )
+                )
         self.study_records = {
             int(index): record
             for index, record in payload.get("study_records", {}).items()
@@ -504,19 +1355,257 @@ class ShaderAgentState:
         for artifact_id, metadata in payload.get(
             "locked_artifacts", {}
         ).items():
-            source_path = Path(metadata["artifact_source_path"])
-            if not source_path.is_file():
+            if not re.fullmatch(r"study_(\d+)_([A-F])", str(artifact_id)):
+                raise ValueError(f"invalid locked artifact id: {artifact_id}")
+            source_path = Path(str(metadata["artifact_source_path"]))
+            expected_path = (
+                self.workspace / "artifacts" / artifact_id / "artifact.wgsl"
+            ).resolve()
+            if source_path.is_symlink():
+                raise ValueError(
+                    f"locked artifact source cannot be a symlink: {source_path}"
+                )
+            try:
+                resolved_source_path = source_path.resolve(strict=True)
+            except FileNotFoundError:
                 raise FileNotFoundError(
                     f"locked artifact source missing: {source_path}"
                 )
+            if (
+                not resolved_source_path.is_relative_to(self.workspace)
+                or resolved_source_path != expected_path
+            ):
+                raise ValueError(
+                    f"locked artifact source escaped its server-owned path: "
+                    f"{source_path}"
+                )
+            owned_cursor = self.workspace
+            for component in ("artifacts", artifact_id, "artifact.wgsl"):
+                owned_cursor /= component
+                if owned_cursor.is_symlink():
+                    raise ValueError(
+                        f"locked artifact path contains a symlink: {owned_cursor}"
+                    )
+            source = resolved_source_path.read_text(encoding="utf-8")
+            for path_key, filename in (
+                ("artifact_crop_path", "selected.png"),
+                ("artifact_atlas_path", "atlas.png"),
+                ("artifact_origin_shader_path", "atlas.wgsl"),
+            ):
+                self._checkpoint_owned_file(
+                    metadata.get(path_key),
+                    expected_path.parent / filename,
+                    f"locked artifact {artifact_id} {path_key}",
+                )
+            digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
+            if digest != metadata.get("sha256"):
+                raise ValueError(
+                    f"locked artifact hash mismatch on resume: {artifact_id}"
+                )
+            blocks = _extract_artifact_blocks(source)
+            if set(blocks) != {artifact_id}:
+                raise ValueError(
+                    f"locked artifact file has invalid marker identity: {artifact_id}"
+                )
+            block = blocks[artifact_id]
+            expected_study = int(artifact_id.split("_")[1])
+            expected_variant = artifact_id.rsplit("_", 1)[1]
+            if (
+                int(metadata.get("study_index", -1)) != expected_study
+                or metadata.get("variant") != expected_variant
+                or metadata.get("entry_symbol") != block["entry_symbol"]
+                or block["sha256"] != digest
+            ):
+                raise ValueError(
+                    f"locked artifact metadata mismatch on resume: {artifact_id}"
+                )
+            manifest_path = expected_path.parent / "manifest.json"
+            if manifest_path.is_symlink() or not manifest_path.is_file():
+                raise ValueError(
+                    f"locked artifact manifest is missing or symlinked: {artifact_id}"
+                )
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest_keys = (
+                "artifact_id",
+                "study_index",
+                "variant",
+                "entry_symbol",
+                "sha256",
+                "origin_revision",
+                "origin_render_call",
+                "artifact_source_path",
+                "artifact_crop_path",
+                "artifact_atlas_path",
+                "artifact_origin_shader_path",
+                "status",
+            )
+            if any(manifest.get(key) != metadata.get(key) for key in manifest_keys):
+                raise ValueError(
+                    f"locked artifact manifest disagrees with state: {artifact_id}"
+                )
+            input_errors = _artifact_entry_input_errors(block)
+            if input_errors and not self.submitted:
+                raise ValueError("; ".join(input_errors))
             self.locked_artifacts[artifact_id] = {
                 **metadata,
-                "source": source_path.read_text(encoding="utf-8"),
+                "artifact_source_path": str(resolved_source_path),
+                "source": source,
             }
+        if self.require_artifact_blocks:
+            for study_index, promotion in self.promotion_records.items():
+                artifact_id = str(promotion.get("artifact_id", ""))
+                artifact_dir = self.workspace / "artifacts" / artifact_id
+                self._checkpoint_owned_file(
+                    promotion.get("promotion_shader"),
+                    artifact_dir / "promotion.wgsl",
+                    f"study {study_index} promotion shader",
+                )
+                self._checkpoint_owned_file(
+                    promotion.get("promotion_render"),
+                    artifact_dir / "promotion.png",
+                    f"study {study_index} promotion render",
+                )
+        self.node_evaluations = {
+            str(node_id): list(records)
+            for node_id, records in payload.get("node_evaluations", {}).items()
+        }
+        self.graph_growth_events = list(
+            payload.get("graph_growth_events", [])
+        )
+        if self.graph_enabled:
+            graph_payload = payload.get("study_dag")
+            if graph_payload is None:
+                raise ValueError("v9 checkpoint is missing study_dag state")
+            self.study_dag = AdaptiveStudyDAG.from_dict(graph_payload)
+            if self.study_dag.render_calls_used != self.render_calls:
+                raise ValueError(
+                    "graph and shader-agent render ledgers disagree"
+                )
+            graph_config = self.study_dag.to_dict()["config"]
+            expected_graph_config = {
+                "min_initial_nodes": self.min_graph_nodes,
+                "max_nodes": self.max_graph_nodes,
+                "max_depth": self.max_graph_depth,
+                "render_budget": self.render_budget,
+                "final_render_reserve": self.final_render_reserve,
+            }
+            mismatches = {
+                key: {
+                    "checkpoint": graph_config[key],
+                    "configured": value,
+                }
+                for key, value in expected_graph_config.items()
+                if graph_config[key] != value
+            }
+            if mismatches:
+                raise ValueError(
+                    "resume graph configuration does not match checkpoint: "
+                    + json.dumps(mismatches, sort_keys=True)
+                )
+        self._validate_checkpoint_consistency(payload)
+
+    def _validate_checkpoint_consistency(self, payload: dict[str, Any]) -> None:
+        """Cross-check persisted files, events, graph state, and lineage ledgers."""
+        render_events = [
+            event
+            for event in self.events
+            if event.get("type") == "render_shader"
+            and event.get("render_call") is not None
+        ]
+        render_numbers = sorted(int(event["render_call"]) for event in render_events)
+        if render_numbers != list(range(1, self.render_calls + 1)):
+            raise ValueError("checkpoint render event ledger is not contiguous")
+
+        if self.revision:
+            if not self.shader_path.is_file():
+                raise FileNotFoundError("checkpoint head shader is missing")
+            head_source = self.shader_path.read_text(encoding="utf-8")
+            head_digest = hashlib.sha256(head_source.encode("utf-8")).hexdigest()
+            if head_digest != self.current_hash:
+                raise ValueError("checkpoint head shader hash does not match state")
+            lineage_errors = self._locked_artifact_errors(head_source)
+            if lineage_errors:
+                raise ValueError(
+                    "checkpoint executable artifact lineage is invalid: "
+                    + "; ".join(lineage_errors)
+                )
+        elif self.current_hash is not None:
+            raise ValueError("revision-zero checkpoint cannot have a shader hash")
+
+        if not self.graph_enabled:
+            return
+        graph = self._require_study_dag()
+        snapshots = graph.snapshots()
+        known_indexes = {snapshot.study_index for snapshot in snapshots}
+        for mapping_name, mapping in (
+            ("study_records", self.study_records),
+            ("promotion_records", self.promotion_records),
+            ("successful_study_render_count", self.successful_study_render_count),
+        ):
+            unknown = set(mapping) - known_indexes
+            if unknown:
+                raise ValueError(
+                    f"checkpoint {mapping_name} references unknown studies: "
+                    f"{sorted(unknown)}"
+                )
+
+        artifacts_by_study: dict[int, list[dict[str, Any]]] = {}
+        for metadata in self.locked_artifacts.values():
+            artifacts_by_study.setdefault(int(metadata["study_index"]), []).append(
+                metadata
+            )
+        for snapshot in snapshots:
+            index = snapshot.study_index
+            successful_passes = self.successful_study_render_count.get(index, 0)
+            if successful_passes != snapshot.successful_passes:
+                raise ValueError(
+                    f"checkpoint pass ledger disagrees for study {index}: "
+                    f"{successful_passes} != {snapshot.successful_passes}"
+                )
+            has_record = index in self.study_records
+            has_promotion = index in self.promotion_records
+            artifacts = artifacts_by_study.get(index, [])
+            if has_record != (snapshot.status in {"selected", "promoted"}):
+                raise ValueError(
+                    f"checkpoint selection ledger disagrees for study {index}"
+                )
+            if has_promotion != (snapshot.status == "promoted"):
+                raise ValueError(
+                    f"checkpoint promotion ledger disagrees for study {index}"
+                )
+            if self.require_artifact_blocks:
+                expected_artifact_count = (
+                    1 if snapshot.status in {"selected", "promoted"} else 0
+                )
+                if len(artifacts) != expected_artifact_count:
+                    raise ValueError(
+                        f"checkpoint artifact ledger disagrees for study {index}"
+                    )
+                if artifacts:
+                    expected_status = (
+                        "promoted_locked"
+                        if snapshot.status == "promoted"
+                        else "selected_pending_promotion"
+                    )
+                    if artifacts[0].get("status") != expected_status:
+                        raise ValueError(
+                            f"checkpoint artifact status disagrees for study {index}"
+                        )
+
+        distinct_final_hashes = {
+            self.successful_render_hash_by_revision.get(revision)
+            for revision, stage in self.successful_render_stage_by_revision.items()
+            if stage == "final"
+        }
+        distinct_final_hashes.discard(None)
+        if len(distinct_final_hashes) != graph.successful_final_renders:
+            raise ValueError(
+                "checkpoint graph final ledger disagrees with distinct final hashes"
+            )
 
     def _persist(self) -> None:
         payload = {
-            "protocol": "persistent-agent-render-tools-v8",
+            "protocol": self.protocol,
             "render_budget": self.render_budget,
             "render_calls": self.render_calls,
             "remaining_renders": max(0, self.render_budget - self.render_calls),
@@ -563,12 +1652,373 @@ class ShaderAgentState:
                 }
                 for artifact_id, artifact in self.locked_artifacts.items()
             },
+            "graph_enabled": self.graph_enabled,
+            "study_dag": (
+                self.study_dag.to_dict() if self.study_dag is not None else None
+            ),
+            "node_evaluations": self.node_evaluations,
+            "graph_growth_events": self.graph_growth_events,
             "revision": self.revision,
             "current_hash": self.current_hash,
             "submitted": self.submitted,
             "events": self.events,
         }
         _atomic_write(self.state_path, json.dumps(payload, indent=2))
+
+    def _require_study_dag(self) -> AdaptiveStudyDAG:
+        if not self.graph_enabled or self.study_dag is None:
+            raise StudyDAGError("adaptive study graph tools are disabled")
+        return self.study_dag
+
+    def _study_graph_snapshot(self) -> dict[str, Any]:
+        graph = self._require_study_dag()
+        frontier = set(graph.frontier_node_ids())
+        return {
+            "graph_closed": graph.graph_closed,
+            "final_node_id": graph.final_node_id,
+            "render_calls_used": graph.render_calls_used,
+            "render_budget": graph.render_budget,
+            "budget_remaining": graph.budget_remaining,
+            "minimum_remaining_work": graph.minimum_remaining_work,
+            "remaining_final_reserve": graph.remaining_final_reserve,
+            "budget_slack": graph.budget_slack,
+            "ready_frontier": list(graph.frontier_node_ids()),
+            "nodes": [
+                {
+                    **snapshot.node.to_dict(),
+                    "study_index": snapshot.study_index,
+                    "status": snapshot.status,
+                    "successful_passes": snapshot.successful_passes,
+                    "required_passes": snapshot.required_passes,
+                    "ready": snapshot.node.node_id in frontier,
+                    "latest_evaluation": (
+                        self.node_evaluations.get(snapshot.node.node_id, [None])[-1]
+                        if self.node_evaluations.get(snapshot.node.node_id)
+                        else None
+                    ),
+                }
+                for snapshot in graph.snapshots()
+            ],
+            "growth_events": self.graph_growth_events,
+        }
+
+    def define_study_graph(
+        self,
+        graph_json: str,
+        rationale: str,
+    ) -> dict[str, Any]:
+        """Define the bounded initial study DAG before any shader work."""
+        graph = self._require_study_dag()
+        if self.revision or self.render_calls:
+            return {
+                "ok": False,
+                "error": "define the initial study graph before writing or rendering WGSL",
+            }
+        if len(rationale.strip()) < 120:
+            return {
+                "ok": False,
+                "error": (
+                    "rationale must contain at least 120 characters explaining "
+                    "the visual risks, dependency boundaries, and joins"
+                ),
+            }
+        try:
+            nodes = json.loads(graph_json)
+            assignments = graph.define_nodes(nodes)
+        except (json.JSONDecodeError, StudyDAGError) as error:
+            return {"ok": False, "error": str(error)}
+        event = {
+            "timestamp": _utc_now(),
+            "type": "define_study_graph",
+            "assignments": assignments,
+            "rationale": rationale.strip()[:4_000],
+        }
+        self.graph_growth_events.append(event)
+        result = {
+            "ok": True,
+            "assignments": assignments,
+            "rationale": event["rationale"],
+            **self._study_graph_snapshot(),
+        }
+        self._event("define_study_graph", **result)
+        return result
+
+    def inspect_study_graph(self) -> dict[str, Any]:
+        try:
+            return {"ok": True, **self._study_graph_snapshot()}
+        except StudyDAGError as error:
+            return {"ok": False, "error": str(error)}
+
+    def begin_study_node(self, node_id: str) -> dict[str, Any]:
+        """Activate one topologically ready node and return its stable index."""
+        try:
+            graph = self._require_study_dag()
+            snapshot = graph.snapshot(node_id)
+            if snapshot.status == "pending":
+                snapshot = graph.begin_node(node_id)
+            elif snapshot.status != "active":
+                raise StudyDAGError(
+                    "only a pending ready node or already-active node can begin"
+                )
+        except StudyDAGError as error:
+            return {"ok": False, "error": str(error)}
+        index = snapshot.study_index
+        result = {
+            "ok": True,
+            "node_id": node_id,
+            "study_index": index,
+            "status": snapshot.status,
+            "required_passes": snapshot.required_passes,
+            "successful_passes": snapshot.successful_passes,
+            "depends_on": list(snapshot.node.depends_on),
+            "decision_question": snapshot.node.decision_question,
+            "success_criteria": list(snapshot.node.success_criteria),
+            "failure_signals": list(snapshot.node.failure_signals),
+            "artifact_ids": [
+                f"study_{index}_{variant}" for variant in VARIANTS
+            ],
+            "ready_frontier": list(graph.frontier_node_ids()),
+        }
+        self._event("begin_study_node", **result)
+        return result
+
+    @staticmethod
+    def _parse_string_list(raw: str, field: str) -> list[str]:
+        try:
+            values = json.loads(raw)
+        except json.JSONDecodeError as error:
+            raise StudyDAGError(f"{field} is invalid JSON: {error}") from error
+        if (
+            not isinstance(values, list)
+            or any(not isinstance(value, str) or not value.strip() for value in values)
+        ):
+            raise StudyDAGError(f"{field} must be a JSON array of strings")
+        return [value.strip() for value in values]
+
+    @staticmethod
+    def _parse_residuals(raw: str) -> list[dict[str, Any]]:
+        try:
+            values = json.loads(raw)
+        except json.JSONDecodeError as error:
+            raise StudyDAGError(f"residuals_json is invalid JSON: {error}") from error
+        if not isinstance(values, list):
+            raise StudyDAGError("residuals_json must be a JSON array")
+        parsed: list[dict[str, Any]] = []
+        for value in values:
+            if not isinstance(value, dict) or set(value) != {"residual", "severity"}:
+                raise StudyDAGError(
+                    "each residual must contain exactly residual and severity"
+                )
+            residual = value["residual"]
+            severity = value["severity"]
+            if not isinstance(residual, str) or not residual.strip():
+                raise StudyDAGError("residual text must be non-empty")
+            if (
+                isinstance(severity, bool)
+                or not isinstance(severity, (int, float))
+                or not 0.0 <= float(severity) <= 1.0
+            ):
+                raise StudyDAGError("residual severity must be between 0 and 1")
+            parsed.append(
+                {"residual": residual.strip(), "severity": float(severity)}
+            )
+        return parsed
+
+    def evaluate_study_node(
+        self,
+        node_id: str,
+        decision: str,
+        visible_evidence: str,
+        failed_criteria_json: str,
+        residuals_json: str,
+        expected_information_gain: float,
+    ) -> dict[str, Any]:
+        """Record public accept/expand evidence after full-frame promotion."""
+        try:
+            graph = self._require_study_dag()
+            snapshot = graph.snapshot(node_id)
+            if snapshot.status != "promoted":
+                raise StudyDAGError("evaluate only after exact full-frame promotion")
+            if decision not in {"accept", "expand"}:
+                raise StudyDAGError("decision must be accept or expand")
+            if len(visible_evidence.strip()) < 100:
+                raise StudyDAGError(
+                    "visible_evidence must contain at least 100 characters"
+                )
+            failed = self._parse_string_list(
+                failed_criteria_json, "failed_criteria_json"
+            )
+            unknown = sorted(set(failed) - set(snapshot.node.success_criteria))
+            if unknown:
+                raise StudyDAGError(
+                    f"failed criteria must exactly match declared criteria: {unknown}"
+                )
+            residuals = self._parse_residuals(residuals_json)
+            if (
+                isinstance(expected_information_gain, bool)
+                or not isinstance(expected_information_gain, (int, float))
+                or not 0.0 <= float(expected_information_gain) <= 1.0
+            ):
+                raise StudyDAGError(
+                    "expected_information_gain must be between 0 and 1"
+                )
+            if decision == "accept":
+                if failed:
+                    raise StudyDAGError(
+                        "accept requires every declared success criterion to pass"
+                    )
+                severe_residuals = [
+                    residual
+                    for residual in residuals
+                    if residual["severity"] > 0.25
+                ]
+                if severe_residuals or float(expected_information_gain) >= 0.1:
+                    raise StudyDAGError(
+                        "accept permits only residual severity <= 0.25 and "
+                        "expected_information_gain < 0.1"
+                    )
+            if decision == "expand" and (
+                not failed
+                or not residuals
+                or float(expected_information_gain) < 0.1
+            ):
+                raise StudyDAGError(
+                    "expand requires failed criteria, residuals, and information gain >= 0.1"
+                )
+        except StudyDAGError as error:
+            return {"ok": False, "error": str(error)}
+        record = {
+            "timestamp": _utc_now(),
+            "node_id": node_id,
+            "study_index": snapshot.study_index,
+            "decision": decision,
+            "visible_evidence": visible_evidence.strip()[:4_000],
+            "failed_criteria": failed,
+            "residuals": residuals,
+            "expected_information_gain": float(expected_information_gain),
+        }
+        self.node_evaluations.setdefault(node_id, []).append(record)
+        result = {"ok": True, **record, **self._study_graph_snapshot()}
+        self._event("evaluate_study_node", **result)
+        return result
+
+    def expand_study_graph(
+        self,
+        source_node_id: str,
+        graph_json: str,
+        visible_evidence: str,
+        failed_criteria_json: str,
+        expected_information_gain: float,
+    ) -> dict[str, Any]:
+        """Append evidence-backed children without mutating prior graph nodes."""
+        try:
+            graph = self._require_study_dag()
+            source = graph.snapshot(source_node_id)
+            if source.status != "promoted":
+                raise StudyDAGError("only a promoted node can grow children")
+            evaluations = self.node_evaluations.get(source_node_id, [])
+            if not evaluations or evaluations[-1]["decision"] != "expand":
+                raise StudyDAGError(
+                    "record an expand evaluation for this node before growth"
+                )
+            if len(visible_evidence.strip()) < 100:
+                raise StudyDAGError(
+                    "visible_evidence must contain at least 100 characters"
+                )
+            failed = self._parse_string_list(
+                failed_criteria_json, "failed_criteria_json"
+            )
+            if sorted(failed) != sorted(evaluations[-1]["failed_criteria"]):
+                raise StudyDAGError(
+                    "growth failed criteria must match the latest evaluation"
+                )
+            if not 0.1 <= float(expected_information_gain) <= 1.0:
+                raise StudyDAGError(
+                    "expected_information_gain must be between 0.1 and 1"
+                )
+            if (
+                abs(
+                    float(expected_information_gain)
+                    - float(evaluations[-1]["expected_information_gain"])
+                )
+                > 1e-9
+            ):
+                raise StudyDAGError(
+                    "growth information gain must match the latest evaluation"
+                )
+            nodes = json.loads(graph_json)
+            if isinstance(nodes, list) and len(nodes) > 2:
+                raise StudyDAGError(
+                    "one evaluation may append at most two focused child nodes"
+                )
+            if not isinstance(nodes, list) or not any(
+                isinstance(node, dict)
+                and source_node_id in node.get("depends_on", [])
+                for node in nodes
+            ):
+                raise StudyDAGError(
+                    "growth must add at least one direct child of source_node_id"
+                )
+            assignments = graph.expand_nodes(nodes)
+        except (json.JSONDecodeError, StudyDAGError, TypeError, ValueError) as error:
+            return {"ok": False, "error": str(error)}
+        growth = {
+            "timestamp": _utc_now(),
+            "type": "expand_study_graph",
+            "source_node_id": source_node_id,
+            "assignments": assignments,
+            "visible_evidence": visible_evidence.strip()[:4_000],
+            "failed_criteria": failed,
+            "expected_information_gain": float(expected_information_gain),
+        }
+        self.graph_growth_events.append(growth)
+        result = {"ok": True, **growth, **self._study_graph_snapshot()}
+        self._event("expand_study_graph", **result)
+        return result
+
+    def close_study_graph(self, evidence: str) -> dict[str, Any]:
+        """Freeze one all-promoted, fully evaluated integration DAG."""
+        try:
+            graph = self._require_study_dag()
+            if len(evidence.strip()) < 120:
+                raise StudyDAGError(
+                    "closure evidence must contain at least 120 characters"
+                )
+            unevaluated = [
+                snapshot.node.node_id
+                for snapshot in graph.snapshots()
+                if not self.node_evaluations.get(snapshot.node.node_id)
+                or self.node_evaluations[snapshot.node.node_id][-1]["decision"]
+                != "accept"
+            ]
+            if unevaluated:
+                raise StudyDAGError(
+                    f"every node needs a latest accept evaluation: {unevaluated}"
+                )
+            snapshots = graph.snapshots()
+            dependency_ids = {
+                dependency
+                for snapshot in snapshots
+                for dependency in snapshot.node.depends_on
+            }
+            sinks = [
+                snapshot.node.node_id
+                for snapshot in snapshots
+                if snapshot.node.node_id not in dependency_ids
+            ]
+            if len(sinks) == 1 and graph.node(sinks[0]).mode != "integrate":
+                raise StudyDAGError("the unique final sink must use integrate mode")
+            final_node_id = graph.close_graph()
+        except StudyDAGError as error:
+            return {"ok": False, "error": str(error)}
+        result = {
+            "ok": True,
+            "final_node_id": final_node_id,
+            "evidence": evidence.strip()[:4_000],
+            **self._study_graph_snapshot(),
+        }
+        self._event("close_study_graph", **result)
+        return result
 
     def _locked_artifact_errors(self, shader_source: str) -> list[str]:
         """Reject missing, edited, or dead-only promoted implementations."""
@@ -579,6 +2029,10 @@ class ShaderAgentState:
         except ValueError as error:
             return [str(error)]
         errors: list[str] = []
+        strict_dependencies = (
+            self.protocol == "persistent-agent-render-tools-v9"
+            and not self.submitted
+        )
         for artifact_id, locked in sorted(self.locked_artifacts.items()):
             current = blocks.get(artifact_id)
             if current is None:
@@ -589,17 +2043,59 @@ class ShaderAgentState:
                     f"locked artifact {artifact_id} changed byte-for-byte"
                 )
                 continue
-            outside = shader_source.replace(current["source"], "", 1)
-            entry_symbol = locked["entry_symbol"]
-            if not re.search(
-                rf"\b{re.escape(entry_symbol)}\s*\(",
-                outside,
-            ):
-                errors.append(
-                    f"locked artifact {artifact_id} entry "
-                    f"{entry_symbol} is not called outside its definition"
+            parent_entries: set[str] = set()
+            if strict_dependencies:
+                try:
+                    parent_entries = self._artifact_parent_entries(
+                        int(locked["study_index"])
+                    )
+                except (KeyError, StudyDAGError, ValueError) as error:
+                    errors.append(f"locked artifact {artifact_id}: {error}")
+                    continue
+            if not self.submitted:
+                errors.extend(_artifact_entry_input_errors(current))
+            errors.extend(
+                _artifact_dependency_errors(
+                    shader_source,
+                    current,
+                    allowed_external_entries=parent_entries,
+                    required_parent_entries=parent_entries,
+                    enforce_self_contained=strict_dependencies,
                 )
+            )
         return errors
+
+    def _artifact_parent_entries(self, study_index: int) -> set[str]:
+        """Resolve the exact selected entry symbols this study must build on."""
+        parent_indexes: set[int]
+        if self.graph_enabled and self.study_dag is not None:
+            node_id = self.study_dag.node_id_for_index(study_index)
+            parent_indexes = {
+                self.study_dag.snapshot(dependency).study_index
+                for dependency in self.study_dag.node(node_id).depends_on
+            }
+        else:
+            parent_indexes = {
+                index for index in self.study_records if index < study_index
+            }
+        entries = {
+            str(metadata["entry_symbol"])
+            for metadata in self.locked_artifacts.values()
+            if int(metadata["study_index"]) in parent_indexes
+        }
+        if len(entries) != len(parent_indexes):
+            missing = sorted(
+                parent_indexes
+                - {
+                    int(metadata["study_index"])
+                    for metadata in self.locked_artifacts.values()
+                }
+            )
+            raise StudyDAGError(
+                "declared parent nodes are missing selected executable artifacts: "
+                + ", ".join(str(index) for index in missing)
+            )
+        return entries
 
     def _expand_locked_artifact_injections(
         self,
@@ -639,8 +2135,7 @@ class ShaderAgentState:
             injected.append(artifact_id)
         return expanded, injected, errors
 
-    @staticmethod
-    def _selector_rubric(study_index: int) -> str:
+    def _selector_rubric(self, study_index: int) -> str:
         common = (
             "Judge visible fidelity to the reference, not implementation "
             "convenience. Do not reward a candidate for being easier to attach, "
@@ -651,7 +2146,23 @@ class ShaderAgentState:
             "negative space, coherent overlap, specific proportions, and an "
             "organic relationship between soft and hard edges."
         )
-        stage = {
+        if self.graph_enabled and self.study_dag is not None:
+            snapshot = self.study_dag.snapshot(
+                self.study_dag.node_id_for_index(study_index)
+            )
+            node = snapshot.node
+            stage = (
+                f"Adaptive DAG node '{node.title}' ({node.node_id}), mode "
+                f"{node.mode}. Decision question: {node.decision_question} "
+                "Success criteria: "
+                + "; ".join(node.success_criteria)
+                + ". Explicit failure signals: "
+                + "; ".join(node.failure_signals)
+                + ". Rank only this declared decision while preserving visible "
+                "parent achievements."
+            )
+        else:
+            stage = {
             1: (
                 "This is the signature macro-form study. Rank silhouette, pose, "
                 "major mass proportions, carved negative spaces, hooked/bent/"
@@ -674,13 +2185,13 @@ class ShaderAgentState:
                 "the reference's emotional focal hierarchy without becoming a "
                 "flat grid, texture stamp, finger field, or armor sheet."
             ),
-        }.get(
-            study_index,
-            (
-                "Rank the candidates by reference fidelity and by whether the "
-                "new subsystem belongs to the already selected hierarchy."
-            ),
-        )
+            }.get(
+                study_index,
+                (
+                    "Rank the candidates by reference fidelity and by whether the "
+                    "new subsystem belongs to the already selected hierarchy."
+                ),
+            )
         return common + " " + stage
 
     def _build_selector_sheet(
@@ -859,14 +2370,29 @@ future composability, or treatment names; you do not have that information.
                 "ok": False,
                 "error": "The final shader has already been submitted.",
             }, None
-        if not 1 <= study_index <= self.required_studies:
-            return {
-                "ok": False,
-                "error": (
-                    "study_index must identify one of the required studies "
-                    f"(1-{self.required_studies})."
-                ),
-            }, None
+        if self.graph_enabled:
+            try:
+                graph = self._require_study_dag()
+                node_id = graph.node_id_for_index(study_index)
+                snapshot = graph.snapshot(node_id)
+                if snapshot.status != "studied":
+                    raise StudyDAGError(
+                        "rank only after every required qualified node pass"
+                    )
+                required_passes = snapshot.required_passes
+            except StudyDAGError as error:
+                return {"ok": False, "error": str(error)}, None
+        else:
+            if not 1 <= study_index <= self.required_studies:
+                return {
+                    "ok": False,
+                    "error": (
+                        "study_index must identify one of the required studies "
+                        f"(1-{self.required_studies})."
+                    ),
+                }, None
+            node_id = None
+            required_passes = self.min_successful_study_renders
         if study_index in self.study_records:
             return {
                 "ok": False,
@@ -882,7 +2408,7 @@ future composability, or treatment names; you do not have that information.
             study_index, 0
         )
         if (
-            successful_passes < self.min_successful_study_renders
+            successful_passes < required_passes
             or not candidates
         ):
             return {
@@ -892,9 +2418,7 @@ future composability, or treatment names; you do not have that information.
                     "requesting independent selection."
                 ),
                 "successful_study_renders": successful_passes,
-                "min_successful_study_renders": (
-                    self.min_successful_study_renders
-                ),
+                "min_successful_study_renders": required_passes,
             }, None
         sheet_path, candidate_map = self._build_selector_sheet(
             study_index, candidates
@@ -955,6 +2479,7 @@ future composability, or treatment names; you do not have that information.
         winner_origin = candidate_map[str(winner)]
         record = {
             "study_index": study_index,
+            "node_id": node_id,
             "selector_model": self.selector_model,
             "selector_effort": self.selector_effort,
             "rubric": self._selector_rubric(study_index),
@@ -1059,17 +2584,34 @@ future composability, or treatment names; you do not have that information.
             }
             self._event("render_rejected", **result)
             return result, None
+        graph_node_id: str | None = None
         if stage == "study":
-            if not 1 <= study_index <= self.required_studies:
-                result = {
-                    "ok": False,
-                    "error": (
-                        "study_index must identify one of the required "
-                        f"studies (1-{self.required_studies})."
-                    ),
-                }
-                self._event("render_rejected", **result)
-                return result, None
+            if self.graph_enabled:
+                try:
+                    graph = self._require_study_dag()
+                    graph_node_id = graph.node_id_for_index(study_index)
+                    graph_snapshot = graph.snapshot(graph_node_id)
+                    if graph_snapshot.status != "active":
+                        raise StudyDAGError(
+                            "call begin_study_node for a ready node before rendering"
+                        )
+                except StudyDAGError as error:
+                    result = {"ok": False, "error": str(error)}
+                    self._event("render_rejected", **result)
+                    return result, None
+            else:
+                graph = None
+                graph_node_id = None
+                if not 1 <= study_index <= self.required_studies:
+                    result = {
+                        "ok": False,
+                        "error": (
+                            "study_index must identify one of the required "
+                            f"studies (1-{self.required_studies})."
+                        ),
+                    }
+                    self._event("render_rejected", **result)
+                    return result, None
             if self.require_artifact_blocks and study_index in self.study_records:
                 result = {
                     "ok": False,
@@ -1080,16 +2622,24 @@ future composability, or treatment names; you do not have that information.
                 }
                 self._event("render_rejected", **result)
                 return result, None
-            missing_prior = [
-                index
-                for index in range(1, study_index)
-                if index
-                not in (
-                    self.promotion_records
-                    if self.require_study_promotions
-                    else self.study_records
-                )
-            ]
+            missing_prior = (
+                [
+                    graph.study_index(dependency)
+                    for dependency in graph_snapshot.node.depends_on
+                    if graph.snapshot(dependency).status != "promoted"
+                ]
+                if self.graph_enabled and graph is not None
+                else [
+                    index
+                    for index in range(1, study_index)
+                    if index
+                    not in (
+                        self.promotion_records
+                        if self.require_study_promotions
+                        else self.study_records
+                    )
+                ]
+            )
             if missing_prior:
                 result = {
                     "ok": False,
@@ -1147,16 +2697,32 @@ future composability, or treatment names; you do not have that information.
                         self._event("render_rejected", **result)
                         return result, None
         elif stage == "promotion":
-            if not 1 <= study_index <= self.required_studies:
-                result = {
-                    "ok": False,
-                    "error": (
-                        "promotion study_index must identify one of the "
-                        f"required studies (1-{self.required_studies})."
-                    ),
-                }
-                self._event("render_rejected", **result)
-                return result, None
+            if self.graph_enabled:
+                try:
+                    graph = self._require_study_dag()
+                    graph_node_id = graph.node_id_for_index(study_index)
+                    graph_snapshot = graph.snapshot(graph_node_id)
+                    if graph_snapshot.status != "selected":
+                        raise StudyDAGError(
+                            "record the selected node artifact before promotion"
+                        )
+                except StudyDAGError as error:
+                    result = {"ok": False, "error": str(error)}
+                    self._event("render_rejected", **result)
+                    return result, None
+            else:
+                graph = None
+                graph_node_id = None
+                if not 1 <= study_index <= self.required_studies:
+                    result = {
+                        "ok": False,
+                        "error": (
+                            "promotion study_index must identify one of the "
+                            f"required studies (1-{self.required_studies})."
+                        ),
+                    }
+                    self._event("render_rejected", **result)
+                    return result, None
             if study_index not in self.study_records:
                 result = {
                     "ok": False,
@@ -1174,11 +2740,19 @@ future composability, or treatment names; you do not have that information.
                 }
                 self._event("render_rejected", **result)
                 return result, None
-            missing_prior = [
-                index
-                for index in range(1, study_index)
-                if index not in self.promotion_records
-            ]
+            missing_prior = (
+                [
+                    graph.study_index(dependency)
+                    for dependency in graph_snapshot.node.depends_on
+                    if graph.snapshot(dependency).status != "promoted"
+                ]
+                if self.graph_enabled and graph is not None
+                else [
+                    index
+                    for index in range(1, study_index)
+                    if index not in self.promotion_records
+                ]
+            )
             if missing_prior:
                 result = {
                     "ok": False,
@@ -1197,8 +2771,20 @@ future composability, or treatment names; you do not have that information.
             }
             self._event("render_rejected", **result)
             return result, None
+        if stage == "final" and self.graph_enabled:
+            try:
+                graph = self._require_study_dag()
+                if not graph.graph_closed:
+                    raise StudyDAGError(
+                        "close the all-promoted study graph before final renders"
+                    )
+            except StudyDAGError as error:
+                result = {"ok": False, "error": str(error)}
+                self._event("render_rejected", **result)
+                return result, None
         if (
             stage == "final"
+            and not self.graph_enabled
             and self.require_study_promotions
             and len(self.promotion_records) < self.required_studies
         ):
@@ -1213,7 +2799,11 @@ future composability, or treatment names; you do not have that information.
             }
             self._event("render_rejected", **result)
             return result, None
-        if stage == "final" and len(self.study_records) < self.required_studies:
+        if (
+            stage == "final"
+            and not self.graph_enabled
+            and len(self.study_records) < self.required_studies
+        ):
             result = {
                 "ok": False,
                 "error": (
@@ -1250,9 +2840,27 @@ future composability, or treatment names; you do not have that information.
             return result, None
         shader_source = self.shader_path.read_text(encoding="utf-8")
         if stage == "study" and self.require_artifact_blocks:
+            strict_dependencies = (
+                self.protocol == "persistent-agent-render-tools-v9"
+            )
+            parent_entries: set[str] = set()
+            if strict_dependencies:
+                try:
+                    parent_entries = self._artifact_parent_entries(study_index)
+                except (KeyError, StudyDAGError, ValueError) as error:
+                    result = {
+                        "ok": False,
+                        "error": str(error),
+                        "render_budget_consumed": False,
+                    }
+                    self._event("render_rejected", **result)
+                    return result, None
             artifact_errors = _artifact_manifest_errors(
                 shader_source,
                 study_index,
+                allowed_external_entries=parent_entries,
+                required_parent_entries=parent_entries,
+                enforce_self_contained=strict_dependencies,
             )
             if artifact_errors:
                 result = {
@@ -1276,6 +2884,25 @@ future composability, or treatment names; you do not have that information.
                 ),
                 "artifact_lineage_errors": lineage_errors,
                 "render_budget_consumed": False,
+            }
+            self._event("render_rejected", **result)
+            return result, None
+        if stage == "final" and self.current_hash in {
+            self.successful_render_hash_by_revision.get(revision)
+            for revision, recorded_stage
+            in self.successful_render_stage_by_revision.items()
+            if recorded_stage == "final"
+        }:
+            result = {
+                "ok": False,
+                "error": (
+                    "This exact shader hash already has a successful final render. "
+                    "Make an evidence-based source revision before spending another "
+                    "reserved final call."
+                ),
+                "render_budget_consumed": False,
+                "revision": self.revision,
+                "remaining_renders": self.render_budget - self.render_calls,
             }
             self._event("render_rejected", **result)
             return result, None
@@ -1344,6 +2971,45 @@ future composability, or treatment names; you do not have that information.
             encoding="utf-8",
         )
         success = returncode == 0 and output_path.is_file()
+        previous_final_hashes = {
+            self.successful_render_hash_by_revision.get(revision)
+            for revision, recorded_stage
+            in self.successful_render_stage_by_revision.items()
+            if recorded_stage == "final"
+        }
+        previous_final_hashes.discard(None)
+        bookkeeping_snapshot = {
+            "successful_render_by_revision": copy.deepcopy(
+                self.successful_render_by_revision
+            ),
+            "successful_render_stage_by_revision": copy.deepcopy(
+                self.successful_render_stage_by_revision
+            ),
+            "successful_render_hash_by_revision": copy.deepcopy(
+                self.successful_render_hash_by_revision
+            ),
+            "latest_successful_study_render": copy.deepcopy(
+                self.latest_successful_study_render
+            ),
+            "latest_successful_promotion_render": copy.deepcopy(
+                self.latest_successful_promotion_render
+            ),
+            "successful_study_render_count": copy.deepcopy(
+                self.successful_study_render_count
+            ),
+            "qualified_study_render_paths": copy.deepcopy(
+                self.qualified_study_render_paths
+            ),
+            "qualified_study_candidates": copy.deepcopy(
+                self.qualified_study_candidates
+            ),
+            "study_records": copy.deepcopy(self.study_records),
+        }
+        graph_checkpoint = (
+            self.study_dag.to_dict()
+            if self.graph_enabled and self.study_dag is not None
+            else None
+        )
         if success:
             self.successful_render_by_revision[self.revision] = output_path
             self.successful_render_stage_by_revision[self.revision] = stage
@@ -1361,6 +3027,17 @@ future composability, or treatment names; you do not have that information.
                     study_index,
                     self.qualified_study_render_paths,
                 )
+                if self.graph_enabled:
+                    same_min = cross_render_diversity.get(
+                        "same_study_min_mae_percent"
+                    )
+                    cross_render_diversity["qualifies"] = (
+                        same_min is None
+                        or same_min >= STUDY_CROSS_PASS_MAE_MIN
+                    )
+                    cross_render_diversity[
+                        "other_study_gate_applied"
+                    ] = False
                 study_pass_qualified = (
                     not self.require_study_diversity
                     or (
@@ -1416,27 +3093,73 @@ future composability, or treatment names; you do not have that information.
             cross_render_diversity = None
             study_pass_qualified = False
 
+        graph_accounting_error = None
+        if self.graph_enabled:
+            try:
+                graph = self._require_study_dag()
+                if stage == "study":
+                    graph.record_pass(
+                        str(graph_node_id),
+                        success=bool(success and study_pass_qualified),
+                        render_calls_used=self.render_calls,
+                    )
+                elif stage == "promotion":
+                    graph.sync_render_calls(self.render_calls)
+                else:
+                    graph.record_final(
+                        success=bool(
+                            success and self.current_hash not in previous_final_hashes
+                        ),
+                        render_calls_used=self.render_calls,
+                    )
+            except StudyDAGError as error:
+                graph_accounting_error = str(error)
+                if graph_checkpoint is not None:
+                    try:
+                        self.study_dag = AdaptiveStudyDAG.from_dict(
+                            graph_checkpoint
+                        )
+                        self.study_dag.sync_render_calls(self.render_calls)
+                    except StudyDAGError as reconcile_error:
+                        graph_accounting_error += (
+                            f"; graph reconciliation failed: {reconcile_error}"
+                        )
+                for name, value in bookkeeping_snapshot.items():
+                    setattr(self, name, value)
+
         result = {
-            "ok": success,
+            "ok": bool(success and graph_accounting_error is None),
             "render_call": call_number,
             "render_budget": self.render_budget,
             "remaining_renders": self.render_budget - call_number,
             "revision": self.revision,
             "stage": stage,
             "study_index": study_index,
+            "node_id": graph_node_id,
             "study_pass": study_pass,
             "study_pass_qualified": study_pass_qualified,
             "study_diversity": study_diversity,
             "cross_render_diversity": cross_render_diversity,
             "variation_manifest": variation_manifest.strip()[:4_000],
             "sha256": self.current_hash,
-            "image": str(output_path) if success else None,
+            "image": (
+                str(output_path)
+                if success and graph_accounting_error is None
+                else None
+            ),
             "log": str(log_path),
             "returncode": returncode,
             "compiler_feedback": (stderr + "\n" + stdout).strip()[-12_000:],
         }
+        if self.graph_enabled:
+            result["study_graph"] = self._study_graph_snapshot()
+            if graph_accounting_error is not None:
+                result["graph_accounting_error"] = graph_accounting_error
         self._event("render_shader", **result)
-        return result, output_path if success else None
+        return (
+            result,
+            output_path if success and graph_accounting_error is None else None,
+        )
 
     def record_study(
         self,
@@ -1459,6 +3182,21 @@ future composability, or treatment names; you do not have that information.
                 "ok": False,
                 "error": "This study selection is already immutable.",
             }
+        if self.graph_enabled:
+            try:
+                graph = self._require_study_dag()
+                node_id = graph.node_id_for_index(study_index)
+                node_snapshot = graph.snapshot(node_id)
+                if node_snapshot.status != "studied":
+                    raise StudyDAGError(
+                        "record only after every required node pass and ranking"
+                    )
+                required_passes = node_snapshot.required_passes
+            except StudyDAGError as error:
+                return {"ok": False, "error": str(error)}
+        else:
+            node_id = None
+            required_passes = self.min_successful_study_renders
         latest_rendered = self.latest_successful_study_render.get(study_index)
         if latest_rendered is None:
             return {
@@ -1471,7 +3209,7 @@ future composability, or treatment names; you do not have that information.
         successful_passes = self.successful_study_render_count.get(
             study_index, 0
         )
-        if successful_passes < self.min_successful_study_renders:
+        if successful_passes < required_passes:
             return {
                 "ok": False,
                 "error": (
@@ -1479,9 +3217,7 @@ future composability, or treatment names; you do not have that information.
                     "before selection can be recorded."
                 ),
                 "successful_study_renders": successful_passes,
-                "min_successful_study_renders": (
-                    self.min_successful_study_renders
-                ),
+                "min_successful_study_renders": required_passes,
             }
         ranking = self.study_rankings.get(study_index)
         if self.require_study_selector and ranking is None:
@@ -1606,6 +3342,31 @@ future composability, or treatment names; you do not have that information.
                         f"Selected candidate has no exact {artifact_id} block."
                     ),
                 }
+            strict_dependencies = (
+                self.protocol == "persistent-agent-render-tools-v9"
+            )
+            parent_entries: set[str] = set()
+            if strict_dependencies:
+                try:
+                    parent_entries = self._artifact_parent_entries(study_index)
+                except (KeyError, StudyDAGError, ValueError) as error:
+                    return {"ok": False, "error": str(error)}
+            selected_errors = _artifact_entry_input_errors(block)
+            selected_errors.extend(
+                _artifact_dependency_errors(
+                    source,
+                    block,
+                    allowed_external_entries=parent_entries,
+                    required_parent_entries=parent_entries,
+                    enforce_self_contained=strict_dependencies,
+                )
+            )
+            if selected_errors:
+                return {
+                    "ok": False,
+                    "error": "Selected artifact no longer satisfies its live ABI.",
+                    "artifact_lineage_errors": selected_errors,
+                }
             artifact_dir = self.workspace / "artifacts" / artifact_id
             artifact_dir.mkdir(parents=True, exist_ok=True)
             artifact_source_path = artifact_dir / "artifact.wgsl"
@@ -1645,6 +3406,7 @@ future composability, or treatment names; you do not have that information.
         }
         record = {
             "study_index": study_index,
+            "node_id": node_id,
             "subject": subject.strip()[:300],
             "selected_variant": variant,
             "variant_inventory": variant_inventory.strip()[:4_000],
@@ -1666,6 +3428,11 @@ future composability, or treatment names; you do not have that information.
             **artifact_metadata,
             **rendered,
         }
+        if self.graph_enabled:
+            try:
+                self._require_study_dag().select_node(str(node_id))
+            except StudyDAGError as error:
+                return {"ok": False, "error": str(error)}
         self.study_records[study_index] = record
         result = {
             "ok": True,
@@ -1687,6 +3454,18 @@ future composability, or treatment names; you do not have that information.
                 "ok": False,
                 "error": "The final shader has already been submitted.",
             }
+        if self.graph_enabled:
+            try:
+                graph = self._require_study_dag()
+                node_id = graph.node_id_for_index(study_index)
+                if graph.snapshot(node_id).status != "selected":
+                    raise StudyDAGError(
+                        "promote only after this node's winner is recorded"
+                    )
+            except StudyDAGError as error:
+                return {"ok": False, "error": str(error)}
+        else:
+            node_id = None
         record = self.study_records.get(study_index)
         rendered = self.latest_successful_promotion_render.get(study_index)
         if record is None or rendered is None:
@@ -1733,6 +3512,7 @@ future composability, or treatment names; you do not have that information.
         promoted_status = "promoted_locked"
         promotion = {
             "study_index": study_index,
+            "node_id": node_id,
             "artifact_id": artifact_id,
             "revision": revision,
             "render_call": render_call,
@@ -1741,6 +3521,13 @@ future composability, or treatment names; you do not have that information.
             "integration_evidence": integration_evidence.strip()[:4_000],
             "status": promoted_status,
         }
+        if self.graph_enabled:
+            try:
+                graph.promote_node(
+                    str(node_id), render_calls_used=self.render_calls
+                )
+            except StudyDAGError as error:
+                return {"ok": False, "error": str(error)}
         self.promotion_records[study_index] = promotion
         record["status"] = promoted_status
         self.locked_artifacts[artifact_id]["status"] = promoted_status
@@ -1755,6 +3542,8 @@ future composability, or treatment names; you do not have that information.
             "completed_promotions": sorted(self.promotion_records),
             "required_studies": self.required_studies,
         }
+        if self.graph_enabled:
+            result["study_graph"] = self._study_graph_snapshot()
         self._event("promote_study", **result)
         return result
 
@@ -1825,6 +3614,14 @@ future composability, or treatment names; you do not have that information.
                 "ok": False,
                 "error": "The final shader has already been submitted.",
             }
+        if self.graph_enabled:
+            try:
+                if not self._require_study_dag().graph_closed:
+                    raise StudyDAGError(
+                        "close the accepted study graph before submission"
+                    )
+            except StudyDAGError as error:
+                return {"ok": False, "error": str(error)}
         submitted_revision = revision or self.revision
         rendered_path = self.successful_render_by_revision.get(
             submitted_revision
@@ -1942,6 +3739,24 @@ def _state_from_environment() -> ShaderAgentState:
         workspace=Path(os.environ["SHADER_AGENT_WORKSPACE"]),
         renderer=Path(os.environ["SHADER_AGENT_RENDERER"]),
         render_budget=int(os.environ["SHADER_AGENT_RENDER_BUDGET"]),
+        protocol=os.environ.get(
+            "SHADER_AGENT_PROTOCOL", "persistent-agent-render-tools-v8"
+        ),
+        graph_enabled=(
+            os.environ.get("SHADER_AGENT_GRAPH_ENABLED", "0") == "1"
+        ),
+        min_graph_nodes=int(
+            os.environ.get("SHADER_AGENT_MIN_GRAPH_NODES", "3")
+        ),
+        max_graph_nodes=int(
+            os.environ.get("SHADER_AGENT_MAX_GRAPH_NODES", "8")
+        ),
+        max_graph_depth=int(
+            os.environ.get("SHADER_AGENT_MAX_GRAPH_DEPTH", "3")
+        ),
+        final_render_reserve=int(
+            os.environ.get("SHADER_AGENT_FINAL_RENDER_RESERVE", "2")
+        ),
         render_size=int(os.environ.get("SHADER_AGENT_RENDER_SIZE", "1024")),
         min_successful_revisions=int(
             os.environ.get("SHADER_AGENT_MIN_SUCCESSFUL_REVISIONS", "1")
@@ -2008,6 +3823,13 @@ def create_mcp(state: ShaderAgentState) -> FastMCP:
             "and must remain byte-identical and called. A single top-level "
             "'// @shaderbench-inject id=study_N_X' placeholder lets "
             "write_shader inject exact locked source. "
+            "When adaptive graph mode is enabled, define the bounded DAG "
+            "before writing shader code, begin only ready nodes, evaluate "
+            "every promoted node from visible render evidence, and expand "
+            "only through the evidence-gated graph tool. Independent ready "
+            "siblings may be studied in either order. Close the graph only "
+            "after every node is promoted and accepted and the unique sink "
+            "integrates all branches. "
             "submit_final may select an earlier successful final revision when "
             "the newest one regresses."
         ),
@@ -2082,6 +3904,70 @@ def create_mcp(state: ShaderAgentState) -> FastMCP:
             state.promote_study(study_index, integration_evidence),
             indent=2,
         )
+
+    @server.tool()
+    def define_study_graph(graph_json: str, rationale: str) -> str:
+        """Atomically define the bounded initial dependency graph as JSON."""
+        return json.dumps(
+            state.define_study_graph(graph_json, rationale), indent=2
+        )
+
+    @server.tool()
+    def inspect_study_graph() -> str:
+        """Return node states, stable indexes, frontier, and render budget."""
+        return json.dumps(state.inspect_study_graph(), indent=2)
+
+    @server.tool()
+    def begin_study_node(node_id: str) -> str:
+        """Activate a ready node and return its stable numeric study index."""
+        return json.dumps(state.begin_study_node(node_id), indent=2)
+
+    @server.tool()
+    def evaluate_study_node(
+        node_id: str,
+        decision: str,
+        visible_evidence: str,
+        failed_criteria_json: str,
+        residuals_json: str,
+        expected_information_gain: float,
+    ) -> str:
+        """Record public accept/expand evidence after node promotion."""
+        return json.dumps(
+            state.evaluate_study_node(
+                node_id,
+                decision,
+                visible_evidence,
+                failed_criteria_json,
+                residuals_json,
+                expected_information_gain,
+            ),
+            indent=2,
+        )
+
+    @server.tool()
+    def expand_study_graph(
+        source_node_id: str,
+        graph_json: str,
+        visible_evidence: str,
+        failed_criteria_json: str,
+        expected_information_gain: float,
+    ) -> str:
+        """Append evidence-backed descendant nodes without rewriting history."""
+        return json.dumps(
+            state.expand_study_graph(
+                source_node_id,
+                graph_json,
+                visible_evidence,
+                failed_criteria_json,
+                expected_information_gain,
+            ),
+            indent=2,
+        )
+
+    @server.tool()
+    def close_study_graph(evidence: str) -> str:
+        """Freeze an all-promoted, all-accepted graph with one integrate sink."""
+        return json.dumps(state.close_study_graph(evidence), indent=2)
 
     @server.tool()
     def restore_revision(revision: int, reason: str) -> str:

@@ -8,6 +8,7 @@ import asyncio
 import html
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -25,10 +26,14 @@ from prompt_profiles import (
     apply_prompt_profile,
     prompt_profile_choices,
 )
+from shader_agent_mcp import ShaderAgentState
 from test_runner import TestRunner
 
 
-PROTOCOL = "persistent-agent-render-tools-v8"
+PROTOCOL_V8 = "persistent-agent-render-tools-v8"
+PROTOCOL_V9 = "persistent-agent-render-tools-v9"
+# Kept as the legacy/default report protocol for non-DAG workflows.
+PROTOCOL = PROTOCOL_V8
 STANDARD_WORKFLOW = "standard"
 SKETCHBOOK_WORKFLOW = "sketchbook-3x2-v1"
 CURVED_ELEMENT_SKETCHBOOK_WORKFLOW = "sketchbook-curved-elements-v2"
@@ -42,6 +47,7 @@ COMPOSITION_FIRST_SHAPED_DETAIL_WORKFLOW = (
     "sketchbook-composition-first-shaped-detail-v7"
 )
 ARTIFACT_LINEAGE_WORKFLOW = "sketchbook-artifact-lineage-v8"
+ADAPTIVE_STUDY_DAG_WORKFLOW = "sketchbook-adaptive-study-dag-v9"
 SKETCHBOOK_WORKFLOWS = (
     SKETCHBOOK_WORKFLOW,
     CURVED_ELEMENT_SKETCHBOOK_WORKFLOW,
@@ -51,8 +57,9 @@ SKETCHBOOK_WORKFLOWS = (
     COMPOSITION_FIRST_HIERARCHY_WORKFLOW,
     COMPOSITION_FIRST_SHAPED_DETAIL_WORKFLOW,
     ARTIFACT_LINEAGE_WORKFLOW,
+    ADAPTIVE_STUDY_DAG_WORKFLOW,
 )
-MCP_TOOLS = (
+BASE_MCP_TOOLS = (
     "write_shader",
     "render_shader",
     "rank_study",
@@ -61,6 +68,15 @@ MCP_TOOLS = (
     "restore_revision",
     "submit_final",
 )
+GRAPH_MCP_TOOLS = (
+    "define_study_graph",
+    "inspect_study_graph",
+    "begin_study_node",
+    "evaluate_study_node",
+    "expand_study_graph",
+    "close_study_graph",
+)
+MCP_TOOLS = (*BASE_MCP_TOOLS, *GRAPH_MCP_TOOLS)
 
 
 def workflow_requires_variant_inventory(workflow: str) -> bool:
@@ -70,11 +86,14 @@ def workflow_requires_variant_inventory(workflow: str) -> bool:
         PROGRESSIVE_APPLICATION_WORKFLOW,
         HIERARCHICAL_WIDE_SEARCH_WORKFLOW,
         ARTIFACT_LINEAGE_WORKFLOW,
+        ADAPTIVE_STUDY_DAG_WORKFLOW,
     }
 
 
 def workflow_required_studies(workflow: str) -> int:
     if workflow == STANDARD_WORKFLOW:
+        return 0
+    if workflow == ADAPTIVE_STUDY_DAG_WORKFLOW:
         return 0
     if workflow == PROGRESSIVE_APPLICATION_WORKFLOW:
         return 4
@@ -83,6 +102,14 @@ def workflow_required_studies(workflow: str) -> int:
     if workflow in SKETCHBOOK_WORKFLOWS:
         return 3
     raise ValueError(f"unknown agent workflow: {workflow}")
+
+
+def workflow_uses_study_dag(workflow: str) -> bool:
+    return workflow == ADAPTIVE_STUDY_DAG_WORKFLOW
+
+
+def workflow_protocol(workflow: str) -> str:
+    return PROTOCOL_V9 if workflow_uses_study_dag(workflow) else PROTOCOL_V8
 
 
 def _json_config(value: Any) -> str:
@@ -713,10 +740,16 @@ syntax (shown for Study 1 A):
     // @shaderbench-artifact-end id=study_1_A
 
 Use study_N_A through study_N_F and unique entry symbols. Put the complete
-candidate-specific dependency closure—its functions and constants—inside that
-one block. Only truly generic shared ABI/math helpers may live outside. The
+candidate-specific dependency closure—its functions, types, and constants—inside
+that one block. Do not delegate to mutable user-defined helpers, constants,
+uniforms, or types outside the block; WGSL built-ins remain available. A child
+node's entry must call every exact selected parent entry so the declared graph
+is executable geometry rather than status metadata. The
 atlas dispatcher must call every entry outside its block. Keep the same
-signature across A-F for one study.
+signature across A-F for one study. Every entry must accept and actually consume
+scene coordinates or another typed parent input. A zero-argument function that
+returns only constants or parameters is not an executable artifact and is
+rejected even when its values are later read by mutable geometry outside.
 
 After both passes:
 
@@ -762,6 +795,147 @@ The last revision is not automatically the best revision.
         if workflow == ARTIFACT_LINEAGE_WORKFLOW
         else ""
     )
+    adaptive_dag_contract = (
+        r"""
+
+SELF-GROWING STUDY DAG + EXACT ARTIFACTS V9
+===========================================
+
+This workflow combines adaptive research allocation with the v8 controls that
+prevent good intermediate code from being forgotten. The graph decides WHAT to
+study; rendered A-F evidence and the blinded selector decide which implementation
+wins; exact artifact locks and promotions preserve what was actually tested.
+
+PUBLIC INITIAL GRAPH
+--------------------
+
+Before writing WGSL, call define_study_graph(graph_json, rationale). This is a
+public production plan, not hidden chain-of-thought. graph_json must be a JSON
+array of at least three nodes. Every node has exactly these fields:
+
+    {
+      "node_id": "wing_surface",
+      "title": "Body-conforming wing shell",
+      "decision_question": "Which shell construction follows the parent?",
+      "depends_on": ["macro_form"],
+      "success_criteria": ["thin shell", "parent-relative frame"],
+      "failure_signals": ["absolute-position oval", "glued-on boundary"],
+      "mode": "diverge"
+    }
+
+node_id values are short identifiers. mode is one of:
+
+- diverge: two qualified 3×2 passes for a high-risk representation choice;
+- refine: one qualified 3×2 pass that improves an accepted parent mechanism;
+- integrate: one qualified 3×2 pass joining multiple accepted parents.
+
+Build a DAG of causal questions, not a list of image regions. Separate primitive
+morphology, parent coordinate/surface construction, distribution, transition,
+material, and final integration when they can fail independently. Use join nodes
+when one answer consumes multiple parents. A local A-F atlas is the search tree
+inside one node; do not turn six disposable candidates into six graph nodes.
+
+The server assigns immutable numeric study_index values and returns the ready
+frontier. Independent ready siblings may be studied in either order. This MVP
+uses one persistent Sol executor and one mutable head, so "parallel-ready" means
+topologically eligible, not concurrently executed or branch-isolated. Because
+artifact locks are cumulative, sibling execution order can still affect the
+shared scene head; the report must treat that as a known v9 limitation.
+
+NODE EXECUTION
+--------------
+
+1. Call inspect_study_graph and then begin_study_node(node_id). The result gives
+   the stable study_index, required pass count, exact parent dependencies, and
+   required artifact marker names.
+2. For each required pass, write a complete cumulative 3×2 atlas. Every A-F
+   candidate must be an exact callable block named study_INDEX_A through F.
+   Preserve and call all already locked artifacts byte-for-byte. Vary only this
+   node's decision and judge it against its declared success/failure criteria.
+3. Call render_shader(stage="study", study_index=INDEX,
+   variation_manifest=...). Inspect the actual image. Compile failures and
+   visually unqualified passes consume the global render budget but do not
+   satisfy the node.
+4. After all required passes, call rank_study(INDEX). The fresh selector receives
+   the target, opaque candidate images, and this node's criteria—but no code,
+   rationale, pass labels, or implementation convenience. Record exactly its
+   winner with record_study.
+5. Put the exact selected block in the cumulative whole scene, render
+   stage="promotion", inspect it against the reference and parent promotions,
+   then call promote_study. The block becomes immutable and callable by children.
+6. Call evaluate_study_node with decision="accept" or "expand". Supply visible
+   evidence, failed criteria, concrete residuals, and expected information gain.
+   Do not claim success merely because a shader compiled or a selector found the
+   least-bad candidate. Accept requires no failed declared criterion; minor
+   residuals are allowed only at severity <= 0.25 with information gain < 0.1.
+
+EVIDENCE-GATED GROWTH
+---------------------
+
+After a promoted node reveals a specific unresolved residual, you may call
+expand_study_graph. New nodes are append-only and must include at least one
+direct child of the source node. Expansion is valid only when it isolates a
+causal uncertainty that the current node could not resolve. One evaluation may
+append at most two focused children, and its declared information gain must
+match the recorded expand decision. Useful splits include:
+
+- smooth macro silhouette versus subtractive hooked negative space;
+- parent surface/frame versus shell cross-section;
+- unit bend/taper/camber versus sheet packing and boundary flow;
+- strong isolated components versus their seam/overlap integration.
+
+Expansion evidence must name the failed criterion, visible render symptom,
+expected information gain, and why another small parameter sweep is insufficient.
+The server rejects cycles, unknown dependencies, excessive depth/node count, and
+any plan that would consume the reserved final renders. Do not add vague nodes
+such as "improve realism" or nearby numeric tuning.
+
+An expanded source node remains recorded as expand while its descendants run.
+After those descendants resolve the failed criterion, evaluate the promoted
+source again as accept using updated visible evidence. Graph closure requires
+the latest decision for every node to be accept; do not silently erase residuals.
+
+This first DAG implementation is cumulative/augmenting: promoted parent blocks
+remain locked in descendants. Use a child to add a correction, boundary,
+subtraction, transported frame, or integration layer around a parent. True
+replacement branches require branch-local workspaces and are intentionally not
+pretended here.
+
+CLOSURE + FINALS
+----------------
+
+Every admitted graph node must be promoted and publicly evaluated. The graph
+must have one integration sink reachable from every node. Call close_study_graph
+with concrete evidence only when those conditions hold. Final renders remain
+blocked until closure. Render at least two distinct finals, use restore_revision
+when useful, and submit the best successful revision rather than automatically
+the last one.
+
+Spend remaining budget on visible structural residuals. If procedural compliance
+is already strong while anatomy, fidelity, or completeness is weak, grow or
+refine those questions before polishing the palette again.
+"""
+        if workflow == ADAPTIVE_STUDY_DAG_WORKFLOW
+        else ""
+    )
+    graph_tool_list = (
+        """
+- define_study_graph(graph_json, rationale): atomically declare the initial
+  bounded dependency graph before any shader work;
+- inspect_study_graph(): inspect immutable indexes, node states, ready frontier,
+  and remaining render slack;
+- begin_study_node(node_id): activate one dependency-ready node;
+- evaluate_study_node(node_id, decision, visible_evidence,
+  failed_criteria_json, residuals_json, expected_information_gain): publish the
+  evidence-backed accept/expand decision after promotion;
+- expand_study_graph(source_node_id, graph_json, visible_evidence,
+  failed_criteria_json, expected_information_gain): append bounded descendants;
+- close_study_graph(evidence): freeze the fully promoted and accepted DAG before
+  final renders;
+"""
+        if workflow == ADAPTIVE_STUDY_DAG_WORKFLOW
+        else ""
+    )
     return f"""\
 {profiled_prompt.rstrip()}
 
@@ -786,6 +960,7 @@ You have exactly these benchmark tools:
   selected code/image artifact;
 - promote_study(study_index, integration_evidence): freeze a successful
   full-frame use of an exact selected artifact;
+{graph_tool_list}
 - restore_revision(revision, reason): branch from immutable historical source;
 - submit_final(summary, revision): freeze any successfully rendered FINAL
   revision, including an earlier one when the newest regresses.
@@ -797,6 +972,7 @@ You have exactly these benchmark tools:
 {composition_first_hierarchy_contract}
 {shaped_detail_contract}
 {artifact_lineage_contract}
+{adaptive_dag_contract}
 
 Workflow requirements:
 1. Study the reference and plan a strong procedural reconstruction.
@@ -851,6 +1027,12 @@ def build_codex_command(
     require_study_promotions: bool,
     selector_model: str,
     selector_effort: str,
+    protocol: str,
+    graph_enabled: bool,
+    min_graph_nodes: int,
+    max_graph_nodes: int,
+    max_graph_depth: int,
+    final_render_reserve: int,
     resume_existing: bool,
     context_images: tuple[Path, ...],
     trace_path: Path,
@@ -907,7 +1089,9 @@ def build_codex_command(
         "mcp_servers.shader_tools.required": True,
         "mcp_servers.shader_tools.startup_timeout_sec": 30,
         "mcp_servers.shader_tools.tool_timeout_sec": 300,
-        "mcp_servers.shader_tools.enabled_tools": list(MCP_TOOLS),
+        "mcp_servers.shader_tools.enabled_tools": list(
+            MCP_TOOLS if graph_enabled else BASE_MCP_TOOLS
+        ),
         "mcp_servers.shader_tools.default_tools_approval_mode": "approve",
         "mcp_servers.shader_tools.env.SHADER_AGENT_WORKSPACE": str(workspace),
         "mcp_servers.shader_tools.env.SHADER_AGENT_RENDERER": str(renderer),
@@ -947,6 +1131,22 @@ def build_codex_command(
         ),
         "mcp_servers.shader_tools.env.SHADER_AGENT_RESUME_EXISTING": (
             "1" if resume_existing else "0"
+        ),
+        "mcp_servers.shader_tools.env.SHADER_AGENT_PROTOCOL": protocol,
+        "mcp_servers.shader_tools.env.SHADER_AGENT_GRAPH_ENABLED": (
+            "1" if graph_enabled else "0"
+        ),
+        "mcp_servers.shader_tools.env.SHADER_AGENT_MIN_GRAPH_NODES": str(
+            min_graph_nodes
+        ),
+        "mcp_servers.shader_tools.env.SHADER_AGENT_MAX_GRAPH_NODES": str(
+            max_graph_nodes
+        ),
+        "mcp_servers.shader_tools.env.SHADER_AGENT_MAX_GRAPH_DEPTH": str(
+            max_graph_depth
+        ),
+        "mcp_servers.shader_tools.env.SHADER_AGENT_FINAL_RENDER_RESERVE": str(
+            final_render_reserve
         ),
     }
     if reference_image is not None:
@@ -1009,19 +1209,25 @@ def _copy_workspace(workspace: Path, output_dir: Path) -> None:
         )
 
 
-def _agentic_isolation_metadata() -> dict[str, Any]:
+def _agentic_isolation_metadata(
+    protocol: str = PROTOCOL_V8,
+    graph_enabled: bool = False,
+) -> dict[str, Any]:
     metadata = generation_isolation_metadata("cli/codex")
     metadata.update(
         {
-            "protocol": PROTOCOL,
+            "protocol": protocol,
             "persistent_model_session": True,
             "model_render_budget_enforced_server_side": True,
-            "fixed_path_mcp_tools": list(MCP_TOOLS),
+            "fixed_path_mcp_tools": list(
+                MCP_TOOLS if graph_enabled else BASE_MCP_TOOLS
+            ),
             "codex_sandbox": "read-only",
             "mcp_server_mutations": "one temporary shader workspace only",
             "study_records_are_public_decision_evidence": True,
             "optional_blinded_selector_is_fresh_and_read_only": True,
             "artifact_lineage_is_exact_source_hashed": True,
+            "adaptive_study_dag": graph_enabled,
             "historical_final_submission_supported": True,
         }
     )
@@ -1103,6 +1309,23 @@ def _render_report(
     result: dict[str, Any],
 ) -> Path:
     state = result.get("state") or {}
+    dag_payload = state.get("study_dag") or {}
+    dag_records = dag_payload.get("nodes") or []
+    dag_by_index = {
+        int(record["study_index"]): record
+        for record in dag_records
+        if record.get("study_index") is not None
+    }
+
+    def study_name(study_index: int) -> str:
+        record = dag_by_index.get(study_index)
+        if not record:
+            return f"Study {study_index}"
+        node = record.get("node") or {}
+        node_id = str(node.get("node_id", f"study_{study_index}"))
+        title = str(node.get("title", ""))
+        return f"Node {node_id} · {title}" if title else f"Node {node_id}"
+
     render_events = [
         event
         for event in state.get("events", [])
@@ -1155,12 +1378,12 @@ def _render_report(
                 (
                     (
                         (
-                            f"Study {study_index} · pass {study_pass}"
+                            f"{study_name(study_index)} · pass {study_pass}"
                             f" · render {render_call}"
                         )
                         if stage == "study"
                         else (
-                            f"Study {study_index} promotion · render "
+                            f"{study_name(study_index)} promotion · render "
                             f"{render_call}"
                             if stage == "promotion"
                             else f"Final render {render_call}"
@@ -1192,7 +1415,7 @@ def _render_report(
         panels.append(
             (
                 (
-                    f"Study {record.get('study_index', index)} selected "
+                    f"{study_name(int(record.get('study_index', index)))} selected "
                     f"artifact {record.get('selected_variant', '')}"
                 ),
                 crop,
@@ -1209,7 +1432,7 @@ def _render_report(
         if promotion.exists():
             panels.append(
                 (
-                    f"Study {record.get('study_index', index)} promotion",
+                    f"{study_name(int(record.get('study_index', index)))} promotion",
                     promotion,
                     "Exact selected artifact in cumulative full-frame context",
                 )
@@ -1271,6 +1494,69 @@ def _render_report(
             )
         )
         study_html = f"<h2>Recorded study decisions</h2><ol>{items}</ol>"
+    dag_html = ""
+    if dag_records:
+        evaluations = state.get("node_evaluations") or {}
+        rows = []
+        for record in sorted(
+            dag_records, key=lambda item: int(item.get("study_index", 0))
+        ):
+            node = record.get("node") or {}
+            node_id = str(node.get("node_id", ""))
+            latest = (evaluations.get(node_id) or [None])[-1]
+            if isinstance(latest, dict):
+                residuals = latest.get("residuals") or []
+                residual_summary = "; ".join(
+                    f"{item.get('residual', '')} ({item.get('severity', '?')})"
+                    for item in residuals
+                    if isinstance(item, dict)
+                )
+                evaluation = str(latest.get("decision", ""))
+                if latest.get("expected_information_gain") is not None:
+                    evaluation += (
+                        " · IG "
+                        + str(latest.get("expected_information_gain"))
+                    )
+                if residual_summary:
+                    evaluation += " · " + residual_summary
+            else:
+                evaluation = ""
+            rows.append(
+                "<tr>"
+                f"<td>{html.escape(str(record.get('study_index', '')))}</td>"
+                f"<td><code>{html.escape(node_id)}</code><br>"
+                f"{html.escape(str(node.get('title', '')))}</td>"
+                f"<td>{html.escape(str(node.get('mode', '')))}</td>"
+                f"<td>{html.escape(', '.join(map(str, node.get('depends_on', []))) or '—')}</td>"
+                f"<td>{html.escape(str(record.get('status', '')))}</td>"
+                f"<td>{html.escape(str(record.get('successful_passes', 0)))}"
+                f" / {html.escape(str((dag_payload.get('config') or {}).get('required_passes', {}).get(node.get('mode'), '?')))}</td>"
+                f"<td>{html.escape(evaluation or '—')}</td>"
+                "</tr>"
+            )
+        dynamic_expansions = sum(
+            event.get("type") == "expand_study_graph"
+            for event in state.get("graph_growth_events") or []
+            if isinstance(event, dict)
+        )
+        dag_html = (
+            "<h2>Adaptive study graph</h2>"
+            "<p>Closed: <strong>"
+            + html.escape(str(bool(dag_payload.get("graph_closed"))))
+            + "</strong> · final sink: <code>"
+            + html.escape(str(dag_payload.get("final_node_id") or "not closed"))
+            + "</code> · graph renders: "
+            + html.escape(str(dag_payload.get("render_calls_used", 0)))
+            + " · successful finals: "
+            + html.escape(str(dag_payload.get("successful_final_renders", 0)))
+            + " · dynamic expansions: "
+            + html.escape(str(dynamic_expansions))
+            + "</p><table><thead><tr><th>#</th><th>Node</th><th>Mode</th>"
+            + "<th>Depends on</th><th>Status</th><th>Passes</th><th>Decision</th>"
+            + "</tr></thead><tbody>"
+            + "".join(rows)
+            + "</tbody></table>"
+        )
     report = output_dir / "agentic_report.html"
     report.write_text(
         f"""<!doctype html><meta charset="utf-8"><title>Agentic shader run</title>
@@ -1281,6 +1567,9 @@ body{{font:16px system-ui;background:#0d1117;color:#d7dde8;margin:2rem}}
 article{{background:#161b22;padding:1rem;border-radius:10px}}
 img{{display:block;width:100%;aspect-ratio:1;object-fit:contain;background:#000}}
 code{{color:#9ecbff}}
+table{{width:100%;border-collapse:collapse;margin:1rem 0}}
+th,td{{border:1px solid #30363d;padding:.55rem;text-align:left;vertical-align:top}}
+th{{background:#21262d}}
 </style>
 <h1>Persistent agent render-tool experiment</h1>
 <div class="meta">
@@ -1290,7 +1579,8 @@ code{{color:#9ecbff}}
 <strong>Budget:</strong> {result['render_budget']} renders ·
 <strong>Used:</strong> {state.get('render_calls', 0)}</p>
 {judge_html}
-<p>Protocol: <code>{PROTOCOL}</code></p>
+<p>Protocol: <code>{html.escape(str(result.get('protocol', PROTOCOL_V8)))}</code></p>
+{dag_html}
 {study_html}
 </div><div class="grid">{panel_html}</div>""",
         encoding="utf-8",
@@ -1310,11 +1600,16 @@ async def run_agentic_shader(
     judge_model: str | None,
     run_id: str | None,
     study_selector_model: str = "cli/codex:gpt-5.5:high",
+    min_graph_nodes: int = 3,
+    max_graph_nodes: int = 8,
+    max_graph_depth: int = 3,
 ) -> Path:
     if render_budget < 1:
         raise ValueError("render_budget must be at least 1")
     required_studies = workflow_required_studies(workflow)
     require_variant_inventory = workflow_requires_variant_inventory(workflow)
+    graph_enabled = workflow_uses_study_dag(workflow)
+    protocol = workflow_protocol(workflow)
     if workflow not in {STANDARD_WORKFLOW, *SKETCHBOOK_WORKFLOWS}:
         raise ValueError(f"unknown agent workflow: {workflow}")
     if not 1 <= min_successful_revisions <= render_budget:
@@ -1336,10 +1631,15 @@ async def run_agentic_shader(
         PROGRESSIVE_APPLICATION_WORKFLOW,
         HIERARCHICAL_WIDE_SEARCH_WORKFLOW,
         ARTIFACT_LINEAGE_WORKFLOW,
+        ADAPTIVE_STUDY_DAG_WORKFLOW,
     }
-    require_artifact_blocks = workflow == ARTIFACT_LINEAGE_WORKFLOW
-    require_study_selector = workflow == ARTIFACT_LINEAGE_WORKFLOW
-    require_study_promotions = workflow == ARTIFACT_LINEAGE_WORKFLOW
+    exact_artifact_workflow = workflow in {
+        ARTIFACT_LINEAGE_WORKFLOW,
+        ADAPTIVE_STUDY_DAG_WORKFLOW,
+    }
+    require_artifact_blocks = exact_artifact_workflow
+    require_study_selector = exact_artifact_workflow
+    require_study_promotions = exact_artifact_workflow
     selector_tool, selector_model, selector_effort = parse_cli_spec(
         study_selector_model
     )
@@ -1349,11 +1649,20 @@ async def run_agentic_shader(
         raise ValueError(
             "artifact-lineage selection currently requires cli/codex"
         )
-    minimum_render_budget = (
-        required_studies * min_successful_study_renders
-        + (required_studies if require_study_promotions else 0)
-        + min_successful_revisions
-    )
+    if graph_enabled:
+        if not 1 <= min_graph_nodes <= max_graph_nodes <= 12:
+            raise ValueError(
+                "graph node limits must satisfy 1 <= min <= max <= 12"
+            )
+        if not 0 <= max_graph_depth <= 6:
+            raise ValueError("max_graph_depth must be between 0 and 6")
+        minimum_render_budget = min_successful_revisions
+    else:
+        minimum_render_budget = (
+            required_studies * min_successful_study_renders
+            + (required_studies if require_study_promotions else 0)
+            + min_successful_revisions
+        )
     if render_budget < minimum_render_budget:
         raise ValueError(
             "render_budget must allow every required successful study render "
@@ -1423,6 +1732,12 @@ async def run_agentic_shader(
             require_study_promotions=require_study_promotions,
             selector_model=selector_model or "gpt-5.5",
             selector_effort=selector_effort or "high",
+            protocol=protocol,
+            graph_enabled=graph_enabled,
+            min_graph_nodes=min_graph_nodes,
+            max_graph_nodes=max_graph_nodes,
+            max_graph_depth=max_graph_depth,
+            final_render_reserve=min_successful_revisions,
             resume_existing=False,
             context_images=(),
             trace_path=trace_path,
@@ -1431,20 +1746,42 @@ async def run_agentic_shader(
         (output_dir / "command.json").write_text(
             json.dumps(command, indent=2), encoding="utf-8"
         )
-        completed = await asyncio.to_thread(
-            subprocess.run,
-            command,
-            input=prompt,
-            capture_output=True,
-            text=True,
-            timeout=(
-                3600
-                if workflow == ARTIFACT_LINEAGE_WORKFLOW
-                else 1800
-            ),
-            env=_base_env(),
-            cwd=workspace,
-        )
+        timed_out = False
+        try:
+            completed = await asyncio.to_thread(
+                subprocess.run,
+                command,
+                input=prompt,
+                capture_output=True,
+                text=True,
+                timeout=(
+                    5400
+                    if workflow == ADAPTIVE_STUDY_DAG_WORKFLOW
+                    else 3600
+                    if workflow == ARTIFACT_LINEAGE_WORKFLOW
+                    else 1800
+                ),
+                env=_base_env(),
+                cwd=workspace,
+            )
+        except subprocess.TimeoutExpired as error:
+            timed_out = True
+            timeout_stdout = (
+                error.stdout.decode(errors="replace")
+                if isinstance(error.stdout, bytes)
+                else error.stdout or ""
+            )
+            timeout_stderr = (
+                error.stderr.decode(errors="replace")
+                if isinstance(error.stderr, bytes)
+                else error.stderr or ""
+            )
+            completed = subprocess.CompletedProcess(
+                command,
+                124,
+                stdout=timeout_stdout,
+                stderr=timeout_stderr + "\nOuter model session timed out.",
+            )
         trace_path.write_text(completed.stdout or "", encoding="utf-8")
         (output_dir / "codex_stderr.txt").write_text(
             completed.stderr or "", encoding="utf-8"
@@ -1459,7 +1796,7 @@ async def run_agentic_shader(
     )
     submitted = (output_dir / "submission.json").exists()
     result: dict[str, Any] = {
-        "protocol": PROTOCOL,
+        "protocol": protocol,
         "model": model,
         "problem": problem,
         "prompt_profile": prompt_profile,
@@ -1475,10 +1812,16 @@ async def run_agentic_shader(
         "require_study_selector": require_study_selector,
         "require_study_promotions": require_study_promotions,
         "study_selector_model": study_selector_model,
+        "graph_enabled": graph_enabled,
+        "min_graph_nodes": min_graph_nodes,
+        "max_graph_nodes": max_graph_nodes,
+        "max_graph_depth": max_graph_depth,
+        "final_render_reserve": min_successful_revisions,
         "codex_returncode": completed.returncode,
+        "timed_out": timed_out,
         "submitted": submitted,
         "state": state,
-        "isolation": _agentic_isolation_metadata(),
+        "isolation": _agentic_isolation_metadata(protocol, graph_enabled),
     }
     if completed.returncode != 0:
         result["error"] = (
@@ -1519,28 +1862,35 @@ async def resume_agentic_shader(
     judge_model: str | None,
     study_selector_model: str | None = None,
 ) -> Path:
-    """Resume an interrupted v8 run without repeating completed studies."""
+    """Resume an interrupted v8/v9 run without repeating completed work."""
     script_dir = Path(__file__).parent.resolve()
     repo_root = script_dir.parent
-    output_dir = script_dir / "benchmark_run_output" / run_id
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", run_id):
+        raise ValueError("resume run id contains invalid path characters")
+    output_root = (script_dir / "benchmark_run_output").resolve()
+    output_dir = (output_root / run_id).resolve()
+    if not output_dir.is_relative_to(output_root):
+        raise ValueError("resume run escaped benchmark_run_output")
     result_path = output_dir / "result.json"
     state_path = output_dir / "agent_state.json"
     if not result_path.is_file() or not state_path.is_file():
         raise FileNotFoundError(f"resume run not found: {output_dir}")
     result = json.loads(result_path.read_text(encoding="utf-8"))
     state = json.loads(state_path.read_text(encoding="utf-8"))
-    if result.get("workflow") != ARTIFACT_LINEAGE_WORKFLOW:
-        raise ValueError("checkpoint resume currently supports v8 only")
-    if state.get("submitted") or (output_dir / "submission.json").exists():
-        return _render_report(
-            output_dir,
-            repo_root / "problems" / "base_set" / result["problem"],
-            result,
-        )
-
-    problem_path = (
-        repo_root / "problems" / "base_set" / result["problem"]
-    ).resolve()
+    workflow = str(result.get("workflow", ""))
+    if workflow not in {
+        ARTIFACT_LINEAGE_WORKFLOW,
+        ADAPTIVE_STUDY_DAG_WORKFLOW,
+    }:
+        raise ValueError("checkpoint resume currently supports v8 and v9")
+    graph_enabled = workflow_uses_study_dag(workflow)
+    protocol = str(result.get("protocol") or workflow_protocol(workflow))
+    if protocol != workflow_protocol(workflow):
+        raise ValueError("checkpoint workflow and protocol disagree")
+    problem_root = (repo_root / "problems" / "base_set").resolve()
+    problem_path = (problem_root / str(result["problem"])).resolve()
+    if not problem_path.is_relative_to(problem_root) or not problem_path.is_dir():
+        raise ValueError("checkpoint problem escaped problems/base_set")
     renderer = (
         repo_root / "shader_harness" / "target" / "release" / "shader-bench"
     )
@@ -1555,15 +1905,70 @@ async def resume_agentic_shader(
         selector_spec
     )
     if selector_tool != "codex" or not selector_model:
-        raise ValueError("v8 resume selector must use cli/codex")
-
-    shader_template = (output_dir / "shader.wgsl").read_text(
-        encoding="utf-8"
+        raise ValueError("artifact-workflow resume selector must use cli/codex")
+    validated_checkpoint = ShaderAgentState(
+        output_dir,
+        renderer,
+        render_budget=int(result["render_budget"]),
+        render_size=int(result["render_size"]),
+        min_successful_revisions=int(result["min_successful_revisions"]),
+        required_studies=int(result["required_studies"]),
+        require_variant_inventory=bool(result["require_variant_inventory"]),
+        min_successful_study_renders=int(
+            result["min_successful_study_renders"]
+        ),
+        require_study_diversity=bool(result["require_study_diversity"]),
+        require_artifact_blocks=bool(result["require_artifact_blocks"]),
+        require_study_selector=bool(result["require_study_selector"]),
+        require_study_promotions=bool(result["require_study_promotions"]),
+        reference_image=problem_path / "reference.png",
+        selector_model=selector_model,
+        selector_effort=selector_effort or "high",
+        resume_existing=True,
+        protocol=protocol,
+        graph_enabled=graph_enabled,
+        min_graph_nodes=int(result.get("min_graph_nodes", 3)),
+        max_graph_nodes=int(result.get("max_graph_nodes", 8)),
+        max_graph_depth=int(result.get("max_graph_depth", 3)),
+        final_render_reserve=int(
+            result.get(
+                "final_render_reserve",
+                result["min_successful_revisions"],
+            )
+        ),
     )
-    for artifact_id in sorted(state.get("locked_artifacts", {})):
-        artifact_source = (
-            output_dir / "artifacts" / artifact_id / "artifact.wgsl"
-        ).read_text(encoding="utf-8")
+    if state.get("submitted") or (output_dir / "submission.json").exists():
+        result["state"] = state
+        result["submitted"] = True
+        if judge_model:
+            result["render_judges"] = await _judge_render_sequence(
+                output_dir, problem_path, judge_model, state
+            )
+            submission = json.loads(
+                (output_dir / "submission.json").read_text(encoding="utf-8")
+            )
+            chosen_call = submission.get("render_call")
+            result["judge"] = next(
+                (
+                    item
+                    for item in result["render_judges"]
+                    if item["render_call"] == chosen_call
+                ),
+                None,
+            )
+        report = _render_report(output_dir, problem_path, result)
+        result["report"] = str(report)
+        result_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+        return report
+
+    shader_path = output_dir / "shader.wgsl"
+    shader_template = (
+        shader_path.read_text(encoding="utf-8") if shader_path.is_file() else ""
+    )
+    for artifact_id, metadata in sorted(
+        validated_checkpoint.locked_artifacts.items()
+    ):
+        artifact_source = str(metadata["source"])
         if artifact_source not in shader_template:
             raise ValueError(
                 f"current shader is missing locked artifact {artifact_id}"
@@ -1573,19 +1978,102 @@ async def resume_agentic_shader(
             f"// @shaderbench-inject id={artifact_id}\n",
             1,
         )
-    successful_finals = [
+    successful_renders = [
         event
-        for event in state.get("events", [])
+        for event in validated_checkpoint.events
         if event.get("type") == "render_shader"
         and event.get("ok")
-        and event.get("stage") == "final"
     ]
-    latest_final = successful_finals[-1] if successful_finals else None
-    context_images = (
-        (Path(latest_final["image"]),) if latest_final else ()
+    successful_finals = [
+        event for event in successful_renders if event.get("stage") == "final"
+    ]
+    latest_context = (
+        successful_finals[-1]
+        if successful_finals
+        else successful_renders[-1]
+        if successful_renders
+        else None
     )
+    context_images = ()
+    if latest_context:
+        render_call = int(latest_context["render_call"])
+        fixed_context = output_dir / "renders" / f"render_{render_call:02d}.png"
+        if fixed_context.is_file() and not fixed_context.is_symlink():
+            context_images = (fixed_context,)
     original_prompt = (output_dir / "agent_prompt.txt").read_text(
         encoding="utf-8"
+    )
+    if graph_enabled:
+        graph_payload = state.get("study_dag") or {}
+        graph_nodes = graph_payload.get("nodes") or []
+        node_evaluations = state.get("node_evaluations") or {}
+        graph_lines = []
+        for record in graph_nodes:
+            node = record.get("node") or {}
+            node_id = str(node.get("node_id", ""))
+            latest_evaluation = (node_evaluations.get(node_id) or [None])[-1]
+            decision = (
+                latest_evaluation.get("decision", "none")
+                if isinstance(latest_evaluation, dict)
+                else "none"
+            )
+            graph_lines.append(
+                f"- index {record.get('study_index')}: {node_id} "
+                f"({node.get('mode')}) status={record.get('status')}, "
+                f"passes={record.get('successful_passes')}, "
+                f"depends_on={node.get('depends_on', [])}, evaluation={decision}"
+            )
+        graph_state = (
+            "The graph has not yet been defined. Call define_study_graph once "
+            "before writing shader code."
+            if not graph_nodes
+            else (
+                "The server has already restored this append-only graph:\n"
+                + "\n".join(graph_lines)
+                + f"\nGraph closed={graph_payload.get('graph_closed')}; "
+                f"final sink={graph_payload.get('final_node_id')}; "
+                f"graph render ledger={graph_payload.get('render_calls_used')}."
+            )
+        )
+        continuation = f"""
+Call inspect_study_graph first. Do not redefine existing nodes and do not repeat
+completed passes, rankings, records, promotions, or evaluations. Resume the
+first legal incomplete transition: continue an active node; rank a studied
+node; promote a selected node; evaluate an unevaluated promoted node; begin a
+ready pending node; or close an all-promoted/all-accepted graph. Expand only
+from a recorded expand decision with concrete residual evidence.
+
+{graph_state}
+
+There are {len(successful_finals)} successful final revisions; the run requires
+{result.get('min_successful_revisions')}. Final rendering remains blocked until
+the graph is closed. If the graph is already closed, compare the attached
+checkpoint render (when present) with the reference, make bounded whole-image
+improvements, and submit the best successful FINAL revision.
+"""
+    else:
+        continuation = f"""
+Completed studies are {state.get('completed_studies')}; completed promotions
+are {state.get('completed_promotions')}. Do NOT regenerate, rerank, rerecord, or
+repromote them. Their exact artifacts remain locked server-side.
+
+There are {len(successful_finals)} successful final revisions, but the run
+requires {result.get('min_successful_revisions')} distinct successful finals.
+Compare the attached checkpoint render (when present) to the reference, make
+one bounded whole-image improvement while preserving the locked artifacts,
+render another FINAL, inspect it, and submit the best successful final revision
+(which may be an earlier one). Use additional final renders only when a concrete
+improvement remains plausible.
+"""
+    shader_context = (
+        "The editable current shader template follows. Injection placeholders "
+        "are expanded by write_shader into byte-identical locked source. Keep "
+        "each placeholder once and keep calling every artifact entry from live "
+        "scene code.\n\n```wgsl\n"
+        + shader_template
+        + "\n```"
+        if shader_template
+        else "No shader revision had been written before the interruption."
     )
     resume_prompt = f"""\
 {original_prompt.rstrip()}
@@ -1596,26 +2084,11 @@ RESUME AFTER TRANSPORT INTERRUPTION
 The prior persistent model connection ended because the network disconnected.
 This is a checkpoint continuation, not a new experiment. The server has loaded
 revision {state.get('revision')}, {state.get('render_calls')} used renders, and
-{state.get('remaining_renders')} remaining renders. Completed studies are
-{state.get('completed_studies')}; completed promotions are
-{state.get('completed_promotions')}. Do NOT regenerate, rerank, rerecord, or
-repromote them. Their exact artifacts remain locked server-side.
+{state.get('remaining_renders')} remaining renders.
 
-There are {len(successful_finals)} successful final revisions, but the run
-requires {result.get('min_successful_revisions')} distinct successful finals.
-The second attached image is the latest final render. Compare it to the first
-attached reference, make one bounded whole-image improvement while preserving
-the locked artifacts, render another FINAL, inspect it, and submit the best
-successful final revision (which may be the earlier one). Use additional final
-renders only when a concrete improvement remains plausible.
+{continuation.strip()}
 
-The editable current shader template follows. The injection placeholders are
-expanded by write_shader into byte-identical locked source. Keep each
-placeholder once and keep calling every artifact entry from live scene code.
-
-```wgsl
-{shader_template}
-```
+{shader_context}
 """
     attempts = list(result.get("resume_attempts", []))
     attempt_number = len(attempts) + 1
@@ -1646,6 +2119,17 @@ placeholder once and keep calling every artifact entry from live scene code.
         require_study_promotions=bool(result["require_study_promotions"]),
         selector_model=selector_model,
         selector_effort=selector_effort or "high",
+        protocol=protocol,
+        graph_enabled=graph_enabled,
+        min_graph_nodes=int(result.get("min_graph_nodes", 3)),
+        max_graph_nodes=int(result.get("max_graph_nodes", 8)),
+        max_graph_depth=int(result.get("max_graph_depth", 3)),
+        final_render_reserve=int(
+            result.get(
+                "final_render_reserve",
+                result["min_successful_revisions"],
+            )
+        ),
         resume_existing=True,
         context_images=context_images,
         trace_path=trace_path,
@@ -1654,16 +2138,36 @@ placeholder once and keep calling every artifact entry from live scene code.
     (output_dir / f"command_resume_{attempt_number:02d}.json").write_text(
         json.dumps(command, indent=2), encoding="utf-8"
     )
-    completed = await asyncio.to_thread(
-        subprocess.run,
-        command,
-        input=resume_prompt,
-        capture_output=True,
-        text=True,
-        timeout=1800,
-        env=_base_env(),
-        cwd=output_dir,
-    )
+    timed_out = False
+    try:
+        completed = await asyncio.to_thread(
+            subprocess.run,
+            command,
+            input=resume_prompt,
+            capture_output=True,
+            text=True,
+            timeout=5400 if graph_enabled else 3600,
+            env=_base_env(),
+            cwd=output_dir,
+        )
+    except subprocess.TimeoutExpired as error:
+        timed_out = True
+        timeout_stdout = (
+            error.stdout.decode(errors="replace")
+            if isinstance(error.stdout, bytes)
+            else error.stdout or ""
+        )
+        timeout_stderr = (
+            error.stderr.decode(errors="replace")
+            if isinstance(error.stderr, bytes)
+            else error.stderr or ""
+        )
+        completed = subprocess.CompletedProcess(
+            command,
+            124,
+            stdout=timeout_stdout,
+            stderr=timeout_stderr + "\nOuter model resume timed out.",
+        )
     trace_path.write_text(completed.stdout or "", encoding="utf-8")
     stderr_path.write_text(completed.stderr or "", encoding="utf-8")
     staged_reference.unlink(missing_ok=True)
@@ -1677,6 +2181,7 @@ placeholder once and keep calling every artifact entry from live scene code.
             "trace": str(trace_path),
             "stderr": str(stderr_path),
             "submitted": submitted,
+            "timed_out": timed_out,
         }
     )
     result["resume_attempts"] = attempts
@@ -1728,7 +2233,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--problem")
     parser.add_argument(
         "--resume-run",
-        help="Resume an interrupted v8 run directory by run id.",
+        help="Resume an interrupted v8/v9 run directory by run id.",
     )
     parser.add_argument(
         "--prompt-profile",
@@ -1763,6 +2268,9 @@ def main(argv: list[str] | None = None) -> None:
             "Fresh isolated visual selector used by artifact-lineage-v8."
         ),
     )
+    parser.add_argument("--min-graph-nodes", type=int, default=3)
+    parser.add_argument("--max-graph-nodes", type=int, default=8)
+    parser.add_argument("--max-graph-depth", type=int, default=3)
     parser.add_argument("--run-id", default=None)
     args = parser.parse_args(argv)
     if args.resume_run:
@@ -1789,6 +2297,9 @@ def main(argv: list[str] | None = None) -> None:
             judge_model=args.judge_model,
             run_id=args.run_id,
             study_selector_model=args.study_selector_model,
+            min_graph_nodes=args.min_graph_nodes,
+            max_graph_nodes=args.max_graph_nodes,
+            max_graph_depth=args.max_graph_depth,
         )
     )
     print(f"Agentic report: {report}")

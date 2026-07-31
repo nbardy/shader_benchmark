@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -36,16 +37,27 @@ REVISION_CRITIQUE = (
 )
 
 
-def artifact_block(study_index: int, label: str) -> str:
+def artifact_block(
+    study_index: int,
+    label: str,
+    *,
+    parent_entry: str | None = None,
+) -> str:
     """Return one exact, independently extractable WGSL artifact block."""
     lower = label.lower()
     offset = "ABCDEF".index(label) + 1
+    distance = f"length(p + vec3<f32>({offset}.0, 0.0, 0.0)) - 0.5"
+    return_value = (
+        f"min({distance}, {parent_entry}(p))"
+        if parent_entry is not None
+        else distance
+    )
     return (
         f"// @shaderbench-artifact-begin "
         f"id=study_{study_index}_{label} "
         f"entry=artifact_s{study_index}_{lower}\n"
         f"fn artifact_s{study_index}_{lower}(p: vec3<f32>) -> f32 {{\n"
-        f"    return length(p + vec3<f32>({offset}.0, 0.0, 0.0)) - 0.5;\n"
+        f"    return {return_value};\n"
         "}\n"
         f"// @shaderbench-artifact-end id=study_{study_index}_{label}\n"
     )
@@ -56,10 +68,14 @@ def shader_with_artifacts(
     labels: str = "ABCDEF",
     live_entry: str = "artifact_s1_b",
     retained_blocks: tuple[str, ...] = (),
+    parent_entry: str | None = None,
 ) -> str:
     """Build a compact valid shader containing an A-F study manifest."""
     blocks = list(retained_blocks)
-    blocks.extend(artifact_block(study_index, label) for label in labels)
+    blocks.extend(
+        artifact_block(study_index, label, parent_entry=parent_entry)
+        for label in labels
+    )
     current_entries = [
         f"artifact_s{study_index}_{label.lower()}" for label in labels
     ]
@@ -182,6 +198,7 @@ class ShaderArtifactWorkflowTests(unittest.TestCase):
         *,
         required_studies: int = 1,
         min_successful_revisions: int = 1,
+        resume_existing: bool = False,
     ) -> tuple[ShaderAgentState, Mock]:
         renderer = root / "renderer"
         renderer.write_text("fake", encoding="utf-8")
@@ -200,6 +217,7 @@ class ShaderArtifactWorkflowTests(unittest.TestCase):
             require_study_promotions=True,
             reference_image=reference,
             selector_runner=selector,
+            resume_existing=resume_existing,
         )
         return state, selector
 
@@ -251,6 +269,377 @@ class ShaderArtifactWorkflowTests(unittest.TestCase):
         errors = _artifact_manifest_errors(missing_f, 1)
         self.assertTrue(errors)
         self.assertTrue(any("study_1_F" in error for error in errors))
+
+    def test_artifact_entry_must_accept_and_consume_a_typed_input(self):
+        source = shader_with_artifacts()
+        parameter_token = (
+            "// @shaderbench-artifact-begin id=study_1_A entry=artifact_s1_a\n"
+            "fn artifact_s1_a() -> f32 { return 1.0; }\n"
+            "// @shaderbench-artifact-end id=study_1_A\n"
+        )
+        no_input = source.replace(artifact_block(1, "A"), parameter_token)
+        no_input_errors = _artifact_manifest_errors(no_input, 1)
+        self.assertTrue(
+            any("constant parameter tokens" in error for error in no_input_errors),
+            no_input_errors,
+        )
+
+        unused_input = artifact_block(1, "A").replace(
+            "return length(p + vec3<f32>(1.0, 0.0, 0.0)) - 0.5;",
+            "return 1.0;",
+        )
+        unused = source.replace(artifact_block(1, "A"), unused_input)
+        unused_errors = _artifact_manifest_errors(unused, 1)
+        self.assertTrue(
+            any("does not consume" in error for error in unused_errors),
+            unused_errors,
+        )
+
+        comment_only = artifact_block(1, "A").replace(
+            "return length(p + vec3<f32>(1.0, 0.0, 0.0)) - 0.5;",
+            "// p is intentionally mentioned only in a comment\n"
+            "/* nested /* p */ comment */ return 1.0;",
+        )
+        commented = source.replace(artifact_block(1, "A"), comment_only)
+        commented_errors = _artifact_manifest_errors(commented, 1)
+        self.assertTrue(
+            any("does not consume" in error for error in commented_errors),
+            commented_errors,
+        )
+
+    def test_artifacts_must_be_live_reachable_and_self_contained(self):
+        source = shader_with_artifacts()
+        commented_manifest = "/*\n" + source + "\n*/\n"
+        commented_errors = _artifact_manifest_errors(commented_manifest, 1)
+        self.assertTrue(commented_errors)
+        self.assertTrue(
+            any("missing" in error or "marker" in error for error in commented_errors),
+            commented_errors,
+        )
+
+        unreachable = source.replace(
+            "    distance = min(distance, artifact_s1_f(p));",
+            "    // artifact_s1_f(p) is not a live call",
+        )
+        unreachable_errors = _artifact_manifest_errors(unreachable, 1)
+        self.assertTrue(
+            any("not reachable" in error for error in unreachable_errors),
+            unreachable_errors,
+        )
+
+        false_branch = source.replace(
+            "    distance = min(distance, artifact_s1_f(p));",
+            "    if false { distance = min(distance, artifact_s1_f(p)); }",
+        )
+        false_branch_errors = _artifact_manifest_errors(false_branch, 1)
+        self.assertTrue(
+            any("not reachable" in error for error in false_branch_errors),
+            false_branch_errors,
+        )
+
+        discarded = source.replace(
+            "    distance = min(distance, artifact_s1_f(p));",
+            "    let ignored_artifact = artifact_s1_f(p);",
+        )
+        discarded_errors = _artifact_manifest_errors(discarded, 1)
+        self.assertTrue(
+            any("not reachable" in error for error in discarded_errors),
+            discarded_errors,
+        )
+
+        original = artifact_block(1, "A")
+        delegated = original.replace(
+            "return length(p + vec3<f32>(1.0, 0.0, 0.0)) - 0.5;",
+            "return external_impl(p);",
+        )
+        mutable_helper = (
+            "fn external_impl(p: vec3<f32>) -> f32 { return length(p) - 9.0; }\n"
+        )
+        delegated_source = mutable_helper + source.replace(original, delegated)
+        delegated_errors = _artifact_manifest_errors(delegated_source, 1)
+        self.assertTrue(
+            any("mutable helpers" in error for error in delegated_errors),
+            delegated_errors,
+        )
+
+        captured = original.replace(
+            "return length(p + vec3<f32>(1.0, 0.0, 0.0)) - 0.5;",
+            "return length(p) - EXTERNAL_RADIUS;",
+        )
+        captured_source = (
+            "const EXTERNAL_RADIUS: f32 = 9.0;\n"
+            + source.replace(original, captured)
+        )
+        captured_errors = _artifact_manifest_errors(captured_source, 1)
+        self.assertTrue(
+            any("module symbols" in error for error in captured_errors),
+            captured_errors,
+        )
+
+        false_input = original.replace(
+            "return length(p + vec3<f32>(1.0, 0.0, 0.0)) - 0.5;",
+            "if false { return length(p); } return 1.0;",
+        )
+        false_input_source = source.replace(original, false_input)
+        false_input_errors = _artifact_manifest_errors(false_input_source, 1)
+        self.assertTrue(
+            any("does not consume" in error for error in false_input_errors),
+            false_input_errors,
+        )
+
+        overwritten_input = original.replace(
+            "return length(p + vec3<f32>(1.0, 0.0, 0.0)) - 0.5;",
+            "var d = length(p); d = 1.0; return d;",
+        )
+        overwritten_input_source = source.replace(original, overwritten_input)
+        overwritten_input_errors = _artifact_manifest_errors(
+            overwritten_input_source,
+            1,
+        )
+        self.assertTrue(
+            any(
+                "does not consume" in error
+                for error in overwritten_input_errors
+            ),
+            overwritten_input_errors,
+        )
+
+        static_true_overwrite = original.replace(
+            "return length(p + vec3<f32>(1.0, 0.0, 0.0)) - 0.5;",
+            "var d = length(p); if true { d = 1.0; } return d;",
+        )
+        static_true_overwrite_source = source.replace(
+            original,
+            static_true_overwrite,
+        )
+        static_true_overwrite_errors = _artifact_manifest_errors(
+            static_true_overwrite_source,
+            1,
+        )
+        self.assertTrue(
+            any(
+                "does not consume" in error
+                for error in static_true_overwrite_errors
+            ),
+            static_true_overwrite_errors,
+        )
+
+        dead_component_input = original.replace(
+            "return length(p + vec3<f32>(1.0, 0.0, 0.0)) - 0.5;",
+            "var values = vec2<f32>(1.0, 1.0); "
+            "values.y = length(p); return values.x;",
+        )
+        dead_component_input_source = source.replace(
+            original,
+            dead_component_input,
+        )
+        dead_component_input_errors = _artifact_manifest_errors(
+            dead_component_input_source,
+            1,
+        )
+        self.assertTrue(
+            any(
+                "does not consume" in error
+                for error in dead_component_input_errors
+            ),
+            dead_component_input_errors,
+        )
+
+        overwritten_component_input = original.replace(
+            "return length(p + vec3<f32>(1.0, 0.0, 0.0)) - 0.5;",
+            "var values = vec2<f32>(1.0, 1.0); "
+            "values.x = length(p); values.x = 1.0; return values.x;",
+        )
+        overwritten_component_input_source = source.replace(
+            original,
+            overwritten_component_input,
+        )
+        overwritten_component_input_errors = _artifact_manifest_errors(
+            overwritten_component_input_source,
+            1,
+        )
+        self.assertTrue(
+            any(
+                "does not consume" in error
+                for error in overwritten_component_input_errors
+            ),
+            overwritten_component_input_errors,
+        )
+
+        aliased_component_input = original.replace(
+            "return length(p + vec3<f32>(1.0, 0.0, 0.0)) - 0.5;",
+            "var values = vec2<f32>(1.0, 1.0); "
+            "values.y = length(p); let alias = values; return alias.x;",
+        )
+        aliased_component_input_source = source.replace(
+            original,
+            aliased_component_input,
+        )
+        aliased_component_input_errors = _artifact_manifest_errors(
+            aliased_component_input_source,
+            1,
+        )
+        self.assertTrue(
+            any(
+                "does not consume" in error
+                for error in aliased_component_input_errors
+            ),
+            aliased_component_input_errors,
+        )
+
+        constructor_component_input = original.replace(
+            "return length(p + vec3<f32>(1.0, 0.0, 0.0)) - 0.5;",
+            "return vec2<f32>(1.0, length(p)).x;",
+        )
+        constructor_component_input_source = source.replace(
+            original,
+            constructor_component_input,
+        )
+        constructor_component_input_errors = _artifact_manifest_errors(
+            constructor_component_input_source,
+            1,
+        )
+        self.assertTrue(
+            any(
+                "does not consume" in error
+                for error in constructor_component_input_errors
+            ),
+            constructor_component_input_errors,
+        )
+
+        overwritten_scene = source.replace(
+            "    return distance;",
+            "    distance = length(p) - 0.5;\n    return distance;",
+        )
+        overwritten_scene_errors = _artifact_manifest_errors(
+            overwritten_scene,
+            1,
+        )
+        self.assertTrue(
+            any("not reachable" in error for error in overwritten_scene_errors),
+            overwritten_scene_errors,
+        )
+
+        component_calls = "\n".join(
+            f"    values.y = min(values.y, artifact_s1_{label}(p));"
+            for label in "abcdef"
+        )
+        dead_component_scene = source.replace(
+            "    var distance = artifact_s1_b(p);",
+            "    var distance = length(p) - 0.5;",
+        )
+        dead_component_scene = re.sub(
+            r"(?:    distance = min\(distance, artifact_s1_[a-f]\(p\)\);\n)+",
+            "    var values = vec2<f32>(distance, 1.0);\n"
+            + component_calls
+            + "\n",
+            dead_component_scene,
+        ).replace("    return distance;", "    return values.x;")
+        dead_component_scene_errors = _artifact_manifest_errors(
+            dead_component_scene,
+            1,
+        )
+        self.assertTrue(
+            any(
+                "not reachable" in error
+                for error in dead_component_scene_errors
+            ),
+            dead_component_scene_errors,
+        )
+
+        parent_block = artifact_block(1, "B")
+        unlinked_child = shader_with_artifacts(
+            study_index=2,
+            live_entry="artifact_s2_a",
+            retained_blocks=(parent_block,),
+        )
+        unlinked_errors = _artifact_manifest_errors(
+            unlinked_child,
+            2,
+            allowed_external_entries={"artifact_s1_b"},
+            required_parent_entries={"artifact_s1_b"},
+        )
+        self.assertTrue(
+            any("required parent artifacts" in error for error in unlinked_errors),
+            unlinked_errors,
+        )
+
+        linked_child = shader_with_artifacts(
+            study_index=2,
+            live_entry="artifact_s2_a",
+            retained_blocks=(parent_block,),
+            parent_entry="artifact_s1_b",
+        )
+        linked_a = artifact_block(2, "A", parent_entry="artifact_s1_b")
+        discarded_parent_a = linked_a.replace(
+            "return min(length(p + vec3<f32>(1.0, 0.0, 0.0)) - 0.5, "
+            "artifact_s1_b(p));",
+            "let ignored_parent = artifact_s1_b(p); "
+            "return length(p + vec3<f32>(1.0, 0.0, 0.0)) - 0.5;",
+        )
+        discarded_parent_source = linked_child.replace(
+            linked_a, discarded_parent_a
+        )
+        discarded_parent_errors = _artifact_manifest_errors(
+            discarded_parent_source,
+            2,
+            allowed_external_entries={"artifact_s1_b"},
+            required_parent_entries={"artifact_s1_b"},
+        )
+        self.assertTrue(
+            any(
+                "required parent artifacts" in error
+                for error in discarded_parent_errors
+            ),
+            discarded_parent_errors,
+        )
+
+        overwritten_parent_a = linked_a.replace(
+            "return min(length(p + vec3<f32>(1.0, 0.0, 0.0)) - 0.5, "
+            "artifact_s1_b(p));",
+            "var d = artifact_s1_b(p); d = length(p) - 0.5; return d;",
+        )
+        overwritten_parent_source = linked_child.replace(
+            linked_a,
+            overwritten_parent_a,
+        )
+        overwritten_parent_errors = _artifact_manifest_errors(
+            overwritten_parent_source,
+            2,
+            allowed_external_entries={"artifact_s1_b"},
+            required_parent_entries={"artifact_s1_b"},
+        )
+        self.assertTrue(
+            any(
+                "required parent artifacts" in error
+                for error in overwritten_parent_errors
+            ),
+            overwritten_parent_errors,
+        )
+
+        dead_component_parent_a = linked_a.replace(
+            "return min(length(p + vec3<f32>(1.0, 0.0, 0.0)) - 0.5, "
+            "artifact_s1_b(p));",
+            "var values = vec2<f32>(length(p) - 0.5, 1.0); "
+            "values.y = artifact_s1_b(p); return values.x;",
+        )
+        dead_component_parent_source = linked_child.replace(
+            linked_a,
+            dead_component_parent_a,
+        )
+        dead_component_parent_errors = _artifact_manifest_errors(
+            dead_component_parent_source,
+            2,
+            allowed_external_entries={"artifact_s1_b"},
+            required_parent_entries={"artifact_s1_b"},
+        )
+        self.assertTrue(
+            any(
+                "required parent artifacts" in error
+                for error in dead_component_parent_errors
+            ),
+            dead_component_parent_errors,
+        )
 
     def test_selector_winner_gates_record_and_materializes_exact_artifacts(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -336,7 +725,7 @@ class ShaderArtifactWorkflowTests(unittest.TestCase):
             )
             self.assertFalse(dead_only["ok"])
             self.assertIn(
-                "not called",
+                "not reachable",
                 " ".join(dead_only["artifact_lineage_errors"]).lower(),
             )
 
@@ -393,6 +782,7 @@ class ShaderArtifactWorkflowTests(unittest.TestCase):
                 study_index=2,
                 live_entry="artifact_s2_a",
                 retained_blocks=(locked,),
+                parent_entry="artifact_s1_b",
             )
             self.assertTrue(
                 state.write_shader(
@@ -469,6 +859,144 @@ class ShaderArtifactWorkflowTests(unittest.TestCase):
             )
             self.assertTrue(rewritten["ok"])
             self.assertEqual(rewritten["revision"], 3)
+
+    def test_legacy_v8_resume_allows_historical_external_helper_artifact(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            state, _ = self.make_state(root)
+            original_b = artifact_block(1, "B")
+            legacy_b = original_b.replace(
+                "return length(p + vec3<f32>(2.0, 0.0, 0.0)) - 0.5;",
+                "return legacy_distance(p);",
+            )
+            helper = (
+                "fn legacy_distance(p: vec3<f32>) -> f32 { "
+                "return length(p) - 0.5; }\n"
+            )
+            study_source = helper + shader_with_artifacts().replace(
+                original_b, legacy_b
+            )
+            self.assertTrue(state.write_shader(study_source)["ok"])
+            with patch("shader_agent_mcp.subprocess.run", fake_renderer):
+                rendered, _ = state.render_shader("study", 1)
+            self.assertTrue(rendered["ok"], rendered)
+            ranked, _ = state.rank_study(1)
+            self.assertTrue(ranked["ok"], ranked)
+            recorded = state.record_study(
+                1,
+                "legacy external-helper artifact",
+                "B",
+                SELECTION_RATIONALE,
+                HANDOFF_REQUIREMENTS,
+                selected_render_call=1,
+            )
+            self.assertTrue(recorded["ok"], recorded)
+            self.assertTrue(
+                state.write_shader(
+                    helper + integrated_shader(legacy_b),
+                    REVISION_CRITIQUE,
+                )["ok"]
+            )
+            with patch("shader_agent_mcp.subprocess.run", fake_renderer):
+                promotion, _ = state.render_shader("promotion", 1)
+            self.assertTrue(promotion["ok"], promotion)
+            self.assertTrue(
+                state.promote_study(1, INTEGRATION_EVIDENCE)["ok"]
+            )
+
+            resumed, _ = self.make_state(root, resume_existing=True)
+            self.assertIn("legacy_distance", resumed.shader_path.read_text())
+            self.assertEqual(
+                resumed.locked_artifacts["study_1_B"]["source"], legacy_b
+            )
+
+    def test_checkpoint_rejects_artifact_corruption_and_path_escape(self):
+        def promoted_state(root: Path) -> ShaderAgentState:
+            state, _ = self.make_state(root)
+            self.record_first_study(state)
+            locked = artifact_block(1, "B")
+            self.assertTrue(
+                state.write_shader(
+                    integrated_shader(locked), REVISION_CRITIQUE
+                )["ok"]
+            )
+            with patch("shader_agent_mcp.subprocess.run", fake_renderer):
+                rendered, _ = state.render_shader("promotion", 1)
+            self.assertTrue(rendered["ok"], rendered)
+            self.assertTrue(
+                state.promote_study(1, INTEGRATION_EVIDENCE)["ok"]
+            )
+            return state
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            state = promoted_state(root)
+            artifact_path = Path(
+                state.locked_artifacts["study_1_B"]["artifact_source_path"]
+            )
+            artifact_path.write_text(
+                artifact_path.read_text(encoding="utf-8") + "// tampered\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "hash mismatch"):
+                self.make_state(root, resume_existing=True)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            state = promoted_state(root)
+            outside = root / "outside_artifact.wgsl"
+            outside.write_text(
+                state.locked_artifacts["study_1_B"]["source"],
+                encoding="utf-8",
+            )
+            payload = json.loads(state.state_path.read_text(encoding="utf-8"))
+            payload["locked_artifacts"]["study_1_B"][
+                "artifact_source_path"
+            ] = str(outside)
+            state.state_path.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "server-owned path"):
+                self.make_state(root, resume_existing=True)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            state = promoted_state(root)
+            manifest_path = (
+                state.workspace
+                / "artifacts"
+                / "study_1_B"
+                / "manifest.json"
+            )
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["sha256"] = "0" * 64
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "manifest disagrees"):
+                self.make_state(root, resume_existing=True)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            state = promoted_state(root)
+            outside_image = root / "outside.png"
+            Image.new("RGB", (8, 8), (1, 2, 3)).save(outside_image)
+            payload = json.loads(state.state_path.read_text(encoding="utf-8"))
+            successful_event = next(
+                event for event in payload["events"]
+                if event.get("type") == "render_shader" and event.get("ok")
+            )
+            successful_event["image"] = str(outside_image)
+            state.state_path.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "server-owned path"):
+                self.make_state(root, resume_existing=True)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            state = promoted_state(root)
+            payload = json.loads(state.state_path.read_text(encoding="utf-8"))
+            payload["locked_artifacts"]["../study_1_B"] = payload[
+                "locked_artifacts"
+            ].pop("study_1_B")
+            state.state_path.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "invalid locked artifact id"):
+                self.make_state(root, resume_existing=True)
 
     def test_submit_final_can_select_an_earlier_successful_revision(self):
         with tempfile.TemporaryDirectory() as temporary:

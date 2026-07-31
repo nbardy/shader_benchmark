@@ -371,7 +371,7 @@ rendered and recorded. Study renders do not count toward
 `--min-successful-revisions`, and only final-stage renders are sent to the
 benchmark judge.
 
-Six stricter workflows isolate failures found by the first parrot trial:
+Eight stricter workflows isolate failures found by the first parrot trial:
 
 - `sketchbook-curved-elements-v2` separates the individual signature-element
   shape study from its parent-surface placement study, runs studies in order,
@@ -409,9 +409,23 @@ Six stricter workflows isolate failures found by the first parrot trial:
   passes with exact A–F source blocks. `rank_study` blindly ranks all twelve
   cells, `record_study` extracts and locks the winning code and crop, and
   `promote_study` requires a successful full-frame integration before the next
-  study. Later writes must retain and call locked blocks byte-for-byte, while
+  study. Artifact entries must consume typed inputs, be reachable from the live
+  fragment path, contain their user-defined implementation closure, and call
+  every declared parent artifact. Resume rechecks server-owned paths, hashes,
+  marker identity, and workflow ledgers. Later writes must retain and call
+  locked blocks byte-for-byte, while
   `restore_revision` and historical `submit_final(..., revision=N)` prevent a
   late rewrite from silently replacing a stronger implementation or render.
+- `sketchbook-adaptive-study-dag-v9` replaces the fixed three-study ladder with
+  a bounded append-only dependency graph. The model publicly declares causal
+  study questions, the server assigns stable indexes and exposes the ready
+  frontier, and rendered promotion evidence can accept a node or justify new
+  descendants. Per-mode pass counts, node/depth limits, graph-cycle checks, a
+  hard final-render reserve, exact v8 artifacts, and checkpoint rehydration are
+  enforced server-side. This first implementation is intentionally serial and
+  cumulative: independent siblings are topologically ready but do not yet have
+  branch-isolated shader workspaces, so execution order can affect the shared
+  scene head.
 
 V5 is the strongest process experiment for repeated detail attached through a
 geometry hierarchy. It is generic: body→wing→feather can become
@@ -461,7 +475,24 @@ python agentic_shader_harness.py \
   --judge-model "cli/codex:gpt-5.5:high"
 ```
 
-If the outer model session disconnects, resume the same v8 checkpoint without
+V9 reserves final renders while letting the evidence determine the study count:
+
+```bash
+python agentic_shader_harness.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --problem reproduce_image_andrew_pons \
+  --prompt-profile domain-expert-v2 \
+  --workflow sketchbook-adaptive-study-dag-v9 \
+  --render-budget 24 \
+  --min-successful-revisions 2 \
+  --min-graph-nodes 3 \
+  --max-graph-nodes 8 \
+  --max-graph-depth 3 \
+  --study-selector-model "cli/codex:gpt-5.5:high" \
+  --judge-model "cli/codex:gpt-5.5:high"
+```
+
+If the outer model session disconnects, resume the same v8 or v9 checkpoint without
 regenerating completed studies or spending their render calls again:
 
 ```bash

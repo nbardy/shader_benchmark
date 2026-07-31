@@ -346,3 +346,104 @@ The immediate engineering MVP is graph state plus lifecycle validation and
 branch artifact assembly. The first empirical run can use a conservative
 planner-generated graph with a maximum of two dynamic expansions; this tests
 the mechanism without turning one parrot into an unbounded credit sink.
+
+## V9 implementation and first empirical run
+
+Run: `parrot_adaptive_study_dag_v9_sol_medium_20260731`
+
+V9 implemented the bounded planning layer on top of v8 rather than replacing
+the selection and lineage machinery. The server now owns a strict append-only
+node schema, stable numeric study indexes, dependency readiness, per-mode pass
+counts (`diverge=2`, `refine=1`, `integrate=1`), node/depth limits, an exact
+render ledger, a two-final reserve, graph closure, checkpoint rehydration, and
+node-specific selector rubrics. Graph definition, activation, evaluation,
+growth, and closure are MCP operations rather than prompt-only conventions.
+The HTML report shows node titles, edges, status, passes, decisions, and
+residuals. Sixty-two focused v8/v9 regression and integration tests pass.
+
+The first Sol-medium run used 11 of 24 calls:
+
+1. `macro_form` (`diverge`): three atlas attempts because the first failed the
+   diversity guard, then exact selection D and promotion;
+2. `feather_flow` (`refine`, parent `macro_form`): two atlas attempts because
+   the first failed diversity, then selection B and promotion;
+3. `scene_integration` (`integrate`, parents `macro_form` and `feather_flow`):
+   one atlas, selection E, and promotion;
+4. two final renders, with historical submission selecting the second.
+
+The two finals scored 287 and 313. The submitted 313 has judge vector
+`[58, 70, 42, 95, 48]`. It modestly exceeds v8's 308 but remains below the
+simpler v1 (332), v7 (338), and v6b (345). Human review agrees with the ranking:
+the image is a readable volumetric toy parrot, but the body remains two large
+ovals, the beak is blunt, the white face is oversized, and the wing uses a few
+smooth capsule/petal columns rather than photographic layered plumage. The
+integration promotion added an unstudied tube crest and face slashes; the first
+final retained them and regressed to 287. The second final removed those
+additions and recovered to 313, so historical-final rollback worked.
+
+### The adaptive hypothesis was not actually exercised
+
+The initial graph was a three-node chain, not a graph with parallel siblings.
+More importantly, Sol self-evaluated every visibly weak promotion as accepted:
+
+- the macro node explicitly noted that the forms were too smooth and oval, but
+  assigned severity `0.22` and information gain `0.07`;
+- the feather node acknowledged that the instances were too smooth and sparse,
+  but assigned severity `0.20` and information gain `0.06`;
+- the integration node was also accepted.
+
+Those values sit just below the server's accept/expand thresholds. No
+`expand_study_graph` call occurred; the one recorded graph-growth event is only
+the initial definition. The run therefore validates bounded DAG state,
+checkpointing, exact render accounting, and reportability, but does **not**
+validate self-growing search. A generator cannot be the sole judge of whether
+its own least-bad promotion deserves more budget. It can rationalize closure
+and conserve effort even while the human-visible critical failure remains.
+
+### Exact-lineage loophole exposed by v9
+
+The three selected hashes match the final shader byte-for-byte:
+
+- `study_1_D`: `0893e0f97f08...`;
+- `study_2_B`: `ce4774ad8f91...`;
+- `study_3_E`: `11d62887c392...`.
+
+But every "artifact" is only a three-line, roughly 173-byte zero-argument
+function returning a constant `vec4` of parameters. The real body, feather,
+and integration geometry lives in mutable helpers outside the marked blocks.
+The final calls the locked parameter functions, satisfying the server's current
+dead-code test while retaining freedom to rewrite the implementation. V8's
+parrot artifacts were real `p -> distance/material` functions; v9 revealed that
+the contract did not enforce that property.
+
+The post-run hardening now rejects parameter-only tokens, comments and
+unreachable calls, mutable user helpers or module symbols outside the selected
+block, and child artifacts that do not call every declared parent. Resume also
+revalidates server-owned paths, hashes, marker identities, graph ledgers, and
+distinct final hashes. Its return-dataflow check is definition-order- and
+field/index-aware, so overwritten values, dead aggregate lanes, aliases,
+constructor projections, and literal dead branches cannot fake contribution.
+This closes the concrete v9 bypass. A stronger future
+system should still compile each artifact as a separately addressable module
+with a typed ABI instead of relying on a bounded WGSL lexical/call-graph check.
+
+### Updated causal diagnosis
+
+The proposed DAG remains the right research topology, but two missing control
+planes dominate the first implementation:
+
+1. **Independent promotion evaluator.** A fresh score-blind critic should see
+   the reference, promotion, node criteria, and parent champion, then enforce
+   accept versus expand. Generator prose can be retained as a proposal, not as
+   the authoritative gate.
+2. **Executable interface enforcement.** Locked artifacts need typed inputs,
+   functional dependence on those inputs, and transitive implementation
+   closure. A hash over a constant parameter vector is provenance theater.
+
+The next discriminating run should keep the same 24-call limit but require an
+independent evaluator on each promotion, add universal critical gates for
+generic ovals/glued parts/capsule fields and parent regression, and force at
+least one genuine parallel-ready split or evidence-backed expansion before
+closure when a critical gate fails. True parallel execution still requires
+branch-local workspaces and ancestor-scoped locks; v9 remains an honest serial,
+cumulative MVP.
