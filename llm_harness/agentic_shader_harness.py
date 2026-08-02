@@ -18,6 +18,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from aesthetic_workflows import AESTHETIC_WORKFLOWS, get_aesthetic_workflow
 from judge import EvaluationContext, Judge
 from language_specs import get_language_spec
 from llm_client import generation_isolation_metadata, parse_cli_spec
@@ -58,6 +59,7 @@ SKETCHBOOK_WORKFLOWS = (
     COMPOSITION_FIRST_SHAPED_DETAIL_WORKFLOW,
     ARTIFACT_LINEAGE_WORKFLOW,
     ADAPTIVE_STUDY_DAG_WORKFLOW,
+    *AESTHETIC_WORKFLOWS,
 )
 BASE_MCP_TOOLS = (
     "write_shader",
@@ -80,6 +82,9 @@ MCP_TOOLS = (*BASE_MCP_TOOLS, *GRAPH_MCP_TOOLS)
 
 
 def workflow_requires_variant_inventory(workflow: str) -> bool:
+    aesthetic = get_aesthetic_workflow(workflow)
+    if aesthetic is not None:
+        return aesthetic.require_variant_inventory
     return workflow in {
         CURVED_ELEMENT_SKETCHBOOK_WORKFLOW,
         CONTINUOUS_ELEMENT_SKETCHBOOK_WORKFLOW,
@@ -91,6 +96,9 @@ def workflow_requires_variant_inventory(workflow: str) -> bool:
 
 
 def workflow_required_studies(workflow: str) -> int:
+    aesthetic = get_aesthetic_workflow(workflow)
+    if aesthetic is not None:
+        return aesthetic.required_studies
     if workflow == STANDARD_WORKFLOW:
         return 0
     if workflow == ADAPTIVE_STUDY_DAG_WORKFLOW:
@@ -918,6 +926,10 @@ refine those questions before polishing the palette again.
         if workflow == ADAPTIVE_STUDY_DAG_WORKFLOW
         else ""
     )
+    aesthetic_workflow = get_aesthetic_workflow(workflow)
+    aesthetic_contract = (
+        aesthetic_workflow.contract if aesthetic_workflow is not None else ""
+    )
     graph_tool_list = (
         """
 - define_study_graph(graph_json, rationale): atomically declare the initial
@@ -952,8 +964,10 @@ You have exactly these benchmark tools:
 - render_shader(stage, study_index, variation_manifest): compile and render the
   current revision, returning compiler feedback, local study-diversity
   measurements, and the actual rendered image;
-- rank_study(study_index): when required, blind-rank every qualified A-F cell
-  with an isolated visual selector;
+- rank_study(study_index, rubric_focus): when required, blind-rank every
+  qualified A-F cell with an isolated visual selector. Use rubric_focus to name
+  the workflow's visible decision question without mentioning labels or a
+  preferred candidate;
 - record_study(study_index, subject, selected_variant, selection_rationale,
   handoff_requirements, variant_inventory, selected_render_call): preserve
   public visual-study evidence and, when required, materialize the exact
@@ -973,6 +987,7 @@ You have exactly these benchmark tools:
 {shaped_detail_contract}
 {artifact_lineage_contract}
 {adaptive_dag_contract}
+{aesthetic_contract}
 
 Workflow requirements:
 1. Study the reference and plan a strong procedural reconstruction.
@@ -1608,6 +1623,7 @@ async def run_agentic_shader(
         raise ValueError("render_budget must be at least 1")
     required_studies = workflow_required_studies(workflow)
     require_variant_inventory = workflow_requires_variant_inventory(workflow)
+    aesthetic_workflow = get_aesthetic_workflow(workflow)
     graph_enabled = workflow_uses_study_dag(workflow)
     protocol = workflow_protocol(workflow)
     if workflow not in {STANDARD_WORKFLOW, *SKETCHBOOK_WORKFLOWS}:
@@ -1617,7 +1633,9 @@ async def run_agentic_shader(
             "min_successful_revisions must be between 1 and render_budget"
         )
     min_successful_study_renders = (
-        3
+        aesthetic_workflow.min_successful_study_renders
+        if aesthetic_workflow is not None
+        else 3
         if workflow == HIERARCHICAL_WIDE_SEARCH_WORKFLOW
         else 2
         if workflow
@@ -1627,18 +1645,25 @@ async def run_agentic_shader(
         }
         else 1
     )
-    require_study_diversity = workflow in {
-        PROGRESSIVE_APPLICATION_WORKFLOW,
-        HIERARCHICAL_WIDE_SEARCH_WORKFLOW,
-        ARTIFACT_LINEAGE_WORKFLOW,
-        ADAPTIVE_STUDY_DAG_WORKFLOW,
-    }
+    require_study_diversity = (
+        aesthetic_workflow.require_study_diversity
+        if aesthetic_workflow is not None
+        else workflow
+        in {
+            PROGRESSIVE_APPLICATION_WORKFLOW,
+            HIERARCHICAL_WIDE_SEARCH_WORKFLOW,
+            ARTIFACT_LINEAGE_WORKFLOW,
+            ADAPTIVE_STUDY_DAG_WORKFLOW,
+        }
+    )
     exact_artifact_workflow = workflow in {
         ARTIFACT_LINEAGE_WORKFLOW,
         ADAPTIVE_STUDY_DAG_WORKFLOW,
     }
     require_artifact_blocks = exact_artifact_workflow
-    require_study_selector = exact_artifact_workflow
+    require_study_selector = exact_artifact_workflow or bool(
+        aesthetic_workflow and aesthetic_workflow.require_study_selector
+    )
     require_study_promotions = exact_artifact_workflow
     selector_tool, selector_model, selector_effort = parse_cli_spec(
         study_selector_model
@@ -1647,7 +1672,7 @@ async def run_agentic_shader(
         selector_tool != "codex" or not selector_model
     ):
         raise ValueError(
-            "artifact-lineage selection currently requires cli/codex"
+            "blinded study selection currently requires cli/codex"
         )
     if graph_enabled:
         if not 1 <= min_graph_nodes <= max_graph_nodes <= 12:
@@ -1757,6 +1782,8 @@ async def run_agentic_shader(
                 timeout=(
                     5400
                     if workflow == ADAPTIVE_STUDY_DAG_WORKFLOW
+                    else 5400
+                    if workflow in AESTHETIC_WORKFLOWS
                     else 3600
                     if workflow == ARTIFACT_LINEAGE_WORKFLOW
                     else 1800
@@ -1823,6 +1850,9 @@ async def run_agentic_shader(
         "state": state,
         "isolation": _agentic_isolation_metadata(protocol, graph_enabled),
     }
+    if aesthetic_workflow is not None:
+        result["workflow_label"] = aesthetic_workflow.label
+        result["workflow_hypothesis"] = aesthetic_workflow.hypothesis
     if completed.returncode != 0:
         result["error"] = (
             completed.stderr or completed.stdout or "Codex failed"
@@ -1862,7 +1892,7 @@ async def resume_agentic_shader(
     judge_model: str | None,
     study_selector_model: str | None = None,
 ) -> Path:
-    """Resume an interrupted v8/v9 run without repeating completed work."""
+    """Resume an interrupted stateful run without repeating completed work."""
     script_dir = Path(__file__).parent.resolve()
     repo_root = script_dir.parent
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", run_id):
@@ -1881,8 +1911,11 @@ async def resume_agentic_shader(
     if workflow not in {
         ARTIFACT_LINEAGE_WORKFLOW,
         ADAPTIVE_STUDY_DAG_WORKFLOW,
+        *AESTHETIC_WORKFLOWS,
     }:
-        raise ValueError("checkpoint resume currently supports v8 and v9")
+        raise ValueError(
+            "checkpoint resume currently supports v8, v9, and v10 aesthetics"
+        )
     graph_enabled = workflow_uses_study_dag(workflow)
     protocol = str(result.get("protocol") or workflow_protocol(workflow))
     if protocol != workflow_protocol(workflow):
@@ -1905,7 +1938,7 @@ async def resume_agentic_shader(
         selector_spec
     )
     if selector_tool != "codex" or not selector_model:
-        raise ValueError("artifact-workflow resume selector must use cli/codex")
+        raise ValueError("stateful-workflow resume selector must use cli/codex")
     validated_checkpoint = ShaderAgentState(
         output_dir,
         renderer,
@@ -2051,7 +2084,7 @@ the graph is closed. If the graph is already closed, compare the attached
 checkpoint render (when present) with the reference, make bounded whole-image
 improvements, and submit the best successful FINAL revision.
 """
-    else:
+    elif bool(result.get("require_artifact_blocks")):
         continuation = f"""
 Completed studies are {state.get('completed_studies')}; completed promotions
 are {state.get('completed_promotions')}. Do NOT regenerate, rerank, rerecord, or
@@ -2064,6 +2097,19 @@ one bounded whole-image improvement while preserving the locked artifacts,
 render another FINAL, inspect it, and submit the best successful final revision
 (which may be an earlier one). Use additional final renders only when a concrete
 improvement remains plausible.
+"""
+    else:
+        continuation = f"""
+Completed studies are {state.get('completed_studies')}. Do NOT regenerate,
+rerank, or rerecord them. Resume the first incomplete aesthetic study in the
+workflow contract, or continue whole-image finals if all studies are complete.
+
+There are {len(successful_finals)} successful final revisions, but the run
+requires {result.get('min_successful_revisions')} distinct successful finals.
+Compare the attached checkpoint render (when present) to the reference using
+the workflow's public beauty-reflection fields. Make a bounded perceptual
+intervention, render it, and submit the strongest historical final rather than
+automatically the newest revision.
 """
     shader_context = (
         "The editable current shader template follows. Injection placeholders "
@@ -2146,7 +2192,11 @@ revision {state.get('revision')}, {state.get('render_calls')} used renders, and
             input=resume_prompt,
             capture_output=True,
             text=True,
-            timeout=5400 if graph_enabled else 3600,
+            timeout=(
+                5400
+                if graph_enabled or workflow in AESTHETIC_WORKFLOWS
+                else 3600
+            ),
             env=_base_env(),
             cwd=output_dir,
         )
@@ -2233,7 +2283,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--problem")
     parser.add_argument(
         "--resume-run",
-        help="Resume an interrupted v8/v9 run directory by run id.",
+        help="Resume an interrupted v8/v9/v10 run directory by run id.",
     )
     parser.add_argument(
         "--prompt-profile",
@@ -2246,8 +2296,8 @@ def main(argv: list[str] | None = None) -> None:
         choices=(STANDARD_WORKFLOW, *SKETCHBOOK_WORKFLOWS),
         default=STANDARD_WORKFLOW,
         help=(
-            "Use the ordinary render loop or require three rendered 3x2 "
-            "component studies before final-scene iteration."
+            "Choose the ordinary render loop or an enforced study, lineage, "
+            "DAG, or beauty-first decision workflow."
         ),
     )
     parser.add_argument(
@@ -2265,7 +2315,8 @@ def main(argv: list[str] | None = None) -> None:
         "--study-selector-model",
         default="cli/codex:gpt-5.5:high",
         help=(
-            "Fresh isolated visual selector used by artifact-lineage-v8."
+            "Fresh isolated visual selector used by workflows that require "
+            "blinded study ranking."
         ),
     )
     parser.add_argument("--min-graph-nodes", type=int, default=3)

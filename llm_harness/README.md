@@ -371,7 +371,7 @@ rendered and recorded. Study renders do not count toward
 `--min-successful-revisions`, and only final-stage renders are sent to the
 benchmark judge.
 
-Eight stricter workflows isolate failures found by the first parrot trial:
+Thirteen stricter workflows isolate failures found by the first parrot trial:
 
 - `sketchbook-curved-elements-v2` separates the individual signature-element
   shape study from its parent-surface placement study, runs studies in order,
@@ -426,6 +426,27 @@ Eight stricter workflows isolate failures found by the first parrot trial:
   cumulative: independent siblings are topologically ready but do not yet have
   branch-isolated shader workspaces, so execution order can affect the shared
   scene head.
+- `aesthetic-perceptual-critic-v10a` runs five sequential whole-scene champion
+  decisions. Each pass compares the current champion with five challengers and
+  asks a fresh selector to focus on gesture, anatomy, rhythm, look development,
+  or final restraint.
+- `aesthetic-whole-scene-tournament-v10b` performs two wide 3x2 whole-image
+  searches before final refinement. It tests whether choosing an aesthetic
+  basin before local polishing is more effective than starting from one scene.
+- `aesthetic-silhouette-rhythm-v10c` locks the perceptual skeleton first: a
+  monochrome silhouette/negative-space study followed by value-mass and edge-
+  rhythm selection.
+- `aesthetic-color-material-v10d` isolates look development in two stages: a
+  color-script study and a coupled material/edge/lighting study.
+- `aesthetic-relational-integration-v10e` selects complete-subject alternatives
+  at anatomy, layered coat, and finished synthesis stages to test whether
+  repeated whole-image review prevents local studies from collapsing during
+  integration.
+
+All five v10 workflows require a public beauty critique before each full-frame
+rewrite (`GESTALT`, `BEAUTIFUL`, `UNCANNY`, `INTERVENTION`, and `TEST`). Their
+study selectors receive a stage-specific aesthetic rubric, but mathematical
+complexity is never itself a selection criterion.
 
 V5 is the strongest process experiment for repeated detail attached through a
 geometry hierarchy. It is generic: body→wing→feather can become
@@ -492,8 +513,9 @@ python agentic_shader_harness.py \
   --judge-model "cli/codex:gpt-5.5:high"
 ```
 
-If the outer model session disconnects, resume the same v8 or v9 checkpoint without
-regenerating completed studies or spending their render calls again:
+If the outer model session disconnects, resume the same v8, v9, or v10
+checkpoint without regenerating completed studies or spending their render
+calls again:
 
 ```bash
 python agentic_shader_harness.py \
@@ -501,6 +523,30 @@ python agentic_shader_harness.py \
   --study-selector-model "cli/codex:gpt-5.5:high" \
   --judge-model "cli/codex:gpt-5.5:high"
 ```
+
+Run the five beauty-first treatments together with one generator, budget, and
+judge configuration:
+
+```bash
+python aesthetic_workflow_ablation.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --judge-model "cli/codex:gpt-5.5:high" \
+  --selector-model "cli/codex:gpt-5.5:high" \
+  --problem reproduce_image_andrew_pons \
+  --prompt-profile domain-expert-v2 \
+  --render-budget 18 \
+  --min-successful-revisions 6 \
+  --max-parallel 2 \
+  --run-prefix parrot_beauty5_20260803
+```
+
+The runner judges every successful full-frame final, not only the submission.
+Its comparison report blind-ranks submitted images at thumbnail and full size,
+then separately shows the best standard-judged historical final as an oracle
+selection diagnostic. Oracle images never enter the blinded ranking. Rebuild
+the diagnostics and HTML without spending another selector call by repeating
+the command with `--reuse-aesthetic-ranking`; it fails closed if the candidate
+set changed.
 
 ```bash
 python agentic_shader_harness.py \

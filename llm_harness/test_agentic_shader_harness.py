@@ -2,6 +2,14 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from aesthetic_workflows import (
+    AESTHETIC_COLOR_MATERIAL_WORKFLOW,
+    AESTHETIC_PERCEPTUAL_CRITIC_WORKFLOW,
+    AESTHETIC_RELATIONAL_INTEGRATION_WORKFLOW,
+    AESTHETIC_SILHOUETTE_RHYTHM_WORKFLOW,
+    AESTHETIC_WHOLE_SCENE_TOURNAMENT_WORKFLOW,
+    aesthetic_workflow_specs,
+)
 from agentic_shader_harness import (
     ADAPTIVE_STUDY_DAG_WORKFLOW,
     ARTIFACT_LINEAGE_WORKFLOW,
@@ -235,6 +243,54 @@ class AgenticShaderHarnessTests(unittest.TestCase):
         self.assertIn("cumulative/augmenting", prompt)
         self.assertEqual(workflow_required_studies(ADAPTIVE_STUDY_DAG_WORKFLOW), 0)
         self.assertTrue(workflow_uses_study_dag(ADAPTIVE_STUDY_DAG_WORKFLOW))
+
+    def test_five_aesthetic_workflows_are_distinct_public_decision_processes(self):
+        expected = {
+            AESTHETIC_PERCEPTUAL_CRITIC_WORKFLOW: (
+                5,
+                "INDEPENDENT CRITIC + CHAMPION LOOP",
+            ),
+            AESTHETIC_WHOLE_SCENE_TOURNAMENT_WORKFLOW: (
+                1,
+                "WHOLE-SCENE AESTHETIC TOURNAMENT",
+            ),
+            AESTHETIC_SILHOUETTE_RHYTHM_WORKFLOW: (
+                2,
+                "SILHOUETTE, NEGATIVE SPACE, AND RHYTHM",
+            ),
+            AESTHETIC_COLOR_MATERIAL_WORKFLOW: (
+                2,
+                "COLOR SCRIPT, MATERIAL, AND CINEMATOGRAPHY",
+            ),
+            AESTHETIC_RELATIONAL_INTEGRATION_WORKFLOW: (
+                3,
+                "RELATIONAL INTEGRATION TOURNAMENT",
+            ),
+        }
+        self.assertEqual(len(aesthetic_workflow_specs()), 5)
+        for workflow, (study_count, signature) in expected.items():
+            with self.subTest(workflow=workflow):
+                prompt = build_agent_prompt(
+                    "Draw the target.",
+                    "baseline",
+                    18,
+                    min_successful_revisions=6,
+                    workflow=workflow,
+                )
+                self.assertIn("BEAUTY IS A FIRST-CLASS ACCEPTANCE CRITERION", prompt)
+                self.assertIn("THREE-SECOND READ", prompt)
+                self.assertIn("GESTALT:", prompt)
+                self.assertIn("BEAUTIFUL:", prompt)
+                self.assertIn("UNCANNY:", prompt)
+                self.assertIn("INTERVENTION:", prompt)
+                self.assertIn("TEST:", prompt)
+                self.assertIn(signature, prompt)
+                self.assertEqual(
+                    workflow_required_studies(workflow),
+                    study_count,
+                )
+                self.assertTrue(workflow_requires_variant_inventory(workflow))
+                self.assertFalse(workflow_uses_study_dag(workflow))
 
     def test_codex_command_is_isolated_and_tool_allowlisted(self):
         with tempfile.TemporaryDirectory() as temporary:

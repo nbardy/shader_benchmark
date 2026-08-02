@@ -2135,7 +2135,11 @@ class ShaderAgentState:
             injected.append(artifact_id)
         return expanded, injected, errors
 
-    def _selector_rubric(self, study_index: int) -> str:
+    def _selector_rubric(
+        self,
+        study_index: int,
+        rubric_focus: str = "",
+    ) -> str:
         common = (
             "Judge visible fidelity to the reference, not implementation "
             "convenience. Do not reward a candidate for being easier to attach, "
@@ -2146,7 +2150,14 @@ class ShaderAgentState:
             "negative space, coherent overlap, specific proportions, and an "
             "organic relationship between soft and hard edges."
         )
-        if self.graph_enabled and self.study_dag is not None:
+        if rubric_focus.strip():
+            stage = (
+                "Workflow-defined decision focus: "
+                + rubric_focus.strip()[:2_000]
+                + " Rank only the visible decision described here while also "
+                "preserving reference identity and earlier visible strengths."
+            )
+        elif self.graph_enabled and self.study_dag is not None:
             snapshot = self.study_dag.snapshot(
                 self.study_dag.node_id_for_index(study_index)
             )
@@ -2256,6 +2267,7 @@ class ShaderAgentState:
         study_index: int,
         sheet_path: Path,
         candidate_ids: list[str],
+        rubric_focus: str = "",
     ) -> dict[str, Any]:
         """Run a fresh, read-only visual selector with no generator context."""
         assert self.reference_image is not None
@@ -2274,7 +2286,7 @@ The first attached image is the reference. The second is a blinded contact sheet
 whose labels are opaque candidate IDs. Rank every candidate exactly once.
 
 SELECTION RUBRIC
-{self._selector_rubric(study_index)}
+{self._selector_rubric(study_index, rubric_focus)}
 
 Return ONLY this JSON schema:
 {{
@@ -2363,6 +2375,7 @@ future composability, or treatment names; you do not have that information.
     def rank_study(
         self,
         study_index: int,
+        rubric_focus: str = "",
     ) -> tuple[dict[str, Any], Path | None]:
         """Blindly rank every qualified cell without generator self-selection."""
         if self.submitted:
@@ -2403,6 +2416,24 @@ future composability, or treatment names; you do not have that information.
             return {"ok": True, **existing, "cached": True}, Path(
                 existing["candidate_sheet"]
             )
+        normalized_focus = rubric_focus.strip()
+        if normalized_focus and len(normalized_focus) < 40:
+            return {
+                "ok": False,
+                "error": "rubric_focus must contain at least 40 characters",
+            }, None
+        if normalized_focus and re.search(
+            r"\b(?:candidate|cell|variant)\s*[_-]?\s*(?:0?[1-6]|[A-F])\b",
+            normalized_focus,
+            flags=re.IGNORECASE,
+        ):
+            return {
+                "ok": False,
+                "error": (
+                    "rubric_focus must not identify a candidate, cell, or "
+                    "variant label"
+                ),
+            }, None
         candidates = self.qualified_study_candidates.get(study_index, [])
         successful_passes = self.successful_study_render_count.get(
             study_index, 0
@@ -2431,13 +2462,14 @@ future composability, or treatment names; you do not have that information.
                     reference_path=self.reference_image,
                     candidate_sheet_path=sheet_path,
                     candidate_ids=candidate_ids,
-                    rubric=self._selector_rubric(study_index),
+                    rubric=self._selector_rubric(study_index, rubric_focus),
                 )
                 if self.selector_runner is not None
                 else self._run_selector_cli(
                     study_index,
                     sheet_path,
                     candidate_ids,
+                    rubric_focus,
                 )
             )
             parsed = (
@@ -2482,9 +2514,9 @@ future composability, or treatment names; you do not have that information.
             "node_id": node_id,
             "selector_model": self.selector_model,
             "selector_effort": self.selector_effort,
-            "rubric": self._selector_rubric(study_index),
+            "rubric": self._selector_rubric(study_index, rubric_focus),
             "rubric_sha256": hashlib.sha256(
-                self._selector_rubric(study_index).encode("utf-8")
+                self._selector_rubric(study_index, rubric_focus).encode("utf-8")
             ).hexdigest(),
             "candidate_sheet": str(sheet_path),
             "candidate_map": candidate_map,
@@ -3863,9 +3895,12 @@ def create_mcp(state: ShaderAgentState) -> FastMCP:
         return CallToolResult(content=content, isError=False)
 
     @server.tool(structured_output=False)
-    def rank_study(study_index: int) -> CallToolResult:
+    def rank_study(
+        study_index: int,
+        rubric_focus: str = "",
+    ) -> CallToolResult:
         """Blindly rank all qualified A-F cells with an isolated selector."""
-        result, sheet_path = state.rank_study(study_index)
+        result, sheet_path = state.rank_study(study_index, rubric_focus)
         content: list[Any] = [
             TextContent(type="text", text=json.dumps(result, indent=2))
         ]

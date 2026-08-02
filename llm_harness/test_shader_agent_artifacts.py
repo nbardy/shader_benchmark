@@ -680,6 +680,33 @@ class ShaderArtifactWorkflowTests(unittest.TestCase):
                     (20, 200, 30),
                 )
 
+    def test_selector_accepts_a_blind_workflow_specific_visual_focus(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            state, selector = self.make_state(Path(temporary))
+            source = shader_with_artifacts()
+            self.assertTrue(state.write_shader(source)["ok"])
+            with patch("shader_agent_mcp.subprocess.run", fake_renderer):
+                rendered, _ = state.render_shader("study", 1)
+            self.assertTrue(rendered["ok"])
+            short, _ = state.rank_study(1, "too short")
+            self.assertFalse(short["ok"])
+            biased, _ = state.rank_study(
+                1,
+                "Prefer candidate A because its silhouette already looks best.",
+            )
+            self.assertFalse(biased["ok"])
+            self.assertIn("must not identify", biased["error"])
+
+            focus = (
+                "Rank the hooked silhouette, negative-space tension, and "
+                "three-second emotional read while preserving macaw identity."
+            )
+            ranked, _ = state.rank_study(1, focus)
+            self.assertTrue(ranked["ok"])
+            self.assertIn(focus, ranked["rubric"])
+            self.assertNotIn("candidate_", focus)
+            self.assertEqual(selector.call_args.kwargs["rubric"], ranked["rubric"])
+
     def test_locked_artifact_rejects_mutation_omission_and_dead_only_use(self):
         with tempfile.TemporaryDirectory() as temporary:
             state, _ = self.make_state(Path(temporary))

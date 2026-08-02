@@ -749,3 +749,146 @@ The useful lesson is narrower than "DAGs do not work." The DAG correctly made
 the missing decision layer visible. It showed that the first bottleneck is who
 controls graph growth and what counts as an executable artifact—not the graph
 data structure itself.
+
+## Beauty-first workflow ablation v10 — 2026-08-03
+
+The v9 postmortem suggested that the process was over-optimizing mathematical
+machinery while under-specifying taste. V10 therefore tests five smaller,
+causally distinct aesthetic workflows instead of adding one maximal prompt:
+
+1. a five-stage perceptual critic/champion loop;
+2. a wide whole-scene tournament before refinement;
+3. silhouette, negative-space, value-mass, and edge-rhythm locking;
+4. isolated color-script and material/light look development;
+5. repeated whole-image selection at anatomy, coat, and synthesis stages.
+
+Every arm used `cli/codex:gpt-5.6-sol:medium`, the Andrew Pons parrot,
+`domain-expert-v2`, an 18-render ceiling, at least six distinct successful
+final revisions, and `cli/codex:gpt-5.5:high` for both blinded study selection
+and the standard reconstruction rubric. The common contract requires a public
+five-part visual critique before every final rewrite: three-second gestalt,
+what is already beautiful, the most uncanny visible relationship, one bounded
+intervention, and the visual test that would falsify it. Complexity is treated
+as a means, never as an aesthetic score.
+
+Every successful full-frame final was judged, not merely the submitted image.
+The report then compared each submitted final with its highest-scoring prior
+final to distinguish generation failure from selection regression. A separate
+fresh selector saw only opaque submitted candidates, first at 128 pixels and
+then at larger size. Its axes were emotional specificity, silhouette/negative
+space, focal hierarchy, organic rhythm, palette/value, material/depth, and
+whole-image coherence. Historical v1 and v6b outputs were included only as
+visual controls in that blinded ranking.
+
+| Workflow | Calls used | Submitted | Oracle-best final | Selection gap | Blinded aesthetic rank / mean |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| perceptual critic | 17/18 | 313 | 313 | 0 | 6/7 · 42.1 |
+| whole-scene tournament | 8/18 | 260 | 274 | 14 | 7/7 · 30.7 |
+| silhouette and rhythm | 9/18 | 313 | 345 | 32 | 4/7 · 55.4 |
+| color and material | 8/18 | **366** | **366** | 0 | **1/7 · 69.9** |
+| relational integration | 15/18 | 312 | 334 | 22 | 5/7 · 49.1 |
+
+The historical v1 and v6b controls ranked second and third aesthetically, with
+means of 63.4 and 59.1. Their stored standard scores are 332 and 345. The v10d
+color/material arm therefore wins both measurements in this rollout: 366/500
+on the standard reconstruction rubric and first place in the score-blind,
+two-scale aesthetic comparison. An independent image-only audit also ranked
+v10d first without seeing either score.
+
+### What v10d actually improved
+
+The winning image has the strongest subject/background separation of the set:
+a deep forest ground, clear cyan-to-blue plumage, warm yellow chest, quiet
+ivory face patch, and localized blue-black beak. The eye/mask/beak cluster is a
+clean focal anchor, while the wing creates enough repeated edge activity to
+remain legible at thumbnail size. The final is also the workflow's own
+standard-judge oracle, so its selection did not regress.
+
+This is a real gain, but not an IQ-level reconstruction breakthrough. The body
+is still an egg, the crown is a row of inflated blades, the feathers remain
+regular extrusions, and the materials still lean toward polished plastic. The
+result says that deliberate palette and coupled light/material decisions can
+move the whole image more than another geometry essay. It does not say that
+look development solved anatomy, morphology, or photographic texture.
+
+### Why the other four treatments failed
+
+The perceptual-critic loop spent 17 renders and correctly discussed gesture,
+anatomy, rhythm, and restraint, but never escaped its initial representation.
+All five champion rounds preserved a smooth shoulder, a comb-like crest, and a
+fan of floating capsule rods. Fresh critique varied pose, scale, color, and rod
+placement inside one topology. Selection cannot recover an artistic language
+that proposal search never offers.
+
+The whole-scene tournament is the cleanest negative result. Its twelve study
+cells were not twelve shape languages: one ellipsoid scene function changed
+lean, crop, camera, background, and a few radii. Several candidates were
+sideways or hid the face. The RGB diversity check certified these pixel
+differences even though the concepts were the same. The selector then had to
+choose a winner; it could not return `reject_all`. The final loop used exactly
+the six required revisions, spent its last four edits on tiny camera, bokeh,
+palette, and offset changes, and submitted with ten calls unused. This did not
+fairly test broad aesthetic search. It tested parameter breadth plus cosmetic
+hill-climbing.
+
+The silhouette/rhythm workflow produced a stronger macro read and the most
+coherent v10 shoulder layering, but its final rewrite discarded a substantially
+better prior state. Revision 10 scored 345; submitted revision 11 scored 313.
+The late addition of literal cheek scratches and a crown bar reduced elegance.
+The 32-point oracle gap is evidence for a final-selection problem, not merely a
+generation problem.
+
+The relational workflow improved the eye, mask, beak overlap, and close
+reference-like crop. It still interpreted relations as neighboring primitives:
+a huge spherical head, separate golden egg torso, blank oval wing, four
+shoulder capsules, and disconnected lower plumes. It also selected backward:
+revision 13 scored 334, while submitted revision 15 scored 312. Whole-image
+review without an external regression veto is not sufficient.
+
+### Revised causal model
+
+The experiment separates four failure planes that earlier runs blurred:
+
+- **proposal failure:** no genuinely different representation enters the pool;
+- **absolute selection failure:** a relative ranker promotes a least-bad pool;
+- **synthesis failure:** good local properties are reimplemented or weakened;
+- **stopping failure:** minimum counters are mistaken for visual convergence.
+
+The current pixel-diversity gate addresses none of these reliably. It can be
+satisfied by crop, background, occlusion, or palette changes. Likewise, a
+forced ordinal selector answers "which is least bad?" when the useful answer is
+"none of these; reopen the search." The same generator should not control both
+quality acceptance and early stopping.
+
+The render ceiling was identical but actual compute was not: arms consumed
+between eight and seventeen calls. That is itself a workflow outcome and makes
+efficiency visible, but it weakens a strict equal-compute interpretation. These
+are five single rollouts, not variance estimates. The aesthetic selector is
+also another GPT-5.5-high call, not human ground truth. The strongest claim is
+therefore narrow: v10d is a promising treatment on this parrot, while v10a,
+v10b, v10c, and v10e expose specific search and selection defects.
+
+### Next discriminating workflow: staged aesthetic fusion
+
+The next run should combine the successful properties without merging all five
+prompts. Its stages should be:
+
+1. search for structurally distinct macro silhouettes and allow the selector
+   to reject the entire pool;
+2. lock the winning silhouette and parent-surface frame;
+3. search specifically for staggered, tapered feather rhythm that follows that
+   surface, with a semantic concept-diversity gate rather than RGB distance;
+4. apply the v10d color-script and material/light treatment only after geometry
+   survives a whole-image regression check;
+5. blind-rank at least two final branches and permit historical rollback.
+
+Submission should be blocked before roughly 16 of 18 calls unless an
+independent critic records two consecutive no-improvement decisions. Candidate
+generation should expose different construction families or scene functions,
+not one function plus six parameter vectors. Selectors need absolute critical
+thresholds and `reject_all`; final selection needs the same score-blind visual
+discipline as study selection.
+
+The target is a fusion of v10c's macro legibility, v1's staggered feather
+rhythm, and v10d's look development. That is now a falsifiable workflow design,
+not another request to "make it more beautiful."
