@@ -1,0 +1,87 @@
+TARGETED FOLLOW-UP — REPLACE THE GENERIC MACRO REPRESENTATION
+==============================================================
+
+USER REVIEW
+-----------
+
+“It is still a very generic base of like four normal-ass bricks that are
+weirdly oval. Do dynamic morphing or bending into a real parrot form of the
+base shapes. Fix that and make it not a lame parrot, but a real dynamic shape.”
+
+Treat that review as a rejection of the prior macro-form acceptance decision.
+The previous result failed at representation, not parameter tuning. Its body,
+neck, head, wing, face, beak lobes, and feathers all reduce to independently
+placed ellipsoids; its anatomy study changed scale, lean, reach, and placement
+inside that same topology. Do not spend this run moving, resizing, recoloring,
+or polishing that topology.
+
+WHAT MAY SURVIVE
+----------------
+
+Preserve only the useful camera and framing observations, yellow/blue/ivory/
+blue-black palette hierarchy, eye and face as focal region, differentiated
+material-light pipeline, canopy depth, and the idea of parent-relative feather
+flow. The supplied seed shader is implementation evidence and a negative
+control, not a geometry template that must be retained.
+
+ANATOMY-RESET GATE
+------------------
+
+Rebuild the parrot around a continuous, dynamic anatomical gesture. The torso,
+neck, crown, and lower-body/tail flow must be designed through a changing shape
+along a curved axis—not assembled from complete ovals. Viable families include
+a varying-radius sweep around a spine C(s) with a transported frame and
+asymmetric width/depth profiles; bent or twisted superquadrics with nonlinear
+domain deformation; lofted cross-sections; or a deliberately carved hybrid.
+Use bend, taper, twist, asymmetric profiles, smooth joins, intersections, and
+subtractions where they create visible character.
+
+The head must grow out of a neck transition rather than sit as a sphere above
+an egg. Build a crown slope, nape/back curve, cheek cut, and forward thrust. The
+upper beak must taper into a swept or carved hook with concave mouth negative
+space and a distinct lower mandible—not three overlapping ovals. The wing must
+be a thin curved shell or swept sheet rooted at the shoulder, tangent to and
+wrapping around the torso before peeling down/back—not another blue volume
+glued beside it.
+
+SEARCH AND EVIDENCE
+-------------------
+
+Use the two mandatory whole-scene tournament passes for structural anatomy:
+
+1. Pass 1: six genuinely different macro representation families. At least
+   four cells must use different construction/topology, not one shared map fed
+   by six parameter vectors. Make the cells neutral clay or solid silhouette;
+   feathers, bokeh, and surface polish may not camouflage the anatomy.
+2. Pass 2: develop the two strongest families under clay lighting that reveals
+   curvature, attachment, thickness, carved negative space, and overlap. Keep
+   alternatives structurally distinct; do not collapse into a local parameter
+   sweep.
+
+The seed baseline is allowed to lose. If every candidate still decomposes into
+obvious eggs, capsules, or rounded bricks, reject the pass and render a wider
+search. Do not interpret “least bad” as success. Use the remaining finals to
+integrate the selected dynamic anatomy, then restore palette, materials,
+atmosphere, and restrained feather structure without regressing its silhouette.
+
+VISIBLE ACCEPTANCE TESTS
+------------------------
+
+- At thumbnail scale or in solid black, the silhouette reads immediately as a
+  dynamic macaw rather than a pear or snowman with a beak.
+- Crown → nape → back → rump forms one asymmetric flowing curve without an
+  obvious head/neck/body seam.
+- The breast changes width and direction along a curved axis, with a proud keel
+  and lower taper; it is not a rotated ellipse.
+- The head thrusts forward while the neck/body create a readable S-curve.
+- The beak has a tapering hook, carved concavity, and mouth gap.
+- The wing has thin-shell thickness, shoulder attachment, torso-conforming
+  curvature, a swept trailing edge, and partial wrap/occlusion.
+- A clay render shows changing surface curvature and attachment—not merely a
+  stronger color silhouette.
+
+Before every rewrite, state in revision_critique: (1) which generic oval/brick
+decomposition is still visible, (2) which structural operation replaces it,
+and (3) what silhouette or clay-shading evidence will prove the change. Render
+at least four distinct successful FINAL revisions after the study passes, and
+submit only a post-reset revision that passes the tests above.

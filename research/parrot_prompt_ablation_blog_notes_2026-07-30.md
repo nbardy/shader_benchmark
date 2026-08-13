@@ -12,7 +12,9 @@ ranking.
 - Judge: `cli/codex:gpt-5.5:high`, corrected reconstruction rubric.
 - Six prompt profiles, three independent trials each, three dependent visual
   revision rounds per trial.
-- Each trial starts from a fresh isolated generation session. Later rounds see
+- Each trial starts from a fresh generation session in a temporary working
+  directory; this is best-effort process isolation, not a read allowlist.
+  Later rounds see
   the prior executed shader and a target/current-render comparison.
 
 ## Quantitative result so far
@@ -608,7 +610,8 @@ A code-level replay changed the interpretation of v5. The user-preferred
 top-middle cells in Study-1 render 3 and Study-2 render 6 are both variant B,
 but the generator recorded F and C. Both B implementations create the important
 hooked negative space with an explicit subtraction; the recorded winners favor
-smoother positive volumes. A fresh isolated GPT-5.5-high selector, shown all 18
+smoother positive volumes. A fresh score-blind GPT-5.5-high selector, shown all
+18
 cached cells for each topic in an opaque shuffled sheet, independently chose B
 for both studies. The attractive intermediate results were therefore not
 hindsight or screenshot ambiguity. The process found them and selected against
@@ -738,7 +741,7 @@ boundary.
 
 The next version should change controls, not add another essay to the prompt:
 
-- use a fresh isolated promotion critic to enforce accept versus expand;
+- use a fresh score-blind promotion critic to enforce accept versus expand;
 - apply universal critical visual gates in addition to model-authored criteria;
 - retain the new live typed-input, closure, and executable-parent validation;
 - prevent integration nodes from introducing unstudied identity geometry;
@@ -892,3 +895,254 @@ discipline as study selection.
 The target is a fusion of v10c's macro legibility, v1's staggered feather
 rhythm, and v10d's look development. That is now a falsifiable workflow design,
 not another request to "make it more beautiful."
+
+## Rejecting the v9 oval-brick representation — 2026-08-11
+
+The adaptive DAG's studies were more interesting than its final parrot, but a
+code-and-trace audit exposed a stronger failure than weak synthesis. The final
+scene still implemented the torso, neck, head, wing, face, bill pieces, eye,
+and twenty feathers primarily as separately positioned ellipsoids. Its selected
+macro artifact was a four-number parameter tuple rather than a reusable shape
+construction. Most importantly, the graph itself named "generic oval bird" as
+a failure signal and then accepted a descendant while admitting that it was
+still "smoother and more oval." The DAG represented dependencies, but its
+promotion decision certified a local parameter search inside the rejected
+topology.
+
+The intervention therefore did not resume or silently edit the completed v9
+run. `agentic_shader_harness.py` gained a seeded-follow-up path with
+best-effort process isolation:
+`--seed-run` plus `--followup-brief-file`. It validates that the source run was
+submitted and belongs to the same problem, verifies the final shader and image
+against the source ledger, and starts a fresh ephemeral Codex workspace. Only
+the source shader, its rendered baseline, and a compact summary of public graph,
+study, evaluation, revision-critique, and submission events are intentionally
+staged. The 9 MB raw trace, judge outputs, repository, and other contestants are
+not intentionally staged or referenced. This is not a read-security boundary:
+the Codex read-only sandbox restricts mutation but is not a read allowlist, so
+absolute-path reads may still be possible. Hashes for the seed, baseline,
+summary, and corrective brief are recorded in the new result. This gives the
+new agent the useful visible history without replaying hidden reasoning in the
+prompt.
+
+The first brief, `followups/dynamic_parrot_macro_v1.txt`, explicitly rejected
+the old representation rather than asking for prettier parameters. It required
+a changing cross-section along a curved anatomical axis, a continuous
+crown-to-tail gesture, a head that grows from the neck, a carved hooked bill,
+and a shoulder-rooted thin wing shell. It also required two clay whole-scene
+tournament passes before at least four full-frame final revisions.
+
+That run, `parrot_v9_seeded_dynamic_macro_v11_sol_medium_20260811`, made two
+real representation gains. The torso became a bent variable-radius implicit
+loft instead of a stack of body/neck ovals, and the wing became a warped hollow
+shell rather than a blue ellipsoid glued beside the body. A score-blind visual
+audit agreed that the continuous directional silhouette was materially more
+dynamic. The run nevertheless stopped at a bent tubular parrot glyph: a
+constant-width bill ended in a knob, the cheek was a circular plate, the wing
+had a U-shaped rim, and feathers remained an absolute grid of capsules. It used
+nine of thirteen calls. Its submitted revision scored 290/500, while an earlier
+revision scored 306/500. The model selected backward.
+
+The second brief, `followups/dynamic_parrot_identity_v2.txt`, froze the useful
+continuous torso and wing attachment and spent six full-frame renders only on
+the remaining glyphs. The resulting
+`parrot_dynamic_macro_identity_v12_sol_medium_20260811` replaced the bar-and-
+knob bill with an asymmetric finite-depth profile with a convex ridge, concave
+mouth, taper, downward hook, and separate mandible. It clipped an asymmetric
+cheek into the crown/bill/jaw assembly, replaced the U-rim with a broad
+shoulder-attached wing sheet, and put tapered vanes into curved overlapping
+courses. The last revision additionally intersected every vane with the parent
+wing envelope so no feather could float outside its supporting surface.
+
+| Comparison | Standard judge | Selection status |
+| --- | ---: | --- |
+| old adaptive-DAG v9 final | 313 | historical source |
+| first seeded reset, submitted render 9 | 290 | agent submission |
+| first seeded reset, best judged render 7 | 306 | judge oracle |
+| corrective v2, submitted render 4 | 316 | agent submission |
+| corrective v2, score-blind visual winner render 5 | 326 | human-style visual audit |
+| corrective v2, best judged render 6 | **341** | judge oracle |
+
+The outcome is a material improvement, not a solved reconstruction. Render 5
+was the fresh score-blind visual winner because its green-blue crown, hooked
+bill, full attached wing, and longer irregular feather courses made it feel
+most alive. The standard judge instead preferred render 6, which clamps the
+feathers into a cleaner coherent wing mass, 341/500. The model submitted render
+4 at 316/500. All three selections are defensible for different reasons, so the
+disagreement is evidence rather than noise: generation can now reach a better
+basin, while final promotion still lacks an external visual veto and a clear
+policy for trading anatomical energy against cleanliness.
+
+The remaining visible limits are equally specific. The yellow torso is still
+too slab-like, the wing is still a broad rounded panel, and the feather field
+is more regular than the reference. The strongest lesson is that a short,
+targeted rejection brief can repair a representation class more effectively
+than another full study DAG, provided it preserves named gains and names the
+bad construction to remove. The next harness improvement should be selection,
+not a longer geometry prompt: blind-rank historical finals, allow a visual
+critic to veto the agent's submission, and retain both the judge winner and the
+score-blind aesthetic winner when they disagree.
+
+## Root attachment is not contour conformance — 2026-08-13
+
+The next controlled intervention seeded the score-blind v12 winner rather than
+the submitted shader and used `surface_attached_feather_hierarchy_v3.txt` with
+the fixed `sketchbook-progressive-application-v4` ladder. This distinction
+matters: despite the experiment name, `parrot_surface_frame_recursive_v13b_`
+`sol_medium_20260812` was **not** the self-growing DAG. Its state uses protocol
+v8, `graph_enabled=false`, four fixed studies, generator self-selection, no
+artifact promotions, and no graph expansions. The result is evidence for a
+specific dependency-ordered construction, not evidence that adaptive graph
+growth caused the improvement.
+
+The run completed four two-pass studies and six final renders. The standard
+judge ranked the final sequence as follows:
+
+| Final revision | Total | Notes |
+| ---: | ---: | --- |
+| 13 | **369** | fullest volume and most coherent wing mass |
+| 14 | 338 | longer vanes, more comb-like |
+| 15 | 333 | thinner and more visibly detached |
+| 16 | 329 | most regular curtain; agent submission |
+
+The best reachable result improved 28 points over v12's 341, but the agent
+submitted revision 16 and lost 40 points relative to its own revision 13. The
+fixed study ladder expanded the reachable basin; final promotion still
+regressed. This is the same process split seen earlier, now with a larger gap:
+generation and selection must be measured separately.
+
+The code audit found four real transferable gains. Feather roots are derived
+from the analytic wing parameterization rather than absolute world positions.
+The root orientation comes from parent tangents and a normal. Row, column,
+length, fan, and stagger form a correlated field in intrinsic coordinates.
+Finally, each vane is a continuous longitudinal profile with bend, asymmetric
+width, changing thickness, camber, and taper. These mechanisms generalize to
+leaves, scales, petals, roof tiles, facade modules, foam strands, road marks,
+and other dependent detail.
+
+But the visual residual has a precise mathematical cause. The implementation
+samples `P(u,v)`, `Tu`, `Tv`, and `N` once at the root and evaluates the entire
+feather in that frozen frame. Each vane is tangent to the wing at one point,
+then becomes a hovering bent plate as it extends. A numerical audit found the
+revision-13 centerline roughly 0.14 wing-SDF units away from the parent near
+mid-length, several times the vane thickness. The derivative implementation
+also diverges from the actual `P`: it omits shoulder-scale terms, becomes badly
+wrong near the clamped square-root rim, admits at least one invalid anchor in
+later finals, and never expresses course-specific normal offsets or explicit
+over/under order. The prompt had already asked for changing frames along the
+child, so this is not fixed by more prose alone.
+
+The general contract is extent-aware:
+
+```text
+surface(u,v) -> {P, Tu, Tv, N, valid}
+gamma(s) = {u(s), v(s), h(s)}
+C(s) = P(gamma.u, gamma.v) + h(s) N(gamma.u, gamma.v)
+```
+
+The child cross-section must be built around a re-sampled or parallel-
+transported frame along `C(s)`. Before an intentional peel zone, every section
+stays within a declared parent-offset band. Anchors must pass the parent's
+trim/cut predicate; frames must stay orthonormal and consistently handed;
+neighboring child fields must remain correlated; layers need explicit depth
+order. A child is only allowed to freeze its root frame when it is visibly tiny
+relative to the parent's local curvature radius.
+
+That mechanism is now isolated as the subject-neutral
+`sketchbook-recursive-component-lineage-v11` workflow. It does not contain the
+parrot's body, bill, wing coefficients, 3x6 course constants, palette, camera,
+or earlier corrective language. It uses four cumulative stages: authoritative
+root/parent map; child unit and internal subcomponents; intrinsic assembly plus
+extent-aware transport; and whole-system boundaries/integration. Each stage
+gets two diverse passes, a blinded selector, exact executable artifact
+lineage, and a full-frame promotion. Study 3 is server-gated on per-candidate
+`extent_map`, `parent_stress`, `validity_test`, and `offset_band` declarations,
+so a parent-deformation stress atlas becomes auditable production evidence.
+
+The first transfer suite deliberately spans different dependency types while
+keeping model, baseline prompt profile, judge, and render ceiling fixed:
+
+| Case | Existing raw Sol baseline | Dependency under test |
+| --- | ---: | --- |
+| `reproduce_image_fabrice_villard` | 300 | trunk/branch/twig recursion |
+| `reproduce_image_mark_basarab` | 305 | road corridor/perspective children |
+| `reproduce_image_photoholgic` | 300 | deforming wave/foam surface transport |
+
+These are fresh runs, not seeded continuations. The goal is not to prove that a
+long prompt raises every judge total. It is to falsify transfer: does exact
+parent-child coordinate dependency survive a recursive botanical structure, a
+rigid perspective system, and a deforming fluid sheet without importing bird
+priors? The next notes should report submitted score, best historical final,
+selector regression gap, lineage validity, and a score-blind visual attachment
+audit for each case.
+
+### V11 transfer result: formal lineage transferred; visual authority did not
+
+All three transfer runs eventually completed after checkpoint resumes. The
+network dropped during the first tree and road sessions; the wave agent stopped
+after a rejected Study-2 artifact manifest. Resume preserved completed renders,
+selections, and promotions instead of regenerating them. Each finished with all
+four selected artifacts promoted, at least four distinct final renders, and a
+historical final submission rather than automatically choosing the last frame.
+
+The initially displayed baseline deltas were not fair. The July raw-Sol results
+had been judged with an older generic S3/S4/S5 rubric, whereas these agentic
+runs use the corrected reconstruction rubric. A separate audit therefore
+rejudged the original raw-Sol images with the same current critic and the same
+`cli/codex:gpt-5.5:high` judge. Those audit scores are not written back into the
+published baseline run.
+
+| Case | Raw Sol, current rejudge | V11 selected | Delta | V11 final sequence |
+| --- | ---: | ---: | ---: | --- |
+| winter tree | **332** `[66,60,48,100,58]` | 316 `[58,66,45,95,52]` | -16 | 275, 302, **316**, 308 |
+| mountain road | **348** `[70,58,52,100,68]` | 311 `[55,63,42,98,53]` | -37 | 298, 265, 307, **311**, 277 |
+| breaking wave | **280** `[48,55,38,96,43]` | 264 `[43,58,32,96,35]` | -16 | 263, **265**, 264, 263 |
+
+The visual audit agrees with the corrected comparison. The tree treatment gets
+the small scale, pale field, faint horizon, and contact shadow right, but its
+crown collapses into a flat radial fan of straight spokes; the raw baseline is
+rounder and more botanical. The road treatment improves the converging asphalt,
+dash scaling, and edge lines, but replaces the photographed massif and forest
+with a huge wavy slab and repeated spindle trees. The wave treatment transports
+long face striations along the slope, yet becomes a soft triangular hill with
+regular white curves and loses the reference's curling lip, turbulent crest,
+foreground water, and spray hierarchy. Extra test-time compute did not produce
+a fidelity gain on this three-case transfer set.
+
+The useful positive result is process-level. All three runs retained exact
+source hashes, immediate-parent calls, qualified study passes, blinded rankings,
+promotions, and historical final selection. Historical selection prevented an
+8-point last-frame regression for the tree, a 34-point regression for the road,
+and a 1-point last-frame regression for the wave. The wave selector still
+missed the judge-best historical frame by 1 point (264 selected versus 265), so
+the final-selection repair transferred operationally but is not perfectly
+aligned with the judge.
+
+The central failure is that executable lineage was syntactic, not authoritative.
+The tree Study-3 handoff names `radial star regularity` as a failure signal but
+selects a 35-ray starburst. Its final calls the selected whole-scene artifact as
+a weak mask and then draws roughly ninety new branches outside that artifact.
+The road has one genuine parent-relative win—its road rails converge from a
+depth-dependent trajectory—but the final calls the selected finish and then
+repaints the sky, massif, road, markings, and crack over it. Exact byte retention
+does not prove that the selected representation still controls visible output.
+
+This should remain an honest v11 result, not be silently repaired in place. A
+separately versioned v12 experiment should add immutable hashed selector
+receipts, bind each selected candidate's original manifest rather than accepting
+replacement generator prose, parse the handoff ABI into machine-checked fields,
+and require the Stage-4 scene root to remain the sole coordinate-dependent scene
+producer in final renders. A color-only coordinate-free grade may follow it;
+new geometry must return to a studied, selected, and promoted stage. A
+counterfactual render with the newest root neutralized can provide authority
+telemetry, but any subjective threshold needs calibration rather than assertion.
+
+Two harness defects were fixed after the runs without changing their recorded
+geometry: v11 now reserves enough remaining calls for the still-missing distinct
+finals, and a seeded resume now attaches reference, seed baseline, then latest
+checkpoint in the order promised by its prompt. The isolation record was also
+corrected: fixed MCP tools cannot accept arbitrary paths and writes are confined
+to the temporary shader workspace, but Codex's read-only sandbox is a mutation
+policy rather than a filesystem read allowlist. Absolute-path reads may be
+possible, so the benchmark offers best-effort process isolation, not a hard
+confidentiality boundary.

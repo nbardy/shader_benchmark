@@ -869,6 +869,55 @@ def _structural_manifest_errors(manifest: str) -> list[str]:
     return errors
 
 
+def _recursive_extent_manifest_errors(manifest: str) -> list[str]:
+    """Require a public, per-candidate extent-conformance stress test."""
+    upper = manifest.upper()
+    labels = ("A:", "B:", "C:", "D:", "E:", "F:")
+    required_fields = (
+        "EXTENT_MAP=",
+        "PARENT_STRESS=",
+        "VALIDITY_TEST=",
+        "OFFSET_BAND=",
+    )
+    errors: list[str] = []
+    for index, label in enumerate(labels):
+        start = upper.find(label)
+        if start < 0:
+            errors.append(f"{label} missing")
+            continue
+        end = (
+            upper.find(labels[index + 1], start + len(label))
+            if index + 1 < len(labels)
+            else len(upper)
+        )
+        section = upper[start:end]
+        for field_name in required_fields:
+            if field_name not in section:
+                errors.append(f"{label} missing {field_name.lower()}")
+    if len(manifest.strip()) < 720:
+        errors.append("recursive extent manifest shorter than 720 characters")
+    return errors
+
+
+def _recursive_component_handoff_errors(handoff: str) -> list[str]:
+    """Validate the subject-neutral component ABI recorded at each stage."""
+    lower = handoff.lower()
+    required_fields = (
+        "entry=",
+        "input_domain=",
+        "output=",
+        "parent=",
+        "coordinate_map=",
+        "child_slots=",
+        "invariants=",
+        "failure_signals=",
+    )
+    errors = [field for field in required_fields if field not in lower]
+    if len(handoff.strip()) < 240:
+        errors.append("handoff shorter than 240 characters")
+    return errors
+
+
 def _atlas_diversity_metrics(path: Path) -> dict[str, Any]:
     """Measure visible A-F cell separation in a fixed 3x2 study atlas."""
     image = PILImage.open(path).convert("RGB")
@@ -999,6 +1048,7 @@ class ShaderAgentState:
     require_artifact_blocks: bool = False
     require_study_selector: bool = False
     require_study_promotions: bool = False
+    require_recursive_component_contract: bool = False
     reference_image: Path | None = None
     selector_model: str = "gpt-5.5"
     selector_effort: str = "high"
@@ -1070,13 +1120,15 @@ class ShaderAgentState:
             raise ValueError("required_studies must be between 0 and 8")
         if self.graph_enabled and self.required_studies != 0:
             raise ValueError("adaptive graph mode owns studies; required_studies must be 0")
-        if (
-            self.graph_enabled
-            and self.final_render_reserve < self.min_successful_revisions
-        ):
-            raise ValueError(
-                "final_render_reserve must cover min_successful_revisions"
-            )
+        if self.graph_enabled or self.require_recursive_component_contract:
+            if not 1 <= self.final_render_reserve <= self.render_budget:
+                raise ValueError(
+                    "final_render_reserve must be between 1 and render_budget"
+                )
+            if self.final_render_reserve < self.min_successful_revisions:
+                raise ValueError(
+                    "final_render_reserve must cover min_successful_revisions"
+                )
         if self.min_successful_study_renders < 1:
             raise ValueError("min_successful_study_renders must be at least 1")
         minimum_budget = (
@@ -1107,6 +1159,16 @@ class ShaderAgentState:
             raise ValueError(
                 "study promotions require exact artifact blocks"
             )
+        if self.require_recursive_component_contract and not (
+            self.require_artifact_blocks
+            and self.require_study_selector
+            and self.require_study_promotions
+            and self.require_study_diversity
+        ):
+            raise ValueError(
+                "recursive component contracts require diversity, blinded "
+                "selection, exact artifacts, and promotions"
+            )
         self.workspace.mkdir(parents=True, exist_ok=True)
         (self.workspace / "renders").mkdir(exist_ok=True)
         (self.workspace / "artifacts").mkdir(exist_ok=True)
@@ -1135,6 +1197,22 @@ class ShaderAgentState:
     @property
     def state_path(self) -> Path:
         return self.workspace / "agent_state.json"
+
+    def _successful_final_hashes(self) -> set[str]:
+        """Return distinct successful FINAL shader hashes from the live ledger."""
+        hashes = {
+            self.successful_render_hash_by_revision.get(revision)
+            for revision, stage in self.successful_render_stage_by_revision.items()
+            if stage == "final"
+        }
+        return {shader_hash for shader_hash in hashes if shader_hash}
+
+    def _remaining_final_render_reserve(self) -> int:
+        """Keep only the still-unearned portion of the configured reserve."""
+        return max(
+            0,
+            self.final_render_reserve - len(self._successful_final_hashes()),
+        )
 
     def _checkpoint_owned_file(
         self,
@@ -1183,6 +1261,18 @@ class ShaderAgentState:
             raise ValueError("checkpoint protocol does not match this server")
         if int(payload.get("render_budget", -1)) != self.render_budget:
             raise ValueError("resume render budget does not match checkpoint")
+        if self.require_recursive_component_contract:
+            persisted_reserve = payload.get(
+                "final_render_reserve", self.final_render_reserve
+            )
+            if (
+                not isinstance(persisted_reserve, int)
+                or isinstance(persisted_reserve, bool)
+                or persisted_reserve != self.final_render_reserve
+            ):
+                raise ValueError(
+                    "resume final_render_reserve does not match checkpoint"
+                )
         raw_revision = payload.get("revision", 0)
         if (
             not isinstance(raw_revision, int)
@@ -1532,6 +1622,8 @@ class ShaderAgentState:
         elif self.current_hash is not None:
             raise ValueError("revision-zero checkpoint cannot have a shader hash")
 
+        if self.require_recursive_component_contract and not self.graph_enabled:
+            self._validate_recursive_checkpoint_consistency()
         if not self.graph_enabled:
             return
         graph = self._require_study_dag()
@@ -1592,16 +1684,153 @@ class ShaderAgentState:
                             f"checkpoint artifact status disagrees for study {index}"
                         )
 
-        distinct_final_hashes = {
-            self.successful_render_hash_by_revision.get(revision)
-            for revision, stage in self.successful_render_stage_by_revision.items()
-            if stage == "final"
-        }
-        distinct_final_hashes.discard(None)
+        distinct_final_hashes = self._successful_final_hashes()
         if len(distinct_final_hashes) != graph.successful_final_renders:
             raise ValueError(
                 "checkpoint graph final ledger disagrees with distinct final hashes"
             )
+
+    def _validate_recursive_checkpoint_consistency(self) -> None:
+        """Validate the fixed v11 selection/promotion chain after resume."""
+        known_indexes = set(range(1, self.required_studies + 1))
+        indexed_ledgers = (
+            ("study_records", self.study_records),
+            ("promotion_records", self.promotion_records),
+            ("successful_study_render_count", self.successful_study_render_count),
+            ("qualified_study_render_paths", self.qualified_study_render_paths),
+            ("qualified_study_candidates", self.qualified_study_candidates),
+            ("study_rankings", self.study_rankings),
+            ("latest_successful_study_render", self.latest_successful_study_render),
+            (
+                "latest_successful_promotion_render",
+                self.latest_successful_promotion_render,
+            ),
+        )
+        for mapping_name, mapping in indexed_ledgers:
+            unknown = set(mapping) - known_indexes
+            if unknown:
+                raise ValueError(
+                    f"checkpoint {mapping_name} references unknown recursive "
+                    f"studies: {sorted(unknown)}"
+                )
+
+        selected_indexes = set(self.study_records)
+        promoted_indexes = set(self.promotion_records)
+
+        def contiguous_prefix(indexes: set[int]) -> set[int]:
+            return set(range(1, max(indexes) + 1)) if indexes else set()
+
+        if selected_indexes != contiguous_prefix(selected_indexes):
+            raise ValueError(
+                "checkpoint recursive selections are not a contiguous prefix"
+            )
+        if promoted_indexes != contiguous_prefix(promoted_indexes):
+            raise ValueError(
+                "checkpoint recursive promotions are not a contiguous prefix"
+            )
+        if not promoted_indexes.issubset(selected_indexes):
+            raise ValueError(
+                "checkpoint recursive promotion has no selected study"
+            )
+        if selected_indexes and (
+            selected_indexes - {max(selected_indexes)}
+        ) - promoted_indexes:
+            raise ValueError(
+                "checkpoint recursive selection advanced past an unpromoted parent"
+            )
+
+        artifacts_by_study: dict[int, list[tuple[str, dict[str, Any]]]] = {}
+        for artifact_id, metadata in self.locked_artifacts.items():
+            study_index = int(metadata["study_index"])
+            if study_index not in known_indexes:
+                raise ValueError(
+                    "checkpoint locked artifact references unknown recursive "
+                    f"study: {study_index}"
+                )
+            artifacts_by_study.setdefault(study_index, []).append(
+                (artifact_id, metadata)
+            )
+
+        for study_index in known_indexes:
+            artifacts = artifacts_by_study.get(study_index, [])
+            expected_count = 1 if study_index in selected_indexes else 0
+            if len(artifacts) != expected_count:
+                raise ValueError(
+                    "checkpoint recursive artifact ledger must contain exactly "
+                    f"one artifact per selected study: study {study_index} has "
+                    f"{len(artifacts)}, expected {expected_count}"
+                )
+            if not artifacts:
+                continue
+
+            artifact_id, artifact = artifacts[0]
+            record = self.study_records[study_index]
+            if (
+                int(record.get("study_index", -1)) != study_index
+                or record.get("artifact_id") != artifact_id
+                or record.get("entry_symbol") != artifact.get("entry_symbol")
+            ):
+                raise ValueError(
+                    f"checkpoint recursive selection metadata disagrees for "
+                    f"study {study_index}"
+                )
+
+            promoted = study_index in promoted_indexes
+            expected_status = (
+                "promoted_locked" if promoted else "selected_pending_promotion"
+            )
+            if (
+                record.get("status") != expected_status
+                or artifact.get("status") != expected_status
+            ):
+                raise ValueError(
+                    f"checkpoint recursive artifact status disagrees for "
+                    f"study {study_index}"
+                )
+            if promoted:
+                promotion = self.promotion_records[study_index]
+                if (
+                    int(promotion.get("study_index", -1)) != study_index
+                    or promotion.get("artifact_id") != artifact_id
+                    or promotion.get("status") != "promoted_locked"
+                ):
+                    raise ValueError(
+                        f"checkpoint recursive promotion metadata disagrees for "
+                        f"study {study_index}"
+                    )
+                latest = self.latest_successful_promotion_render.get(study_index)
+                if latest is None or (
+                    int(promotion.get("revision", -1)) != latest["revision"]
+                    or int(promotion.get("render_call", -1))
+                    != latest["render_call"]
+                ):
+                    raise ValueError(
+                        f"checkpoint recursive promotion render ledger disagrees "
+                        f"for study {study_index}"
+                    )
+
+            if study_index > 1:
+                parent_entry = str(
+                    self.study_records[study_index - 1].get("entry_symbol", "")
+                )
+                handoff = str(record.get("handoff_requirements", ""))
+                parent_field = re.search(
+                    r"(?:^|;)\s*parent\s*=\s*([^;]+)",
+                    handoff,
+                    re.IGNORECASE,
+                )
+                if (
+                    not parent_entry
+                    or parent_field is None
+                    or not re.search(
+                        rf"\b{re.escape(parent_entry)}\b",
+                        parent_field.group(1),
+                    )
+                ):
+                    raise ValueError(
+                        "checkpoint recursive handoff does not name the immediate "
+                        f"parent entry for study {study_index}: {parent_entry}"
+                    )
 
     def _persist(self) -> None:
         payload = {
@@ -1609,12 +1838,11 @@ class ShaderAgentState:
             "render_budget": self.render_budget,
             "render_calls": self.render_calls,
             "remaining_renders": max(0, self.render_budget - self.render_calls),
+            "final_render_reserve": self.final_render_reserve,
+            "remaining_final_reserve": self._remaining_final_render_reserve(),
             "min_successful_revisions": self.min_successful_revisions,
             "successful_revisions": len(self.successful_render_by_revision),
-            "successful_final_revisions": sum(
-                stage == "final"
-                for stage in self.successful_render_stage_by_revision.values()
-            ),
+            "successful_final_revisions": len(self._successful_final_hashes()),
             "required_studies": self.required_studies,
             "require_variant_inventory": self.require_variant_inventory,
             "min_successful_study_renders": self.min_successful_study_renders,
@@ -1622,6 +1850,9 @@ class ShaderAgentState:
             "require_artifact_blocks": self.require_artifact_blocks,
             "require_study_selector": self.require_study_selector,
             "require_study_promotions": self.require_study_promotions,
+            "require_recursive_component_contract": (
+                self.require_recursive_component_contract
+            ),
             "selector_model": self.selector_model,
             "selector_effort": self.selector_effort,
             "successful_study_render_count": self.successful_study_render_count,
@@ -2030,7 +2261,10 @@ class ShaderAgentState:
             return [str(error)]
         errors: list[str] = []
         strict_dependencies = (
-            self.protocol == "persistent-agent-render-tools-v9"
+            (
+                self.protocol == "persistent-agent-render-tools-v9"
+                or self.require_recursive_component_contract
+            )
             and not self.submitted
         )
         for artifact_id, locked in sorted(self.locked_artifacts.items()):
@@ -2074,6 +2308,8 @@ class ShaderAgentState:
                 self.study_dag.snapshot(dependency).study_index
                 for dependency in self.study_dag.node(node_id).depends_on
             }
+        elif self.require_recursive_component_contract:
+            parent_indexes = {study_index - 1} if study_index > 1 else set()
         else:
             parent_indexes = {
                 index for index in self.study_records if index < study_index
@@ -2728,6 +2964,24 @@ future composability, or treatment names; you do not have that information.
                         }
                         self._event("render_rejected", **result)
                         return result, None
+                if (
+                    self.require_recursive_component_contract
+                    and study_index == 3
+                ):
+                    extent_errors = _recursive_extent_manifest_errors(manifest)
+                    if extent_errors:
+                        result = {
+                            "ok": False,
+                            "error": (
+                                "Recursive Study 3 requires an auditable "
+                                "extent-aware parent transport and deformation "
+                                "stress test for every A-F candidate."
+                            ),
+                            "recursive_extent_manifest_errors": extent_errors,
+                            "render_budget_consumed": False,
+                        }
+                        self._event("render_rejected", **result)
+                        return result, None
         elif stage == "promotion":
             if self.graph_enabled:
                 try:
@@ -2854,6 +3108,30 @@ future composability, or treatment names; you do not have that information.
             }
             self._event("render_rejected", **result)
             return result, None
+        if (
+            self.require_recursive_component_contract
+            and stage in {"study", "promotion"}
+        ):
+            remaining_final_reserve = self._remaining_final_render_reserve()
+            remaining_calls = self.render_budget - self.render_calls
+            if remaining_calls <= remaining_final_reserve:
+                result = {
+                    "ok": False,
+                    "error": (
+                        "The remaining render calls are reserved for distinct "
+                        "successful FINAL revisions. Continue only with final "
+                        "integration renders or resume from an earlier checkpoint."
+                    ),
+                    "render_budget_consumed": False,
+                    "remaining_renders": remaining_calls,
+                    "remaining_final_reserve": remaining_final_reserve,
+                    "successful_final_revisions": len(
+                        self._successful_final_hashes()
+                    ),
+                    "min_successful_revisions": self.min_successful_revisions,
+                }
+                self._event("render_rejected", **result)
+                return result, None
         if self.render_calls >= self.render_budget:
             result = {
                 "ok": False,
@@ -2874,6 +3152,7 @@ future composability, or treatment names; you do not have that information.
         if stage == "study" and self.require_artifact_blocks:
             strict_dependencies = (
                 self.protocol == "persistent-agent-render-tools-v9"
+                or self.require_recursive_component_contract
             )
             parent_entries: set[str] = set()
             if strict_dependencies:
@@ -3357,6 +3636,19 @@ future composability, or treatment names; you do not have that information.
                     "naming the reusable code, coordinates, and parameters."
                 ),
             }
+        if self.require_recursive_component_contract:
+            handoff_errors = _recursive_component_handoff_errors(
+                handoff_requirements
+            )
+            if handoff_errors:
+                return {
+                    "ok": False,
+                    "error": (
+                        "Recursive component handoff must declare the public "
+                        "component ABI and failure invariants."
+                    ),
+                    "recursive_component_handoff_errors": handoff_errors,
+                }
         artifact_metadata: dict[str, Any] = {}
         if self.require_artifact_blocks:
             source_path = Path(selected_candidate["source_path"])
@@ -3376,6 +3668,7 @@ future composability, or treatment names; you do not have that information.
                 }
             strict_dependencies = (
                 self.protocol == "persistent-agent-render-tools-v9"
+                or self.require_recursive_component_contract
             )
             parent_entries: set[str] = set()
             if strict_dependencies:
@@ -3815,6 +4108,12 @@ def _state_from_environment() -> ShaderAgentState:
         ),
         require_study_promotions=(
             os.environ.get("SHADER_AGENT_REQUIRE_STUDY_PROMOTIONS", "0") == "1"
+        ),
+        require_recursive_component_contract=(
+            os.environ.get(
+                "SHADER_AGENT_REQUIRE_RECURSIVE_COMPONENT_CONTRACT", "0"
+            )
+            == "1"
         ),
         reference_image=(
             Path(os.environ["SHADER_AGENT_REFERENCE_IMAGE"])

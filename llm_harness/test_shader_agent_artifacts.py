@@ -111,6 +111,68 @@ fn fs_main(@builtin(position) pos: vec4<f32>)
     )
 
 
+def recursive_shader_with_artifacts(
+    study_index: int,
+    *,
+    parent_entry: str | None,
+    retained_blocks: tuple[str, ...] = (),
+    additional_live_entries: tuple[str, ...] = (),
+) -> str:
+    """Build a current study whose entries form an explicit parent chain."""
+    blocks = list(retained_blocks)
+    blocks.extend(
+        artifact_block(study_index, label, parent_entry=parent_entry)
+        for label in "ABCDEF"
+    )
+    current_entries = [
+        f"artifact_s{study_index}_{label.lower()}" for label in "ABCDEF"
+    ]
+    calls = [f"    var distance = {current_entries[0]}(p);"]
+    calls.extend(
+        f"    distance = min(distance, {entry}(p));"
+        for entry in (*current_entries[1:], *additional_live_entries)
+    )
+    calls.append("    return distance;")
+    return (
+        "\n\n".join(blocks)
+        + "\n\n"
+        + f"""
+fn scene_sdf(p: vec3<f32>) -> f32 {{
+{chr(10).join(calls)}
+}}
+
+@vertex
+fn vs_main(@builtin(vertex_index) vertex_index: u32)
+    -> @builtin(position) vec4<f32> {{
+    return vec4<f32>(0.0, 0.0, 0.0, 1.0);
+}}
+
+@fragment
+fn fs_main(@builtin(position) pos: vec4<f32>)
+    -> @location(0) vec4<f32> {{
+    let distance = scene_sdf(vec3<f32>(pos.xy, 0.0));
+    return vec4<f32>(distance, distance, distance, 1.0);
+}}
+"""
+    )
+
+
+def recursive_extent_manifest() -> str:
+    return " ".join(
+        (
+            f"{label}: family={label} transported construction; "
+            f"extent_map=gamma_{label.lower()} samples the parent over the full "
+            "child extent with changing cross-sections; parent_stress=change "
+            "parent bend, scale, and projection while the child follows; "
+            "validity_test=reject invalid anchors, frame flips, and detached "
+            "tips; offset_band=remain within 0.03 parent units before an "
+            "intentional terminal peel; structural_difference=change topology, "
+            "transport, overlap, and boundary behavior rather than constants."
+        )
+        for label in "ABCDEF"
+    )
+
+
 def integrated_shader(block: str, *, call_artifact: bool = True) -> str:
     """Build a full-frame shader that either uses or strands a locked block."""
     body = (
@@ -220,6 +282,125 @@ class ShaderArtifactWorkflowTests(unittest.TestCase):
             resume_existing=resume_existing,
         )
         return state, selector
+
+    def make_completed_recursive_chain(
+        self, root: Path, study_count: int = 3
+    ) -> ShaderAgentState:
+        renderer = root / "renderer"
+        renderer.write_text("fake", encoding="utf-8")
+        reference = root / "reference.png"
+        Image.new("RGB", (64, 64), (10, 20, 30)).save(reference)
+
+        def choose_first(**kwargs: object) -> dict[str, object]:
+            candidate_ids = list(kwargs["candidate_ids"])
+            return {
+                "winner": candidate_ids[0],
+                "ranking": candidate_ids,
+                "evidence": (
+                    "The first opaque candidate has the strongest visible "
+                    "silhouette, attachment, and reference-specific hierarchy."
+                ),
+                "runner_up_tradeoff": (
+                    "The runner-up loses parent-relative continuity at its seam."
+                ),
+            }
+
+        state = ShaderAgentState(
+            root / "workspace",
+            renderer,
+            render_budget=study_count * 2 + 4,
+            render_size=64,
+            min_successful_revisions=2,
+            required_studies=study_count,
+            require_variant_inventory=True,
+            require_study_diversity=True,
+            require_artifact_blocks=True,
+            require_study_selector=True,
+            require_study_promotions=True,
+            require_recursive_component_contract=True,
+            reference_image=reference,
+            selector_runner=choose_first,
+            final_render_reserve=2,
+        )
+
+        def varied_renderer(command: list[str], **kwargs: object) -> object:
+            completed = fake_renderer(command, **kwargs)
+            output = Path(command[command.index("--output") + 1])
+            render_call = int(output.stem.rsplit("_", 1)[1])
+            with Image.open(output) as image:
+                shifted = image.convert("RGB").point(
+                    lambda value: (value + render_call * 37) % 256
+                )
+                shifted.save(output)
+            return completed
+
+        retained_blocks: list[str] = []
+        parent_entry: str | None = None
+        for study_index in range(1, study_count + 1):
+            source = recursive_shader_with_artifacts(
+                study_index,
+                parent_entry=parent_entry,
+                retained_blocks=tuple(retained_blocks),
+            )
+            written = state.write_shader(
+                source,
+                "" if state.revision == 0 else REVISION_CRITIQUE,
+            )
+            self.assertTrue(written["ok"], written)
+            with patch("shader_agent_mcp.subprocess.run", varied_renderer):
+                rendered, _ = state.render_shader(
+                    "study", study_index, recursive_extent_manifest()
+                )
+            self.assertTrue(rendered["ok"], rendered)
+            ranked, _ = state.rank_study(study_index)
+            self.assertTrue(ranked["ok"], ranked)
+            selected_variant = str(ranked["winner_origin"]["variant"])
+            selected_entry = (
+                f"artifact_s{study_index}_{selected_variant.lower()}"
+            )
+            parent_value = parent_entry or "none"
+            handoff = (
+                f"entry={selected_entry}; input_domain=parent intrinsic "
+                "coordinates and a bounded local parameter; output=continuous "
+                f"component distance and material identity; parent={parent_value}; "
+                "coordinate_map=authoritative parent map with transported local "
+                "frame; child_slots=ordered attachment and boundary slots; "
+                "invariants=valid anchors, stable handedness, bounded offsets, "
+                "continuous overlap, and live executable ancestry; "
+                "failure_signals=detached seams, frozen frames, missing immediate "
+                "parent, invalid anchors, or reversed layer order."
+            )
+            recorded = state.record_study(
+                study_index,
+                f"recursive component stage {study_index}",
+                selected_variant,
+                SELECTION_RATIONALE,
+                handoff,
+                variant_inventory=recursive_extent_manifest(),
+                selected_render_call=int(
+                    ranked["winner_origin"]["render_call"]
+                ),
+            )
+            self.assertTrue(recorded["ok"], recorded)
+            promoted_source = source + f"\n// promotion {study_index}\n"
+            self.assertTrue(
+                state.write_shader(promoted_source, REVISION_CRITIQUE)["ok"]
+            )
+            with patch("shader_agent_mcp.subprocess.run", varied_renderer):
+                promotion_render, _ = state.render_shader(
+                    "promotion", study_index
+                )
+            self.assertTrue(promotion_render["ok"], promotion_render)
+            promoted = state.promote_study(
+                study_index, INTEGRATION_EVIDENCE
+            )
+            self.assertTrue(promoted["ok"], promoted)
+            artifact_id = str(recorded["artifact_id"])
+            retained_blocks.append(
+                str(state.locked_artifacts[artifact_id]["source"])
+            )
+            parent_entry = selected_entry
+        return state
 
     def render_and_rank_first_study(
         self, state: ShaderAgentState
@@ -680,6 +861,214 @@ class ShaderArtifactWorkflowTests(unittest.TestCase):
                     (20, 200, 30),
                 )
 
+    def test_recursive_lineage_requires_each_child_to_call_selected_parents(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            renderer = root / "renderer"
+            renderer.write_text("fake", encoding="utf-8")
+            reference = root / "reference.png"
+            Image.new("RGB", (64, 64), (10, 20, 30)).save(reference)
+            state = ShaderAgentState(
+                root / "workspace",
+                renderer,
+                render_budget=12,
+                render_size=64,
+                required_studies=2,
+                require_study_diversity=True,
+                require_artifact_blocks=True,
+                require_study_selector=True,
+                require_study_promotions=True,
+                require_recursive_component_contract=True,
+                reference_image=reference,
+                selector_runner=Mock(return_value=selector_result()),
+            )
+            # Seed the exact parent ledger; the focused assertion is the
+            # non-DAG recursive workflow's strict executable dependency gate.
+            parent = artifact_block(1, "B")
+            state.study_records[1] = {
+                "study_index": 1,
+                "entry_symbol": "artifact_s1_b",
+            }
+            state.promotion_records[1] = {"study_index": 1}
+            state.locked_artifacts["study_1_B"] = {
+                "study_index": 1,
+                "entry_symbol": "artifact_s1_b",
+                "source": parent,
+            }
+            state.current_hash = None
+            unlinked = shader_with_artifacts(
+                study_index=2,
+                live_entry="artifact_s2_a",
+                retained_blocks=(parent,),
+            )
+            self.assertTrue(state.write_shader(unlinked)["ok"])
+            manifest = (
+                "A: broad linked form. B: swept linked form. C: carved linked "
+                "form. D: branched linked form. E: layered linked form. "
+                "F: tapered linked form with a distinct boundary relationship. "
+                "Each construction changes topology, coordinate mapping, "
+                "attachment, silhouette, and overlap rather than only constants."
+            )
+            rejected, _ = state.render_shader("study", 2, manifest)
+            self.assertFalse(rejected["ok"])
+            errors = rejected.get(
+                "artifact_manifest_errors",
+                rejected.get("artifact_lineage_errors", []),
+            )
+            self.assertTrue(errors, rejected)
+            self.assertTrue(
+                any(
+                    "parent" in error.lower()
+                    or "external" in error.lower()
+                    for error in errors
+                ),
+                errors,
+            )
+
+    def test_recursive_three_level_lineage_rejects_grandparent_only_child(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            renderer = root / "renderer"
+            renderer.write_text("fake", encoding="utf-8")
+            reference = root / "reference.png"
+            Image.new("RGB", (64, 64), (10, 20, 30)).save(reference)
+            state = ShaderAgentState(
+                root / "workspace",
+                renderer,
+                render_budget=12,
+                render_size=64,
+                required_studies=3,
+                require_study_diversity=True,
+                require_artifact_blocks=True,
+                require_study_selector=True,
+                require_study_promotions=True,
+                require_recursive_component_contract=True,
+                reference_image=reference,
+                selector_runner=Mock(return_value=selector_result()),
+            )
+            grandparent = artifact_block(1, "B")
+            parent = artifact_block(
+                2, "C", parent_entry="artifact_s1_b"
+            )
+            for study_index, artifact_id, entry, source in (
+                (1, "study_1_B", "artifact_s1_b", grandparent),
+                (2, "study_2_C", "artifact_s2_c", parent),
+            ):
+                state.study_records[study_index] = {
+                    "study_index": study_index,
+                    "entry_symbol": entry,
+                }
+                state.promotion_records[study_index] = {
+                    "study_index": study_index
+                }
+                state.locked_artifacts[artifact_id] = {
+                    "study_index": study_index,
+                    "entry_symbol": entry,
+                    "source": source,
+                }
+
+            grandparent_only = recursive_shader_with_artifacts(
+                3,
+                parent_entry="artifact_s1_b",
+                retained_blocks=(grandparent, parent),
+                additional_live_entries=("artifact_s2_c",),
+            )
+            self.assertTrue(state.write_shader(grandparent_only)["ok"])
+            rejected, _ = state.render_shader(
+                "study", 3, recursive_extent_manifest()
+            )
+            self.assertFalse(rejected["ok"])
+            self.assertEqual(state.render_calls, 0)
+            errors = rejected["artifact_manifest_errors"]
+            self.assertTrue(
+                any("artifact_s2_c" in error for error in errors), errors
+            )
+
+            immediate_parent = recursive_shader_with_artifacts(
+                3,
+                parent_entry="artifact_s2_c",
+                retained_blocks=(grandparent, parent),
+            )
+            self.assertTrue(
+                state.write_shader(immediate_parent, REVISION_CRITIQUE)["ok"]
+            )
+            with patch("shader_agent_mcp.subprocess.run", fake_renderer):
+                accepted, _ = state.render_shader(
+                    "study", 3, recursive_extent_manifest()
+                )
+            self.assertTrue(accepted["ok"], accepted)
+
+    def test_recursive_reserve_counts_existing_finals_and_blocks_nonfinal_spend(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            renderer = root / "renderer"
+            renderer.write_text("fake", encoding="utf-8")
+            reference = root / "reference.png"
+            Image.new("RGB", (64, 64), (10, 20, 30)).save(reference)
+            state = ShaderAgentState(
+                root / "workspace",
+                renderer,
+                render_budget=5,
+                render_size=64,
+                min_successful_revisions=2,
+                required_studies=1,
+                require_study_diversity=True,
+                require_artifact_blocks=True,
+                require_study_selector=True,
+                require_study_promotions=True,
+                require_recursive_component_contract=True,
+                reference_image=reference,
+                selector_runner=Mock(return_value=selector_result()),
+                final_render_reserve=2,
+            )
+            # Model the valid ledger condition that matters to this focused
+            # boundary: one distinct FINAL has already earned half the reserve.
+            state.successful_render_stage_by_revision[90] = "final"
+            state.successful_render_hash_by_revision[90] = "prior-final-hash"
+            state.render_calls = 3
+            state._persist()
+
+            source = shader_with_artifacts()
+            self.assertTrue(state.write_shader(source)["ok"])
+            manifest = (
+                "A: broad hooked form with a carved opening. "
+                "B: swept shell rooted in a curved parent frame. "
+                "C: tapered branch with changing cross-sections. "
+                "D: folded ribbon with a subtractive terminal. "
+                "E: layered membrane with explicit overlap ordering. "
+                "F: asymmetric loft with a bounded attachment seam."
+            )
+            with patch("shader_agent_mcp.subprocess.run", fake_renderer):
+                allowed, _ = state.render_shader("study", 1, manifest)
+            self.assertTrue(allowed["ok"], allowed)
+            self.assertEqual(state.render_calls, 4)
+            self.assertEqual(state._remaining_final_render_reserve(), 1)
+
+            self.assertTrue(
+                state.write_shader(
+                    source + "\n// materially revised reserved-boundary atlas\n",
+                    REVISION_CRITIQUE,
+                )["ok"]
+            )
+            with patch(
+                "shader_agent_mcp.subprocess.run", side_effect=fake_renderer
+            ) as runner:
+                blocked, image_path = state.render_shader("study", 1, manifest)
+            runner.assert_not_called()
+            self.assertFalse(blocked["ok"])
+            self.assertFalse(blocked["render_budget_consumed"])
+            self.assertEqual(blocked["remaining_final_reserve"], 1)
+            self.assertEqual(blocked["successful_final_revisions"], 1)
+            self.assertEqual(state.render_calls, 4)
+            self.assertIsNone(image_path)
+
+            persisted = json.loads(
+                state.state_path.read_text(encoding="utf-8")
+            )
+            self.assertEqual(persisted["final_render_reserve"], 2)
+            self.assertEqual(persisted["remaining_final_reserve"], 1)
+            self.assertEqual(persisted["render_calls"], 4)
+
     def test_selector_accepts_a_blind_workflow_specific_visual_focus(self):
         with tempfile.TemporaryDirectory() as temporary:
             state, selector = self.make_state(Path(temporary))
@@ -886,6 +1275,90 @@ class ShaderArtifactWorkflowTests(unittest.TestCase):
             )
             self.assertTrue(rewritten["ok"])
             self.assertEqual(rewritten["revision"], 3)
+
+    def test_recursive_checkpoint_requires_a_contiguous_consistent_chain(self):
+        def resume(root: Path) -> ShaderAgentState:
+            return ShaderAgentState(
+                root / "workspace",
+                root / "renderer",
+                render_budget=10,
+                render_size=64,
+                min_successful_revisions=2,
+                required_studies=3,
+                require_variant_inventory=True,
+                require_study_diversity=True,
+                require_artifact_blocks=True,
+                require_study_selector=True,
+                require_study_promotions=True,
+                require_recursive_component_contract=True,
+                reference_image=root / "reference.png",
+                selector_runner=Mock(),
+                final_render_reserve=2,
+                resume_existing=True,
+            )
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.make_completed_recursive_chain(root)
+            resumed = resume(root)
+            self.assertEqual(sorted(resumed.study_records), [1, 2, 3])
+            self.assertEqual(sorted(resumed.promotion_records), [1, 2, 3])
+            self.assertEqual(len(resumed.locked_artifacts), 3)
+
+        def selection_gap(payload: dict[str, object]) -> None:
+            payload["study_records"].pop("2")
+
+        def promotion_gap(payload: dict[str, object]) -> None:
+            payload["promotion_records"].pop("2")
+
+        def unknown_selection(payload: dict[str, object]) -> None:
+            record = dict(payload["study_records"]["3"])
+            record["study_index"] = 4
+            payload["study_records"]["4"] = record
+
+        def missing_artifact(payload: dict[str, object]) -> None:
+            artifact_id = payload["study_records"]["3"]["artifact_id"]
+            payload["locked_artifacts"].pop(artifact_id)
+
+        def status_mismatch(payload: dict[str, object]) -> None:
+            payload["study_records"]["2"]["status"] = (
+                "selected_pending_promotion"
+            )
+
+        def parent_metadata_mismatch(payload: dict[str, object]) -> None:
+            parent_entry = payload["study_records"]["1"]["entry_symbol"]
+            handoff = payload["study_records"]["2"]["handoff_requirements"]
+            payload["study_records"]["2"]["handoff_requirements"] = (
+                handoff.replace(
+                    f"parent={parent_entry}", "parent=wrong_parent_entry"
+                )
+            )
+
+        cases = (
+            ("selection gap", selection_gap, "selections are not a contiguous"),
+            ("promotion gap", promotion_gap, "promotions are not a contiguous"),
+            ("unknown index", unknown_selection, "unknown recursive studies"),
+            ("missing artifact", missing_artifact, "exactly one artifact"),
+            ("status mismatch", status_mismatch, "artifact status disagrees"),
+            (
+                "parent metadata mismatch",
+                parent_metadata_mismatch,
+                "does not name the immediate parent entry",
+            ),
+        )
+        for label, mutate, expected_error in cases:
+            with self.subTest(case=label), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                state = self.make_completed_recursive_chain(root)
+                payload = json.loads(
+                    state.state_path.read_text(encoding="utf-8")
+                )
+                mutate(payload)
+                state.state_path.write_text(
+                    json.dumps(payload), encoding="utf-8"
+                )
+                with self.assertRaisesRegex(ValueError, expected_error):
+                    resume(root)
 
     def test_legacy_v8_resume_allows_historical_external_helper_artifact(self):
         with tempfile.TemporaryDirectory() as temporary:

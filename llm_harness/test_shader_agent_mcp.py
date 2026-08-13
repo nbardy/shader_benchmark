@@ -1,4 +1,5 @@
 import asyncio
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -10,6 +11,8 @@ from shader_agent_mcp import (
     ShaderAgentState,
     _atlas_diversity_metrics,
     _cross_render_diversity_metrics,
+    _recursive_component_handoff_errors,
+    _recursive_extent_manifest_errors,
     _structural_manifest_errors,
     create_mcp,
 )
@@ -34,6 +37,114 @@ class ShaderAgentStateTests(unittest.TestCase):
         renderer = root / "renderer"
         renderer.write_text("fake", encoding="utf-8")
         return ShaderAgentState(root / "workspace", renderer, budget, 64)
+
+    def make_recursive_state(
+        self,
+        root: Path,
+        *,
+        budget: int = 4,
+        final_render_reserve: int = 2,
+        required_studies: int = 1,
+        resume_existing: bool = False,
+    ) -> ShaderAgentState:
+        renderer = root / "renderer"
+        renderer.write_text("fake", encoding="utf-8")
+        reference = root / "reference.png"
+        if not reference.exists():
+            Image.new("RGB", (64, 64), "blue").save(reference)
+        return ShaderAgentState(
+            root / "workspace",
+            renderer,
+            render_budget=budget,
+            render_size=64,
+            min_successful_revisions=2,
+            required_studies=required_studies,
+            require_study_diversity=True,
+            require_artifact_blocks=True,
+            require_study_selector=True,
+            require_study_promotions=True,
+            require_recursive_component_contract=True,
+            reference_image=reference,
+            final_render_reserve=final_render_reserve,
+            resume_existing=resume_existing,
+        )
+
+    def test_recursive_final_reserve_is_validated_persisted_and_resumed(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with self.assertRaisesRegex(
+                ValueError, "must cover min_successful_revisions"
+            ):
+                self.make_recursive_state(root, final_render_reserve=1)
+            with self.assertRaisesRegex(
+                ValueError, "must be between 1 and render_budget"
+            ):
+                self.make_recursive_state(root, final_render_reserve=5)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            state = self.make_recursive_state(root)
+            payload = json.loads(state.state_path.read_text(encoding="utf-8"))
+            self.assertEqual(payload["final_render_reserve"], 2)
+            self.assertEqual(payload["remaining_final_reserve"], 2)
+
+            resumed = self.make_recursive_state(root, resume_existing=True)
+            self.assertEqual(resumed.final_render_reserve, 2)
+            self.assertEqual(resumed._remaining_final_render_reserve(), 2)
+
+            # Checkpoints created immediately before this field was persisted
+            # remain resumable with the explicitly configured server value.
+            payload.pop("final_render_reserve")
+            payload.pop("remaining_final_reserve")
+            state.state_path.write_text(json.dumps(payload), encoding="utf-8")
+            legacy_resumed = self.make_recursive_state(
+                root, resume_existing=True
+            )
+            self.assertEqual(legacy_resumed.final_render_reserve, 2)
+
+            payload["final_render_reserve"] = 3
+            state.state_path.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(
+                ValueError, "final_render_reserve does not match checkpoint"
+            ):
+                self.make_recursive_state(root, resume_existing=True)
+
+    def test_recursive_resume_rehydrates_earned_final_reserve(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            state = self.make_recursive_state(
+                root,
+                budget=3,
+                required_studies=0,
+            )
+            self.assertTrue(state.write_shader(VALID_SHADER)["ok"])
+
+            def fake_run(command, **kwargs):
+                output_index = command.index("--output") + 1
+                Image.new("RGB", (8, 8), "blue").save(command[output_index])
+                return type(
+                    "Completed",
+                    (),
+                    {"returncode": 0, "stdout": "ok", "stderr": ""},
+                )()
+
+            with patch("shader_agent_mcp.subprocess.run", fake_run):
+                rendered, _ = state.render_shader("final", 0)
+            self.assertTrue(rendered["ok"])
+            self.assertEqual(state._remaining_final_render_reserve(), 1)
+
+            payload = json.loads(state.state_path.read_text(encoding="utf-8"))
+            self.assertEqual(payload["successful_final_revisions"], 1)
+            self.assertEqual(payload["remaining_final_reserve"], 1)
+
+            resumed = self.make_recursive_state(
+                root,
+                budget=3,
+                required_studies=0,
+                resume_existing=True,
+            )
+            self.assertEqual(len(resumed._successful_final_hashes()), 1)
+            self.assertEqual(resumed._remaining_final_render_reserve(), 1)
 
     def test_submission_requires_current_revision_to_render(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -554,6 +665,37 @@ class ShaderAgentStateTests(unittest.TestCase):
                 for label in "ABCDEF"
             )
             self.assertEqual(_structural_manifest_errors(strong_manifest), [])
+
+    def test_recursive_contract_requires_extent_stress_and_public_handoff(self):
+        weak_extent = " ".join(
+            f"{label}: a transported child with different visible curvature."
+            for label in "ABCDEF"
+        )
+        self.assertTrue(_recursive_extent_manifest_errors(weak_extent))
+        strong_extent = " ".join(
+            (
+                f"{label}: extent_map=gamma_{label.lower()} samples the parent "
+                "map along the full child; parent_stress=change bend and "
+                "projection while descendants follow; validity_test=reject "
+                "trimmed anchors and frame flips; offset_band=remain within "
+                "0.03 parent units before an intentional terminal peel zone."
+            )
+            for label in "ABCDEF"
+        )
+        self.assertEqual(_recursive_extent_manifest_errors(strong_extent), [])
+
+        weak_handoff = "Reuse the good selected implementation in later stages."
+        self.assertTrue(_recursive_component_handoff_errors(weak_handoff))
+        strong_handoff = (
+            "entry=artifact_s3_c; input_domain=parent intrinsic uv and local s; "
+            "output=extent-conforming child distance and material id; "
+            "parent=artifact_s2_b; coordinate_map=surface uv plus transported "
+            "frame; child_slots=ordered course anchors and boundary exceptions; "
+            "invariants=valid anchors, stable handedness, bounded parent offset, "
+            "and hidden roots; failure_signals=world-space grid, frozen root "
+            "frame, hovering middle, detached tips, or reversed layer order."
+        )
+        self.assertEqual(_recursive_component_handoff_errors(strong_handoff), [])
 
     def test_cross_render_gate_rejects_a_recycled_atlas(self):
         with tempfile.TemporaryDirectory() as temporary:

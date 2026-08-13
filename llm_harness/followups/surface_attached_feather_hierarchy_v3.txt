@@ -1,0 +1,141 @@
+TARGETED FOLLOW-UP V3 — GROW THE FEATHER SYSTEM FROM THE WING SURFACE
+====================================================================
+
+This follow-up doubles down on the successful representation change instead of
+reopening the whole parrot. The selected seed is the strongest score-blind
+visual final from the corrective run. Preserve its continuous bent/tapered
+crown–back–breast–tail gesture, hooked asymmetric bill, integrated cheek, full
+safe-margin silhouette, palette, camera, lighting, and broad shoulder-attached
+wing. These are locked visual relationships, although their code is editable.
+
+CAUSAL FAILURE TO REMOVE
+------------------------
+
+The seed's wing is evaluated in a warped local `wp` coordinate system, but its
+feather roots are generated as an absolute world-space row/column grid. Each
+feather is then rotated only in world XY. The last revision merely intersects
+these independently placed shapes with the wing envelope. That clipping stops
+tips from floating outside the panel, but it does not make root position,
+orientation, camber, scale, overlap, foreshortening, or depth follow the wing.
+The result is a blue slab with a decorative vertical appliqué.
+
+Do not treat another world-space `center = vec3(...)`, `rotZ(p-center, angle)`,
+or `max(feather, wingSdf-offset)` as surface attachment. Containment may remain
+as a final safety bound, but it cannot be the construction.
+
+USE THE ENFORCED FOUR-STUDY LADDER AS A RECURSIVE PART HIERARCHY
+---------------------------------------------------------------
+
+The four studies are dependent public experiments. Each pass must be rendered
+and inspected. A later study must call the selected representation from every
+earlier study; do not reimplement it with cheaper ovals.
+
+STUDY 1 — INDIVIDUAL FEATHER
+
+Render one enlarged identity-carrying feather per cell. Compare genuinely
+different continuous constructions with a narrow embedded root, off-center
+shoulder, changing left/right vane width, longitudinal bend, changing
+thickness/camber, and a tapered or subtly notched tip. A capsule, ellipsoid,
+diamond, rod, or pointed oval cannot be the full visible feather. Use a
+longitudinal coordinate s and a continuous inverse-bend/profile or swept-curve
+field. The result must expose a callable local-space feather function.
+
+STUDY 2 — INTRINSIC FEATHER COAT
+
+Build a neutral gently curved sheet using the selected feather function. The
+sheet lives in intrinsic coordinates (u,v), not world XY. Compare at least
+three curved staggered courses: short rounded shoulder coverts, medium coverts,
+and longer/narrower outer feathers. Roots should be covered by the preceding
+course; downstream courses overlap roughly 25–50% of exposed length. Across
+the field, the flow must fan visibly by at least 25–40 degrees. Variation in
+length, yaw, roll, curvature, spacing, and overlap must be smooth and correlated
+with (u,v), with only sparse low-amplitude irregularity. No straight top root
+row, parallel vertical comb, alternating diamond seams, or random scattering.
+
+STUDY 3 — WING SURFACE FRAME AND WRAP
+
+Map the selected coat onto the existing wing as a child of that wing. Define a
+stable wing parameterization and frame:
+
+    P(u,v) = point on the shoulder-to-tip wing surface
+    Tu = normalize(dP/du)
+    Tv = normalize(dP/dv)
+    N  = normalize(cross(Tu,Tv))
+
+An equivalent analytic or finite-difference frame is acceptable. A transported
+frame along a wing centerline plus a cross-wing coordinate is also acceptable.
+What matters is that every feather root is computed as P(u_i,v_i), its local
+basis is derived from Tu/Tv/N, and its bent body remains close to the changing
+surface before lifting at the tip. Parameterize the same geometry used by the
+wing SDF; do not invent an unrelated decorative plane in front of it.
+
+For the seed's current warped ellipsoid, this is one viable starting scaffold
+(adapt signs/ranges only after rendering it):
+
+    yl = 1.03*v
+    shoulder = 1 + 0.18*smoothstep(-0.20, 0.70, yl)
+    xw = 0.57*shoulder*u
+    zw = -0.19*sqrt(max(1-u*u-v*v, epsilon))
+    P = vec3(0.08 + xw + 0.17*yl - 0.075*yl*yl,
+             -0.28 + yl,
+             -0.43 + zw - 0.10*xw)
+
+Apply the wing's existing shoulder/trailing cuts in the same domain. Finite
+differences of P are preferable to pretending world Z is the normal. A feather
+may then be evaluated as a curved UV planform plus height above P, or through a
+root frame whose normal/camber is updated along its length.
+
+Make the atlas diagnostically legible: show root markers and tangent/flow cues
+or use controlled course colors where useful. Across all cells reject roots
+outside the shoulder/wing, exposed bases against the yellow body/background,
+equal-width edge feathers, and axes that remain parallel as the surface turns.
+Feathers approaching the far/turning edge should become narrower, more
+overlapped, darker or more occluded through real 3D orientation—not painted
+screen-space shading.
+
+STUDY 4 — HIERARCHICAL RELATIONSHIPS IN THE WHOLE BIRD
+
+Render the complete parrot in every cell and vary only meaningful wing-coat
+relationships: shoulder concealment beneath the neck, covert-to-flight-feather
+transition, course depth ordering, wrap around the torso, and how two to four
+long primaries participate in the lower/trailing silhouette. Preserve the
+seed's torso, bill, cheek, camera, palette, and background. Reject an interior
+feather badge, a disconnected lower spike, a straight curtain, or any option
+that replaces the successful macro anatomy.
+
+FINAL INTEGRATION AND TESTS
+---------------------------
+
+Use the remaining renders for at least six distinct full-frame final revisions.
+Before each rewrite, name which parent→child relationship is still wrong, the
+coordinate or geometry operation that replaces it, and the visible falsification
+test. Iterate from largest dependency to smallest: wing frame → course field →
+feather root/frame → continuous feather profile → material refinement.
+
+The final shader must expose a live dependency chain equivalent to:
+
+    torso gesture
+      → shoulder-rooted wing surface P(u,v), Tu, Tv, N
+        → curved course field in (u,v)
+          → per-root transported feather frame
+            → continuous bent/tapered feather profile
+
+Visible acceptance tests:
+
+- At least 75% of roots are hidden by upstream feathers or the shoulder.
+- Three or more staggered courses remain visible, with coherent over/under
+  ordering and no X-shaped or diamond-grid intersections.
+- Neighbor directions change gradually, while the whole coat fans by at least
+  25–40 degrees instead of forming a vertical comb.
+- Edge-turning feathers visibly foreshorten and overlap more than central ones.
+- Only two to four designed primaries break the wing silhouette; no random tip
+  escapes and the coat is not merely a centered badge.
+- In a single-color or thumbnail read, feathers and wing form one wrapped mass,
+  not a blue panel plus pasted objects.
+- The seed's dynamic S-curve, hooked bill, face assembly, framing, and focal
+  hierarchy do not regress.
+
+Submit the strongest historical final revision, not automatically the newest.
+If the recursive coat fails, restore the strongest prior final and use the
+remaining budget to correct the earliest broken dependency rather than adding
+texture, color noise, or cosmetic polish.

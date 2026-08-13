@@ -1,10 +1,10 @@
 # LLM Shader Harness — Evaluation Pipeline
 
-Automated pipeline for testing LLM shader generation capabilities with isolated execution, WGPU rendering, and multi-criteria evaluation.
+Automated pipeline for testing LLM shader generation capabilities with separated run workspaces, WGPU rendering, and multi-criteria evaluation.
 
 ## Core Features
 
-- **Isolated Test Execution** — UUID-stamped directories prevent result contamination
+- **Separated Test Execution** — UUID-stamped directories prevent result contamination
 - **Multi-Problem Orchestration** — Batch evaluation with consolidated reporting
 - **WGSL Compilation** — Full WGPU 0.20 pipeline with Rust shader harness
 - **Structured Evaluation** — GPT-4o judge with 5-category scoring (500-point scale)
@@ -306,7 +306,7 @@ orchestrator. It gives one persistent Codex session seven fixed-path MCP tools:
 - `write_shader` replaces the complete working WGSL file;
 - `render_shader` compiles it with a `study`, `promotion`, or `final` stage and
   returns the actual PNG image plus compiler feedback;
-- `rank_study` asks a fresh isolated visual selector to rank the qualified
+- `rank_study` asks a fresh score-blind visual selector to rank the qualified
   study cells;
 - `record_study` records visible comparison evidence, the selected A–F atlas
   cell, and the implementation details that must carry into the final scene;
@@ -316,10 +316,12 @@ orchestrator. It gives one persistent Codex session seven fixed-path MCP tools:
   an earlier revision when the newest render regresses.
 
 The model decides when to edit, render again, or finish. A server-side
-`--render-budget` is enforced even when compilation fails. The tool server
-never accepts a path, so it cannot use the tools to inspect other benchmark
-runs, judges, or contestants. Codex itself runs in a fresh temporary directory
-with user config and repository rules disabled and a read-only sandbox.
+`--render-budget` is enforced even when compilation fails. The MCP tool
+allowlist is fixed and those tools never accept a path, so the tools cannot be
+redirected to inspect other benchmark runs, judges, or contestants. Codex
+itself runs in a fresh temporary directory with user config and repository
+rules disabled. Its read-only sandbox is a mutation policy, not a filesystem
+read allowlist; unrelated absolute-path reads may still be possible.
 
 ```bash
 python agentic_shader_harness.py \
@@ -371,7 +373,8 @@ rendered and recorded. Study renders do not count toward
 `--min-successful-revisions`, and only final-stage renders are sent to the
 benchmark judge.
 
-Thirteen stricter workflows isolate failures found by the first parrot trial:
+Fourteen stricter workflows isolate failures found by the first parrot trial
+and test which mechanisms transfer beyond it:
 
 - `sketchbook-curved-elements-v2` separates the individual signature-element
   shape study from its parent-surface placement study, runs studies in order,
@@ -426,6 +429,16 @@ Thirteen stricter workflows isolate failures found by the first parrot trial:
   cumulative: independent siblings are topologically ready but do not yet have
   branch-isolated shader workspaces, so execution order can affect the shared
   scene head.
+- `sketchbook-recursive-component-lineage-v11` extracts the useful mechanism
+  from the later parrot follow-ups without carrying bird-specific content. Its
+  fixed four-stage chain is root system and authoritative parent map → child
+  unit and internal subcomponents → intrinsic assembly with extent-aware
+  parent transport → whole-system boundaries and integration. Every stage has
+  two diverse passes, a blinded selector, exact executable artifact lineage,
+  and a full-frame promotion. Study 3 must stress-deform the parent and declare
+  an intrinsic `gamma(s)`, validity test, and offset band; attaching only the
+  child root to `P(u,v)` is explicitly insufficient. This is a controlled
+  linear transfer ablation, not evidence that the adaptive DAG caused the gain.
 - `aesthetic-perceptual-critic-v10a` runs five sequential whole-scene champion
   decisions. Each pass compares the current champion with five challengers and
   asks a fresh selector to focus on gesture, anatomy, rhythm, look development,
@@ -513,7 +526,23 @@ python agentic_shader_harness.py \
   --judge-model "cli/codex:gpt-5.5:high"
 ```
 
-If the outer model session disconnects, resume the same v8, v9, or v10
+V11 needs eight qualified study renders, four promotions, and at least two
+finals. Sixteen calls is the strict minimum for four final revisions; a ceiling
+of 20–22 is safer when a study fails its diversity or extent audit:
+
+```bash
+python agentic_shader_harness.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --problem reproduce_image_fabrice_villard \
+  --prompt-profile baseline \
+  --workflow sketchbook-recursive-component-lineage-v11 \
+  --render-budget 20 \
+  --min-successful-revisions 4 \
+  --study-selector-model "cli/codex:gpt-5.5:high" \
+  --judge-model "cli/codex:gpt-5.5:high"
+```
+
+If the outer model session disconnects, resume the same v8, v9, v10, or v11
 checkpoint without regenerating completed studies or spending their render
 calls again:
 
@@ -523,6 +552,40 @@ python agentic_shader_harness.py \
   --study-selector-model "cli/codex:gpt-5.5:high" \
   --judge-model "cli/codex:gpt-5.5:high"
 ```
+
+To reject a completed run's artistic decision and continue from its submitted
+shader in a fresh session with best-effort process isolation, use a seeded
+follow-up instead of resume:
+
+```bash
+python agentic_shader_harness.py \
+  --model "cli/codex:gpt-5.6-sol:medium" \
+  --problem reproduce_image_andrew_pons \
+  --prompt-profile domain-expert-v2 \
+  --seed-run COMPLETED_RUN_DIRECTORY_NAME \
+  --followup-brief-file followups/dynamic_parrot_macro_v1.txt \
+  --render-budget 6 \
+  --min-successful-revisions 4 \
+  --judge-model "cli/codex:gpt-5.5:high"
+```
+
+`--seed-run` and `--followup-brief-file` must be supplied together. The source
+run must be submitted and must match the requested problem. The harness
+verifies the source shader and render against its immutable ledger, then
+intentionally stages only `seed_shader.wgsl`, `seed_baseline.png`, and a compact
+public trace summary in a new temporary workspace. Raw model traces, judge
+outputs, other run directories, and repository files are not intentionally
+staged or referenced. This is not a read-security boundary: Codex's read-only
+sandbox does not enforce a read allowlist, and absolute-path reads may be
+possible. Seed and brief hashes are recorded in `result.json`, and the baseline
+is shown in the new visual report.
+
+This creates a new causal intervention while preserving the source run as
+historical evidence; it does not reopen or mutate the completed checkpoint.
+Use `--seed-revision N` to start from a different successful historical FINAL
+revision in that completed run. The selected revision and render are validated
+against the immutable event ledger and recorded in follow-up provenance;
+hidden trace and judge data are not intentionally staged or referenced.
 
 Run the five beauty-first treatments together with one generator, budget, and
 judge configuration:
@@ -623,18 +686,21 @@ Every child run is independently resumable. The matrix report shows each
 round trajectory plus final-round and best-round mean ± sample standard
 deviation.
 
-### Local-context isolation
+### Best-effort local-context isolation
 
-CLI generator and judge calls run from fresh temporary working directories.
-Only the explicitly supplied reference or feedback images are staged there.
-Codex runs ephemerally with user configuration and discovered rules ignored;
-Claude runs in bare mode. Every run records the isolation protocol in
-`config.json`.
+Fresh CLI generator and judge calls run from temporary working directories and
+intentionally stage only the supplied reference or feedback images. An agentic
+checkpoint resume instead runs from that run's checkpoint directory so it can
+restore its own shader and artifact ledger. Codex runs ephemerally with user
+configuration and discovered rules ignored; Claude runs in bare mode. Runs
+record the applicable isolation protocol in their config or result metadata.
 
 This prevents accidental loading of repository `AGENTS.md`/`CLAUDE.md` files
-and prior benchmark artifacts. It is practical benchmark isolation, not a
-container-level guarantee against a model guessing and reading an unrelated
-absolute path; use an OS sandbox or container for that stronger threat model.
+and prior benchmark artifacts. It is best-effort practical process isolation,
+not a read allowlist or container-level guarantee. In particular, Codex's
+read-only sandbox restricts mutation but may still permit a model to guess and
+read an unrelated absolute path; use an OS sandbox or container for that
+stronger threat model.
 
 **Output Location Example:**
 ```

@@ -1,0 +1,57 @@
+TARGETED FOLLOW-UP V2 — KEEP THE GESTURE, REMOVE THE TUBULAR GLYPH
+=================================================================
+
+The seed is a partial success, not a finished answer. Preserve its genuinely
+continuous crown/neck/back/breast/lower-body sweep and the fact that the wing
+is attached as a thin wrapping shell. Those are the representation gains from
+the previous intervention.
+
+The new failure is equally concrete: the image reads as a bent tubular parrot
+symbol. The bill is a constant-width horizontal bar ending in a dangling knob;
+the ivory cheek is a circular plate; the wing border is a U-shaped tube; and
+the repeated feathers are evenly spaced pills. Do not erase the continuous
+gesture or return to the original stack of eggs, but do not polish this glyph.
+
+Run full-frame FINAL revisions only. Use at least four successful revisions:
+
+1. BILL SILHOUETTE: replace the current extruded radial bar plus capsule hook.
+   Build the visible upper bill from a tapered asymmetric 2D side profile with
+   real depth: convex upper ridge, concave underside, continuously narrowing
+   tip that turns downward, and a sharp terminal hook. Subtract a curved mouth
+   gap and keep a smaller lower mandible. An ellipsoid, capsule, constant-width
+   sweep, T-junction, blunt end, or dangling vertical knob cannot be the
+   complete visible bill.
+2. HEAD/FACE TRANSITION: make crown, nape, cheek, and bill root interlock. The
+   ivory patch must be an asymmetric surface region clipped by the head and
+   bill—not a complete circular disk glued in front. Retain a clear eye focal
+   point and restrained dark facial markings only if they follow that surface.
+3. WING/FEATHER STRUCTURE: keep a shoulder-rooted, torso-conforming thin wing,
+   but remove the constant tubular outline. Give the sheet a broad shoulder,
+   convex leading edge, swept/tapered trailing edge, and partial depth wrap.
+   Replace uniform pill feathers with tapered vane-like profiles whose roots,
+   angles, sizes, overlaps, and spacing follow curved courses on the shell.
+4. INTEGRATION: compare the complete frame with the reference and prior seed.
+   Preserve the stronger dynamic anatomy while restoring the reference's full
+   yellow chest, layered blue wing mass, head-forward portrait read, palette,
+   material hierarchy, and canopy depth. Submit the strongest historical
+   revision, not automatically the newest one.
+
+VISIBLE ACCEPTANCE TESTS
+------------------------
+
+- The beak reads at thumbnail scale as one specific macaw hook with a pointed
+  downward tip and concave mouth, never as a bar, gun, fork, T, or hammer.
+- The eye/ivory cheek/head/bill feel embedded in one head assembly; no circular
+  facial badge remains.
+- The wing begins at the shoulder, lies on and wraps the torso, and tapers down
+  and back; no U-shaped tube outlines it.
+- Feather courses fan with the wing and overlap asymmetrically; individual
+  units taper and bend instead of ending as round pills.
+- The seed's continuous S-curve, proud breast, lower taper, and full safe-margin
+  silhouette remain visibly intact.
+
+Before each write_shader rewrite, state the strongest seed relationship being
+preserved, the exact glyph-like construction being removed, the replacement
+shape operation, and the visible pass/fail test. Geometry and silhouette come
+before microdetail. If a revision regresses the continuous torso/wing gesture,
+restore the stronger prior revision rather than accepting the trade.
